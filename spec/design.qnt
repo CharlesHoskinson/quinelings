@@ -4,6 +4,8 @@ module design {
   type Profile = {
     family: int, a: int, b: int, baseRadius: int, degreeGain: int, literalGain: int,
     bend: int, frequencyGain: int, ripple: int, motionRate: int,
+    rhythmMode: int, rhythmRate: int, breath: int, wave: int, waveNumber: int,
+    lag: int, rhythmAsymmetry: int, overtone: int,
     ghost: int, secondary: int, ridge: int,
     ribbons: int, crests: int, spread: int, folds: int, taper: int, asymmetry: int,
     surfaceDepth: int, twist: int, phaseLag: int, samples: int,
@@ -49,6 +51,13 @@ module design {
     and p.degreeGain >= 0 and p.degreeGain <= 6 and p.literalGain >= 0 and p.literalGain <= 3
     and p.bend >= 0 and p.bend <= 80 and p.frequencyGain >= 0 and p.frequencyGain <= 200
     and p.ripple >= 0 and p.ripple <= 300 and p.motionRate >= 0 and p.motionRate <= 50
+    // mode 0 represents absent legacy rhythm; other fields are dormant bounded placeholders.
+    and p.rhythmMode >= 0 and p.rhythmMode <= 2
+    and p.rhythmRate >= 250 and p.rhythmRate <= 2000
+    and p.breath >= 0 and p.breath <= 180 and p.wave >= 0 and p.wave <= 180
+    and p.waveNumber >= 0 and p.waveNumber <= 4000 and p.lag >= 0 and p.lag <= 2000
+    and p.rhythmAsymmetry >= 0 and p.rhythmAsymmetry <= 800
+    and p.overtone >= 0 and p.overtone <= 350
     and p.ghost >= 0 and p.ghost < p.secondary and p.secondary < p.ridge and p.ridge <= 1000
     and p.ribbons >= 8 and p.ribbons <= 36 and p.crests >= 3 and p.crests <= 6
     and p.spread >= 20 and p.spread <= 240 and p.folds >= 2 and p.folds <= 9
@@ -74,6 +83,14 @@ module design {
     nondet frequencyGain = 0.to(200).oneOf()
     nondet ripple = 0.to(300).oneOf()
     nondet motionRate = 0.to(50).oneOf()
+    nondet rhythmMode = 0.to(2).oneOf()
+    nondet rhythmRate = 250.to(2000).oneOf()
+    nondet breath = 0.to(180).oneOf()
+    nondet wave = 0.to(180).oneOf()
+    nondet waveNumber = 0.to(4000).oneOf()
+    nondet lag = 0.to(2000).oneOf()
+    nondet rhythmAsymmetry = 0.to(800).oneOf()
+    nondet overtone = 0.to(350).oneOf()
     nondet ghost = 0.to(998).oneOf()
     nondet secondary = (ghost + 1).to(999).oneOf()
     nondet ridge = (secondary + 1).to(1000).oneOf()
@@ -98,6 +115,8 @@ module design {
     val profile = {family: family, a: a, b: b, baseRadius: baseRadius,
       degreeGain: degreeGain, literalGain: literalGain, bend: bend,
       frequencyGain: frequencyGain, ripple: ripple, motionRate: motionRate,
+      rhythmMode: rhythmMode, rhythmRate: rhythmRate, breath: breath, wave: wave,
+      waveNumber: waveNumber, lag: lag, rhythmAsymmetry: rhythmAsymmetry, overtone: overtone,
       ghost: ghost, secondary: secondary, ridge: ridge,
       ribbons: ribbons, crests: crests, spread: spread, folds: folds, taper: taper, asymmetry: asymmetry, surfaceDepth: surfaceDepth, twist: twist, phaseLag: phaseLag, samples: samples, recess: recess, crest: crest, depthContrast: depthContrast, occupancy: occupancy, lean: lean, yaw: yaw, pitch: pitch, focus: focus}
     s' = {source: source, origin: source, phase: 0, paused: false, repeats: repeats,
@@ -144,11 +163,12 @@ module design {
     nondet guard = Set(false, true).oneOf()
     nondet allowed = Set(false, true).oneOf()
     nondet candidate = sources.oneOf()
-    nondet mutation = Set(0, 1, 2, 3).oneOf()
+    nondet mutation = Set(0, 1, 2, 3, 4).oneOf()
     val profile = if (mutation == 0) s.profile
       else if (mutation == 1) s.profile.with("family", (s.profile.family + 1) % 10)
       else if (mutation == 2) s.profile.with("crest", if (s.profile.crest == 650) 649 else s.profile.crest + 1)
-      else s.profile.with("spread", if (s.profile.spread == 240) 239 else s.profile.spread + 1)
+      else if (mutation == 3) s.profile.with("spread", if (s.profile.spread == 240) 239 else s.profile.spread + 1)
+      else s.profile.with("breath", if (s.profile.breath == 180) 179 else s.profile.breath + 1)
     any {render, replay, togglePause, execute(guard, allowed), admit(candidate, profile), rejectChild(candidate, profile)}
   }
 
@@ -166,6 +186,11 @@ module design {
   val profileBounds = validProfile(s.profile)
   // Positive integer lower-bound numerator, assuming each cosine is in [-1,1].
   val radialLowerBound = s.profile.baseRadius * (1000 - s.profile.a - s.profile.b) > 0
+  // Analytic lower-bound numerators, assuming trigonometric values lie in [-1,1].
+  // These do not model floating-point waves or prove renderer refinement.
+  val rhythmLowerBounds = 1000 - s.profile.breath >= 820
+    and 1000 - s.profile.rhythmAsymmetry >= 200
+    and 1000 + s.profile.overtone >= 1000
   val guardedEffects = if (s.last == "execute")
     s.effects == s.priorEffects + (if (s.guard and s.allowed) 1 else 0) else true
   val viewSeparation = if (Set("render", "replay", "pause", "reject").contains(s.last))
@@ -192,7 +217,7 @@ module design {
     and viewSeparation and onlyExecutionEffects and onlyAdmissionChildren and guardedEffects
     and paletteIdentity and metadataStable and programBound and roleDictionary
     and geometryBound and endpointsPinned and acyclic and codecAssumption
-    and profileBounds and radialLowerBound
+    and profileBounds and radialLowerBound and rhythmLowerBounds
 
   val hasEffect = s.effects > 0
   val hasChild = s.children > 0
@@ -224,6 +249,14 @@ module design {
   run rejectChangedMembraneTest = init.then(execute(false, false))
     .then(rejectChild(s.source, s.profile.with("spread", if (s.profile.spread == 240) 239 else s.profile.spread + 1)))
     .expect(safety and s.children == 0)
+
+  run rejectChangedRhythmTest = init.then(execute(false, false))
+    .then(rejectChild(s.source, s.profile.with("breath", if (s.profile.breath == 180) 179 else s.profile.breath + 1)))
+    .expect(safety and s.children == 0)
+  action unsafeRhythmRender = s' = snapshot("render")
+    .with("profile", s.profile.with("rhythmAsymmetry", if (s.profile.rhythmAsymmetry == 800) 799 else s.profile.rhythmAsymmetry + 1))
+  run detectsUnsafeRhythmRenderTest = init.then(unsafeRhythmRender)
+    .expect(not(safety) and not(sourceIdentity) and viewSeparation)
 
   // Deliberate mutation, excluded from normal step. Its test must detect failure.
   action unsafeReplay = s' = snapshot("replay").with("effects", s.effects + 1)

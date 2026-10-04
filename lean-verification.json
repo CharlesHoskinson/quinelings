@@ -1,0 +1,13 @@
+{
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "theorems": 88,
+  "numericDomainsMatched": 37,
+  "proofPlaceholders": 0,
+  "projectAxioms": 0,
+  "allowedFoundations": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "dependenciesChecked": true
+}

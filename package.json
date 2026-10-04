@@ -6,9 +6,24 @@
   "scripts": {
     "dev": "python3 -m http.server 8048 --bind 127.0.0.1",
     "test": "node verify.cjs && node verify-library.cjs && node verify-design.cjs && node audit.cjs && node verify-morphology.cjs",
-    "formal": "quint typecheck spec/design.qnt && quint test spec/design.qnt --max-samples=100 --backend=typescript && quint run spec/design.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261003 --backend=typescript --verbosity=1"
+    "formal": "quint typecheck spec/design.qnt && quint test spec/design.qnt --max-samples=100 --backend=typescript && quint run spec/design.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261003 --backend=typescript --verbosity=1",
+    "lean:fixtures": "node scripts/generate-lean-fixtures.cjs",
+    "formal:lean": "bash scripts/check-lean.sh",
+    "lean:install": "bash scripts/install-lean.sh",
+    "formal:all": "npm run formal:lean && npm run formal"
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "@informalsystems/quint": "0.33.0"
+  },
+  "overrides": {
+    "@informalsystems/quint": {
+      "adm-zip": "0.6.1"
+    }
+  },
+  "allowScripts": {
+    "protobufjs@7.6.6": true
   }
 }

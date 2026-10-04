@@ -3,3 +3,5 @@ node_modules/
 __pycache__/
 research/reference-frame-*.png
 *.log
+
+spec/lean/.lake/

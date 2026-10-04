@@ -1,5 +1,5 @@
 {
-  "passed": 8,
+  "passed": 12,
   "checks": [
     "All ten families are bounded valid QDL expressions",
     "Unknown syntax, families and models are rejected",
@@ -8,7 +8,11 @@
     "Pinned-sine offset vanishes at both endpoint samples",
     "Species and mapping parameters survive quine and both genomes",
     "Design-only edits preserve task output while changing encoded source",
-    "Invalid source-embedded design is rejected before task execution"
+    "Invalid source-embedded design is rejected before task execution",
+    "Rhythm syntax is closed, complete, finite and bounded",
+    "Legacy rhythm omission validates without rewriting canonical source",
+    "Every rhythm parameter is source identity while task results stay constant",
+    "Published default and independent authored family rhythms remain consistent"
   ],
   "numericalGeometry": "sampled floating-point checks, not a theorem"
 }

@@ -7,9 +7,43 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Quiet,directory=str(ROOT)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 with sync_playwright() as p:
-    browser=p.chromium.launch(headless=True,executable_path=os.environ.get('PLAYWRIGHT_CHROMIUM_EXECUTABLE','/home/hoskinson/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome'))
+    options={'headless':True}
+    if os.environ.get('PLAYWRIGHT_CHROMIUM_EXECUTABLE'): options['executable_path']=os.environ['PLAYWRIGHT_CHROMIUM_EXECUTABLE']
+    browser=p.chromium.launch(**options)
     page=browser.new_page(viewport={'width':1450,'height':1100});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
     page.goto(os.environ.get('QUINELINGS_URL',f'http://127.0.0.1:{server.server_port}/'));page.wait_for_function('quineling.library.length===10 && translation.activeNode')
+    # UI edits author recoverable source without executing a task.
+    original=page.evaluate('Quinelings.canon(quineling.program)')
+    page.locator('#motion-controls').evaluate('(e)=>e.open=true')
+    page.locator('#rhythm-mode').select_option('quasiperiodic')
+    for field,value in [('breath',.12),('wave',.11),('lag',1.7)]:
+        control=page.locator('#rhythm-'+field)
+        control.fill(str(value));control.dispatch_event('change')
+        assert page.evaluate('quineling.result') is None
+        assert page.evaluate('quineling.shape.design.motion.rhythm')[field]==value
+    custom=page.evaluate('quineling.shape.design.motion.rhythm')
+    assert custom['mode']=='quasiperiodic'
+    assert page.evaluate('Quinelings.canon(quineling.program)')!=original
+    page.locator('#fixture').select_option('1')
+    page.locator('#repeats').fill('3');page.locator('#repeats').dispatch_event('input')
+    assert page.evaluate('quineling.shape.design.motion.rhythm')==custom
+    assert page.evaluate('quineling.shape.repeats')==3
+    assert page.evaluate('quineling.result') is None
+    encoded=page.evaluate('Quinelings.canon(quineling.program)')
+    page.locator('#birth').click()
+    assert page.evaluate('quineling.generation')==1
+    assert page.evaluate('quineling.shape.design.motion.rhythm')==custom
+    assert page.evaluate('Quinelings.canon(quineling.program)')==encoded
+    page.locator('#recover').click()
+    assert 'Recovered source execution: QUINE VERIFIED' in page.locator('#proof').inner_text()
+    page.locator('#recover-color').click()
+    assert 'Recovered source execution: QUINE VERIFIED' in page.locator('#proof').inner_text()
+    page.locator('#rhythm-reset').click()
+    assert page.evaluate('JSON.stringify(quineling.shape.design.motion.rhythm)===JSON.stringify(QDL.create(quineling.current.skin.family).motion.rhythm)')
+    assert page.locator('#fixture').input_value()=='1'
+    assert page.locator('#repeats').input_value()=='3'
+    assert page.evaluate('quineling.result') is None
+    page.locator('.creature-card').first.click()
     source=page.evaluate('Quinelings.canon(quineling.program)')
     page.evaluate('''() => {const render=quineling.renderOn;quineling.renderOn=(target,t)=>{window.observedPhase=t;return render(target,t);};translation.setStage(3);}''')
     page.locator('#translation-form').scroll_into_view_if_needed();page.wait_for_timeout(350)
@@ -39,6 +73,6 @@ with sync_playwright() as p:
     assert page.locator('.program-line[aria-pressed="true"]').count()==0
     page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
     assert not errors,errors
-    report={'passed':True,'sharedClock':True,'pauseFreezesPixelsAndClock':True,'dynamicReducedMotion':True,'viewPreservesSourceAndDoesNotExecute':True,'selectionPreservesRecordedTrace':True,'canvasHitTest':True,'clearFocusKeyboard':True,'mobileNoOverflow':True,'pageErrors':errors}
+    report={'passed':True,'sharedClock':True,'pauseFreezesPixelsAndClock':True,'dynamicReducedMotion':True,'viewPreservesSourceAndDoesNotExecute':True,'selectionPreservesRecordedTrace':True,'canvasHitTest':True,'clearFocusKeyboard':True,'mobileNoOverflow':True,'authoredRhythmControls':True,'rhythmEditsDoNotExecute':True,'fixtureAndCyclesPreserveRhythm':True,'reproductionAndCodecsPreserveRhythm':True,'speciesResetPreservesInputs':True,'pageErrors':errors}
     (ROOT/'motion-verification.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report));browser.close()
 server.shutdown();server.server_close()

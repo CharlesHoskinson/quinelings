@@ -2,10 +2,14 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 npm test
+npm run formal:all
 site_dir=$(mktemp -d)
 trap 'rm -rf "$site_dir"' EXIT
 cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js morphology.js core.js gallery.js translation.js "$site_dir/"
-cp -R programs assets docs design spec "$site_dir/"
+cp -R programs assets docs design "$site_dir/"
+cp lean-verification.json "$site_dir/"
+# Publish only tracked specifications, never Lean toolchains or compiled dependency caches.
+git ls-files -z spec | xargs -0 cp --parents -t "$site_dir/"
 touch "$site_dir/.nojekyll"
 site_origin=$(git remote get-url origin)
 site_revision=$(git rev-parse --short HEAD)

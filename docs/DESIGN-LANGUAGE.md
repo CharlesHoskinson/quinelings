@@ -81,11 +81,13 @@ A separately indexed RGB strand carries exact source bytes. Byte b maps to (b,25
 
 ## Motion and composition rules
 
-Use one phase clock and a small integer harmonic vocabulary. Derive phase offsets from depth or stable node identity. Keep large anchors slower than their attached strands. Hold the body envelope while allowing peripheral filaments to bend. When a thought executes, send one visible pulse along its relevant connections; persistent idle motion does not imply ongoing execution.
+Use one presentation clock and an authored `motion.rhythm`. A monotone sinusoidal phase warp gives a faster active stroke and a slower recovery. Shared expansion and opposing longitudinal recoil make attached tissues move as one creature; traveling waves and lag let tips follow their leading tissue. Periodic mode uses integer temporal harmonics; quasiperiodic mode adds a bounded irrational secondary frequency. Spatial waves respect closed-loop seams. These controls belong to source identity, while their current phase remains presentation state. When a thought executes, send one visible pulse along its relevant connections; persistent idle motion does not imply ongoing execution.
 
 Give each portrait a clear margin. Aim for three dominant masses or fewer, one visual center, and a small number of bright ridges. Keep secondary ink substantially dimmer. Avoid uniform opaque linework, complete symmetry on every family, arbitrary per-frame noise, and labels across the creature's face. Reveal the topology through a dedicated inspection mode.
 
 Animation time and program time are separate. Pause motion without changing the result. Replay a trace without repeating effects. Respect reduced-motion preferences and provide a still frame that retains species identity.
+
+The family rhythm presets distinguish behavior as well as outline: jelly contracts its bell while threads lag behind it, moth wings share an active stroke, coral holds a rooted fan while tips sway, and comet threads follow a leading body. A logarithmic nautilus, golden-angle seed strands, and toroidal winding supply mathematical structure beyond decorative sine ripples. Coral and bloom have bounded quasiperiodic gestures. Authored amplitude limits and normalized harmonics keep these gestures finite and deterministic; there is no hidden simulation history.
 
 ## Acceptance for this library
 

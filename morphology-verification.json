@@ -1,5 +1,5 @@
 {
-  "passed": 6,
+  "passed": 11,
   "programs": 10,
   "checks": [
     "Default source profile matches its checked-in QDL expression",
@@ -7,6 +7,11 @@
     "All ten families preserve finite anatomy, graph endpoints, source, and quine identity",
     "Closed moth, torus, and bloom ridges have no breathing seam",
     "Valid high-bend designs receive conservative framing without changing source",
-    "Folded material has bounded deterministic samples and a fixed authored portrait frame"
+    "Folded material has bounded deterministic samples and a fixed authored portrait frame",
+    "Closed membranes join in position, shading and tangent, including extreme authored twists",
+    "Rhythm drivers are bounded, periodic when authored, and genuinely quasiperiodic",
+    "Periodic designs close their complete membrane and executable anatomy after one cycle",
+    "Authored motion stays continuous and framed at late times and parameter limits",
+    "Every family moves, keeps a distinct body, and honors the smallest surface budget"
   ]
 }

@@ -28,4 +28,70 @@ check('Folded material has bounded deterministic samples and a fixed authored po
   assert.deepEqual(M.surfaceFrame(s,3,true),M.surfaceFrame(s,3,true));assert.equal(Q.canon(p),before);
  }
 });
+
+const distance3=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(a.z||0)-(b.z||0));
+function specimen(id,edit=()=>{}){const item=JSON.parse(fs.readFileSync(`programs/${id}.json`)),d=D.create(item.skin.family);edit(d);return Q.describe(Q.makeTaskProgram(item.graph,1,d));}
+check('Closed membranes join in position, shading and tangent, including extreme authored twists',()=>{
+ for(const id of ids){const s=specimen(id,d=>{d.surface.twist=3;d.surface.phaseLag=2;d.motion.rhythm.waveNumber=3.7;d.motion.rhythm.wave=.18;});
+  if(!['moth','torus','bloom'].includes(s.design.family))continue;
+  const total=M.ribbonCount(s),h=1e-6;
+  for(const t of [0,.7,9,37])for(const k of [0,Math.floor(total/2),total-1])for(const v of [-1,0,1]){
+   const a=M.surfacePoint(s,0,v,k,total,t),b=M.surfacePoint(s,1,v,k,total,t);
+   assert(distance3(a,b)<1e-7,`${s.design.family}: membrane seam ${distance3(a,b)}`);
+   assert(Math.abs(a.alpha-b.alpha)<1e-7,`${s.design.family}: shading seam`);
+   const right=M.surfacePoint(s,h,v,k,total,t),left=M.surfacePoint(s,1-h,v,k,total,t);
+   const dr={x:(right.x-a.x)/h,y:(right.y-a.y)/h,z:(right.z-a.z)/h},dl={x:(b.x-left.x)/h,y:(b.y-left.y)/h,z:(b.z-left.z)/h};
+   assert(distance3(dr,dl)<.03,`${s.design.family}: tangent seam ${distance3(dr,dl)}`);
+  }
+ }
+});
+check('Rhythm drivers are bounded, periodic when authored, and genuinely quasiperiodic',()=>{
+ for(const id of ids){const s=specimen(id),r=s.design.motion.rhythm;r.mode='periodic';
+  for(const t of [0,.13,2,37,1000]){
+   const a=M.motionState(s,t),b=M.motionState(s,t+2*Math.PI/r.rate);
+   assert(Number.isFinite(a.phase));assert(Math.abs(a.pulse)<=1+1e-12);assert(Math.abs(a.secondary)<=1+1e-12);
+   assert(Math.abs(a.pulse-b.pulse)<1e-10);assert(Math.abs(a.secondary-b.secondary)<1e-10);
+   assert.deepEqual(a,M.motionState(s,t));
+  }
+  r.mode='quasiperiodic';r.overtone=.35;
+  const differences=[0,.7,2].map(t=>Math.abs(M.motionState(s,t).secondary-M.motionState(s,t+2*Math.PI/r.rate).secondary));
+  assert(Math.max(...differences)>.01,'quasiperiodic overtone must change successive cycles');
+ }
+});
+check('Periodic designs close their complete membrane and executable anatomy after one cycle',()=>{
+ for(const id of ids){const s=specimen(id,d=>{d.motion.rhythm.mode='periodic';}),period=2*Math.PI/s.design.motion.rhythm.rate,total=M.ribbonCount(s);
+  for(const t of [.31,3.7]){
+   for(const k of [0,Math.floor(total/2),total-1])for(const u of [.03,.37,.82])for(const v of [-1,.3,1]){
+    const a=M.surfacePoint(s,u,v,k,total,t),b=M.surfacePoint(s,u,v,k,total,t+period);assert(distance3(a,b)<1e-8,`${s.design.family}: membrane cycle does not close`);assert(Math.abs(a.alpha-b.alpha)<1e-8);
+   }
+   for(const n of s.nodes)close(Q.nodePosition(n,t,s),Q.nodePosition(n,t+period,s));
+   for(const e of s.links)for(const u of [0,.37,.81,1])close(Q.edgePoint(e,u,t,s),Q.edgePoint(e,u,t+period,s));
+  }
+ }
+});
+check('Authored motion stays continuous and framed at late times and parameter limits',()=>{
+ for(const id of ids)for(const profile of ['default','extreme','legacy']){
+  const s=specimen(id,d=>{if(profile==='legacy')delete d.motion.rhythm;if(profile==='extreme'){Object.assign(d.motion.rhythm,{rate:2,breath:.18,wave:.18,waveNumber:4,lag:2,asymmetry:.8,overtone:.35,mode:'quasiperiodic'});d.composition.occupancy=.84;}}),source=Q.canon(s),total=M.ribbonCount(s),frame=M.portraitFrame(s);
+  const fits=p=>{finite(p);assert(Math.abs(p.x-frame.cx)*s.design.composition.occupancy/frame.width<=.5,`${s.design.family}/${profile}: horizontal clipping`);assert(Math.abs(p.y-frame.cy)*s.design.composition.occupancy/frame.height<=.5,`${s.design.family}/${profile}: vertical clipping`);};
+  for(const t of [0,.37,Math.PI,37,101,1000]){
+   for(const k of [0,Math.floor(total/2),total-1])for(const u of [0,.01,.21,.5,.79,.99,1])for(const v of [-1,0,1]){
+    const p=M.surfacePoint(s,u,v,k,total,t),next=M.surfacePoint(s,u,v,k,total,t+1e-4);fits(p);assert(Number.isFinite(p.z)&&Number.isFinite(p.alpha));assert(p.alpha>=0&&p.alpha<=s.design.light.crestAlpha+1e-8);
+    assert(distance3(p,next)<.01,`${s.design.family}/${profile}: temporal discontinuity`);assert.deepEqual(p,M.surfacePoint(s,u,v,k,total,t));
+   }
+   for(const n of s.nodes)fits(Q.nodePosition(n,t,s));
+   for(const e of s.links){close(Q.edgePoint(e,0,t,s),Q.nodePosition(s.nodes.find(n=>n.id===e.from),t,s));close(Q.edgePoint(e,1,t,s),Q.nodePosition(s.nodes.find(n=>n.id===e.to),t,s));}
+  }
+  assert.equal(Q.canon(s),source,'rendering must not rewrite legacy or authored design');
+ }
+});
+check('Every family moves, keeps a distinct body, and honors the smallest surface budget',()=>{
+ const signatures=[];
+ for(const id of ids){const s=specimen(id,d=>{d.surface.samples=4000;d.surface.ribbons=36;}),total=M.ribbonCount(s),signature=[];let displacement=0;
+  for(const k of [0,7,15])for(const u of [.15,.4,.7,.9]){const a=M.surfacePoint(s,u,.5,k,total,.2),b=M.surfacePoint(s,u,.5,k,total,1.4);signature.push(a.x,a.y);displacement+=distance3(a,b);}
+  assert(displacement>.01,`${s.design.family}: static body`);signatures.push(signature);
+  for(const thumb of [false,true]){const material=M.surfaceFrame(s,2,thumb);assert(material.points.length/4<=4000,'sample budget exceeded');assert.equal(material.ridges.length,s.design.surface.crests);}
+ }
+ for(let i=0;i<signatures.length;i++)for(let j=0;j<i;j++)assert(Math.hypot(...signatures[i].map((v,k)=>v-signatures[j][k]))>.1,'families collapsed to the same sampled body');
+});
+
 fs.writeFileSync('morphology-verification.json',JSON.stringify({passed:checks.length,programs:ids.length,checks},null,2)+'\n');console.log(JSON.stringify({passed:checks.length,checks}));

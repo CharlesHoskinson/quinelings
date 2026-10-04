@@ -8,5 +8,10 @@
   "canvasHitTest": true,
   "clearFocusKeyboard": true,
   "mobileNoOverflow": true,
+  "authoredRhythmControls": true,
+  "rhythmEditsDoNotExecute": true,
+  "fixtureAndCyclesPreserveRhythm": true,
+  "reproductionAndCodecsPreserveRhythm": true,
+  "speciesResetPreservesInputs": true,
   "pageErrors": []
 }

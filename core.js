@@ -104,7 +104,7 @@ function describe(program){
  const branches=top.reduce((s,n)=>s+Math.max(0,n.outdegree-1),0);
  return {graph,nodes,links,repeats,quoteDepth,branches,strandCount:Math.min(22,12+Math.floor(branches/2)),maxDepth:max,design};
 }
-function nodePosition(n,t,shape){if(n.parent){const p=nodePosition(shape.nodes.find(x=>x.id===n.parent),t,shape);return {x:p.x+.015*Math.sin(t+n.frequency),y:p.y+.016*Math.cos(t+n.frequency)};}return Morph.anchor(n,t,shape);}
-function edgePoint(link,s,t,shape){const a=nodePosition(shape.nodes.find(n=>n.id===link.from),t,shape),b=nodePosition(shape.nodes.find(n=>n.id===link.to),t,shape);const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;const f=1+link.port+shape.nodes.find(n=>n.id===link.from).frequency;const bend=Design.filamentBend(shape.design||Design.DEFAULT,f,s,t);return {x:a.x+dx*s-dy/len*bend,y:a.y+dy*s+dx/len*bend};}
+function nodePosition(n,t,shape){if(n.parent){const p=nodePosition(shape.nodes.find(x=>x.id===n.parent),t,shape);const phase=Morph.motionState(shape,t).phase;return {x:p.x+.015*Math.sin(phase+n.frequency),y:p.y+.016*Math.cos(phase+n.frequency)};}return Morph.anchor(n,t,shape);}
+function edgePoint(link,s,t,shape){const a=nodePosition(shape.nodes.find(n=>n.id===link.from),t,shape),b=nodePosition(shape.nodes.find(n=>n.id===link.to),t,shape);const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;const f=1+link.port+shape.nodes.find(n=>n.id===link.from).frequency;const bend=Design.filamentBend(shape.design||Design.DEFAULT,f,s,Morph.motionState(shape,t).phase);return {x:a.x+dx*s-dy/len*bend,y:a.y+dy*s+dx/len*bend};}
 const api={canon,makeProgram,makeTaskProgram,runTask:K.run,validateTask:K.validate,execute,encode,decode,encodeColors,decodeColors,instructionColor,instructionFromColor,wave,samples,fromSamples,describe,nodePosition,edgePoint,OPS,COLORS,TAU};if(typeof module!=='undefined')module.exports=api;root.Quinelings=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

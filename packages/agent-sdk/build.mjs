@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 
 const packageDirectory=fileURLToPath(new URL('.',import.meta.url));
 const manifest=JSON.parse(readFileSync(new URL('package.json',import.meta.url),'utf8'));
-const entryPoints=['index','schema','mcp','mcp-cli','a2a','a2a-cli'].map(name=>resolve(packageDirectory,'src',name+'.ts'));
+const entryPoints=['index','schema','mcp','mcp-cli','a2a','a2a-cli','v1','v1-schema','v1-mcp','v1-mcp-cli','v1-a2a','v1-a2a-cli','v1-migrate','v1-ranch'].map(name=>resolve(packageDirectory,'src',name+'.ts'));
 for(const entry of entryPoints)if(!existsSync(entry))throw new Error('Required SDK build entry is missing: '+entry);
 const outdir=resolve(packageDirectory,'dist');
 rmSync(outdir,{recursive:true,force:true});

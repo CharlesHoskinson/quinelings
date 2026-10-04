@@ -11,7 +11,7 @@ const ROLES=Object.freeze(Object.fromEntries(Object.entries({
 }).map(([key,value])=>[key,Object.freeze(value)])));
 const ROLE_MAP=Object.freeze({
  Observe:'input',Box:'quote',Permit:'decision',Apply:'process',Score:'process',Authorize:'decision',Execute:'action',Quote:'quote',Decode:'quote',Report:'report',
- literal:'input',sum:'process',mean:'process',min:'process',max:'process',weightedMean:'process',length:'process',map:'process',sort:'process',dedupe:'process',filter:'process',compare:'decision',choose:'decision',get:'process',clamp:'process',budget:'process',action:'action',report:'report',bfs:'process',allocate:'process',schedule:'process',consensus:'decision',retry:'process',evidence:'decision'
+ literal:'input',sum:'process',mean:'process',min:'process',max:'process',weightedMean:'process',length:'process',map:'process',sort:'process',dedupe:'process',filter:'process',compare:'decision',choose:'decision',get:'process',clamp:'process',budget:'process',action:'action',report:'report',bfs:'process',allocate:'process',schedule:'process',consensus:'decision',retry:'process',evidence:'decision',input:'input',arithmetic:'process',compareValues:'decision',all:'decision',select:'process',evidenceFresh:'decision',reconcile:'process'
 });
 const SCALE_STOPS=Object.freeze([
  Object.freeze({at:0,color:'#593b9c'}),Object.freeze({at:.25,color:'#765eb4'}),Object.freeze({at:.5,color:'#a17ac0'}),Object.freeze({at:.75,color:'#dca7b8'}),Object.freeze({at:1,color:'#f7e6ac'})

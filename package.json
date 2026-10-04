@@ -10,7 +10,7 @@
     "lean:fixtures": "node scripts/generate-lean-fixtures.cjs",
     "formal:lean": "bash scripts/check-lean.sh",
     "lean:install": "bash scripts/install-lean.sh",
-    "formal:all": "npm run formal:lean && npm run formal && npm run formal:creation && npm run formal:session && npm run formal:ranch",
+    "formal:all": "npm run formal:lean && npm run formal && npm run formal:creation && npm run formal:session && npm run formal:ranch && npm run formal:v1",
     "formal:creation": "quint typecheck spec/creation.qnt && quint test spec/creation.qnt --max-samples=100 --backend=typescript && quint run spec/creation.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
     "sdk:install": "npm ci --prefix packages/agent-sdk",
     "sdk:check": "npm run typecheck --prefix packages/agent-sdk && npm run build --prefix packages/agent-sdk && npm test --prefix packages/agent-sdk",
@@ -18,7 +18,10 @@
     "formal:session": "quint typecheck spec/agent-session.qnt && quint test spec/agent-session.qnt --max-samples=100 --backend=typescript && quint run spec/agent-session.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
     "formal:ranch": "quint typecheck spec/ranch.qnt && quint test spec/ranch.qnt --max-samples=100 --backend=typescript && quint run spec/ranch.qnt --invariant=safety --max-samples=1000 --max-steps=80 --seed=20261004 --backend=typescript --verbosity=1 && quint run spec/ranch.qnt --init=paired --step=familyStep --invariant=safety --max-samples=500 --max-steps=80 --seed=20261005 --backend=typescript --verbosity=1",
     "ranch:build": "node scripts/build-ranch-browser.mjs",
-    "formal:correspondence": "node verify-ranch-model.cjs"
+    "formal:correspondence": "node verify-ranch-model.cjs",
+    "test:v1": "node scripts/build-v1-registry.cjs --check && node verify-v1-types.cjs && node verify-v1-contract.cjs && node verify-v1-kernels.cjs && node verify-v1.cjs && node verify-v1-library.cjs && node verify-v1-migrate.cjs && node verify-v1-compatibility.cjs && node verify-v1-goldens.cjs && node verify-v1-offspring.cjs",
+    "formal:v1": "quint typecheck spec/v1-session.qnt && quint test spec/v1-session.qnt --max-samples=100 --backend=typescript && quint run spec/v1-session.qnt --invariant=safety --max-samples=1000 --max-steps=80 --seed=20261004 --backend=typescript --verbosity=1 && node verify-v1-model.cjs",
+    "test:browser:v1": "node verify-v1-conformance-browser.cjs && node verify-v1-browser.cjs && node verify-ranch-render-cache.cjs && node verify-v1-ranch-browser.cjs"
   },
   "engines": {
     "node": ">=22"

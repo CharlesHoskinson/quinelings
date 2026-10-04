@@ -1,1 +1,12 @@
-{"extends":"./tsconfig.json","compilerOptions":{"rootDir":".","noEmit":true},"include":["src/**/*.ts","test/type-contract.ts"]}
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/type-contract.ts",
+    "test/v1-type-contract.ts"
+  ]
+}

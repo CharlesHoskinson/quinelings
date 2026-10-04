@@ -146,12 +146,12 @@
       "name": "run-budget",
       "agent": "/root/v1_security",
       "status": "completed",
-      "evidence": "2 MiB serialized record and 64 MiB aggregate precommit caps; staged reproduction; all 55 SDK tests/typecheck/build passed. Raw-result incremental accounting remains open."
+      "evidence": "Legacy SDK precommit record/aggregate caps; v1 source interpreter now bounds complete trace/output records incrementally. SDK107 tests pass on actualNode22+26."
     },
     {
       "name": "v1-types",
       "agent": "/root/v1_language_semantics",
-      "status": "active",
+      "status": "completed",
       "files": [
         "qdl-v1-types.js",
         "verify-v1-types.cjs"
@@ -160,7 +160,7 @@
     {
       "name": "v1-kernels",
       "agent": "/root/v1_stdlib",
-      "status": "active",
+      "status": "completed",
       "files": [
         "qdl-v1-kernels.js",
         "verify-v1-kernels.cjs"
@@ -169,7 +169,7 @@
     {
       "name": "v1-formal",
       "threadId": "01a10707-d9bf-7282-89f2-de049dd509e7",
-      "status": "active",
+      "status": "completed",
       "files": [
         "spec/lean/QDL/V1.lean",
         "spec/v1-session.qnt",
@@ -177,5 +177,28 @@
       ]
     }
   ],
-  "scopeSummary": "Ten technical reports and five branding reports complete. Stable QDL v1 has not been implemented or accepted. Result-budget fix is underway."
+  "scopeSummary": "Ten technical reports and five branding reports complete. Stable QDL v1 has not been implemented or accepted. Result-budget fix is underway.",
+  "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+  "updatedAt": "2026-10-04T15:03:34.219360+00:00",
+  "delivery": {
+    "status": "integrated; package and publication verification pending",
+    "language": "v1 candidate",
+    "stableRelease": false,
+    "newSurfaces": [
+      "v1.html",
+      "ranch-workshop.html"
+    ],
+    "verification": {
+      "sdkTestsNode22": 107,
+      "sdkTestsNode26": 107,
+      "leanTheorems": 239,
+      "quintV1Scenarios": 26,
+      "tokenModelStates": 98,
+      "realRuntimeProjectionTests": 7,
+      "recipes": 10,
+      "recipeFixtures": 44,
+      "legacyGoldens": 12,
+      "actualChromium": true
+    }
+  }
 }

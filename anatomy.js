@@ -149,5 +149,23 @@ function generate(graph,seed=0){const ids=nodeIDs(graph);number(seed,0,429496729
  const owners=[];parts.forEach((p,i)=>buckets[i].forEach((node,j)=>owners.push({node,component:p.id,u:[j/buckets[i].length,(j+1)/buckets[i].length]})));
  const anatomy={model:'assembly',compiler:COMPILER,seed,components:parts,owners},gesture={kind,strength:.55+Math.round(rnd()*15)/100,ticks:kind==='gather'?[180,180,420,220]:kind==='unfurl'?[220,170,430,180]:[180,170,450,200]};validateOwners(anatomy,graph);validateGesture(gesture);return {anatomy,gesture};
 }
-const api={COMPILER,validate,validateOwners,validateGesture,generate,compile,score,pose,sample,sampleChart,anchor,socket,frame,restLayout,portraitFrame};if(typeof module!=='undefined')module.exports=api;root.Anatomy=api;
+// New-profile authoring leaves the experimental generator unchanged. Operation
+// roles guide the initial assembly; bounded specializations distinguish social
+// evidence crowns from broad scheduling bodies without inventing executable edges.
+function generateV1(graph,seed=0){
+ const analogues={input:'literal',arithmetic:'sum',compareValues:'compare',all:'compare',select:'filter',evidenceFresh:'evidence',reconcile:'retry'};
+ const projected={...graph,nodes:graph.nodes.map(n=>({...n,op:analogues[n.op]||n.op}))};
+ const generated=generate(projected,seed),a=generated.anatomy,rootPart=a.components[0];
+ const scheduler=graph.nodes.find(n=>n.op==='schedule'),witness=graph.nodes.find(n=>['consensus','evidence','evidenceFresh'].includes(n.op));
+ if(rootPart.kind==='chamber'&&scheduler){rootPart.axes[0]=Math.min(.35,rootPart.axes[0]*1.24);rootPart.axes[1]=Math.max(.04,rootPart.axes[1]*.83);}
+ if(rootPart.kind==='chamber'&&witness){rootPart.axes[0]=Math.max(.04,rootPart.axes[0]*.84);rootPart.axes[1]=Math.max(.04,rootPart.axes[1]*.92);}
+ if(witness&&a.components.length<16){
+  const parts=new Map(a.components.map(c=>[c.id,c]));
+  const eligible=c=>{let depth=0,hinge=.025,p=c;while(p.parent){depth++;hinge+=Math.abs(p.parent.hinge);p=parts.get(p.parent.component);}return depth<4&&hinge<=.35&&a.components.filter(p=>p.parent?.component===c.id).length<4;};
+  const parent=a.components.find(eligible);
+  if(parent){const component='v1-crown';a.components.push({id:component,kind:'spine',length:.18,radii:[.018,.022],bend:[.06,.07],parent:{component:parent.id,socket:{u:.42,v:.15},angle:seed%2?-.9:.9,hinge:.025}});a.owners.push({node:witness.id,component,u:[0,1]});}
+ }
+ validateOwners(a,graph);validateGesture(generated.gesture);return generated;
+}
+const api={COMPILER,validate,validateOwners,validateGesture,generate,generateV1,compile,score,pose,sample,sampleChart,anchor,socket,frame,restLayout,portraitFrame};if(typeof module!=='undefined')module.exports=api;root.Anatomy=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

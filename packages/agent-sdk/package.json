@@ -22,11 +22,37 @@
     "./schema": {
       "types": "./dist/schema.d.ts",
       "import": "./dist/schema.js"
+    },
+    "./v1": {
+      "types": "./dist/v1.d.ts",
+      "import": "./dist/v1.js"
+    },
+    "./v1-schema": {
+      "types": "./dist/v1-schema.d.ts",
+      "import": "./dist/v1-schema.js"
+    },
+    "./v1-mcp": {
+      "types": "./dist/v1-mcp.d.ts",
+      "import": "./dist/v1-mcp.js"
+    },
+    "./v1-a2a": {
+      "types": "./dist/v1-a2a.d.ts",
+      "import": "./dist/v1-a2a.js"
+    },
+    "./v1-migrate": {
+      "types": "./dist/v1-migrate.d.ts",
+      "import": "./dist/v1-migrate.js"
+    },
+    "./v1-ranch": {
+      "types": "./dist/v1-ranch.d.ts",
+      "import": "./dist/v1-ranch.js"
     }
   },
   "bin": {
     "quinelings-mcp": "./dist/mcp-cli.js",
-    "quinelings-a2a": "./dist/a2a-cli.js"
+    "quinelings-a2a": "./dist/a2a-cli.js",
+    "quinelings-v1-mcp": "./dist/v1-mcp-cli.js",
+    "quinelings-v1-a2a": "./dist/v1-a2a-cli.js"
   },
   "files": [
     "dist",

@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-04T14:59:06.357Z",
+  "node": "v22.23.3",
+  "passed": 15,
+  "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+  "sourceHash": "ql_dead9264c4fe3551576f7c6e147328672bd8b00e12f86861e736f82d744b84ed",
+  "scope": "Candidate source/type/input/declaration/constructor/failure/budget integration; no adapter, physical GPU or full JS refinement claim."
+}

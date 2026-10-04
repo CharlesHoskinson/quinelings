@@ -1,12 +1,12 @@
 {
   "passed": true,
-  "node": "v26.10.0",
+  "node": "v22.23.3",
   "package": "@quinelings/agent-sdk",
-  "archiveBytes": 203155,
+  "archiveBytes": 321220,
   "checks": [
     "isolated consumer installation",
     "no dependency on repository source",
-    "all four public entrypoints",
+    "four legacy and five v1 public entrypoints",
     "shared Runtime identity",
     "independent expected total29",
     "RGB source recovery",
@@ -14,7 +14,11 @@
     "strict offspring schema",
     "passive candidate/frame and exact admission retry",
     "source-only child expected12/8",
-    "world import disabled"
+    "world import disabled",
+    "v1 exact reusable9/11 outcomes",
+    "v1 source-only verification and explicit reproduction",
+    "v1 passive recovery and asserted snapshot history",
+    "v1 shared schema and adapter entrypoints"
   ],
   "sourceIndependent": true
 }

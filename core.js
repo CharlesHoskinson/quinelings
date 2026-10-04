@@ -5,10 +5,26 @@ const K=typeof module!=='undefined'?require('./kernels.js'):root.QuinelingKernel
 const Design=typeof module!=='undefined'?require('./qdl.js'):root.QDL;
 const Morph=typeof module!=='undefined'?require('./morphology.js'):root.Morphology;
 const clone=O.clone,canon=O.canon,TAU=2*Math.PI;
-const OPS=['Observe','Box','Permit','Apply','Score','Authorize','Execute','Quote','Decode','Report',...Object.keys(K.ARITY)];
-function hslHex(h,s,l){const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,'0');};return '#'+f(0)+f(8)+f(4);}
-const ROLE_HUE={literal:190,compare:43,choose:46,consensus:39,evidence:51,action:16,retry:220,report:133};
-const COLORS=['#72d9e2','#bb91ed','#e6c66a','#6ad4a0','#eb90ba','#efaa73','#b5e681','#899be8','#77bce9','#d6e6be',...Object.keys(K.ARITY).map((op,i)=>hslHex((ROLE_HUE[op]??158)+(i%5)*2,.37+.008*i,.64+.003*i))];
+// Append stable-profile instructions; legacy frequencies and exact colors stay put.
+const V1_OPS=['input','arithmetic','compareValues','all','select','evidenceFresh','reconcile'];
+const LEGACY_OPS=Object.freeze(["Observe","Box","Permit","Apply","Score","Authorize","Execute","Quote","Decode","Report","literal","sum","mean","min","max","weightedMean","length","map","sort","dedupe","filter","compare","choose","get","clamp","budget","action","report","bfs","allocate","schedule","consensus","retry","evidence"]);
+const OPS=Object.freeze([...LEGACY_OPS,...V1_OPS]);
+const COLORS=Object.freeze(["#72d9e2","#bb91ed","#e6c66a","#6ad4a0","#eb90ba","#efaa73","#b5e681","#899be8","#77bce9","#d6e6be","#81bac5","#82c6af","#82c8b3","#82c9b6","#83cab9","#83cbb1","#83ccb4","#84cdb7","#84cfbb","#85d0be","#85d1b5","#d2bf85","#d3c686","#86d4bf","#87d5c3","#87d6b9","#d7a088","#88d89f","#89d9c4","#89dac7","#8adbbd","#dcc28b","#8ba1dd","#deda8c","#94c4e8","#82d6bf","#ecd38b","#d6c681","#8eabd9","#d9be82","#a49fd9"]);
+function v1(){return typeof module!=='undefined'?require('./qdl-v1.js'):root.QDLV1;}
+function isV1Program(program){
+ // Examine inert descriptors before any profile dispatch or constructor cloning.
+ // Parsed JSON is the wire boundary; hostile same-process Proxies are not a sandbox.
+ const stack=[{value:program,depth:0,seen:new Set(),path:'$'}];let visits=0;
+ function refuse(path,message){const e=new Error(message);e.code='json';e.path=path;throw e;}
+ while(stack.length){const {value:x,depth,seen,path}=stack.pop();if(++visits>200000||depth>64)refuse(path,'Source structure budget exceeded');
+  if(x===null||typeof x==='boolean'||typeof x==='string')continue;if(typeof x==='number'){if(!Number.isFinite(x))refuse(path,'Nonfinite source number');continue;}
+  if(!x||typeof x!=='object'||seen.has(x))refuse(path,'Expected acyclic JSON source');const array=Array.isArray(x),proto=Object.getPrototypeOf(x),keys=Object.keys(x);
+  if(array?!(Array.isArray(proto)&&Object.getPrototypeOf(Object.getPrototypeOf(proto))===null):proto!==null&&Object.getPrototypeOf(proto)!==null)refuse(path,'Expected native JSON source');
+  if(Reflect.ownKeys(x).length!==keys.length+(array?1:0)||array&&(keys.length!==x.length||!keys.every((k,i)=>k===String(i))))refuse(path,'Hidden, symbol or sparse source data');
+  const next=new Set(seen).add(x);for(const k of keys){const d=Object.getOwnPropertyDescriptor(x,k);if(!d||!Object.hasOwn(d,'value')||['__proto__','constructor','prototype'].includes(k))refuse(path+'.'+k,'Source must contain safe data fields');stack.push({value:d.value,depth:depth+1,seen:next,path:path+'.'+k});}
+ }
+ const terms=[program];while(terms.length){const t=terms.pop();if(!Array.isArray(t)||t[0]==='quote')continue;if(t[0]==='task'&&t[1]?.[0]==='quote'&&t[1][1]?.format==='qdl-program')return true;if(t[0]==='run'&&t[1]?.[0]==='quote'){terms.push(t[1][1]);continue;}for(let i=1;i<t.length;i++)terms.push(t[i]);}return false;
+}
 function instructionColor(op){const i=OPS.indexOf(op);if(i<0)throw Error('Unknown instruction');return COLORS[i];}
 function instructionFromColor(hex){const i=COLORS.indexOf(String(hex).toLowerCase());if(i<0)throw Error('Unknown instruction color');return OPS[i];}
 function makeProgram(confidence=.82,allowed=true,threshold=.7,repeats=1,reflection=true){
@@ -23,13 +39,20 @@ function makeProgram(confidence=.82,allowed=true,threshold=.7,repeats=1,reflecti
 function makeTaskProgram(graph,repeats=1,design=Design.create()){
  K.validate(graph);if(!Number.isInteger(repeats)||repeats<1||repeats>8)throw Error('Repeat count must be 1–8');
  Design.validateBindings(design,graph);graph=clone(graph);graph.design=clone(design);
+ return makePayloadProgram(graph,repeats);
+}
+function makePayloadProgram(payload,repeats=1){
+ if(!Number.isInteger(repeats)||repeats<1||repeats>8)throw Error('Repeat count must be 1–8');
  const constructor=['emit',['makeApply',['makeRun',['makeQuote',['var','x']]],['makeQuote',['var','x']]]];
- const body=['lambda','x',['seq',['repeat',repeats,['task',['quote',clone(graph)]]],constructor]];
+ const body=['lambda','x',['seq',['repeat',repeats,['task',['quote',clone(payload)]]],constructor]];
  const program=['apply',['run',['quote',body]],['quote',clone(body)]];
  if(new TextEncoder().encode(canon(program)).length>65536)throw Error('Complete quine source exceeds 64 KiB');
  return program;
 }
-function execute(program){
+function execute(program,options={}){
+ const stable=isV1Program(program);isV1Program(options);
+ if(options===null||typeof options!=='object'||Array.isArray(options)){const e=new Error('Expected execution options');e.code='json';e.path='$.options';throw e;}
+ if(stable){if(Object.keys(options).some(k=>!['bindings','constructionOnly'].includes(k))||Object.hasOwn(options,'constructionOnly')&&typeof options.constructionOnly!=='boolean'||options.constructionOnly&&Object.hasOwn(options,'bindings')){const e=new Error('Invalid stable-profile execution options');e.code='json';e.path='$.options';throw e;}if(!options.constructionOnly)return v1().execute(program,Object.hasOwn(options,'bindings')?options.bindings:{});v1().admit(program);}
  let fuel=20000;const emitted=[],plans=[],tasks=[],trace=[];
  function ev(t,env){
   if(--fuel<0)throw Error('Execution fuel exhausted');
@@ -47,7 +70,7 @@ function execute(program){
    case 'seq':ev(a[0],env);return ev(a[1],env);
    case 'repeat':{if(!Number.isInteger(a[0])||a[0]<1||a[0]>8)throw Error('Repeat budget exceeded');let v;for(let i=0;i<a[0];i++){trace.push({kind:'loop',op:'repeat',iteration:i+1,total:a[0]});v=ev(a[1],env);}return v;}
    case 'plan':{const graph=ev(a[0],env),m=new O.Machine(graph);m.run();plans.push({graph:clone(graph),report:m.output(),effects:m.effects,trace:m.trace});trace.push(...m.trace.map(e=>({kind:'graph',...e})));return m.output();}
-   case 'task':{const graph=ev(a[0],env);if(graph?.design)Design.validateBindings(graph.design,graph);const record=K.run(graph);tasks.push(record);trace.push(...record.trace.map(e=>({kind:'graph',...e})));return record.output;}
+   case 'task':{const graph=ev(a[0],env);if(options.constructionOnly)return null;if(graph?.design)Design.validateBindings(graph.design,graph);const record=K.run(graph);tasks.push(record);trace.push(...record.trace.map(e=>({kind:'graph',...e})));return record.output;}
    case 'emit':{const v=ev(a[0],env);if(!Array.isArray(v))throw Error('Emit expects a program');emitted.push(canon(v));return v;}
    case 'makeQuote':return ['quote',clone(ev(a[0],env))];
    case 'makeRun':return ['run',clone(ev(a[0],env))];
@@ -92,10 +115,14 @@ function fromSamples(records){
  const g={format:'quineling-harmonics-1',bands};decode(g);return g;
 }
 function describe(program){
+ const stable=isV1Program(program);if(stable)v1().admit(program);
  let graph=null,repeats=1,quoteDepth=0;
  function visit(t,depth=0){if(!Array.isArray(t))return;if(t[0]==='quote')quoteDepth=Math.max(quoteDepth,depth+1);if(t[0]==='repeat'&&Number.isInteger(t[1]))repeats=t[1];if(t[0]==='plan'&&t[1]?.[0]==='quote'&&!graph)graph=clone(t[1][1]);for(const x of t.slice(1))visit(x,depth+(t[0]==='quote'?1:0));}
  function visitTask(t,depth=0){if(!Array.isArray(t))return;if(t[0]==='quote')quoteDepth=Math.max(quoteDepth,depth+1);if(t[0]==='repeat'&&Number.isInteger(t[1]))repeats=t[1];if(t[0]==='task'&&t[1]?.[0]==='quote'&&!graph)graph=clone(t[1][1]);for(const x of t.slice(1))visitTask(x,depth+(t[0]==='quote'?1:0));}
- visit(program);if(!graph)visitTask(program);if(!graph)throw Error('No quoted thought graph');const isTask=Array.isArray(graph.nodes);if(isTask)K.validate(graph);else O.validate(graph);
+ visit(program);if(!graph)visitTask(program);if(!graph)throw Error('No quoted thought graph');
+ const payload=graph.format==='qdl-program'?graph:null;
+ if(payload){v1().validatePayload(payload);graph={...clone(payload.task),design:clone(payload.design)};}
+ const isTask=Array.isArray(graph.nodes);if(isTask&&!payload)K.validate(graph);else if(!isTask)O.validate(graph);
  const nodes=[],links=[];
  function project(g,scope,parent){const producers=new Map();g.edges.forEach(e=>e.outputs.forEach(w=>producers.set(w,scope+e.id)));for(const e of g.edges){const id=scope+e.id;nodes.push({id,op:e.op,parent,inputs:e.inputs.length,outputs:e.outputs.length,params:e});for(let port=0;port<e.inputs.length;port++){const from=producers.get(e.inputs[port]);if(from)links.push({from,to:id,port,type:g.wires.find(w=>w.id===e.inputs[port]).type});}if(e.op==='Box')project(e.graph,id+'/',id);}}
  if(isTask){for(const n of graph.nodes){nodes.push({id:n.id,op:n.op,parent:null,inputs:n.inputs.length,outputs:1,params:n.params});n.inputs.forEach((id,port)=>links.push({from:id,to:n.id,port,type:'Data'}));}}else project(graph,'',null);const top=nodes.filter(n=>!n.parent),depths=new Map();
@@ -104,9 +131,9 @@ function describe(program){
  nodes.forEach((n,i)=>{n.outdegree=links.filter(e=>e.from===n.id).length;n.indegree=links.filter(e=>e.to===n.id).length;n.frequency=OPS.indexOf(n.op)+1;n.level=n.parent?depths.get(n.parent)||0:depths.get(n.id);n.u=(n.level+.5)/(max+1);n.side=((i%2)*2-1)*(n.op==='Permit'?.62:n.op==='Box'?.42:.24);});
  const design=isTask?(graph.design||Design.create()):Design.create();Design.validateBindings(design,graph);
  const branches=top.reduce((s,n)=>s+Math.max(0,n.outdegree-1),0);
- return {graph,nodes,links,repeats,quoteDepth,branches,strandCount:Math.min(22,12+Math.floor(branches/2)),maxDepth:max,design};
+ return {graph,nodes,links,repeats,quoteDepth,branches,strandCount:Math.min(22,12+Math.floor(branches/2)),maxDepth:max,design,...(payload?{profile:{format:payload.format,version:payload.version,registry:payload.registry,registryDigest:payload.registryDigest,thought:clone(payload.thought)}}:{})};
 }
 function nodePosition(n,t,shape){if(n.parent){const p=nodePosition(shape.nodes.find(x=>x.id===n.parent),t,shape);const phase=Morph.motionState(shape,t).phase;return {x:p.x+.015*Math.sin(phase+n.frequency),y:p.y+.016*Math.cos(phase+n.frequency)};}return Morph.anchor(n,t,shape);}
 function edgePoint(link,s,t,shape){const a=nodePosition(shape.nodes.find(n=>n.id===link.from),t,shape),b=nodePosition(shape.nodes.find(n=>n.id===link.to),t,shape);const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;const f=1+link.port+shape.nodes.find(n=>n.id===link.from).frequency;const bend=Design.filamentBend(shape.design||Design.DEFAULT,f,s,Morph.motionState(shape,t).phase);return {x:a.x+dx*s-dy/len*bend,y:a.y+dy*s+dx/len*bend};}
-const api={canon,makeProgram,makeTaskProgram,runTask:K.run,validateTask:K.validate,execute,encode,decode,encodeColors,decodeColors,instructionColor,instructionFromColor,wave,samples,fromSamples,describe,nodePosition,edgePoint,OPS,COLORS,TAU};if(typeof module!=='undefined')module.exports=api;root.Quinelings=api;
+const api={canon,makeProgram,makeTaskProgram,makePayloadProgram,runTask:K.run,validateTask:K.validate,execute,encode,decode,encodeColors,decodeColors,instructionColor,instructionFromColor,wave,samples,fromSamples,describe,nodePosition,edgePoint,OPS,COLORS,TAU};if(typeof module!=='undefined')module.exports=api;root.Quinelings=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

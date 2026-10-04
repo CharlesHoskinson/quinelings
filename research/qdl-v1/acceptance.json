@@ -1,0 +1,70 @@
+{
+  "status": "passed-local-acceptance;publication-pending",
+  "languageStatus": "v1 candidate",
+  "tagline": "Living Thoughts",
+  "technicalSpecialists": 10,
+  "brandingSpecialists": 5,
+  "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+  "checkedAt": "2026-10-04T15:05:09.596751+00:00",
+  "node": [
+    "v22.23.3",
+    "v26.10.0"
+  ],
+  "sdkTestsPerNode": 107,
+  "sdkTypecheckAndBuild": true,
+  "strictTypes": 93,
+  "contractCases": 154,
+  "kernelAssertions": 89,
+  "integrationGroups": 15,
+  "recipes": 10,
+  "independentRecipeFixtures": 44,
+  "legacyGoldens": 12,
+  "migrationPairAndGenomes": true,
+  "collaborationChecks": 14,
+  "leanTheorems": 239,
+  "projectAxioms": 0,
+  "proofPlaceholders": 0,
+  "quintV1Scenarios": 26,
+  "tokenModelStates": 98,
+  "negativeControls": 4,
+  "runtimeProjectionTests": 7,
+  "runtimeQuintScenarios": 16,
+  "actualChromium": "153.0.8010.12",
+  "browserConformance": "source/hash/codec/44fixtures +12legacy",
+  "websiteChecks": [
+    "ten recipes/passive build",
+    "two snapshots/source and body unchanged",
+    "explicit keyed replay",
+    "source-only verification",
+    "fresh reproduction",
+    "structured failures/refusal atomicity",
+    "passive codec recovery",
+    "asserted passive session restoration",
+    "typed offspring four recipes",
+    "guard/type/identity preservation",
+    "320px keyboard/reduced motion",
+    "ranch renderer cache/context/fallback budgets"
+  ],
+  "packedConsumers": [
+    "Node22: fourlegacy+sixv1entrypoints, outputs9/11, recovery/replay",
+    "Node26: fourlegacy+sixv1entrypoints, outputs9/11, recovery/replay"
+  ],
+  "archiveSha256": "26736a20abbc47119633864600bc67d030e6f94c21ab79333609e112819a0a82",
+  "limits": [
+    "single-owner local memory session",
+    "simulation-only effects",
+    "synthetic observations; publicCitycontext only",
+    "no private reasoning/general English interpretation guarantee",
+    "no durable storage/authenticated shared deployment/live world dispatch",
+    "no physical GPU performance claim",
+    "Lean/Quint scope is stated models and finite projections, not wholeJS proof"
+  ],
+  "evidence": [
+    "runtime-verification.json",
+    "browser-conformance.json",
+    "ranch-browser.json",
+    "final-semantics-audit.md",
+    "formal-runtime-correspondence.md",
+    "ranch-implementation.md"
+  ]
+}

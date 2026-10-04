@@ -1,0 +1,101 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quinelings · Reusable recipes</title><style>body{margin:auto;max-width:940px;padding:28px;background:#080f16;color:#c5dfd5;font:17px/1.7 system-ui}a{color:#83d8be}nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:24px}nav[aria-label="SDK guides"]{gap:16px;margin-bottom:40px;font-size:15px}a[aria-current="page"]{color:#f0f5ed;text-decoration-thickness:3px}h1{font-size:40px;line-height:1.15}h2{margin-top:44px;color:#f0f5ed}pre{overflow:auto;padding:22px;background:#0d1a23;border:1px solid #29403e;border-radius:12px;font:14px/1.6 monospace}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td{padding:12px;border:1px solid #29403e}tr:first-child{font-weight:bold}code{overflow-wrap:anywhere;color:#e0f5cf}li{margin:8px 0}p{overflow-wrap:anywhere}@media(max-width:600px){body{padding:18px;font-size:16px}h1{font-size:32px}}</style></head><body><nav aria-label="Project"><a href="../sdk.html">← Agent SDK</a><a href="../create.html">Creation workspace</a><a href="../ranch.html">Experimental ranch</a><a href="QDL-V1-LIBRARY.md">Markdown source</a></nav><nav aria-label="SDK guides"><a href="qdl-v1.html">QDL candidate</a><a href="qdl-v1-library.html" aria-current="page">Reusable recipes</a><a href="qdl-v1-upgrades.html">Identity and upgrades</a><a href="sdk-v1.html">Candidate SDK</a><a href="sdk-quickstart.html">Quickstart</a><a href="sdk-lifecycle.html">Lifecycle</a><a href="sdk-api.html">API reference</a><a href="sdk-ranch-guide.html">Experimental ranch</a><a href="sdk-mcp-guide.html">MCP guide</a><a href="sdk-a2a-guide.html">A2A guide</a></nav><h1>Living Thoughts: candidate task library</h1>
+<p>Status: reusable QDL v1 candidate recipes with local executable fixtures, not a stable release or live City integration. <a href="qdl-v1.html">QDL-V1</a> defines the source/input/type/simulation contract. The implementation is <a href="../qdl-v1-library.js">qdl-v1-library.js</a>, and its independent verifier is <a href="../verify-v1-library.cjs">verify-v1-library.cjs</a>.</p>
+<p>The library exports ten <code>{id,name,description,intent,fixtures}</code> records. <code>programs</code> is deeply frozen; <code>get(id)</code> returns detached data. Each intent contains named runtime ports, authored constants and a full six-array public declaration with observation references, a plan and task coverage. Where a goal is declared, its completion field is an explicitly exported Boolean result. Runtime observations never become source literals. All City-shaped snapshots are synthetic, supplied examples.</p>
+<p>Public City guidance motivates freshness, provenance, bounded missions and confirmed partial outcomes. It does not supply a live thought feed, current price, inventory, recipe or permission to act. Actual City adapters must separately handle authentication, current-state reads, authorization and uncertain completion. See the captured <a href="../research/qdl-v1/city-context.md">City context</a> and <a href="../research/qdl-v1/city-evidence.json">public evidence</a>.</p>
+<h2>Run a reusable recipe</h2>
+<p>From the repository root:</p>
+<pre><code>const V = require('./qdl-v1.js');
+const L = require('./qdl-v1-library.js');
+const Q = require('./core.js');
+
+const recipe = L.get('water-total');
+const program = V.compile(recipe.intent);
+const original = V.admit(program).source;
+
+const first = V.execute(program, {readings: [1.5, 2, 0.5]});
+const second = V.execute(program, {readings: []});
+// first.occurrences[0].outputs: [{liters: 4, measurements: 3}]
+// second.occurrences[0].outputs: [{liters: 0, measurements: 0}]
+// Source and sourceHash agree; inputHash and outputs differ.
+
+V.verifyQuine(program); // constructor only, no runtime readings required
+const recovered = Q.decodeColors(Q.encodeColors(program));
+V.admit(recovered);     // validates recovered executable source</code></pre>
+<p>Compile once and provide fresh named snapshots for each explicit invocation. Binding names must exactly match the recipe's runtime ports. Missing required data is a refusal. Absent domain data is an explicit empty collection or null in an optional field. Negative, fractional or duplicate values fail where the source schema declares the relevant refinement. No recipe accepts legacy literal overrides.</p>
+<p>The SDK can consume the same detached intent through <code>new Session().compile(recipe.intent)</code> from <code>@quinelings/agent-sdk/v1</code>, then Run with <code>artifactId</code>, an immutable <code>requestId</code>, and <code>inputs</code>. The raw library data is a repository UMD/CommonJS module; this document does not claim a separate installed <code>agent-sdk/library</code> export.</p>
+<h2>Ten programs</h2>
+<p>Numbers below are quantities with source-carried symbolic units. <code>Nat[u]</code> means nonnegative safe integer in unit u. Boolean freshness/current flags are explicitly supplied assertions; the language does not secretly obtain live state.</p>
+<table><tbody>
+<tr><td>ID</td><td>Runtime ports</td><td>Result and authored policy</td></tr>
+<tr><td><code>gather-readiness</code></td><td>checks, observedAt, now, maxAge</td><td>Six ordered Boolean checks and inclusive tick freshness gate one three-item local gather proposal; outputs receipt and ready</td></tr>
+<tr><td><code>craft-quote</code></td><td>inventory, requested, freeCapacity</td><td>Fixed recipe uses two ore and one wood per batch, net two space; outputs requested/feasible/predicted consumption and fullRequest</td></tr>
+<tr><td><code>confirmed-checkpoints</code></td><td>records, clock</td><td>Fresh observation support for both haul and arrival; outputs their evidence states and completed</td></tr>
+<tr><td><code>evidence-ledger</code></td><td>records, claim, clock</td><td>Exact-claim observation/testimony/inference assessment with original used/skipped records and same-source conflicts</td></tr>
+<tr><td><code>route-preview</code></td><td>streets, blocked, current</td><td>Ordered unweighted A→D BFS; outputs route, guarded local walking receipt and ready</td></tr>
+<tr><td><code>trade-preview</code></td><td>offers, now, quantity, inventory, allowance</td><td>Fixed offer ID with inclusive expiry and exact quantity guards; outputs ready/quantity/predictedProceeds and ready</td></tr>
+<tr><td><code>needs-triage</code></td><td>foods, hunger, current</td><td>Fresh edible food, restoration descending then item ID ascending; outputs guarded eating proposal and ready</td></tr>
+<tr><td><code>receipt-reconciliation</code></td><td>receipts, policy</td><td>Preserve supplied partial confirmations and block retry advice for pending/unknown; outputs reconciliation ledger</td></tr>
+<tr><td><code>water-total</code></td><td>readings</td><td>Nonnegative liter total and measurement count</td></tr>
+<tr><td><code>work-schedule</code></td><td>jobs, deadline</td><td>Dependency schedule in ticks and inclusive deadline predicate; no workstation reservation or job completion</td></tr>
+</tbody></table>
+<h3>Gather readiness</h3>
+<p><code>checks</code> is exactly six Booleans in this order: skill, route, reservation, capacity, owner permission, remaining uses. The source fixes this interpretation and length. <code>observedAt</code>, <code>now</code> and <code>maxAge</code> are Nat[tick]. Future observations and observations older than maxAge are unavailable; age equal to maxAge is fresh. Age calculation uses a safe minimum before nonnegative subtraction, so a future timestamp cannot underflow a Nat.</p>
+<p>With all checks true, observedAt=10, now=12 and maxAge=2, ordered outputs are:</p>
+<pre><code>[{&quot;status&quot;:&quot;simulated&quot;,&quot;action&quot;:&quot;gather-proposal&quot;,&quot;payload&quot;:3},true]</code></pre>
+<p>A false reservation check, stale or future observation returns the same proposal label/payload with <code>status:&quot;skipped&quot;</code> and false. Missing observedAt refuses with missing-input. The receipt proposes three items; it does not reserve a source, gather a haul or increase inventory.</p>
+<h3>Bounded craft quote</h3>
+<p>Inventory rows are exactly <code>{id:string,amount:Nat[item]}</code> with unique IDs. Requested is Nat[batch], freeCapacity Nat[space]. Authored material rates are 2 and 1 in item per batch; the net capacity rate is 2 space per batch. Selection of missing ore/wood uses a visible default amount zero. Feasible batches are the minimum of requested, floor(ore/2), floor(wood/1) and floor(capacity/2).</p>
+<p>Ore7, wood8, requested4, capacity5 yields <code>{requested:4,feasible:2,oreUsed:4,woodUsed:2}</code> and fullRequest=false. Capacity100 instead gives feasible3, ore6, wood3. Missing ore gives zero feasibility. Zero requested with empty inventory and capacity0 gives zero quantities and fullRequest=true, meaning the empty requested quote is feasible. It does not claim any batch was crafted. Negative amounts and duplicate inventory IDs refuse.</p>
+<p>This is a fixed two-material additive-capacity quote. It does not solve arbitrary stack packing, evaluate a mutable recipe catalog, check a live workstation or mutate inventory.</p>
+<h3>Confirmed checkpoints</h3>
+<p>The source fixes two claims, <code>haul</code> and <code>arrival</code>, and permits only kind <code>observation</code>. Records and clock use the exact evidence schemas below. Each checkpoint completes only if its fresh eligible state is <code>supported</code>; completed is conjunction of both. Outputs retain the two states so false does not erase why a checkpoint failed.</p>
+<p>At now12/maxAge2/minRevision1, observation support at tick10 for each claim gives <code>{haul:&quot;supported&quot;,arrival:&quot;supported&quot;}</code> and true. Replacing haul with testimony or an observation at tick9 gives haul unknown and false. Adding a fresh contradictory haul observation gives haul conflict and false. Supplied source labels and confirmation claims remain caller assertions; neither a stored plan nor an action-proposal receipt is used as checkpoint evidence.</p>
+<h3>Fresh evidence ledger</h3>
+<p>Evidence records are exactly:</p>
+<pre><code>{id,source,claim,value,kind,observedAt,revision}
+value: Boolean or explicit null
+kind: observation | testimony | inference
+observedAt: Nat[tick]; revision: Nat[revision]
+clock: {now:Nat[tick],maxAge:Nat[tick],minRevision:Nat[revision]}</code></pre>
+<p>This recipe admits all three kinds while making them inspectable. It returns <code>{state,support,refute,sources,sourceConflicts,used,skipped}</code>. Identical same-source polarity counts once. One source supplying both polarities has support1/refute1/sources1 and appears once in sourceConflicts. Empty evidence is unknown with zero counts. A null value is skipped as unknown; stale values are skipped as stale. Tick age and revision boundaries are inclusive. The complete record is retained for every used/skipped entry.</p>
+<p>Unlike the checkpoint recipe, testimony may contribute to this general ledger. That is an authored evidence policy, not proof that a testimony established a world event. Output identity includes the chosen claim and supplied clock through the run's binding digest.</p>
+<h3>Reachable route preview</h3>
+<p>Street records have exactly A/B/C/D fields containing ordered string neighbor arrays. Blocked is a string array; current is Boolean. The authored route is A→D. For <code>{A:[&quot;C&quot;,&quot;B&quot;],B:[&quot;D&quot;],C:[&quot;D&quot;],D:[]}</code>, the route is A,C,D at distance2 because BFS preserves neighbor order. Blocking D gives found=false/path[]/distance null. A stale snapshot (<code>current:false</code>) can still show the supplied map's route prediction, but its proposal is skipped and ready=false.</p>
+<p>The local walking receipt carries the path; it does not prove movement or arrival. Routes minimize edge count, not weighted travel time or current terrain cost.</p>
+<h3>Current offer quote</h3>
+<p>Offer rows are exactly <code>{id,price,expiry,available}</code> with unique IDs. Price is nonnegative N[crystal*item^-1], expiry Nat[tick], available Nat[item]. Quantity, inventory and allowance are Nat[item]; now is Nat[tick]. The source selects ID <code>offer</code>, uses an explicit zero/default record on absence, and requires found, now≤expiry, positive quantity, inventory≥quantity, stock≥quantity and allowance≥quantity.</p>
+<p>Inventory5, price3, quantity2, allowance2, stock5 and now=expiry10 yields <code>{ready:true,quantity:2,predictedProceeds:6}</code> and true. Expiry passed, missing offer or allowance1 yields zero quoted quantity/proceeds and false. It quotes the requested exact quantity rather than silently dispatching a smaller allocation.</p>
+<p>Crystals are a symbolic inventory quantity here. This recipe does not access wallets, spend funds, trade inventory or establish settlement. Confirmed outcomes belong in a separate receipt snapshot.</p>
+<h3>Hunger and food triage</h3>
+<p>Food rows are exactly <code>{id,edible,fresh,restoration}</code> with unique IDs, Boolean edible/fresh and Nat[one] restoration. Hunger is Nat[one], current Boolean. The query requires edible=true/fresh=true and selects maximum restoration, breaking ties by ascending item ID.</p>
+<p>Equal-restoration rows b then a choose a regardless of their input order. Hunger4/current=true produces a local <code>eat-proposal</code> receipt carrying a and ready=true. Hunger0, no food or stale needs produces skipped with empty-string payload and false. The source includes the visible no-match default; it is not invented food. No item is consumed and no hunger/health change is claimed.</p>
+<h3>Partial result reconciliation</h3>
+<p>Receipt rows are exactly:</p>
+<pre><code>{id,operation,attempt,sequence,status,units}
+sequence: Nat[revision]; units: Nat[item]
+status: confirmed | failed | pending | unknown
+policy: {operation:string,requested:Nat[item],maxAttempts:Nat[count]}</code></pre>
+<p>The source refines maxAttempts to 1–8. It processes the supplied operation's complete history and returns state, confirmedUnits, the four attempt-status counts, attempts and mayRetry. Confirmed attempts contribute positive units once; others must contribute zero. Identical repeated acknowledgement IDs do not inflate units or attempts. Changed data under an ID, conflicting equal sequence or terminal regression produces a failed evaluation.</p>
+<p>With requested4/maxAttempts4, three separate confirmed-one-item attempts and a failed fourth give exhausted/confirmedUnits3/confirmedAttempts3/failedAttempts1/attempts4/mayRetryfalse. An unknown attempt preserves prior confirmed units while state becomes unknown and mayRetryfalse. Pending is not confirmation. Empty history is ready/mayRetrytrue unless requested is zero. The recipe never resubmits a command; history completeness and genuine external confirmation remain adapter responsibilities.</p>
+<h3>Water measurement total</h3>
+<p>Readings are an explicitly typed array of nonnegative N[L]. Readings1.5/2/0.5 yield <code>{liters:4,measurements:3}</code>; [] yields zero/zero; [2.25] yields 2.25/one. Negative readings refuse. Values are supplied measurements, not hidden sensors, converted mL or an accumulated persistent history.</p>
+<h3>Bounded work schedule</h3>
+<p>Jobs are exact <code>{id,depends,duration}</code> records, duration Nat[tick], with a separate Nat[tick] deadline. Schedule computes parallel earliest starts in deterministic ready order. Jobs a(duration3), b(after a,duration2), c(independent,duration4) give starts0/3/0, ends3/5/4, order a/b/c and makespan5. Deadline5 accepts inclusively; deadline4 gives false. Empty jobs at deadline0 give an empty schedule/makespan0/true. A supplied dependency cycle fails evaluation.</p>
+<p><code>withinDeadline</code> describes the predicted schedule, not that any work occurred. Shared workstations need explicit serial dependencies; no implicit resource contention or reservation is modeled.</p>
+<h2>Fixtures and measured acceptance</h2>
+<p>Each fixture names a supplied snapshot and independently authored expected ordered outputs, or expected refusal/failed diagnostic. Expected outcomes are stored in source library data, not generated by the runtime being tested. Object key order is immaterial in the expected JSON comparison; array/output/trace order remains meaningful. Core dispatch is checked against the same outcomes.</p>
+<p>Run:</p>
+<pre><code>node verify-v1-library.cjs</code></pre>
+<p>The verifier currently covers 44 fixtures across ten recipes: 39 completed outcomes, three pre-execution refusals and two failed computations. It additionally verifies:</p>
+<ul>
+<li>Three fresh constructor-only generations for every recipe: 30 exact source identities.</li>
+<li>Harmonic and RGB recovery of all ten sources, with full thought/task comparison: 20 exact recoveries, plus sampled harmonic recovery for water-total.</li>
+<li>One committed source reused across distinct successful snapshots for each recipe: source/hash/emission unchanged, input digest and outputs changed.</li>
+<li>Generated source-authored anatomy for every recipe, including the evidence-ledger graph that formerly exceeded a trunk's four-child attachment limit.</li>
+<li>Public core dispatch, detached library access, no implicit typed defaults, extra-binding refusal and duplicate inventory refusal.</li>
+<li>UMD exposure in a Node VM smoke check. This is not an actual browser conformance result.</li>
+</ul>
+<p>These checks passed on Node v26.10.0 during candidate development. At that measurement, graph sizes were 3–28 nodes and complete sources 8,125–23,121 UTF-8 bytes. Registry/design changes can change source bytes; the verifier compiles against the current pinned implementation rather than pretending those transient byte counts are permanent golden fixtures.</p>
+<h2>Extending a recipe</h2>
+<p>Start from <code>get(id)</code> and author a new intent. Changing constants/policy, task or declaration intentionally changes source identity; changing only invocation data does not. Add exact input schemas, meaningful guards, full declaration references and independent fixtures before calling the result useful. Inferred shapes do not automatically preserve integer, enum or minimum refinements; declare those computed obligations where needed.</p>
+<p>A new operation requires a closed signature, units, deterministic tie/empty/error policies, bounds and implementation tests, followed by a new reviewed registry pin. Do not hide unsupported capability in a label such as gather/craft/send. These ten recipes compose visible finite primitives and retain their local-simulation scope. The broader compatibility and production-freeze gates remain in <a href="qdl-v1.html">QDL-V1</a>.</p></body></html>

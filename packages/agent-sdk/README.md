@@ -16,6 +16,8 @@ if (created.status === 'supported') {
 
 `create`, `compile`, `inspect`, `recover` and `frame` do not execute tasks. `run` and `reproduce` explicitly execute; all current effects are local simulations. A `ProposalProvider` can propose typed data for broader English goals; every supported proposal is checked by the same compiler. Aborting a pending proposal rejects with `cancelled` even if its provider ignores the signal; late completion admits no artifact. Providers must still cancel their own I/O or remote work. No model credential or model client is bundled.
 
+Candidate reusable-input profile: import `Session` from `@quinelings/agent-sdk/v1`. Authored declarations and complete normalized type contracts live inside this profile’s constructor source. `run({artifactId,requestId,inputs})` supplies observations separately; exact request replay creates no second evaluation. See [candidate SDK guide](../../docs/SDK-V1.md) and [QDL contract](../../docs/QDL-V1.md). Source-only `verify` evaluates the constructor while skipping its task. This profile remains a candidate until the documented release gates pass.
+
 Exports:
 
 - `@quinelings/agent-sdk`: `Runtime`, `QuinelingError`, typed intent/requests/results, recipes.

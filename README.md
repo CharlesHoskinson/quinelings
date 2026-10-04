@@ -88,3 +88,9 @@ The agent artwork was retrieved from public Midnight.city assets with Scrapling.
 `node verify-morphology.cjs` checks all-family geometry, endpoint pinning, closed loops, pure source-preserving projection, and frame-rate independence. `python verify-motion.py` checks the shared browser clock, pause, dynamic reduced motion, organ selection, and recorded-trace identity. Set `QUINELINGS_URL` to check a hosted website instead of its temporary local server.
 
 `node verify-chroma.cjs` checks material ownership, quantitative scales, missing states, and pure color evaluation. `python verify-chromamapping.py` checks the colored collection, real recorded values, task-cycle selection, source invalidation, reproduction, and mobile layout.
+
+## Reusable Living Thoughts candidate
+
+The new [workspace](https://charleshoskinson.github.io/quinelings/v1.html) shows ten reusable typed agent-task recipes. It links the public declaration, program nodes, source-owned body, supplied run inputs, outcomes and exact emitted constructor source. Runtime observations change results without changing source or body.
+
+The [candidate QDL contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBRARY.md), and [candidate SDK guide](docs/SDK-V1.md) document the separate profile and release gates. Legacy artifacts keep their identities and behavior; [explicit passive migration](qdl-v1-migrate.js) requires supplied declarations, types and chosen ports. Every effect remains a local simulation.

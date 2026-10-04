@@ -8,6 +8,8 @@ trap 'rm -rf "$site_dir"' EXIT
 cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js chroma.js morphology.js core.js gallery.js translation.js "$site_dir/"
 cp -R programs assets docs design "$site_dir/"
 cp lean-verification.json "$site_dir/"
+# Keep the separately labeled generative design studies available across releases.
+git ls-files -z 'research/final-qdl-*' 'research/thought-lifeform-*' | xargs -0 -r cp --parents -t "$site_dir/"
 # Publish only tracked specifications, never Lean toolchains or compiled dependency caches.
 git ls-files -z spec | xargs -0 cp --parents -t "$site_dir/"
 touch "$site_dir/.nojekyll"

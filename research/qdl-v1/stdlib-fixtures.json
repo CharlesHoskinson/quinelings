@@ -1,0 +1,686 @@
+{
+  "format": "qdl-v1-stdlib-candidate-fixtures",
+  "status": "proposed registry; independent expected values; isolated reference checks only",
+  "note": "arithmetic fixture refinement is test-harness type metadata, not a kernel param",
+  "cases": [
+    {
+      "name": "inventory-missing",
+      "op": "select",
+      "args": [
+        [],
+        {
+          "id": "ore"
+        }
+      ],
+      "params": {
+        "keys": [
+          "id"
+        ],
+        "order": [],
+        "default": {
+          "id": "",
+          "amount": 0
+        }
+      },
+      "expected": {
+        "found": false,
+        "value": {
+          "id": "",
+          "amount": 0
+        },
+        "index": null
+      }
+    },
+    {
+      "name": "food-id-tie",
+      "op": "select",
+      "args": [
+        [
+          {
+            "id": "b",
+            "restore": 8
+          },
+          {
+            "id": "a",
+            "restore": 8
+          },
+          {
+            "id": "c",
+            "restore": 5
+          }
+        ],
+        {}
+      ],
+      "params": {
+        "keys": [],
+        "order": [
+          {
+            "path": "restore",
+            "descending": true
+          },
+          {
+            "path": "id",
+            "descending": false
+          }
+        ],
+        "default": {
+          "id": "",
+          "restore": 0
+        }
+      },
+      "expected": {
+        "found": true,
+        "value": {
+          "id": "a",
+          "restore": 8
+        },
+        "index": 1
+      }
+    },
+    {
+      "name": "evidence-empty",
+      "op": "evidenceFresh",
+      "args": [
+        [],
+        "done",
+        {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 7
+        }
+      ],
+      "params": {
+        "allowedKinds": [
+          "observation"
+        ]
+      },
+      "expected": {
+        "state": "unknown",
+        "support": 0,
+        "refute": 0,
+        "sources": 0,
+        "sourceConflicts": [],
+        "used": [],
+        "skipped": []
+      }
+    },
+    {
+      "name": "source-reversal-not-overwritten",
+      "op": "evidenceFresh",
+      "args": [
+        [
+          {
+            "id": "a",
+            "source": "sensor",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 100,
+            "revision": 7
+          },
+          {
+            "id": "b",
+            "source": "sensor",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 100,
+            "revision": 7
+          },
+          {
+            "id": "c",
+            "source": "sensor",
+            "claim": "done",
+            "value": false,
+            "kind": "observation",
+            "observedAt": 100,
+            "revision": 7
+          }
+        ],
+        "done",
+        {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 7
+        }
+      ],
+      "params": {
+        "allowedKinds": [
+          "observation"
+        ]
+      },
+      "expected": {
+        "state": "conflict",
+        "support": 1,
+        "refute": 1,
+        "sources": 1,
+        "sourceConflicts": [
+          "sensor"
+        ],
+        "used": [
+          {
+            "id": "a",
+            "source": "sensor",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 100,
+            "revision": 7
+          },
+          {
+            "id": "b",
+            "source": "sensor",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 100,
+            "revision": 7
+          },
+          {
+            "id": "c",
+            "source": "sensor",
+            "claim": "done",
+            "value": false,
+            "kind": "observation",
+            "observedAt": 100,
+            "revision": 7
+          }
+        ],
+        "skipped": []
+      }
+    },
+    {
+      "name": "freshness-boundaries",
+      "op": "evidenceFresh",
+      "args": [
+        [
+          {
+            "id": "a",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 7
+          },
+          {
+            "id": "b",
+            "source": "b",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 89,
+            "revision": 7
+          },
+          {
+            "id": "c",
+            "source": "c",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 101,
+            "revision": 7
+          }
+        ],
+        "done",
+        {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 7
+        }
+      ],
+      "params": {
+        "allowedKinds": [
+          "observation"
+        ]
+      },
+      "expected": {
+        "state": "supported",
+        "support": 1,
+        "refute": 0,
+        "sources": 1,
+        "sourceConflicts": [],
+        "used": [
+          {
+            "id": "a",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 7
+          }
+        ],
+        "skipped": [
+          {
+            "record": {
+              "id": "b",
+              "source": "b",
+              "claim": "done",
+              "value": true,
+              "kind": "observation",
+              "observedAt": 89,
+              "revision": 7
+            },
+            "reason": "stale"
+          },
+          {
+            "record": {
+              "id": "c",
+              "source": "c",
+              "claim": "done",
+              "value": true,
+              "kind": "observation",
+              "observedAt": 101,
+              "revision": 7
+            },
+            "reason": "future"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unconfirmed-testimony",
+      "op": "evidenceFresh",
+      "args": [
+        [
+          {
+            "id": "a",
+            "source": "narrator",
+            "claim": "done",
+            "value": true,
+            "kind": "testimony",
+            "observedAt": 100,
+            "revision": 7
+          }
+        ],
+        "done",
+        {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 7
+        }
+      ],
+      "params": {
+        "allowedKinds": [
+          "observation"
+        ]
+      },
+      "expected": {
+        "state": "unknown",
+        "support": 0,
+        "refute": 0,
+        "sources": 0,
+        "sourceConflicts": [],
+        "used": [],
+        "skipped": [
+          {
+            "record": {
+              "id": "a",
+              "source": "narrator",
+              "claim": "done",
+              "value": true,
+              "kind": "testimony",
+              "observedAt": 100,
+              "revision": 7
+            },
+            "reason": "kind"
+          }
+        ]
+      }
+    },
+    {
+      "name": "three-commits-fourth-failed",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r2",
+            "operation": "craft",
+            "attempt": "a2",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r3",
+            "operation": "craft",
+            "attempt": "a3",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r4",
+            "operation": "craft",
+            "attempt": "a4",
+            "sequence": 1,
+            "status": "failed",
+            "units": 0
+          }
+        ],
+        {
+          "requested": 4,
+          "maxAttempts": 4
+        }
+      ],
+      "params": {},
+      "expected": {
+        "state": "exhausted",
+        "confirmedUnits": 3,
+        "confirmedAttempts": 3,
+        "failedAttempts": 1,
+        "pendingAttempts": 0,
+        "unknownAttempts": 0,
+        "attempts": 4,
+        "mayRetry": false
+      }
+    },
+    {
+      "name": "pending-no-retry",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "pending",
+            "units": 0
+          }
+        ],
+        {
+          "requested": 1,
+          "maxAttempts": 3
+        }
+      ],
+      "params": {},
+      "expected": {
+        "state": "pending",
+        "confirmedUnits": 0,
+        "confirmedAttempts": 0,
+        "failedAttempts": 0,
+        "pendingAttempts": 1,
+        "unknownAttempts": 0,
+        "attempts": 1,
+        "mayRetry": false
+      }
+    },
+    {
+      "name": "unknown-keeps-partial",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 3
+          },
+          {
+            "id": "r2",
+            "operation": "craft",
+            "attempt": "a2",
+            "sequence": 1,
+            "status": "unknown",
+            "units": 0
+          }
+        ],
+        {
+          "requested": 4,
+          "maxAttempts": 4
+        }
+      ],
+      "params": {},
+      "expected": {
+        "state": "unknown",
+        "confirmedUnits": 3,
+        "confirmedAttempts": 1,
+        "failedAttempts": 0,
+        "pendingAttempts": 0,
+        "unknownAttempts": 1,
+        "attempts": 2,
+        "mayRetry": false
+      }
+    },
+    {
+      "name": "terminal-read-twice",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 2,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r2",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 3,
+            "status": "confirmed",
+            "units": 1
+          }
+        ],
+        {
+          "requested": 1,
+          "maxAttempts": 3
+        }
+      ],
+      "params": {},
+      "expected": {
+        "state": "completed",
+        "confirmedUnits": 1,
+        "confirmedAttempts": 1,
+        "failedAttempts": 0,
+        "pendingAttempts": 0,
+        "unknownAttempts": 0,
+        "attempts": 1,
+        "mayRetry": false
+      }
+    },
+    {
+      "name": "failed-definitive-retryable",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "failed",
+            "units": 0
+          }
+        ],
+        {
+          "requested": 1,
+          "maxAttempts": 3
+        }
+      ],
+      "params": {},
+      "expected": {
+        "state": "retryable",
+        "confirmedUnits": 0,
+        "confirmedAttempts": 0,
+        "failedAttempts": 1,
+        "pendingAttempts": 0,
+        "unknownAttempts": 0,
+        "attempts": 1,
+        "mayRetry": true
+      }
+    },
+    {
+      "name": "no-attempt-yet",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [],
+        {
+          "requested": 1,
+          "maxAttempts": 3
+        }
+      ],
+      "params": {},
+      "expected": {
+        "state": "ready",
+        "confirmedUnits": 0,
+        "confirmedAttempts": 0,
+        "failedAttempts": 0,
+        "pendingAttempts": 0,
+        "unknownAttempts": 0,
+        "attempts": 0,
+        "mayRetry": true
+      }
+    },
+    {
+      "name": "receipt-id-reuse",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "pending",
+            "units": 0
+          },
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 2,
+            "status": "confirmed",
+            "units": 1
+          }
+        ],
+        {
+          "requested": 1,
+          "maxAttempts": 3
+        }
+      ],
+      "params": {},
+      "expectedError": "receipt-conflict"
+    },
+    {
+      "name": "terminal-regression",
+      "op": "reconcile",
+      "args": [
+        "craft",
+        [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 2,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r2",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 3,
+            "status": "pending",
+            "units": 0
+          }
+        ],
+        {
+          "requested": 1,
+          "maxAttempts": 3
+        }
+      ],
+      "params": {},
+      "expectedError": "receipt-conflict"
+    },
+    {
+      "name": "zero-divisor",
+      "op": "arithmetic",
+      "args": [
+        7,
+        0
+      ],
+      "params": {
+        "kind": "floorDiv",
+        "refinement": "Nat"
+      },
+      "expectedError": "division-zero"
+    },
+    {
+      "name": "safe-integer-overflow",
+      "op": "arithmetic",
+      "args": [
+        9007199254740991,
+        1
+      ],
+      "params": {
+        "kind": "add",
+        "refinement": "Nat"
+      },
+      "expectedError": "integer-overflow"
+    },
+    {
+      "name": "float-overflow",
+      "op": "arithmetic",
+      "args": [
+        1e+308,
+        2
+      ],
+      "params": {
+        "kind": "mul",
+        "refinement": "N"
+      },
+      "expectedError": "nonfinite-result"
+    },
+    {
+      "name": "craft-bound",
+      "op": "recipe.craftBounds",
+      "args": [
+        {
+          "requested": 4,
+          "materials": [
+            {
+              "available": 7,
+              "needed": 2
+            },
+            {
+              "available": 8,
+              "needed": 1
+            }
+          ],
+          "capacity": 5,
+          "netPerBatch": 2
+        }
+      ],
+      "params": {},
+      "expected": {
+        "feasible": 2,
+        "consumed": [
+          4,
+          2
+        ]
+      }
+    }
+  ]
+}

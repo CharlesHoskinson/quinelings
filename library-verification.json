@@ -1,0 +1,189 @@
+{
+  "programs": 10,
+  "fixtures": 53,
+  "results": [
+    {
+      "id": "lanternkeeper",
+      "family": "filament",
+      "nodes": 17,
+      "connections": 22,
+      "sourceBytes": 5177,
+      "harmonicBands": 163,
+      "fixtures": [
+        "default-confirmed-fault",
+        "healthy-lamp-guard-false",
+        "threshold-boundary",
+        "conflicting-inspections-guard-false",
+        "repair-permission-denied",
+        "duplicate-provenance-and-unrelated-claim",
+        "no-inspection-evidence"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "wayfinder",
+      "family": "comet",
+      "nodes": 5,
+      "connections": 6,
+      "sourceBytes": 2719,
+      "harmonicBands": 86,
+      "fixtures": [
+        "default-bridge-closure-detour",
+        "open-streets-shorter-route",
+        "unreachable-clinic",
+        "same-start-goal-isolated-depot",
+        "equal-length-routes-follow-neighbor-order",
+        "blocked-origin-including-zero-trip"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "swarmwarden",
+      "family": "coral",
+      "nodes": 9,
+      "connections": 11,
+      "sourceBytes": 3215,
+      "harmonicBands": 101,
+      "fixtures": [
+        "sufficient-capacity",
+        "scarcity-preserves-queue-order",
+        "zero-resource-pool",
+        "empty-queue",
+        "zero-demand-does-not-wait"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "echoweaver",
+      "family": "jelly",
+      "nodes": 4,
+      "connections": 4,
+      "sourceBytes": 2505,
+      "harmonicBands": 79,
+      "fixtures": [
+        "Independent sources reach quorum despite one repeated report",
+        "Repeated and contradictory reports from one source cannot manufacture quorum",
+        "Tie resolves to earliest distinct choice and satisfies the support threshold",
+        "Tie below quorum resolves deterministically but cannot be admitted",
+        "No observations yield no choice or simulated admission"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "raincatcher",
+      "family": "ribbon",
+      "nodes": 15,
+      "connections": 21,
+      "sourceBytes": 4479,
+      "harmonicBands": 141,
+      "fixtures": [
+        "limited-reservoir",
+        "wet-soil-zero-demand",
+        "below-five-litre-threshold",
+        "exact-five-litre-threshold",
+        "safety-cap",
+        "empty-reservoir",
+        "ignore-untrusted-probe"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "tidemender",
+      "family": "nautilus",
+      "nodes": 6,
+      "connections": 7,
+      "sourceBytes": 2957,
+      "harmonicBands": 93,
+      "fixtures": [
+        "branching-repair",
+        "late-intake-misses-window",
+        "empty-work-order",
+        "zero-duration-dependency-branches"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "memorybloom",
+      "family": "bloom",
+      "nodes": 17,
+      "connections": 21,
+      "sourceBytes": 4961,
+      "harmonicBands": 156,
+      "fixtures": [
+        "contradiction-and-duplicate",
+        "independent-support-with-late-reversal",
+        "independent-refutation",
+        "no-reports",
+        "unrelated-claim-only"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "pulsekeeper",
+      "family": "torus",
+      "nodes": 16,
+      "connections": 20,
+      "sourceBytes": 4783,
+      "harmonicBands": 150,
+      "fixtures": [
+        "transient failures then confirmed delivery",
+        "uncertainty stops before later success",
+        "attempt budget exhausted before late success",
+        "no observations available",
+        "confirmation on final allowed attempt"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "threadsorter",
+      "family": "moth",
+      "nodes": 6,
+      "connections": 6,
+      "sourceBytes": 3243,
+      "harmonicBands": 102,
+      "fixtures": [
+        "default-priority-filter-and-dedupe",
+        "stable-ties-keep-first-duplicate",
+        "empty-input-queue",
+        "no-eligible-jobs",
+        "filter-before-dedupe-and-numeric-order"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    },
+    {
+      "id": "seedbank",
+      "family": "seed",
+      "nodes": 8,
+      "connections": 12,
+      "sourceBytes": 2791,
+      "harmonicBands": 88,
+      "fixtures": [
+        "surplus preserves reserve",
+        "shortage caps withdrawal",
+        "empty request preserves all stock",
+        "empty stock grants nothing"
+      ],
+      "verifiedGenerations": 3,
+      "harmonicRecovery": true,
+      "colorRecovery": true
+    }
+  ]
+}

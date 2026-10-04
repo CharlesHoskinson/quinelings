@@ -1,0 +1,56 @@
+# Quinelings
+
+Quinelings are small executable programs with animated mathematical bodies. Their anatomy reflects program structure; finite harmonic bands and an exact RGB strand preserve the complete source. Each of the ten library programs runs a useful local task and constructs its own canonical source through quotation and ordinary constructors.
+
+## View the collection
+
+No application dependencies or build step are required. From this repository:
+
+```sh
+python3 -m http.server 8048 --bind 127.0.0.1
+```
+
+Open http://127.0.0.1:8048 . Select a specimen, choose a task fixture, run its task and quine, inspect the output, and reproduce a fresh generation. Recover the source from harmonic samples or exact RGB data, or download either genome.
+
+| Quineling | Computation | Family |
+| --- | --- | --- |
+| Lanternkeeper | Corroborated, guarded lamp repair decision | Filament |
+| Wayfinder | Deterministic shortest route with blocked streets | Comet |
+| Swarmwarden | Ordered allocation without overcommit | Coral |
+| Echoweaver | Provenance-aware consensus and quorum | Jelly |
+| Raincatcher | Weighted sensor fusion and bounded irrigation budget | Ribbon |
+| Tidemender | Dependency-aware parallel scheduling | Nautilus |
+| Memorybloom | Evidence support, refutation, and conflict | Bloom |
+| Pulsekeeper | Bounded retries and uncertain outcomes | Torus |
+| Threadsorter | Stable filtering, deduplication, and priority ordering | Moth |
+| Seedbank | Sum-of-squares work and resource conservation | Seed |
+
+## Design and language
+
+[Formal QDL](docs/QDL.md) and its [Quint specification](spec/design.qnt) make the mapping rules machine-checkable. [Design language](docs/DESIGN-LANGUAGE.md) breaks down the visual reference and specifies anatomy, species, motion, density, and color. [Program contract](docs/PROGRAM-CONTRACT.md) defines task graphs and kernels. [Mapping](docs/MAPPING.md) defines source reproduction and the two reversible codecs. The visual inspiration is [@yuruyurau's mathematical sketch](https://x.com/yuruyurau/status/2106393812830708078); the library uses its own body formulas.
+
+Tasks are finite dataflow graphs. Ports and input order are explicit; source parameters and literals affect execution. Every node fires once per cycle after its inputs are ready. `choose` selects already-computed values: every conditional action needs its own guard. The outer repeat operator has a finite 1–8 cycle budget. Rendering and trace replay do not execute tasks.
+
+All action receipts are local simulations. This prototype does not connect to Midnight.city, reproduce a live City agent, or expose an LLM's hidden reasoning. The silhouette is a structural projection, not a source decoder. Recovery uses full numerical harmonic bands or exact RGB records, not screenshots or compressed video.
+
+## Verify
+
+With Node.js 22 or newer:
+
+```sh
+npm test
+```
+
+The suites check task fixtures, fresh constructor-quine generations, harmonic and RGB recovery, numerical sample inversion, invalid inputs, graph bounds, conservation, and failure controls. `library-verification.json` records all ten programs and their 53 fixtures. `research/language-audit.md` records the independent interpreter/codec review.
+
+Formal model checks use Quint 0.33.0:
+
+```sh
+npm run formal
+```
+
+The model searches bounded transitions; it does not prove the JavaScript renderer or codec correct. Its abstraction and negative controls are documented in `research/formal-design.md`.
+
+For optional browser checks, install Playwright in a local virtual environment and its Chromium browser, then run `python verify-browser.py`. Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` only when using an existing browser binary. The script creates and stops its own local server.
+
+Twelve research agents contributed ten programs, the language audit, and the gallery. Their notes are in `research/`.

@@ -1,0 +1,179 @@
+{
+  "type": "object",
+  "required": [
+    "qdl",
+    "family",
+    "organ",
+    "filament",
+    "motion",
+    "ink",
+    "framing"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "qdl": {
+      "const": 1
+    },
+    "family": {
+      "enum": [
+        "filament",
+        "jelly",
+        "moth",
+        "coral",
+        "ribbon",
+        "nautilus",
+        "seed",
+        "torus",
+        "comet",
+        "bloom"
+      ]
+    },
+    "organ": {
+      "type": "object",
+      "required": [
+        "model",
+        "baseRadius",
+        "degreeGain",
+        "literalGain",
+        "amplitudes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "const": "rosette"
+        },
+        "baseRadius": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.08
+        },
+        "degreeGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.006
+        },
+        "literalGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.003
+        },
+        "amplitudes": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.45
+          }
+        }
+      }
+    },
+    "filament": {
+      "type": "object",
+      "required": [
+        "model",
+        "bend",
+        "frequencyGain",
+        "ripple"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "const": "pinned-sine"
+        },
+        "bend": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.08
+        },
+        "frequencyGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.2
+        },
+        "ripple": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.3
+        }
+      }
+    },
+    "motion": {
+      "type": "object",
+      "required": [
+        "clock",
+        "phaseRate",
+        "reducedMotion"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "clock": {
+          "const": "separate"
+        },
+        "phaseRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.05
+        },
+        "reducedMotion": {
+          "const": "freeze"
+        }
+      }
+    },
+    "ink": {
+      "type": "object",
+      "required": [
+        "ghostAlpha",
+        "secondaryAlpha",
+        "ridgeAlpha",
+        "neutral"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ghostAlpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "secondaryAlpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ridgeAlpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "neutral": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$"
+        }
+      }
+    },
+    "framing": {
+      "type": "object",
+      "required": [
+        "scale",
+        "padding"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scale": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 0.47
+        },
+        "padding": {
+          "type": "number",
+          "minimum": 0.08,
+          "maximum": 0.25
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Quineling Design Language v1",
+  "description": "Cross-field opacity ordering and amplitude positivity are additionally checked by qdl.js."
+}

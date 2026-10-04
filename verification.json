@@ -1,0 +1,25 @@
+{
+  "passed": 16,
+  "checks": [
+    "Exact harmonic coefficient → program round trip",
+    "Exact color strand independently recovers the whole source",
+    "Operation colors decode uniquely",
+    "Color drift is rejected rather than guessed",
+    "65 numerical samples recover all 32 coefficients per band",
+    "Three fresh quine generations execute their plan and preserve their harmonic genotype",
+    "Bounded repeat is actual execution, not animation",
+    "Low evidence or denied permission prevents simulated action",
+    "Different literals have different recoverable genomes even with identical topology",
+    "Program graph and nested box affect structural morphology",
+    "Removing a reflection branch changes organ count and branching",
+    "Filament endpoints meet their graph nodes through animation",
+    "Corrupted harmonic coefficient is rejected",
+    "Unsupported sample harmonic is rejected",
+    "Repeat budget and invalid typed parameters are rejected",
+    "Broken quine constructor fails identity comparison"
+  ],
+  "sourceBytes": 3047,
+  "harmonicBands": 96,
+  "nodes": 10,
+  "connections": 9
+}

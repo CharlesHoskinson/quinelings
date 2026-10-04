@@ -1,0 +1,56 @@
+{
+  "id": "pulsekeeper",
+  "name": "Pulsekeeper",
+  "description": "Evaluates a simulated delivery's bounded retry log, stops on an uncertain outcome, and reports the consumed budget and next safe step.",
+  "graph": {
+    "version": 1,
+    "name": "Bounded delivery retry and reconciliation",
+    "nodes": [
+      {"id":"outcomes","op":"literal","inputs":[],"params":{"value":["retry","retry","ok"]}},
+      {"id":"operation","op":"literal","inputs":[],"params":{"value":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"}}},
+      {"id":"attemptLimit","op":"literal","inputs":[],"params":{"value":4}},
+      {"id":"retryResult","op":"retry","inputs":["outcomes"],"params":{"maxAttempts":4}},
+      {"id":"attempts","op":"get","inputs":["retryResult"],"params":{"path":"attempts"}},
+      {"id":"attemptBudget","op":"budget","inputs":["attemptLimit","attempts"],"params":{}},
+      {"id":"status","op":"get","inputs":["retryResult"],"params":{"path":"status"}},
+      {"id":"completed","op":"compare","inputs":["status"],"params":{"operator":"eq","value":"completed"}},
+      {"id":"uncertain","op":"compare","inputs":["status"],"params":{"operator":"eq","value":"uncertain"}},
+      {"id":"finishStep","op":"literal","inputs":[],"params":{"value":"Record confirmed delivery; no more attempts."}},
+      {"id":"reconcileStep","op":"literal","inputs":[],"params":{"value":"Check delivery receipt before authorizing another attempt."}},
+      {"id":"exhaustedStep","op":"literal","inputs":[],"params":{"value":"Stop automatic attempts; review the outcome log and retry policy."}},
+      {"id":"failureStep","op":"choose","inputs":["uncertain","reconcileStep","exhaustedStep"],"params":{}},
+      {"id":"nextStep","op":"choose","inputs":["completed","finishStep","failureStep"],"params":{}},
+      {"id":"receipt","op":"action","inputs":["completed","operation"],"params":{"allowed":true,"action":"record-confirmed-delivery"}},
+      {"id":"report","op":"report","inputs":["operation","retryResult","attemptBudget","nextStep","receipt"],"params":{"labels":["operation","outcome","attemptBudget","nextStep","receipt"]}}
+    ],
+    "outputs": ["report"]
+  },
+  "skin": {"family":"torus","accent":"#97dce8"},
+  "fixtures": [
+    {
+      "name":"transient failures then confirmed delivery",
+      "overrides":{},
+      "expected":[{"operation":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"},"outcome":{"status":"completed","attempts":3,"history":["retry","retry","ok"]},"attemptBudget":{"allocated":3,"remaining":1},"nextStep":"Record confirmed delivery; no more attempts.","receipt":{"status":"simulated","action":"record-confirmed-delivery","payload":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"}}}]
+    },
+    {
+      "name":"uncertainty stops before later success",
+      "overrides":{"outcomes":["retry","unknown","ok"]},
+      "expected":[{"operation":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"},"outcome":{"status":"uncertain","attempts":2,"history":["retry","unknown"]},"attemptBudget":{"allocated":2,"remaining":2},"nextStep":"Check delivery receipt before authorizing another attempt.","receipt":{"status":"skipped","action":"record-confirmed-delivery","payload":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"}}}]
+    },
+    {
+      "name":"attempt budget exhausted before late success",
+      "overrides":{"outcomes":["retry","retry","retry","retry","ok"]},
+      "expected":[{"operation":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"},"outcome":{"status":"exhausted","attempts":4,"history":["retry","retry","retry","retry"]},"attemptBudget":{"allocated":4,"remaining":0},"nextStep":"Stop automatic attempts; review the outcome log and retry policy.","receipt":{"status":"skipped","action":"record-confirmed-delivery","payload":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"}}}]
+    },
+    {
+      "name":"no observations available",
+      "overrides":{"outcomes":[]},
+      "expected":[{"operation":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"},"outcome":{"status":"exhausted","attempts":0,"history":[]},"attemptBudget":{"allocated":0,"remaining":4},"nextStep":"Stop automatic attempts; review the outcome log and retry policy.","receipt":{"status":"skipped","action":"record-confirmed-delivery","payload":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"}}}]
+    },
+    {
+      "name":"confirmation on final allowed attempt",
+      "overrides":{"outcomes":["retry","retry","retry","ok","unknown"]},
+      "expected":[{"operation":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"},"outcome":{"status":"completed","attempts":4,"history":["retry","retry","retry","ok"]},"attemptBudget":{"allocated":4,"remaining":0},"nextStep":"Record confirmed delivery; no more attempts.","receipt":{"status":"simulated","action":"record-confirmed-delivery","payload":{"id":"delivery-42","kind":"delivery","mode":"local-simulation"}}}]
+    }
+  ]
+}

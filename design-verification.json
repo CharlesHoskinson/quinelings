@@ -1,0 +1,14 @@
+{
+  "passed": 8,
+  "checks": [
+    "All ten families are bounded valid QDL expressions",
+    "Unknown syntax, families and models are rejected",
+    "Unbounded geometry and invalid density hierarchy are rejected",
+    "Validated radial envelope is positive across sampled opcodes and phase",
+    "Pinned-sine offset vanishes at both endpoint samples",
+    "Species and mapping parameters survive quine and both genomes",
+    "Design-only edits preserve task output while changing encoded source",
+    "Invalid source-embedded design is rejected before task execution"
+  ],
+  "numericalGeometry": "sampled floating-point checks, not a theorem"
+}

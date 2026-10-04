@@ -1,0 +1,425 @@
+{
+  "id": "memorybloom",
+  "name": "Memorybloom",
+  "description": "Build a provenance-preserving belief ledger for a simulated cistern safety claim. Count independent evidence once, expose conflict, and distinguish refutation from missing evidence.",
+  "graph": {
+    "version": 1,
+    "name": "Memorybloom evidence ledger",
+    "nodes": [
+      {
+        "id": "reports",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": true
+            },
+            {
+              "source": "lab-sample",
+              "claim": "cistern-safe",
+              "value": false
+            },
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": true
+            },
+            {
+              "source": "maintenance-log",
+              "claim": "pump-ready",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "claim",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "cistern-safe"
+        }
+      },
+      {
+        "id": "assessment",
+        "op": "evidence",
+        "inputs": [
+          "reports"
+        ],
+        "params": {
+          "claim": "cistern-safe"
+        }
+      },
+      {
+        "id": "submitted",
+        "op": "length",
+        "inputs": [
+          "reports"
+        ],
+        "params": {}
+      },
+      {
+        "id": "provenance",
+        "op": "sort",
+        "inputs": [
+          "reports"
+        ],
+        "params": {
+          "key": "source"
+        }
+      },
+      {
+        "id": "state",
+        "op": "get",
+        "inputs": [
+          "assessment"
+        ],
+        "params": {
+          "path": "state"
+        }
+      },
+      {
+        "id": "is-supported",
+        "op": "compare",
+        "inputs": [
+          "state"
+        ],
+        "params": {
+          "operator": "eq",
+          "value": "supported"
+        }
+      },
+      {
+        "id": "is-refuted",
+        "op": "compare",
+        "inputs": [
+          "state"
+        ],
+        "params": {
+          "operator": "eq",
+          "value": "refuted"
+        }
+      },
+      {
+        "id": "is-conflict",
+        "op": "compare",
+        "inputs": [
+          "state"
+        ],
+        "params": {
+          "operator": "eq",
+          "value": "conflict"
+        }
+      },
+      {
+        "id": "accept",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "accept-supported-claim"
+        }
+      },
+      {
+        "id": "reject",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "reject-refuted-claim"
+        }
+      },
+      {
+        "id": "review",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "review-conflicting-evidence"
+        }
+      },
+      {
+        "id": "await",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "await-evidence"
+        }
+      },
+      {
+        "id": "unresolved",
+        "op": "choose",
+        "inputs": [
+          "is-conflict",
+          "review",
+          "await"
+        ],
+        "params": {}
+      },
+      {
+        "id": "unsupported",
+        "op": "choose",
+        "inputs": [
+          "is-refuted",
+          "reject",
+          "unresolved"
+        ],
+        "params": {}
+      },
+      {
+        "id": "disposition",
+        "op": "choose",
+        "inputs": [
+          "is-supported",
+          "accept",
+          "unsupported"
+        ],
+        "params": {}
+      },
+      {
+        "id": "ledger",
+        "op": "report",
+        "inputs": [
+          "claim",
+          "assessment",
+          "submitted",
+          "provenance",
+          "disposition"
+        ],
+        "params": {
+          "labels": [
+            "claim",
+            "assessment",
+            "submittedReports",
+            "provenance",
+            "disposition"
+          ]
+        }
+      }
+    ],
+    "outputs": [
+      "ledger"
+    ]
+  },
+  "skin": {
+    "family": "bloom",
+    "accent": "#c89cf2"
+  },
+  "fixtures": [
+    {
+      "name": "contradiction-and-duplicate",
+      "overrides": {},
+      "expected": [
+        {
+          "claim": "cistern-safe",
+          "assessment": {
+            "state": "conflict",
+            "support": 1,
+            "refute": 1,
+            "sources": 2
+          },
+          "submittedReports": 4,
+          "provenance": [
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": true
+            },
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": true
+            },
+            {
+              "source": "lab-sample",
+              "claim": "cistern-safe",
+              "value": false
+            },
+            {
+              "source": "maintenance-log",
+              "claim": "pump-ready",
+              "value": true
+            }
+          ],
+          "disposition": "review-conflicting-evidence"
+        }
+      ]
+    },
+    {
+      "name": "independent-support-with-late-reversal",
+      "overrides": {
+        "reports": [
+          {
+            "source": "field-sensor",
+            "claim": "cistern-safe",
+            "value": true
+          },
+          {
+            "source": "field-sensor",
+            "claim": "cistern-safe",
+            "value": false
+          },
+          {
+            "source": "lab-sample",
+            "claim": "cistern-safe",
+            "value": true
+          },
+          {
+            "source": "maintenance-log",
+            "claim": "pump-ready",
+            "value": false
+          }
+        ]
+      },
+      "expected": [
+        {
+          "claim": "cistern-safe",
+          "assessment": {
+            "state": "supported",
+            "support": 2,
+            "refute": 0,
+            "sources": 2
+          },
+          "submittedReports": 4,
+          "provenance": [
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": true
+            },
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": false
+            },
+            {
+              "source": "lab-sample",
+              "claim": "cistern-safe",
+              "value": true
+            },
+            {
+              "source": "maintenance-log",
+              "claim": "pump-ready",
+              "value": false
+            }
+          ],
+          "disposition": "accept-supported-claim"
+        }
+      ]
+    },
+    {
+      "name": "independent-refutation",
+      "overrides": {
+        "reports": [
+          {
+            "source": "field-sensor",
+            "claim": "cistern-safe",
+            "value": false
+          },
+          {
+            "source": "lab-sample",
+            "claim": "cistern-safe",
+            "value": false
+          },
+          {
+            "source": "lab-sample",
+            "claim": "cistern-safe",
+            "value": false
+          }
+        ]
+      },
+      "expected": [
+        {
+          "claim": "cistern-safe",
+          "assessment": {
+            "state": "refuted",
+            "support": 0,
+            "refute": 2,
+            "sources": 2
+          },
+          "submittedReports": 3,
+          "provenance": [
+            {
+              "source": "field-sensor",
+              "claim": "cistern-safe",
+              "value": false
+            },
+            {
+              "source": "lab-sample",
+              "claim": "cistern-safe",
+              "value": false
+            },
+            {
+              "source": "lab-sample",
+              "claim": "cistern-safe",
+              "value": false
+            }
+          ],
+          "disposition": "reject-refuted-claim"
+        }
+      ]
+    },
+    {
+      "name": "no-reports",
+      "overrides": {
+        "reports": []
+      },
+      "expected": [
+        {
+          "claim": "cistern-safe",
+          "assessment": {
+            "state": "unknown",
+            "support": 0,
+            "refute": 0,
+            "sources": 0
+          },
+          "submittedReports": 0,
+          "provenance": [],
+          "disposition": "await-evidence"
+        }
+      ]
+    },
+    {
+      "name": "unrelated-claim-only",
+      "overrides": {
+        "reports": [
+          {
+            "source": "maintenance-log",
+            "claim": "pump-ready",
+            "value": true
+          },
+          {
+            "source": "maintenance-log",
+            "claim": "pump-ready",
+            "value": false
+          }
+        ]
+      },
+      "expected": [
+        {
+          "claim": "cistern-safe",
+          "assessment": {
+            "state": "unknown",
+            "support": 0,
+            "refute": 0,
+            "sources": 0
+          },
+          "submittedReports": 2,
+          "provenance": [
+            {
+              "source": "maintenance-log",
+              "claim": "pump-ready",
+              "value": true
+            },
+            {
+              "source": "maintenance-log",
+              "claim": "pump-ready",
+              "value": false
+            }
+          ],
+          "disposition": "await-evidence"
+        }
+      ]
+    }
+  ]
+}

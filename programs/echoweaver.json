@@ -1,0 +1,96 @@
+{
+  "id": "echoweaver",
+  "name": "Echoweaver",
+  "description": "Resolve recommendations from independent sources, suppress repeated provenance, and admit only choices with enough distinct support.",
+  "graph": {
+    "version": 1,
+    "name": "Provenance-aware recommendation consensus",
+    "nodes": [
+      {
+        "id": "votes",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {"source": "sensor-a", "choice": "route-east"},
+            {"source": "sensor-b", "choice": "route-west"},
+            {"source": "sensor-a", "choice": "route-east"},
+            {"source": "sensor-c", "choice": "route-east"},
+            {"source": "sensor-d", "choice": "route-east"}
+          ]
+        }
+      },
+      {"id": "decision", "op": "consensus", "inputs": ["votes"], "params": {"required": 3}},
+      {"id": "accepted", "op": "get", "inputs": ["decision"], "params": {"path": "accepted"}},
+      {"id": "receipt", "op": "action", "inputs": ["accepted", "decision"], "params": {"allowed": true, "action": "accept-consensus"}}
+    ],
+    "outputs": ["decision", "receipt"]
+  },
+  "skin": {"family": "jelly", "accent": "#88dfe8"},
+  "fixtures": [
+    {
+      "name": "Independent sources reach quorum despite one repeated report",
+      "overrides": {},
+      "expected": [
+        {"choice": "route-east", "support": 3, "accepted": true, "uniqueSources": 4},
+        {"status": "simulated", "action": "accept-consensus", "payload": {"choice": "route-east", "support": 3, "accepted": true, "uniqueSources": 4}}
+      ]
+    },
+    {
+      "name": "Repeated and contradictory reports from one source cannot manufacture quorum",
+      "overrides": {
+        "votes": [
+          {"source": "relay-a", "choice": "route-east"},
+          {"source": "relay-a", "choice": "route-east"},
+          {"source": "relay-a", "choice": "route-west"},
+          {"source": "relay-b", "choice": "route-west"},
+          {"source": "relay-c", "choice": "route-east"}
+        ]
+      },
+      "expected": [
+        {"choice": "route-east", "support": 2, "accepted": false, "uniqueSources": 3},
+        {"status": "skipped", "action": "accept-consensus", "payload": {"choice": "route-east", "support": 2, "accepted": false, "uniqueSources": 3}}
+      ]
+    },
+    {
+      "name": "Tie resolves to earliest distinct choice and satisfies the support threshold",
+      "overrides": {
+        "votes": [
+          {"source": "a", "choice": "route-west"},
+          {"source": "b", "choice": "route-east"},
+          {"source": "c", "choice": "route-east"},
+          {"source": "d", "choice": "route-west"},
+          {"source": "e", "choice": "route-east"},
+          {"source": "f", "choice": "route-west"}
+        ]
+      },
+      "expected": [
+        {"choice": "route-west", "support": 3, "accepted": true, "uniqueSources": 6},
+        {"status": "simulated", "action": "accept-consensus", "payload": {"choice": "route-west", "support": 3, "accepted": true, "uniqueSources": 6}}
+      ]
+    },
+    {
+      "name": "Tie below quorum resolves deterministically but cannot be admitted",
+      "overrides": {
+        "votes": [
+          {"source": "a", "choice": "route-west"},
+          {"source": "b", "choice": "route-east"},
+          {"source": "c", "choice": "route-east"},
+          {"source": "d", "choice": "route-west"}
+        ]
+      },
+      "expected": [
+        {"choice": "route-west", "support": 2, "accepted": false, "uniqueSources": 4},
+        {"status": "skipped", "action": "accept-consensus", "payload": {"choice": "route-west", "support": 2, "accepted": false, "uniqueSources": 4}}
+      ]
+    },
+    {
+      "name": "No observations yield no choice or simulated admission",
+      "overrides": {"votes": []},
+      "expected": [
+        {"choice": null, "support": 0, "accepted": false, "uniqueSources": 0},
+        {"status": "skipped", "action": "accept-consensus", "payload": {"choice": null, "support": 0, "accepted": false, "uniqueSources": 0}}
+      ]
+    }
+  ]
+}

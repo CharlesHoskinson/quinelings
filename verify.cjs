@@ -1,0 +1,22 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),Q=require('./core.js');
+const checks=[];function test(name,fn){fn();checks.push(name);}
+const p=Q.makeProgram(),genome=Q.encode(p),shape=Q.describe(p);
+test('Exact harmonic coefficient → program round trip',()=>assert.equal(Q.canon(Q.decode(genome)),Q.canon(p)));
+test('Exact color strand independently recovers the whole source',()=>assert.equal(Q.canon(Q.decodeColors(Q.encodeColors(p))),Q.canon(p)));
+test('Operation colors decode uniquely',()=>{for(const op of Q.OPS)assert.equal(Q.instructionFromColor(Q.instructionColor(op)),op);});
+test('Color drift is rejected rather than guessed',()=>{const g=Q.encodeColors(p);g.pixels[0][0][1]--;assert.throws(()=>Q.decodeColors(g));});
+test('65 numerical samples recover all 32 coefficients per band',()=>assert.deepEqual(Q.fromSamples(Q.samples(genome)),genome));
+test('Three fresh quine generations execute their plan and preserve their harmonic genotype',()=>{let x=p;for(let i=0;i<3;i++){const r=Q.execute(x);assert.equal(r.emitted.length,1);assert.equal(r.emitted[0],Q.canon(x));assert.equal(r.plans.length,1);assert.equal(r.plans[0].effects.length,1);x=JSON.parse(r.emitted[0]);assert.deepEqual(Q.encode(x),genome);}});
+test('Bounded repeat is actual execution, not animation',()=>{const x=Q.makeProgram(.82,true,.7,3),r=Q.execute(x);assert.equal(r.plans.length,3);assert.equal(r.plans.flatMap(p=>p.effects).length,3);assert.equal(r.emitted[0],Q.canon(x));assert.equal(Q.describe(x).repeats,3);});
+test('Low evidence or denied permission prevents simulated action',()=>{for(const x of [Q.makeProgram(.4),Q.makeProgram(.82,false)]){const r=Q.execute(x);assert.equal(r.plans[0].effects.length,0);assert.equal(r.emitted[0],Q.canon(x));}});
+test('Different literals have different recoverable genomes even with identical topology',()=>assert.notDeepEqual(Q.encode(Q.makeProgram(.81)),genome));
+test('Program graph and nested box affect structural morphology',()=>{assert.equal(shape.nodes.length,10);assert.equal(shape.nodes.filter(n=>n.parent).length,1);assert(shape.branches>0);assert(shape.links.length>=8);});
+test('Removing a reflection branch changes organ count and branching',()=>{const simple=Q.describe(Q.makeProgram(.82,true,.7,1,false));assert.equal(simple.nodes.length,shape.nodes.length-1);assert(simple.branches<shape.branches);assert.equal(Q.execute(Q.makeProgram(.82,true,.7,1,false)).emitted[0],Q.canon(Q.makeProgram(.82,true,.7,1,false)));});
+test('Filament endpoints meet their graph nodes through animation',()=>{for(const t of [0,1,5])for(const edge of shape.links){for(const [s,id] of [[0,edge.from],[1,edge.to]]){const a=Q.edgePoint(edge,s,t,shape),b=Q.nodePosition(shape.nodes.find(n=>n.id===id),t,shape);assert(Math.hypot(a.x-b.x,a.y-b.y)<1e-12);}}});
+test('Corrupted harmonic coefficient is rejected',()=>{const bad=structuredClone(genome);bad.bands[1][2]=bad.bands[1][2]%256+1;assert.throws(()=>Q.decode(bad));});
+test('Unsupported sample harmonic is rejected',()=>{const bad=Q.samples(genome);bad[0][0]+=.01;assert.throws(()=>Q.fromSamples(bad));});
+test('Repeat budget and invalid typed parameters are rejected',()=>{assert.throws(()=>Q.makeProgram(.8,true,.7,9));assert.throws(()=>Q.makeProgram(1.2));});
+test('Broken quine constructor fails identity comparison',()=>{const bad=structuredClone(p);bad[2][1][2][2]=['emit',['quote',['quote',[]]]];const r=Q.execute(bad);assert.notEqual(r.emitted[0],Q.canon(bad));});
+fs.writeFileSync(__dirname+'/verification.json',JSON.stringify({passed:checks.length,checks,sourceBytes:Buffer.byteLength(Q.canon(p)),harmonicBands:genome.bands.length,nodes:shape.nodes.length,connections:shape.links.length},null,2)+'\n');
+fs.writeFileSync(__dirname+'/example-source.json',Q.canon(p)+'\n');fs.writeFileSync(__dirname+'/example-harmonics.json',JSON.stringify(genome));
+console.log(JSON.stringify({passed:checks.length,checks},null,2));

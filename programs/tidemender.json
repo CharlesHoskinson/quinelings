@@ -1,0 +1,384 @@
+{
+  "id": "tidemender",
+  "name": "Tidemender",
+  "description": "Plans parallel repair work from task dependencies and durations, then checks whether the complete job fits a 14-hour work window.",
+  "graph": {
+    "version": 1,
+    "name": "Dependency-aware repair scheduler",
+    "nodes": [
+      {
+        "id": "jobs",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {
+              "id": "survey",
+              "depends": [],
+              "duration": 3
+            },
+            {
+              "id": "intake",
+              "depends": [],
+              "duration": 2
+            },
+            {
+              "id": "frame",
+              "depends": [
+                "survey"
+              ],
+              "duration": 4
+            },
+            {
+              "id": "seals",
+              "depends": [
+                "survey"
+              ],
+              "duration": 2
+            },
+            {
+              "id": "assemble",
+              "depends": [
+                "frame",
+                "seals",
+                "intake"
+              ],
+              "duration": 5
+            },
+            {
+              "id": "inspect",
+              "depends": [
+                "assemble"
+              ],
+              "duration": 1
+            }
+          ]
+        }
+      },
+      {
+        "id": "timeline",
+        "op": "schedule",
+        "inputs": [
+          "jobs"
+        ],
+        "params": {}
+      },
+      {
+        "id": "jobCount",
+        "op": "length",
+        "inputs": [
+          "jobs"
+        ],
+        "params": {}
+      },
+      {
+        "id": "makespan",
+        "op": "get",
+        "inputs": [
+          "timeline"
+        ],
+        "params": {
+          "path": "makespan"
+        }
+      },
+      {
+        "id": "withinWindow",
+        "op": "compare",
+        "inputs": [
+          "makespan"
+        ],
+        "params": {
+          "operator": "lte",
+          "value": 14
+        }
+      },
+      {
+        "id": "plan",
+        "op": "report",
+        "inputs": [
+          "timeline",
+          "jobCount",
+          "withinWindow"
+        ],
+        "params": {
+          "labels": [
+            "timeline",
+            "jobCount",
+            "withinWindow"
+          ]
+        }
+      }
+    ],
+    "outputs": [
+      "plan"
+    ]
+  },
+  "skin": {
+    "family": "nautilus",
+    "accent": "#72c8c1"
+  },
+  "fixtures": [
+    {
+      "name": "branching-repair",
+      "overrides": {},
+      "expected": [
+        {
+          "timeline": {
+            "order": [
+              "survey",
+              "intake",
+              "frame",
+              "seals",
+              "assemble",
+              "inspect"
+            ],
+            "jobs": [
+              {
+                "id": "survey",
+                "start": 0,
+                "end": 3
+              },
+              {
+                "id": "intake",
+                "start": 0,
+                "end": 2
+              },
+              {
+                "id": "frame",
+                "start": 3,
+                "end": 7
+              },
+              {
+                "id": "seals",
+                "start": 3,
+                "end": 5
+              },
+              {
+                "id": "assemble",
+                "start": 7,
+                "end": 12
+              },
+              {
+                "id": "inspect",
+                "start": 12,
+                "end": 13
+              }
+            ],
+            "makespan": 13
+          },
+          "jobCount": 6,
+          "withinWindow": true
+        }
+      ]
+    },
+    {
+      "name": "late-intake-misses-window",
+      "overrides": {
+        "jobs": [
+          {
+            "id": "survey",
+            "depends": [],
+            "duration": 3
+          },
+          {
+            "id": "intake",
+            "depends": [],
+            "duration": 20
+          },
+          {
+            "id": "frame",
+            "depends": [
+              "survey"
+            ],
+            "duration": 4
+          },
+          {
+            "id": "seals",
+            "depends": [
+              "survey"
+            ],
+            "duration": 2
+          },
+          {
+            "id": "assemble",
+            "depends": [
+              "frame",
+              "seals",
+              "intake"
+            ],
+            "duration": 5
+          },
+          {
+            "id": "inspect",
+            "depends": [
+              "assemble"
+            ],
+            "duration": 1
+          }
+        ]
+      },
+      "expected": [
+        {
+          "timeline": {
+            "order": [
+              "survey",
+              "intake",
+              "frame",
+              "seals",
+              "assemble",
+              "inspect"
+            ],
+            "jobs": [
+              {
+                "id": "survey",
+                "start": 0,
+                "end": 3
+              },
+              {
+                "id": "intake",
+                "start": 0,
+                "end": 20
+              },
+              {
+                "id": "frame",
+                "start": 3,
+                "end": 7
+              },
+              {
+                "id": "seals",
+                "start": 3,
+                "end": 5
+              },
+              {
+                "id": "assemble",
+                "start": 20,
+                "end": 25
+              },
+              {
+                "id": "inspect",
+                "start": 25,
+                "end": 26
+              }
+            ],
+            "makespan": 26
+          },
+          "jobCount": 6,
+          "withinWindow": false
+        }
+      ]
+    },
+    {
+      "name": "empty-work-order",
+      "overrides": {
+        "jobs": []
+      },
+      "expected": [
+        {
+          "timeline": {
+            "order": [],
+            "jobs": [],
+            "makespan": 0
+          },
+          "jobCount": 0,
+          "withinWindow": true
+        }
+      ]
+    },
+    {
+      "name": "zero-duration-dependency-branches",
+      "overrides": {
+        "jobs": [
+          {
+            "id": "survey",
+            "depends": [],
+            "duration": 0
+          },
+          {
+            "id": "intake",
+            "depends": [],
+            "duration": 0
+          },
+          {
+            "id": "frame",
+            "depends": [
+              "survey"
+            ],
+            "duration": 0
+          },
+          {
+            "id": "seals",
+            "depends": [
+              "survey"
+            ],
+            "duration": 0
+          },
+          {
+            "id": "assemble",
+            "depends": [
+              "frame",
+              "seals",
+              "intake"
+            ],
+            "duration": 2
+          },
+          {
+            "id": "inspect",
+            "depends": [
+              "assemble"
+            ],
+            "duration": 0
+          }
+        ]
+      },
+      "expected": [
+        {
+          "timeline": {
+            "order": [
+              "survey",
+              "intake",
+              "frame",
+              "seals",
+              "assemble",
+              "inspect"
+            ],
+            "jobs": [
+              {
+                "id": "survey",
+                "start": 0,
+                "end": 0
+              },
+              {
+                "id": "intake",
+                "start": 0,
+                "end": 0
+              },
+              {
+                "id": "frame",
+                "start": 0,
+                "end": 0
+              },
+              {
+                "id": "seals",
+                "start": 0,
+                "end": 0
+              },
+              {
+                "id": "assemble",
+                "start": 0,
+                "end": 2
+              },
+              {
+                "id": "inspect",
+                "start": 2,
+                "end": 2
+              }
+            ],
+            "makespan": 2
+          },
+          "jobCount": 6,
+          "withinWindow": true
+        }
+      ]
+    }
+  ]
+}

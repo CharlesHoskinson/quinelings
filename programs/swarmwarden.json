@@ -1,0 +1,312 @@
+{
+  "id": "swarmwarden",
+  "name": "Swarmwarden",
+  "description": "Allocates a bounded resource pool to a FIFO request queue, reporting partial grants, remaining capacity, and requests that have not started. Earlier requests retain their place under scarcity.",
+  "graph": {
+    "version": 1,
+    "name": "FIFO resource stewardship",
+    "nodes": [
+      {
+        "id": "capacity",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": 10
+        }
+      },
+      {
+        "id": "requests",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {
+              "id": "scouts",
+              "amount": 3
+            },
+            {
+              "id": "nursery",
+              "amount": 4
+            },
+            {
+              "id": "archive",
+              "amount": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "allocation",
+        "op": "allocate",
+        "inputs": [
+          "capacity",
+          "requests"
+        ],
+        "params": {}
+      },
+      {
+        "id": "grants",
+        "op": "get",
+        "inputs": [
+          "allocation"
+        ],
+        "params": {
+          "path": "grants"
+        }
+      },
+      {
+        "id": "remaining",
+        "op": "get",
+        "inputs": [
+          "allocation"
+        ],
+        "params": {
+          "path": "remaining"
+        }
+      },
+      {
+        "id": "positiveRequests",
+        "op": "filter",
+        "inputs": [
+          "grants"
+        ],
+        "params": {
+          "key": "requested",
+          "operator": "gt",
+          "value": 0
+        }
+      },
+      {
+        "id": "unstarted",
+        "op": "filter",
+        "inputs": [
+          "positiveRequests"
+        ],
+        "params": {
+          "key": "granted",
+          "operator": "eq",
+          "value": 0
+        }
+      },
+      {
+        "id": "depleted",
+        "op": "compare",
+        "inputs": [
+          "remaining"
+        ],
+        "params": {
+          "operator": "eq",
+          "value": 0
+        }
+      },
+      {
+        "id": "receipt",
+        "op": "report",
+        "inputs": [
+          "capacity",
+          "allocation",
+          "unstarted",
+          "depleted"
+        ],
+        "params": {
+          "labels": [
+            "capacity",
+            "allocation",
+            "unstarted",
+            "depleted"
+          ]
+        }
+      }
+    ],
+    "outputs": [
+      "receipt"
+    ]
+  },
+  "skin": {
+    "family": "coral",
+    "accent": "#ef998c"
+  },
+  "fixtures": [
+    {
+      "name": "sufficient-capacity",
+      "overrides": {},
+      "expected": [
+        {
+          "capacity": 10,
+          "allocation": {
+            "grants": [
+              {
+                "id": "scouts",
+                "requested": 3,
+                "granted": 3
+              },
+              {
+                "id": "nursery",
+                "requested": 4,
+                "granted": 4
+              },
+              {
+                "id": "archive",
+                "requested": 2,
+                "granted": 2
+              }
+            ],
+            "remaining": 1
+          },
+          "unstarted": [],
+          "depleted": false
+        }
+      ]
+    },
+    {
+      "name": "scarcity-preserves-queue-order",
+      "overrides": {
+        "capacity": 5
+      },
+      "expected": [
+        {
+          "capacity": 5,
+          "allocation": {
+            "grants": [
+              {
+                "id": "scouts",
+                "requested": 3,
+                "granted": 3
+              },
+              {
+                "id": "nursery",
+                "requested": 4,
+                "granted": 2
+              },
+              {
+                "id": "archive",
+                "requested": 2,
+                "granted": 0
+              }
+            ],
+            "remaining": 0
+          },
+          "unstarted": [
+            {
+              "id": "archive",
+              "requested": 2,
+              "granted": 0
+            }
+          ],
+          "depleted": true
+        }
+      ]
+    },
+    {
+      "name": "zero-resource-pool",
+      "overrides": {
+        "capacity": 0
+      },
+      "expected": [
+        {
+          "capacity": 0,
+          "allocation": {
+            "grants": [
+              {
+                "id": "scouts",
+                "requested": 3,
+                "granted": 0
+              },
+              {
+                "id": "nursery",
+                "requested": 4,
+                "granted": 0
+              },
+              {
+                "id": "archive",
+                "requested": 2,
+                "granted": 0
+              }
+            ],
+            "remaining": 0
+          },
+          "unstarted": [
+            {
+              "id": "scouts",
+              "requested": 3,
+              "granted": 0
+            },
+            {
+              "id": "nursery",
+              "requested": 4,
+              "granted": 0
+            },
+            {
+              "id": "archive",
+              "requested": 2,
+              "granted": 0
+            }
+          ],
+          "depleted": true
+        }
+      ]
+    },
+    {
+      "name": "empty-queue",
+      "overrides": {
+        "capacity": 7,
+        "requests": []
+      },
+      "expected": [
+        {
+          "capacity": 7,
+          "allocation": {
+            "grants": [],
+            "remaining": 7
+          },
+          "unstarted": [],
+          "depleted": false
+        }
+      ]
+    },
+    {
+      "name": "zero-demand-does-not-wait",
+      "overrides": {
+        "capacity": 0,
+        "requests": [
+          {
+            "id": "idle",
+            "amount": 0
+          },
+          {
+            "id": "active",
+            "amount": 1
+          }
+        ]
+      },
+      "expected": [
+        {
+          "capacity": 0,
+          "allocation": {
+            "grants": [
+              {
+                "id": "idle",
+                "requested": 0,
+                "granted": 0
+              },
+              {
+                "id": "active",
+                "requested": 1,
+                "granted": 0
+              }
+            ],
+            "remaining": 0
+          },
+          "unstarted": [
+            {
+              "id": "active",
+              "requested": 1,
+              "granted": 0
+            }
+          ],
+          "depleted": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "programs": 10,
+  "fixtures": 53,
+  "results": [
+    {
+      "id": "lanternkeeper",
+      "fixtures": 7,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "wayfinder",
+      "fixtures": 6,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "swarmwarden",
+      "fixtures": 5,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "echoweaver",
+      "fixtures": 5,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "raincatcher",
+      "fixtures": 7,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "tidemender",
+      "fixtures": 4,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "memorybloom",
+      "fixtures": 5,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "pulsekeeper",
+      "fixtures": 5,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "threadsorter",
+      "fixtures": 5,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    },
+    {
+      "id": "seedbank",
+      "fixtures": 4,
+      "freshGeneration": true,
+      "harmonicRecovery": true,
+      "rgbRecovery": true,
+      "familyPreserved": true
+    }
+  ],
+  "reducedMotionStartsPaused": true,
+  "mobileNoOverflow": true,
+  "pageErrors": []
+}

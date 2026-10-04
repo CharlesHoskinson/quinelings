@@ -1,0 +1,17 @@
+{
+  "language": "Quint",
+  "version": "0.33.0",
+  "typecheck": "passed",
+  "scenarioTests": 9,
+  "initializationsPerScenario": 100,
+  "simulationTraces": 1000,
+  "transitionsPerTrace": 50,
+  "seed": "20261003",
+  "invariant": "safety",
+  "result": "No violation found",
+  "scope": "Finite abstract model; seeded bounded simulation, not exhaustive proof or verified implementation refinement",
+  "negativeControls": [
+    "unsafe replay effects",
+    "render-time design profile mutation"
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "id": "raincatcher",
+  "name": "Raincatcher",
+  "description": "Fuse independent irrigation estimates by sensor confidence, cap each cycle at 120 litres, suppress demand below 5 litres, and spend only the available reservoir budget. Irrigation is a local simulation.",
+  "graph": {
+    "version": 1,
+    "name": "Confidence-weighted irrigation budget",
+    "nodes": [
+      {
+        "id": "sensorEstimates",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            24,
+            36,
+            60
+          ]
+        }
+      },
+      {
+        "id": "sensorWeights",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            2,
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "id": "availableWater",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": 30
+        }
+      },
+      {
+        "id": "zero",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": 0
+        }
+      },
+      {
+        "id": "fusedEstimate",
+        "op": "weightedMean",
+        "inputs": [
+          "sensorEstimates",
+          "sensorWeights"
+        ],
+        "params": {}
+      },
+      {
+        "id": "cappedEstimate",
+        "op": "clamp",
+        "inputs": [
+          "fusedEstimate"
+        ],
+        "params": {
+          "min": 0,
+          "max": 120
+        }
+      },
+      {
+        "id": "meaningfulDemand",
+        "op": "compare",
+        "inputs": [
+          "cappedEstimate"
+        ],
+        "params": {
+          "operator": "gte",
+          "value": 5
+        }
+      },
+      {
+        "id": "requestedLitres",
+        "op": "choose",
+        "inputs": [
+          "meaningfulDemand",
+          "cappedEstimate",
+          "zero"
+        ],
+        "params": {}
+      },
+      {
+        "id": "waterBudget",
+        "op": "budget",
+        "inputs": [
+          "availableWater",
+          "requestedLitres"
+        ],
+        "params": {}
+      },
+      {
+        "id": "allocatedLitres",
+        "op": "get",
+        "inputs": [
+          "waterBudget"
+        ],
+        "params": {
+          "path": "allocated"
+        }
+      },
+      {
+        "id": "remainingLitres",
+        "op": "get",
+        "inputs": [
+          "waterBudget"
+        ],
+        "params": {
+          "path": "remaining"
+        }
+      },
+      {
+        "id": "hasWater",
+        "op": "compare",
+        "inputs": [
+          "allocatedLitres"
+        ],
+        "params": {
+          "operator": "gt",
+          "value": 0
+        }
+      },
+      {
+        "id": "irrigationPayload",
+        "op": "report",
+        "inputs": [
+          "allocatedLitres"
+        ],
+        "params": {
+          "labels": [
+            "litres"
+          ]
+        }
+      },
+      {
+        "id": "irrigation",
+        "op": "action",
+        "inputs": [
+          "hasWater",
+          "irrigationPayload"
+        ],
+        "params": {
+          "allowed": true,
+          "action": "irrigate"
+        }
+      },
+      {
+        "id": "summary",
+        "op": "report",
+        "inputs": [
+          "fusedEstimate",
+          "cappedEstimate",
+          "requestedLitres",
+          "allocatedLitres",
+          "remainingLitres",
+          "irrigation"
+        ],
+        "params": {
+          "labels": [
+            "fusedEstimate",
+            "cappedEstimate",
+            "requestedLitres",
+            "allocatedLitres",
+            "remainingLitres",
+            "irrigation"
+          ]
+        }
+      }
+    ],
+    "outputs": [
+      "summary"
+    ]
+  },
+  "skin": {
+    "family": "ribbon",
+    "accent": "#56bfc7"
+  },
+  "fixtures": [
+    {
+      "name": "limited-reservoir",
+      "overrides": {},
+      "expected": [
+        {
+          "fusedEstimate": 36,
+          "cappedEstimate": 36,
+          "requestedLitres": 36,
+          "allocatedLitres": 30,
+          "remainingLitres": 0,
+          "irrigation": {
+            "status": "simulated",
+            "action": "irrigate",
+            "payload": {
+              "litres": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "wet-soil-zero-demand",
+      "overrides": {
+        "sensorEstimates": [
+          -8,
+          0,
+          4
+        ]
+      },
+      "expected": [
+        {
+          "fusedEstimate": -3,
+          "cappedEstimate": 0,
+          "requestedLitres": 0,
+          "allocatedLitres": 0,
+          "remainingLitres": 30,
+          "irrigation": {
+            "status": "skipped",
+            "action": "irrigate",
+            "payload": {
+              "litres": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "below-five-litre-threshold",
+      "overrides": {
+        "sensorEstimates": [
+          2,
+          6,
+          6
+        ]
+      },
+      "expected": [
+        {
+          "fusedEstimate": 4,
+          "cappedEstimate": 4,
+          "requestedLitres": 0,
+          "allocatedLitres": 0,
+          "remainingLitres": 30,
+          "irrigation": {
+            "status": "skipped",
+            "action": "irrigate",
+            "payload": {
+              "litres": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "exact-five-litre-threshold",
+      "overrides": {
+        "sensorEstimates": [
+          4,
+          8,
+          4
+        ]
+      },
+      "expected": [
+        {
+          "fusedEstimate": 5,
+          "cappedEstimate": 5,
+          "requestedLitres": 5,
+          "allocatedLitres": 5,
+          "remainingLitres": 25,
+          "irrigation": {
+            "status": "simulated",
+            "action": "irrigate",
+            "payload": {
+              "litres": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "safety-cap",
+      "overrides": {
+        "sensorEstimates": [
+          160,
+          200,
+          240
+        ],
+        "availableWater": 150
+      },
+      "expected": [
+        {
+          "fusedEstimate": 190,
+          "cappedEstimate": 120,
+          "requestedLitres": 120,
+          "allocatedLitres": 120,
+          "remainingLitres": 30,
+          "irrigation": {
+            "status": "simulated",
+            "action": "irrigate",
+            "payload": {
+              "litres": 120
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-reservoir",
+      "overrides": {
+        "availableWater": 0
+      },
+      "expected": [
+        {
+          "fusedEstimate": 36,
+          "cappedEstimate": 36,
+          "requestedLitres": 36,
+          "allocatedLitres": 0,
+          "remainingLitres": 0,
+          "irrigation": {
+            "status": "skipped",
+            "action": "irrigate",
+            "payload": {
+              "litres": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ignore-untrusted-probe",
+      "overrides": {
+        "sensorWeights": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected": [
+        {
+          "fusedEstimate": 24,
+          "cappedEstimate": 24,
+          "requestedLitres": 24,
+          "allocatedLitres": 24,
+          "remainingLitres": 6,
+          "irrigation": {
+            "status": "simulated",
+            "action": "irrigate",
+            "payload": {
+              "litres": 24
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

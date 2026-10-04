@@ -7,7 +7,9 @@
     "filament",
     "motion",
     "ink",
-    "framing"
+    "surface",
+    "light",
+    "composition"
   ],
   "additionalProperties": false,
   "properties": {
@@ -152,28 +154,148 @@
         }
       }
     },
-    "framing": {
+    "surface": {
       "type": "object",
       "required": [
-        "scale",
-        "padding"
+        "model",
+        "ribbons",
+        "spread",
+        "folds",
+        "taper",
+        "asymmetry",
+        "depth",
+        "twist",
+        "phaseLag",
+        "samples",
+        "crests"
       ],
       "additionalProperties": false,
       "properties": {
-        "scale": {
-          "type": "number",
-          "minimum": 0.25,
-          "maximum": 0.47
+        "model": {
+          "const": "folded-ribbon"
         },
-        "padding": {
+        "ribbons": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 36
+        },
+        "spread": {
           "type": "number",
-          "minimum": 0.08,
-          "maximum": 0.25
+          "minimum": 0.02,
+          "maximum": 0.24
+        },
+        "folds": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 9
+        },
+        "taper": {
+          "type": "number",
+          "minimum": 0.4,
+          "maximum": 2.5
+        },
+        "asymmetry": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.35
+        },
+        "depth": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.35
+        },
+        "twist": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "phaseLag": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "samples": {
+          "type": "integer",
+          "minimum": 4000,
+          "maximum": 24000
+        },
+        "crests": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 6
+        }
+      }
+    },
+    "light": {
+      "type": "object",
+      "required": [
+        "model",
+        "recessAlpha",
+        "crestAlpha",
+        "depthContrast"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "const": "density-crest"
+        },
+        "recessAlpha": {
+          "type": "number",
+          "minimum": 0.015,
+          "maximum": 0.12
+        },
+        "crestAlpha": {
+          "type": "number",
+          "minimum": 0.16,
+          "maximum": 0.65
+        },
+        "depthContrast": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.8
+        }
+      }
+    },
+    "composition": {
+      "type": "object",
+      "required": [
+        "occupancy",
+        "lean",
+        "yaw",
+        "pitch",
+        "focus"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "occupancy": {
+          "type": "number",
+          "minimum": 0.6,
+          "maximum": 0.84
+        },
+        "lean": {
+          "type": "number",
+          "minimum": -0.5,
+          "maximum": 0.5
+        },
+        "yaw": {
+          "type": "number",
+          "minimum": -0.5,
+          "maximum": 0.5
+        },
+        "pitch": {
+          "type": "number",
+          "minimum": -0.5,
+          "maximum": 0.5
+        },
+        "focus": {
+          "type": "number",
+          "minimum": 0.15,
+          "maximum": 0.8
         }
       }
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Quineling Design Language v1",
-  "description": "Cross-field opacity ordering and amplitude positivity are additionally checked by qdl.js."
+  "title": "Experimental Quineling Design Language",
+  "description": "Single evolving prototype schema. qdl.js additionally checks opacity order and radial positivity."
 }

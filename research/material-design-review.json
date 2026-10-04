@@ -1,0 +1,43 @@
+{
+  "status": "experimental; freeze version 1 after stability",
+  "reference": "https://x.com/yuruyurau/status/2106393812830708078",
+  "reviews": [
+    {
+      "perspective": "art direction",
+      "adopted": "A continuous sculpture precedes its inspection diagram."
+    },
+    {
+      "perspective": "silhouette",
+      "adopted": "Authored asymmetry, taper, lean, and fixed portrait framing."
+    },
+    {
+      "perspective": "material",
+      "adopted": "Shared folded surfaces supply points and crest contours."
+    },
+    {
+      "perspective": "choreography",
+      "adopted": "Deterministic traveling phase drives coherent folds."
+    },
+    {
+      "perspective": "lighting",
+      "adopted": "Compression and real depth control neutral material brightness."
+    },
+    {
+      "perspective": "experience",
+      "adopted": "Large quiet portraits with explicit topology inspection."
+    },
+    {
+      "perspective": "visual language",
+      "adopted": "Connected focal gesture and readable density hierarchy."
+    },
+    {
+      "perspective": "craft",
+      "adopted": "Few smooth crest contours; bounded deterministic sampling."
+    }
+  ],
+  "limits": [
+    "Design reviews do not prove aesthetic quality.",
+    "Crest contours are surface samples, not exact compression maxima.",
+    "Continuous geometry is not formally verified by the finite Quint abstraction."
+  ]
+}

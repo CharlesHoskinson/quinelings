@@ -75,7 +75,7 @@ Keep most body ink neutral and low saturation. Use concentrated semantic color o
 - Violet: quotation and source construction.
 - Soft green: confirmation, reporting, or emitted results.
 
-Hue indicates role; the exact opcode uses the versioned palette and organ glyph. Intensity reports idle, selected, or executed state. Do not change meaning by applying an arbitrary species hue rotation. Species accent belongs to a decorative halo, separate from the opcode colors.
+Hue indicates role; the exact opcode uses the declared palette and organ glyph. Intensity reports idle, selected, or executed state. Do not change meaning by applying an arbitrary species hue rotation. Species accent belongs to a decorative halo, separate from the opcode colors.
 
 A separately indexed RGB strand carries exact source bytes. Byte b maps to (b,255−b,(73b+19) mod 256), with explicit padding. This is a lossless numerical color record checked by framing and checksum. Its saturated colors are shown on inspection, rather than covering the portrait with a rainbow. It is independent of the semantic role palette. Video compression, antialiasing, screen color correction, and a screenshot can alter those values; none is an exact source decoder.
 
@@ -94,3 +94,15 @@ All ten programs must run meaningful tasks, pass edge fixtures, emit exact canon
 All ten portraits should remain distinguishable at a common phase in grayscale. Each should have a stable silhouette, visible hierarchy between core and secondary strands, a controlled motion cycle, and no clipping at its intended view. Execution highlights must refer to real recorded operations. The gallery should support pausing motion, inspecting topology, observing outputs, and checking reproduction without needing a developer console.
 
 Visual interest is ultimately a perceptual judgment. Tests can verify finite coordinates, phase determinism, margins, palette behavior, and distinct structural signatures; a human visual review must still assess readability, rhythm, and character.
+
+## Folded material: current experimental QDL
+
+The eight design reviews converge on a continuous sculpture before its diagram. The current renderer samples folded ribbon surfaces around each family's spine. Graph fanout increases ribbon subdivisions; graph depth increases bounded fold count. Each ribbon carries its own stable offset within one shared traveling phase. Surface points, smooth crest contours, and organ anchors share the authored depth projection. The camera does not rotate or refit on every frame.
+
+Material light comes from transverse projected compression and actual depth. Recesses stay faint, compressed folds brighten, and a few long connected crest contours carry the gesture. These contours sample the same surface; they are not a search for exact compression maxima. Dense points overlap into luminous veils. There is no independent confetti layer or broad glow filter. A portrait uses at most 24,000 points, with a reduced thumbnail budget.
+
+Composition uses a fixed sampled envelope and an authored occupancy target of 60–84% of the available frame, reduced when dependency bends need extra clearance. Lean, yaw, pitch, taper, and asymmetric spread establish posture without a spinning camera. At rest the graph remains quiet; selecting a program line or enabling topology reveals the exact organs and dependencies. Semantic colors belong to inspection and trace events, while the material remains neutral.
+
+Perceptual acceptance targets are a connected focal gesture, a clear luminous crest against recessed material, a recognizable thumbnail silhouette, and coherent motion through folds. These are visual review targets, not schema guarantees. Numeric bounds guarantee finite controls, not beauty. Distinct families retain their own backbones and source-embedded surface presets.
+
+QDL is experimental. We change this single language directly while testing its usefulness and visual range. The current `qdl:1` marker is a prototype syntax marker, not a frozen version 1 contract. Once the language is stable, we will freeze version 1 and specify how programs upgrade without silently changing meaning.

@@ -18,4 +18,14 @@ check('All ten families preserve finite anatomy, graph endpoints, source, and qu
 });
 check('Closed moth, torus, and bloom ridges have no breathing seam',()=>{for(const family of ['moth','torus','bloom'])for(const phase of [0,.5,3,10]){const s={maxDepth:5,branches:6,quoteDepth:2};for(let k=0;k<15;k++)close(M.strandPoint(family,0,k,15,phase,s),M.strandPoint(family,1,k,15,phase,s));}});
 check('Valid high-bend designs receive conservative framing without changing source',()=>{const d=D.create('filament');d.filament.bend=.08;d.filament.frequencyGain=.2;d.filament.ripple=.3;const item=JSON.parse(fs.readFileSync('programs/lanternkeeper.json')),p=Q.makeTaskProgram(item.graph,1,d),s=Q.describe(p),extent=M.framingExtent(s);assert(extent>1);for(const phase of [0,1,10])for(const e of s.links)for(let i=0;i<=100;i++){const a=Q.edgePoint(e,i/100,phase,s);assert(Math.max(Math.abs(a.x),Math.abs(a.y))<=extent);}assert.equal(Q.execute(p).emitted[0],Q.canon(p));});
+check('Folded material has bounded deterministic samples and a fixed authored portrait frame',()=>{
+ for(const id of ids){const item=JSON.parse(fs.readFileSync(`programs/${id}.json`)),p=Q.makeTaskProgram(item.graph,1,D.create(item.skin.family)),s=Q.describe(p),before=Q.canon(p),frame=M.portraitFrame(s);
+  assert(frame.width>0&&frame.height>0);assert.strictEqual(frame,M.portraitFrame(s));
+  for(const phase of [0,1.7,3,8,20]){const material=M.surfaceFrame(s,phase,false);assert(material.points.length/4<=s.design.surface.samples);assert.equal(material.ridges.length,s.design.surface.crests);
+   for(let i=0;i<material.points.length;i+=4){assert(material.points.slice(i,i+4).every(Number.isFinite));assert(Math.abs(material.points[i]-frame.cx)*s.design.composition.occupancy/frame.width<=.5);assert(Math.abs(material.points[i+1]-frame.cy)*s.design.composition.occupancy/frame.height<=.5);assert(material.points[i+3]>=0&&material.points[i+3]<=s.design.light.crestAlpha+1e-6);}
+   for(const ridge of material.ridges)for(const point of ridge.line)finite(point);
+  }
+  assert.deepEqual(M.surfaceFrame(s,3,true),M.surfaceFrame(s,3,true));assert.equal(Q.canon(p),before);
+ }
+});
 fs.writeFileSync('morphology-verification.json',JSON.stringify({passed:checks.length,programs:ids.length,checks},null,2)+'\n');console.log(JSON.stringify({passed:checks.length,checks}));

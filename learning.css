@@ -3,3 +3,5 @@
 .equation-block .formula-help{margin:0 0 12px;font-size:12px;color:#aec7b7}#collection{scroll-margin-top:24px}
 
 .canvas-controls{flex-wrap:wrap}.canvas-controls button{min-height:36px}.translation-toolbar button{min-height:44px}
+
+.specimen #creature{aspect-ratio:1;height:auto;min-height:0;flex:none;background:#080b0c}.creature-card canvas{height:160px}@media(max-width:760px){.creature-card canvas{height:150px}}

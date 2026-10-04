@@ -56,7 +56,50 @@ function anchor(n,t,s){
  case 'seed':x=.13*lane*Math.sqrt(Math.max(0,1-v*v))+breath;y=.72*v;break;
  default:x=.13*Math.sin(4*v+t*.4)+.07*lane+breath;y=.82*v;
  }
- return project({x,y},family);
+ return pose(project({x,y},family),s.design.surface.depth*.45*Math.sin(u*TAU-t*.45),s.design);
+}
+// A contiguous two-parameter membrane. All marks come from this surface.
+function pose(p,z,d){const c=d.composition,cy=Math.cos(c.yaw),sy=Math.sin(c.yaw),cp=Math.cos(c.pitch),sp=Math.sin(c.pitch),x=p.x*cy+z*sy,depth=z*cy-p.x*sy,y=p.y*cp-depth*sp;return {x:x+c.lean*y,y,z:depth};}
+function ribbonCount(s){return Math.min(36,s.design.surface.ribbons+Math.min(6,s.branches));}
+function surfacePoint(s,u,v,k,total,t){
+ const d=s.design,f=d.surface,family=d.family,a=TAU*k/total,epsilon=.003;
+ const center=project(strandPoint(family,u,k,total,t,s),family),before=project(strandPoint(family,Math.max(0,u-epsilon),k,total,t,s),family),after=project(strandPoint(family,Math.min(1,u+epsilon),k,total,t,s),family);
+ const tx=after.x-before.x,ty=after.y-before.y,len=Math.hypot(tx,ty)||1,nx=-ty/len,ny=tx/len;
+ const psi=t-f.phaseLag*u+.13*Math.sin(a),folds=Math.min(9,f.folds+Math.floor(s.maxDepth/5));
+ const focus=Math.exp(-Math.pow((u-d.composition.focus)/.3,2)),envelope=Math.max(.025,Math.sin(Math.PI*u))**f.taper;
+ const width=f.spread*envelope*(.55+.75*focus)*(1+f.asymmetry*Math.sin(a+.6))*(1+.055*(Math.sin(psi)+.35*Math.sin(2*psi+.7)));
+ const theta=.35*a+f.twist*TAU*(u-.5)+.62*Math.sin(psi)+.32*Math.sin(2*psi+.4*a+v*Math.PI);
+ const ripple=.10*width*Math.sin(folds*TAU*u-psi+a)*Math.sin(Math.PI*u);
+ const lateral=v*width*Math.cos(theta)+ripple;
+ const z=f.depth*.45*Math.sin(u*TAU-t*.45)+v*width*Math.sin(theta)+f.depth*.14*Math.sin(folds*Math.PI*u-psi+a)*envelope;
+ const raw={x:center.x+nx*lateral+f.asymmetry*.07*Math.sin(Math.PI*u)*focus,y:center.y+ny*lateral};
+ const result=pose(raw,z,d),angleDerivative=.32*Math.PI*Math.cos(2*psi+.4*a+v*Math.PI);
+ const dl=width*(Math.cos(theta)-v*Math.sin(theta)*angleDerivative),dz=width*(Math.sin(theta)+v*Math.cos(theta)*angleDerivative),derivative=pose({x:nx*dl,y:ny*dl},dz,d);
+ const compression=Math.max(0,Math.min(1,1-Math.hypot(derivative.x,derivative.y)/Math.max(.01,width*1.4)));
+ const depth=Math.max(0,Math.min(1,.5+result.z/(2*(f.depth+f.spread))));
+ result.alpha=d.light.recessAlpha+(d.light.crestAlpha-d.light.recessAlpha)*(compression**.9)*(.28+.72*focus)*(1-d.light.depthContrast+d.light.depthContrast*depth);
+ return result;
+}
+const fitCache=new WeakMap();
+function portraitFrame(s){
+ if(fitCache.has(s))return fitCache.get(s);const total=ribbonCount(s);let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+ const include=p=>{minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);};
+ for(const t of [0,1.7,3.4,5.1,6.8,8.5,10.2,12])for(let k=0;k<total;k++)for(let i=0;i<=48;i++)for(const v of [-1,0,1])include(surfacePoint(s,i/48,v,k,total,t));
+ // Exact anatomy stays in the same composition when inspected.
+ for(const t of [0,3,8])for(const n of s.nodes){const p=anchor(n,t,s),r=Math.min(.16,s.design.organ.baseRadius+s.design.organ.degreeGain*(n.indegree+n.outdegree)+s.design.organ.literalGain*6)*(1+s.design.organ.amplitudes[0]+s.design.organ.amplitudes[1]);include({x:p.x-r,y:p.y-r});include({x:p.x+r,y:p.y+r});}
+ const result={cx:(minX+maxX)/2,cy:(minY+maxY)/2,width:(maxX-minX)*1.08,height:(maxY-minY)*1.08};fitCache.set(s,result);return result;
+}
+function surfaceFrame(s,t,thumb=false){
+ const total=ribbonCount(s),budget=thumb?Math.min(4200,s.design.surface.samples):s.design.surface.samples,columns=4,rows=Math.max(12,Math.floor(budget/(total*columns))),points=new Float32Array(total*rows*columns*4);let cursor=0;
+ for(let k=0;k<total;k++)for(let j=0;j<columns;j++)for(let i=0;i<rows;i++){
+  const u=(i+.5+((k*.618+j*.381)%1-.5)*.75)/rows,v=Math.cos(Math.PI*(j+.5)/columns),p=surfacePoint(s,u,v,k,total,t);
+  points[cursor++]=p.x;points[cursor++]=p.y;points[cursor++]=p.z;points[cursor++]=p.alpha;
+ }
+ const ridges=[];for(let j=0;j<s.design.surface.crests;j++){const k=Math.floor(j*total/s.design.surface.crests),a=TAU*k/total,line=[];
+  for(let i=0;i<=300;i++){const u=i/300,v=.92*Math.cos(t*.23-s.design.surface.phaseLag*u+a*.5);line.push(surfacePoint(s,u,v,k,total,t));}
+  ridges.push({line,primary:true});
+ }
+ return {points,ridges};
 }
 // phaseRate retains its nominal 24-frame-per-second QDL meaning.
 function advancePhase(phase,rate,seconds,moving=true){return moving?phase+rate*24*Math.max(0,Math.min(.1,seconds)):phase;}
@@ -66,6 +109,6 @@ function framingExtent(s){
  for(const n of s.nodes){const value=n.params?.value,magnitude=typeof value==='number'?Math.min(6,Math.abs(value)):Array.isArray(value)?Math.min(6,value.length):1,r=Math.min(.16,d.organ.baseRadius+d.organ.degreeGain*(n.indegree+n.outdegree)+d.organ.literalGain*magnitude);extent=Math.max(extent,.75+r*(1+d.organ.amplitudes[0]+d.organ.amplitudes[1]));}
  return extent;
 }
-const api={bodyPoint,strandPoint,project,anchor,advancePhase,framingExtent};
+const api={bodyPoint,strandPoint,project,anchor,advancePhase,framingExtent,pose,surfacePoint,surfaceFrame,portraitFrame,ribbonCount};
 if(typeof module!=='undefined')module.exports=api;root.Morphology=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

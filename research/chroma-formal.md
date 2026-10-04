@@ -23,3 +23,7 @@ Quint now includes chroma/lens identity tokens, sampled domain/threshold relatio
 These are conditional models, not proofs of JavaScript trace creation, path resolution, canonical serialization, source matching, browser cache invalidation, IEEE-754 interpolation, displayed pixels, or visual quality. Trace provenance and numeric availability are supplied inputs. Quint explores finite tokens and numeric samples, not every possible source or color. Lean's audit checks theorem dependencies without project axioms or admitted placeholders; JavaScript and browser checks cover the implementation boundaries.
 
 Primary project references: [Lean documentation](https://lean-lang.org/documentation/), [Quint documentation](https://quint.sh/docs/). No external mathematical result is needed beyond the ordered-field and source-equality proofs checked in the repository.
+
+## Verification
+
+`npm run formal:all` passed on the integrated working tree, including the concurrent syntax/semantics additions: all 148 exported Lean theorems passed the dependency audit, with zero proof placeholders and zero project axioms; 42 schema numeric controls matched. Quint typechecking passed, all 24 tests passed 100 samples each, and 1,000 traces of up to 50 steps found no safety violation with seed `20261003`. This includes intentional negative controls; the successful randomized run is a bounded counterexample search, not exhaustive model checking.

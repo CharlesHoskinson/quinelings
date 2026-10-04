@@ -2,7 +2,7 @@
   "passed": true,
   "node": "v26.10.0",
   "package": "@quinelings/agent-sdk",
-  "archiveBytes": 147112,
+  "archiveBytes": 203155,
   "checks": [
     "isolated consumer installation",
     "no dependency on repository source",
@@ -10,7 +10,11 @@
     "shared Runtime identity",
     "independent expected total29",
     "RGB source recovery",
-    "typed runtime error identity"
+    "typed runtime error identity",
+    "strict offspring schema",
+    "passive candidate/frame and exact admission retry",
+    "source-only child expected12/8",
+    "world import disabled"
   ],
   "sourceIndependent": true
 }

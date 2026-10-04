@@ -20,7 +20,7 @@ The [official SDK](https://github.com/a2aproject/a2a-js) supplies discovery, cli
 
 The CLI defaults to this local port; no deployment is implied. HTTP+JSON is mounted at `/a2a/rest`. Agent `version` is `0.0.0-experimental`, separate from interface `protocolVersion`. The card advertises streaming and disables push notifications; it does not configure an extended authenticated card.
 
-The card has two skills: `build` covers passive creation and inspection operations; `execute` covers explicit `run` and `reproduce`. Skills describe discovery capabilities; the request's `operation` selects the runtime action. A2A has no standard execution `skillId` argument.
+The card has three skills: `build` covers source preparation and inspection; `ranch` covers offspring preparation/admission, lineage, annotation and explicit world control; `execute` covers explicit `run` and `reproduce`. Ranch operations never run tasks. Skills describe discovery capabilities; the request's `operation` selects the runtime action. A2A has no standard execution `skillId` argument.
 
 After building the package, run `node dist/a2a-cli.js` from `packages/agent-sdk`; set `QUINELING_A2A_PORT` to change its port. The CLI binds to `127.0.0.1`. To embed it:
 
@@ -49,10 +49,18 @@ Send a user message with exactly one JSON data part containing a request; use `m
 | `reproduce` | `artifactId`, `recordId` | `{artifact, record}` for a fresh child execution |
 | `recover` | `recovery` | Artifact validated from source or one genome |
 | `frame` | `artifactId`, finite `phase`, optional `options` | Geometry points, normals, owners, ridges, node IDs |
+| `offspringPreview` | `input` | Ready candidate or rejected diagnostics, no child storage |
+| `offspringFrame` | `input`, `candidateId`, `childSourceHash`, `phase`, `options?` | `{candidateId,childSourceHash,frame}` from stateless rebuild |
+| `offspringAdmit` | `input`, `candidateId`, `childSourceHash`, `target`, `requestId` | Explicit admission acknowledgement; no execution record |
+| `lineage` | `artifactId?`, `cursor?`, `limit?` | `{derivations,nextCursor?}` flat session evidence |
+| `annotate` | `artifactId`, `intent` | Exact graph-matching companion attachment |
+| `worldCreate` | `worldKey`, `seed`, `affinity?` | One world snapshot, identical configuration idempotent |
+| `worldInspect` | `worldId` | Detached world snapshot, no social advance |
+| `worldCommand` | `worldId`, `expectedRevision`, `sequence`, `command` | Explicit bounded mutation acknowledgement |
 
 Creation options are `{seed?, repeats?}`. Frame options are `{budget?, crests?}`. Recovery accepts exactly one of `{source}`, `{harmonics}`, or `{colors}`. Use the actual types rather than inventing a numeric genome array or transport-specific source format. Imported source is validated as a Quineling program; recovery never invokes arbitrary JavaScript evaluation.
 
-`compile.intent` uses `format: "quineling-intent"`, a name and thought, typed supplied inputs, ordered operation steps, and declared outputs. See the source [intent schema](../design/intent.schema.json) and SDK declarations. Units and ordered ports affect task meaning. An unsupported operation cannot be enabled by adding its name to a remote request.
+`compile.intent` uses `format: "quineling-intent"`, a name and thought, typed supplied inputs, ordered operation steps, and declared outputs. See the source [intent schema](../design/intent.schema.json) and SDK declarations. Units and ordered ports affect task meaning. An unsupported operation cannot be enabled by adding its name to a remote request. All sixteen dispatch operations are closed records; unknown fields, including nested recipe/style/origin/command fields, reject. Public ranch types are in `src/ranch-types.ts`; the [API reference](sdk-api.md) gives their exact shapes. `offspringPreview` nests its complete input; frame/admission fields are flat alongside operation. `worldCreate` has no nested config object and `worldCommand` has no wrapper around its revision/sequence fields.
 
 Example raw JSON-RPC request to the advertised endpoint:
 
@@ -112,6 +120,71 @@ if ('artifacts' in response) {
 
 Do not JSON.stringify an SDK `content: {$case: "data", value: ...}` object and post it directly; use `SendMessageRequest.toJSON` for manual transport. Native wire parts have no `kind: "data"`, user role is not `"user"`, and the RPC method is not `message/send`.
 
+
+## Structured ranch requests and original-key retries
+
+The native data part remains `{operation,...fields}` and the result data remains `{operation,result}`. The `ranch` skill introduces no separate message wrapper or skillId parameter. Text input continues to mean `create`; it cannot implicitly choose a recipe, admit offspring, advance a ranch, or execute a task.
+
+```js
+// Continue with the connected official client above.
+async function sendOperation(data) {
+  const response = await client.sendMessage(SendMessageRequest.fromJSON({
+    message:{messageId:randomUUID(),role:'ROLE_USER',
+      parts:[{mediaType:'application/json',data}]}
+  }));
+  if (!('artifacts' in response)) throw new Error('Expected an A2A task');
+  for (const artifact of response.artifacts) {
+    for (const part of artifact.parts) {
+      if (part.content?.$case === 'data') return part.content.value;
+    }
+  }
+  throw new Error(JSON.stringify(response.status));
+}
+const createdWorld = await sendOperation({operation:'worldCreate',
+  worldKey:'a2a-garden',seed:23,affinity:'neutral'});
+const worldId = createdWorld.result.id;
+const inspected = await sendOperation({operation:'worldInspect',worldId});
+const snapshot = inspected.result;
+const originalCommand = {operation:'worldCommand',worldId,
+  expectedRevision:snapshot.revision,sequence:snapshot.nextSequence,
+  command:{kind:'advance',ticks:4}};
+const advanced = await sendOperation(originalCommand);
+const sameAcknowledgement = await sendOperation(originalCommand);
+```
+
+These two sends use different A2A message/task identifiers while preserving the original complete application command. The retained sequence/payload returns the original acknowledgement without advancing again. New commands use a freshly inspected revision and exact nextSequence. Matching retained replay precedes freshness checks; conflicting/gap/discarded stale sequences refuse. Multi-tick success advances revision once. Admission and annotation can change world revision without consuming a world-command sequence.
+
+WorldCreate accepts key 1..64 characters, uint32 seed, and optional affinity structural/neutral. Omitted affinity means structural. Identical normalized configuration returns the current snapshot; a different configuration conflicts in the same Runtime. Neutral scoring uses distance only; structural scoring adds bounded operation-role overlap, gesture and source diversity. Neither determines typed offspring compatibility. Imported adults start energy 60 with participation disabled. `worldInspect` and frames are passive; social time requires explicit advance commands 1..4.
+
+The complete offspring input has ordered `{artifactId,intentHash}` parents, compose/mate/merge/body recipe, uint32 nonce, closed mutation style, and manual or pairing origin. Intent pins are canonical companion SHA256 or null only for absent companions; do not invent hashes. The [ranch guide](SDK-RANCH-GUIDE.md) supplies executable parents and pin construction. With a complete manual input:
+
+```js
+const prepared = await sendOperation({operation:'offspringPreview',input});
+if (prepared.result.status !== 'ready') {
+  throw new Error(JSON.stringify(prepared.result.diagnostics));
+}
+const c = prepared.result.candidate;
+await sendOperation({operation:'offspringFrame',input,candidateId:c.candidateId,
+  childSourceHash:c.childSourceHash,phase:0,options:{budget:4000,crests:2}});
+const originalAdmission = {operation:'offspringAdmit',input,
+  candidateId:c.candidateId,childSourceHash:c.childSourceHash,
+  target:{kind:'library'},requestId:'a2a-manual-birth-1'};
+const admitted = await sendOperation(originalAdmission);
+const sameBirth = await sendOperation(originalAdmission);
+const evidence = await sendOperation({operation:'lineage',
+  artifactId:admitted.result.artifactId,limit:16});
+// Only this separate explicit request evaluates the child's task:
+const executed = await sendOperation({operation:'run',artifactId:admitted.result.artifactId});
+```
+
+Preview/frame are stateless and store no child or lineage. Frame and admission rebuild from complete input and verify candidateId and childSourceHash. A semantic preview refusal has `result.status:'rejected'` in a successfully completed A2A task; completion is not evidence that a candidate is ready or admitted. Frame phases are finite within ±1e9, options budget 4000..24000 and crests 2..4. Mutation overrides require all six integer traits in −1000..1000 and mutation none.
+
+For world birth, choose a recipe explicitly after obtaining a live proposal. Build parents from its ordered artifact/intent pins, pairing origin `{kind:'pairing',worldId,proposalId,parentResidents,epochs}`, and target `{kind:'world',worldId,expectedRevision}`. Reciprocal courtship creates only a proposal. Admission rechecks fresh source/intent/epoch pins, participation, adulthood/rest, energy≥50 each, half-open expiry, geometry and resources. It consumes once, charges 30 each, inserts one disabled energy 40 child for 200 nursery ticks, and advances revision once. Pending proposal parents recover during cooldown. Withdrawal/retirement/annotation cancels affected links; re-enabling never revives a proposal. Another admission key cannot reuse a consumed proposal.
+
+After a lost response, send the original complete admission requestId/payload or world sequence/payload, including its old expected revision. A new messageId/taskId is a transport identifier, not an application retry key. Changing revision, recipe, target or identities under a successful key conflicts. Exact successful admission replay returns its saved acknowledgement before rebuild/freshness. There is no A2A message deduplication for `run` or `reproduce`; resending them creates fresh execution.
+
+`lineage` is a session-local flat append-order query, limit 1..32 default 16, with numeric nextCursor. It is distinct from A2A ListTasks and its opaque signed cursor. Source heredity parent hashes assert ancestry; session derivations preserve admitted construction evidence, while verified replay still requires exact parents and companions. A source recovered into a fresh Runtime does not restore omitted thought/units, external lineage or old execution records. Explicit `annotate` data is `{operation:'annotate',artifactId,intent}`; only absent/identical exact graph-matching metadata is accepted, and affected world pins/epochs invalidate atomically. The same staging applies to first companion attachment by compile of recovered source. Compound birth and metadata enrichment advance the public world revision once.
+
 ## Results, identity, and execution
 
 The response is an A2A task carrying a structured artifact whose data is `{operation, result}`. Each task uses the stable result-container ID `quineling-result`; a follow-up replaces that container, so a successful result supersedes the earlier clarification payload. Successful requests complete the task. A `clarify` result interrupts it with `TASK_STATE_INPUT_REQUIRED`; `unsupported` or `inconsistent` rejects it with `TASK_STATE_REJECTED`. The structured result retains status and diagnostics with no created artifact. Read `result.status` before treating creation as successful. Typed `compile` returns the artifact directly as `result`, rather than a creation-status wrapper.
@@ -122,7 +195,7 @@ Thought, typed intent, contract, and source map are companion metadata; they do 
 
 Creation constructs validated source and authored anatomy without executing the program. Inspection and frame sampling are observations. `run` executes explicitly; `reproduce` verifies the specific parent record and performs a fresh child execution. A reproduced source must match exactly, while execution records have their own identity and parent lineage. Actions supported by the kernel registry are simulations, not external world actions.
 
-The runtime defaults to at most 128 artifacts and 256 execution records in memory; its constructor allows bounded overrides. A full store rejects new entries with `resource-limit`; it does not silently evict retained entries. Process restart loses those entries. Source and genome exports can recover a validated program; they do not recover omitted thought provenance or historical execution records. A reproduction request must use a currently retained record associated with that exact artifact/source.
+The runtime defaults to at most 128 artifacts and 256 execution records in memory; its constructor allows bounded overrides. A full store rejects new entries with `resource-limit`; it does not silently evict retained entries. Process restart loses those entries. Artifacts also have a32 MiB aggregate budget including companions/genomes. Ranch stores cap one world/1 MiB snapshot,32 residents/nursery 8/pairs 16/proposals 16, candidates 2 MiB, derivations 32 KiB each/128 entries/4 MiB total, admission receipts 128 without eviction, world receipts 256, events 256, and acknowledgements 4 KiB. Required timers/counters stop at 1e6. Full ledgers refuse new admission without partial charges or artifact enrichment. These are Runtime limits, separate from A2A task history. Source and genome exports can recover a validated program; they do not recover omitted thought provenance or historical execution records. A reproduction request must use a currently retained record associated with that exact artifact/source.
 
 ## Lifecycle and errors
 
@@ -130,7 +203,7 @@ Malformed JSON and oversized HTTP bodies fail before dispatch (400/413). The exe
 
 The implementation uses `AgentExecutor`, `DefaultRequestHandler`, and `AgentEvent` from `@a2a-js/sdk/server`. Each invocation publishes an initial task before updates. JSON-RPC mounting uses `jsonRpcHandler({requestHandler, userBuilder})`; discovery uses `agentCardHandler({agentCardProvider})`. SDK error classes come from `@a2a-js/sdk/errors`.
 
-A retained clarification response can be continued with a new message ID and the same task/context. Previous user and agent messages remain in the task history, including unsuccessful message attempts. Send a complete replacement thought or structured request: the executor does not merge partial data or infer omitted arguments. On entering `TASK_STATE_INPUT_REQUIRED`, it releases active execution state and the SDK event bus; follow-up and cancellation are reconstructed from retained task storage. Streaming uses `client.sendMessageStream(request)` and yields SDK `StreamResponse.payload` values (`task`, `statusUpdate`, `artifactUpdate`, or `message`). The artifact arrives before the terminal/interrupted status. Cancellation can win before synchronous dispatch or while a clarification task remains retained; once bounded synchronous evaluation begins, it is not interruptible. Disconnecting does not establish cancellation. Send retries may duplicate work; the adapter has no message deduplication.
+A retained clarification response can be continued with a new message ID and the same task/context. Previous user and agent messages remain in the task history, including unsuccessful message attempts. Send a complete replacement thought or structured request: the executor does not merge partial data or infer omitted arguments. On entering `TASK_STATE_INPUT_REQUIRED`, it releases active execution state and the SDK event bus; follow-up and cancellation are reconstructed from retained task storage. Streaming uses `client.sendMessageStream(request)` and yields SDK `StreamResponse.payload` values (`task`, `statusUpdate`, `artifactUpdate`, or `message`). The artifact arrives before the terminal/interrupted status. Cancellation can win before synchronous dispatch or while a clarification task remains retained; once bounded synchronous evaluation or admission commit begins, it is not interruptible or reversible by cancellation. Disconnecting does not establish cancellation. Runtime admission stages source, lineage, world, both charges and acknowledgement before one synchronous store swap; this is in-memory atomicity, not crash durability or cross-process serialization. Response serialization or A2A task-storage failure can occur after a Runtime mutation committed. Preserve and retry original application keys as above; the adapter itself has no message deduplication.
 
 The default `BoundedTaskStore` retains up to 128 tasks and 64 MiB, with a 16 MiB per-task limit. At capacity it evicts eligible terminal or paused tasks in order of their last update. Paused tasks also expire after 15 minutes; expiry is checked lazily on load, save, or list. Active and resuming work is protected within the task's tenant/user scope. Failed capacity admission or cloning leaves existing task entries intact; eviction is committed only after the replacement is prepared and shown to fit. Polling a task does not extend its lifetime. Once an ID is evicted or expires, polling, cancellation, or follow-up returns task-not-found; start a new task with a complete request. Runtime artifact/record stores instead reject new entries at capacity.
 
@@ -158,3 +231,5 @@ Use isolated runtimes and an ephemeral loopback listener. This checklist specifi
 JSON-RPC legacy compatibility defaults to enabled; `legacyCompat: false` disables it. Discovery and JSON-RPC handlers use the upstream compat layer, and the card advertises a v0.3 JSON-RPC interface. REST remains native A2A 1.0. For a legacy server client, enable upstream compat in card resolution and the selected client transport, and test it separately. Do not send old field names to a native-only service.
 
 Detailed design decisions and installed SDK evidence are recorded in [the A2A review](../research/sdk-sol-4.md).
+
+On 2026-10-04, native `SendMessage` envelopes were exercised through an ephemeral loopback service using actual SDK source: all eight ranch operations, the build/ranch/execute discovery skills, stateless frame budget 4000, exact admission/command retries with new transport message IDs, lineage/annotation, and a separate composed child run returning `{allocated:12,remaining:8}` passed. This supplies same-SDK HTTP payload evidence; it does not establish independent-language interoperability or remote deployment.

@@ -1,0 +1,8 @@
+{
+  "session": "ef54e1c5-4c39-485a-bc0b-ef5f7fa823d1",
+  "pid": 782506,
+  "status": "report_received",
+  "reason": "original process terminated on actual 540-second deadline",
+  "exitCode": 0,
+  "bytes": 7727
+}

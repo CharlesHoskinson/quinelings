@@ -1,0 +1,43 @@
+{
+  "status": "verified-ready-for-publication",
+  "generatedAt": "2026-10-04T10:00:45.188261+00:00",
+  "experimental": true,
+  "brainstormReports": 10,
+  "audits": {
+    "Grok": 3,
+    "Gemini": 3,
+    "GPT": 3
+  },
+  "auditScope": "frozen candidate design; resolutions and implementation review recorded separately",
+  "sdkTests": 52,
+  "leanTheorems": 213,
+  "ranchQuintTests": 31,
+  "ranchQuintExploration": {
+    "generalTraces": 1000,
+    "pairedTraces": 500,
+    "steps": 80
+  },
+  "correspondence": {
+    "modelTests": 13,
+    "controllerChecks": 12,
+    "scope": "selected state projections, not full refinement"
+  },
+  "worldRuntimeGroups": 20,
+  "independentPackedConsumer": true,
+  "browserReport": "browser-verification.json",
+  "opticalReport": "lod-verification.json",
+  "bundleSHA256": "02241b7fa65ea1398b04ce368618dae464bbd090f04f04910e4492f9235c8a39",
+  "usefulChildOutput": [
+    {
+      "allocated": 12,
+      "remaining": 8
+    }
+  ],
+  "limitations": [
+    "QDL remains experimental.",
+    "Lean results are local statements under modeled premises, not a complete JS/compiler verification.",
+    "Quint exploration is bounded and not a liveness proof.",
+    "Source heredity parent hashes are assertions; session derivations are separate evidence.",
+    "Software Chromium dense cadence remains below24fps; hardware GPU cadence unverified."
+  ]
+}

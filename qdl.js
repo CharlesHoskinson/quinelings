@@ -24,8 +24,18 @@ function validateChroma(c){
   }
  }
 }
+const HEREDITY_TRAITS=['elongation','spread','curvature','gestureGain','tempo','pigmentGain'];
+function validateHeredity(h){
+ fields(h,['model','parents','seedDigest','nonce','traits']);check(h.model==='bounded-traits-experimental','unknown heredity model');
+ const hash=x=>typeof x==='string'&&/^[0-9a-f]{64}$/.test(x);
+ check(Array.isArray(h.parents)&&h.parents.length===2&&h.parents.every(hash),'heredity needs two complete-source SHA256 assertions');check(hash(h.seedDigest),'invalid heredity seed digest');
+ range(h.nonce,0,4294967295);check(Number.isInteger(h.nonce),'heredity nonce must be uint32');fields(h.traits,HEREDITY_TRAITS);
+ for(const k of HEREDITY_TRAITS){range(h.traits[k],-1000,1000);check(Number.isInteger(h.traits[k]),'heredity traits must be bounded integers');}
+ return true;
+}
 function validate(d){
- fields(d,['qdl','family','organ','filament','motion','ink','surface','light','composition'],['chroma','anatomy']);check(d.qdl===1,'invalid format marker');check(FAMILIES.includes(d.family),'unknown family');
+ fields(d,['qdl','family','organ','filament','motion','ink','surface','light','composition'],['chroma','anatomy','heredity']);check(d.qdl===1,'invalid format marker');check(FAMILIES.includes(d.family),'unknown family');
+ if(Object.hasOwn(d,'heredity'))validateHeredity(d.heredity);
  if(Object.hasOwn(d,'chroma'))validateChroma(d.chroma);
  if(Object.hasOwn(d,'anatomy')){check(Anatomy,'assembly module missing');Anatomy.validate(d.anatomy);check(Object.hasOwn(d.motion||{},'gesture'),'assembly requires an authored gesture');}
 
@@ -83,5 +93,5 @@ function validateBindings(d,graph){
 function forProgram(item){const d=create(item.skin.family);if(Object.hasOwn(item.skin,'chroma')){validateChroma(item.skin.chroma);d.chroma=clone(item.skin.chroma);}validate(d);return d;}
 function organRadius(d,n,a,t){const value=n.params?.value,magnitude=typeof value==='number'?Math.min(6,Math.abs(value)):Array.isArray(value)?Math.min(6,value.length):1;const r=Math.min(.16,d.organ.baseRadius+d.organ.degreeGain*(n.indegree+n.outdegree)+d.organ.literalGain*magnitude);return r*(1+d.organ.amplitudes[0]*Math.cos(n.frequency*a)+d.organ.amplitudes[1]*Math.cos((n.outdegree+1)*a+t));}
 function filamentBend(d,frequency,u,t){return d.filament.bend*(1+d.filament.frequencyGain*frequency)*Math.sin(Math.PI*u)*(1+d.filament.ripple*Math.sin(2*Math.PI*frequency*u+t));}
-const api={FAMILIES,DEFAULT,validate,validateBindings,create,forProgram,organRadius,filamentBend};if(typeof module!=='undefined')module.exports=api;root.QDL=api;
+const api={FAMILIES,DEFAULT,HEREDITY_TRAITS,validateHeredity,validate,validateBindings,create,forProgram,organRadius,filamentBend};if(typeof module!=='undefined')module.exports=api;root.QDL=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

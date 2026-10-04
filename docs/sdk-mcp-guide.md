@@ -1,6 +1,6 @@
 # Quinelings MCP guide
 
-The experimental `@quinelings/agent-sdk` exposes bounded thought compilation, authored anatomy, explicit simulated execution, source recovery, and numeric animation frames through MCP. QDL remains experimental; the package revision does not freeze the language. The adapter uses a process-local artifact and execution-record store. Restarting it discards that store.
+The experimental `@quinelings/agent-sdk` exposes bounded thought compilation, authored anatomy, explicit simulated execution, source recovery, and numeric animation frames through MCP. QDL remains experimental; the package revision does not freeze the language. The adapter uses a process-local Runtime with artifact and execution-record stores, one ranch world, session lineage and admission receipts. Restarting it discards those stores. Only explicit `run` and `reproduce` execute tasks; offspring admission and social time do not.
 
 ## Start the local adapter
 
@@ -17,7 +17,7 @@ The CLI is an MCP stdio process. Start it through an MCP client; it is not an in
 
 The exported `createQuinelingMcpServer(runtime = new Runtime())` factory is intended for applications that own the SDK transport and runtime lifecycle. Import it from `@quinelings/agent-sdk/mcp`. The CLI supplies the stdio transport. Stdout carries protocol messages; diagnostics belong on stderr. [MCP stdio transport](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports).
 
-`@quinelings/agent-sdk/schema` exports `JsonSchema`, `IntentTypeSchema`, `IntentStepSchema`, and `IntentSchema`. These recursive Zod schemas expose nested types, units, ordered input counts, and closed operation parameters in `tools/list`. Applications can validate proposal structure with `IntentSchema.parse(proposal)`. Schema parsing does not execute kernels. `JsonSchema` rejects nonfinite numbers, arrays or records with more than 512 entries, and values nested beyond 24 levels. `IntentSchema` also checks the depth of the complete intent envelope; wrapping a value adds levels. `tools/list` exposes recursive type references and the record/array size limits; depth is enforced by a Zod refinement and the compiler. `Runtime.compile` additionally checks references, acyclicity, units, operation refinements, the combined node count, and source budgets.
+`@quinelings/agent-sdk/schema` exports `JsonSchema`, `IntentTypeSchema`, `IntentStepSchema`, and `IntentSchema`, plus `TraitsSchema`, `ParentPinSchema`, `OffspringRecipeSchema`, `OffspringOriginSchema`, `OffspringInputSchema`, `FrameOptionsSchema`, `OffspringFrameSchema`, `OffspringTargetSchema`, `AdmissionSchema`, `LineageSchema`, `AnnotationSchema`, `WorldConfigSchema`, `WorldActionSchema`, and `WorldCommandSchema`. These recursive Zod schemas expose nested types, units, ordered input counts, and closed operation parameters in `tools/list`. Applications can validate proposal structure with `IntentSchema.parse(proposal)`. Schema parsing does not execute kernels. `JsonSchema` rejects nonfinite numbers, arrays or records with more than 512 entries, and values nested beyond 24 levels. `IntentSchema` also checks the depth of the complete intent envelope; wrapping a value adds levels. `tools/list` exposes recursive type references and the record/array size limits; depth is enforced by a Zod refinement and the compiler. `Runtime.compile` additionally checks references, acyclicity, units, operation refinements, the combined node count, and source budgets.
 
 ## Tool catalog
 
@@ -31,8 +31,27 @@ The exported `createQuinelingMcpServer(runtime = new Runtime())` factory is inte
 | `quineling_reproduce` | `{artifactId, recordId}` | Verify the parent's emitted source, reconstruct a child, and execute it. |
 | `quineling_recover` | Exactly one of `{source}`, `{harmonics}`, `{colors}` | Recover and store source from one exact representation. |
 | `quineling_frame` | `{artifactId, phase, options?}` | Obtain deterministic numeric tissue, normals, ownership, and ridges. |
+| `quineling_offspring_preview` | `{input}` | Stateless candidate preparation, ready/rejected diagnostics. |
+| `quineling_offspring_frame` | `{input,candidateId,childSourceHash,phase,options?}` | Rebuild and sample the exact candidate, without storage. |
+| `quineling_offspring_admit` | `{input,candidateId,childSourceHash,target,requestId}` | Explicit atomic source/lineage admission; world birth charges both parents once. |
+| `quineling_lineage` | `{artifactId?,cursor?,limit?}` | Read flat session derivations. |
+| `quineling_annotate` | `{artifactId,intent}` | Attach absent/identical exact graph-matching companion metadata. |
+| `quineling_world_create` | `{worldKey,seed,affinity?}` | Create one bounded world; identical configuration is idempotent. |
+| `quineling_world_inspect` | `{worldId}` | Detached world snapshot, no tick or execution. |
+| `quineling_world_command` | `{worldId,expectedRevision,sequence,command}` | Explicit import/retire/participate/invite/cancelProposal/advance mutation. |
 
-`options` on create/compile accepts `seed` and `repeats`. The seed is an unsigned 32-bit integer; repeats is 1–8 and defaults to 1. An omitted seed is derived deterministically from the graph. Frame options are `budget` (4,000–24,000, default 12,000) and `crests` (2–4, default 3), both integers. MCP `phase` is a finite raw phase value within ±1,000,000, not wall-clock time. Use `tools/list` to inspect the running adapter's schemas.
+`options` on create/compile accepts `seed` and `repeats`. The seed is an unsigned 32-bit integer; repeats is 1–8 and defaults to 1. An omitted seed is derived deterministically from the graph. Frame options are `budget` (4,000–24,000, default 12,000) and `crests` (2–4, default 3), both integers. MCP `phase` is a finite raw phase value within ±1,000,000, not wall-clock time. Use `tools/list` to inspect all sixteen running tools. The offspring-frame phase bound is ±1e9; the existing frame tool retains ±1e6. Every root request and operation record is closed; unknown nested fields reject rather than being silently dropped. Complete offspring/command shapes are in the [API reference](sdk-api.md).
+
+Tool annotations follow the actual adapter:
+
+| Tools | `readOnlyHint` | `idempotentHint` | `destructiveHint` |
+| --- | --- | --- | --- |
+| parse, inspect, frame, offspring_preview, offspring_frame, lineage, world_inspect | true | true | false |
+| compile, create, recover, offspring_admit, annotate, world_create | false | true | false |
+| run, reproduce | false | false | false |
+| world_command | false | true | true |
+
+Names in this annotation table omit the `quineling_` prefix. Every tool has `openWorldHint:false`. `world_command` is destructive because its union can retire residents or cancel proposals. Its idempotency depends on retaining the exact sequence and complete payload; admission idempotency depends on the original requestId/payload. An annotation does not authorize an external action or guarantee permanent receipt retention.
 
 ## Build, inspect, then execute
 
@@ -122,17 +141,71 @@ Alternatively send `{"harmonics": <artifact.harmonics>}` or `{"colors": <artifac
 
 Frames contain numeric arrays, not images: `points`, `normals`, `owners`, `ridges`, and `nodeIds`. The same authored source, phase, and options produce the same geometry. Frame seeking does not run the task, create an execution record, or change source identity. Renderers should treat owner indices as references into `nodeIds`. Start with a modest sample budget because JSON geometry can be large.
 
+
+## Offspring and ranch tool calls
+
+These are exact `tools/call` parameter objects using actual parent/proposal data. Recipes are compose `{kind:'compose',donorOutput,recipientInput}`, mate `{kind:'mate',donorNode,replaceNode}`, merge `{kind:'merge'}`, or body `{kind:'body',base:0|1}`. Parent roles are ordered; each `intentHash` is the project's canonical complete companion SHA256, or null only when the companion is absent. Nonce is uint32. Mutation is none/gentle; optional overrides require all six integer traits in −1000..1000 and mutation none. See the [ranch guide](SDK-RANCH-GUIDE.md) for executable typed parents and the canonical pin helper.
+
+```js
+// input is the complete manual OffspringInput built from your actual parents.
+const prepared = await client.callTool({
+  name:'quineling_offspring_preview',arguments:{input}
+});
+if (prepared.isError) throw new Error(JSON.stringify(prepared));
+const preview = prepared.structuredContent.result;
+if (preview.status !== 'ready') throw new Error(JSON.stringify(preview.diagnostics));
+const c = preview.candidate;
+const frame = await client.callTool({name:'quineling_offspring_frame',arguments:{
+  input,candidateId:c.candidateId,childSourceHash:c.childSourceHash,
+  phase:0,options:{budget:4000,crests:2}
+}});
+const admission = {input,candidateId:c.candidateId,childSourceHash:c.childSourceHash,
+  target:{kind:'library'},requestId:'mcp-manual-birth-1'};
+const receipt = await client.callTool({name:'quineling_offspring_admit',arguments:admission});
+// If the response was lost, resend this exact admission object and key.
+const retry = await client.callTool({name:'quineling_offspring_admit',arguments:admission});
+```
+
+Preview and frame create neither stored offspring, execution records nor lineage. Frame and admission rebuild the candidate from complete input; preserve candidateId and exact childSourceHash. A ready candidate is not an admission token. The explicit admission receipt identifies the stored child, its derivation and any acknowledged world placement. To execute the child, separately call `quineling_run` with the successful receipt's `structuredContent.result.artifactId`.
+
+```json
+{"name":"quineling_world_create","arguments":{"worldKey":"garden","seed":23,"affinity":"neutral"}}
+```
+
+This creates an empty world; imported adults start energy 60 and participation disabled. Neutral affinity uses distance only, while default structural affinity also scores bounded operation-role overlap, gesture and source diversity. Neither tests typed offspring compatibility. Same normalized configuration returns the existing snapshot; different configuration refuses within one Runtime.
+
+```js
+const inspected = await client.callTool({name:'quineling_world_inspect',arguments:{worldId}});
+if (inspected.isError) throw new Error(JSON.stringify(inspected));
+const snapshot = inspected.structuredContent.result;
+const commandRequest = {worldId,expectedRevision:snapshot.revision,
+  sequence:snapshot.nextSequence,command:{kind:'import',artifactId}};
+const imported = await client.callTool({name:'quineling_world_command',arguments:commandRequest});
+// A retry preserves old revision, sequence and the complete command payload.
+const sameImport = await client.callTool({name:'quineling_world_command',arguments:commandRequest});
+```
+
+Command union alternatives are import `{kind:'import',artifactId}`, retire `{kind:'retire',residentId}`, participate `{kind:'participate',residentId,enabled}`, invite `{kind:'invite',residentId,partnerId}`, cancelProposal `{kind:'cancelProposal',proposalId}`, and advance `{kind:'advance',ticks:1|2|3|4}`. Inspect a fresh snapshot before each new command; use its revision and exact nextSequence. Multi-tick success increments revision once. Matching retained replay makes no change; stale-discarded/gap/conflicting sequences refuse. Annotation and birth can change revision without using a command sequence.
+
+Reciprocal invitations may create a pair and later a proposal; neither births or executes anything. A world admission uses proposal-ordered `parents`, pairing origin `{kind:'pairing',worldId,proposalId,parentResidents,epochs}`, and target `{kind:'world',worldId,expectedRevision}`. Both parent source/intent/epoch pins, participation, adulthood, rest, energy≥50, expiry and geometry must still agree. Successful admission consumes once, charges 30 each, inserts a disabled energy 40 nursery child for 200 ticks, and increments revision once. Pending parents can recover during cooldown. A consumed proposal cannot admit another child using a new request key.
+
+```json
+{"name":"quineling_lineage","arguments":{"artifactId":"<receipt artifactId>","limit":16}}
+```
+
+Lineage pages are flat append-order session evidence, limit 1..32 (default 16), with an optional numeric nextCursor. Known artifacts without derivations return an empty page. Source heredity hashes assert parents; they do not authenticate ancestry or restore session evidence on recovery. To explicitly attach a supplied interpretation, call `quineling_annotate` with `{artifactId,intent}`. Exact source-task graph matching is required; conflicting existing metadata refuses. World pins/epochs and affected pair/proposal links invalidate atomically when metadata is first attached. This also applies when compile first supplies a companion for recovered source; artifact and world invalidation stage together. Compound birth with metadata enrichment remains one public world revision.
+
 ## Identity, limits, and effects
 
 Artifact IDs identify SHA-256 canonical source. Thought, units, and provenance are companion evidence and need separate interpretation: two companion documents may describe the same executable source. A stored artifact keeps its first companion metadata. Compiling different intent for an existing source with companion intent returns `metadata-conflict`; use separate runtime sessions to preserve both interpretations. Recovering into a fresh runtime supplies no companion intent. Source equality proves exact program identity within this runtime, not fidelity to arbitrary English or a frozen cross-version semantics contract. An artifact's available `contract.sourceBytes` measures its complete canonical source in UTF-8 bytes, including authored anatomy.
 
-The default runtime stores at most 128 artifacts and 256 execution records. A full store rejects new entries rather than evicting existing evidence. The framework additionally bounds graph nodes, task repeats, anatomy, finite JSON, and the complete canonical source to 65,536 bytes. MCP handlers check parsed request JSON against 4 MiB and each success result envelope against 8 MiB; these are handler limits rather than transport-wide preparse limits. Export source/genomes when the client needs recovery across process restarts.
+The default runtime stores at most 128 artifacts and 256 execution records. A full store rejects new entries rather than evicting existing evidence. The framework additionally bounds graph nodes, task repeats, anatomy, finite JSON, and the complete canonical source to 65,536 bytes. MCP handlers check parsed request JSON against 4 MiB and each success result envelope against 8 MiB; these are handler limits rather than transport-wide preparse limits. Artifact aggregate storage is additionally capped at 32 MiB including companions/genomes. Ranch caps are one world, 32 residents/nursery 8/pairs 16/proposals 16 and 1 MiB snapshot; candidates 2 MiB, derivations 32 KiB each/128 entries/4 MiB aggregate, successful admission receipts 128 without eviction, world receipts 256, event ring 256, acknowledgements 4 KiB, and counters 1e6 without wrapping. Full ledgers refuse new admission. Export source/genomes when the client needs recovery across process restarts; source-only export does not preserve session lineage or receipts.
 
-The handler checks the MCP request’s cancellation signal before dispatch. A request already cancelled at that point returns a `cancelled` error when the transport still accepts a response, and performs no compilation, admission, or execution. The MCP SDK may discard a cancelled request’s response entirely. Once synchronous kernel work starts, it runs to completion; cancellation cannot interrupt it midway.
+The handler checks the MCP request’s cancellation signal before dispatch. A request already cancelled at that point returns a `cancelled` error when the transport still accepts a response, and performs no compilation, admission, or execution. The MCP SDK may discard a cancelled request’s response entirely. Once synchronous evaluation or admission commit starts, it runs to completion; cancellation cannot interrupt or roll it back midway.
 
-The response-size check follows the runtime call. An oversized response can therefore fail after a run has created a record; an error or timeout does not establish nonexecution. Repeating `run` or `reproduce` requests another fresh simulated execution.
+The response-size check follows the runtime call. An oversized response can therefore fail after a run has created a record; an error or timeout does not establish nonexecution. Repeating `run` or `reproduce` requests another fresh simulated execution. An admission or command response can also fail after its mutation committed. Retry with the original complete requestId/payload or sequence/payload, including the old expected revision. Refreshing revision or choosing a new key is a new operation. Retained admission replay is checked before stale world freshness; world command acknowledgements older than their 256-entry window refuse instead of re-executing. Synchronous store swaps are in-memory atomicity, not crash durability or cross-process serialization.
 
-All `action` results are local simulation receipts. Their names and `allowed` parameters do not authorize email, filesystem changes, network calls, purchases, or deployment. MCP hints describe actual store effects: parse/inspect/frame are reads; compile/create/recover store artifacts; run/reproduce add execution records. Clients should treat annotations as advisory. [Official tool annotations](https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-11-25/schema.ts).
+All `action` results are local simulation receipts. Their names and `allowed` parameters do not authorize email, filesystem changes, network calls, purchases, or deployment. MCP hints describe actual store effects, including the ranch operations and destructive world-command union listed above. Clients should treat annotations as advisory. [Official tool annotations](https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-11-25/schema.ts).
 
 ## Validation
 
@@ -145,3 +218,5 @@ npm run build
 ```
 
 The MCP integration tests cover discovery with resolved recursive schemas, exactly-one recovery, independent task outcomes, quine and codec recovery, direct structured error paths, JSON depth/record bounds, an actual stdio exchange, and a same-turn call/cancellation pair that consumes no execution-record slot. Package tests separately cover frame determinism and store isolation/capacity. The [MCP boundary review](../research/sdk-sol-3.md) records the detailed acceptance matrix and remaining design risks; it distinguishes requested coverage from tests actually executed.
+
+Ranch payloads were exercised against the actual SDK source on 2026-10-04 with the official MCP client over linked in-memory transports: all eight ranch tools, discovery of sixteen tools and destructive world-command annotation, candidate frame budget 4000, exact admission/command retries, lineage, identical annotation, and a separately requested composed child run with handwritten output `{allocated:12,remaining:8}` passed. These are adapter payload checks, not browser or remote-service evidence.

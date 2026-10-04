@@ -26,6 +26,7 @@ export class QuinelingError extends Error {
   toJSON(){return {code:this.code,message:this.message,path:this.path};}
 }
 const copy=<V>(value:V):V=>structuredClone(value);
+const MAX_RECORD_BYTES=2*1024*1024,MAX_RECORD_STORE_BYTES=64*1024*1024;
 function check(ok:unknown,code:ErrorCode,message:string,path='$'):asserts ok {if(!ok)throw new QuinelingError(code,message,path);}
 /** Validate inert, finite JSON before cloning or evaluating property values. */
 function inert(value:unknown,limit=2*1024*1024):void {
@@ -70,6 +71,7 @@ function ranchWrap<V>(fn:()=>V):V {try{return fn();}catch(e){if(e instanceof Qui
 export class Runtime {
   #artifacts=new Map<string,Artifact>();
   #records=new Map<string,ExecutionRecord>();
+  #recordBytes=0;
   #artifactBytes=0;
   #world:World|null=null;
   #derivations=new Map<string,Derivation>();
@@ -157,12 +159,24 @@ export class Runtime {
   }
   run(artifactId:string):ExecutionRecord {return this.#execute(this.#lookup(artifactId));}
   #execute(artifact:Artifact,parent?:ExecutionRecord):ExecutionRecord {
+    const prepared=this.#prepareExecution(artifact,parent);
+    this.#records.set(prepared.record.id,prepared.record);this.#recordBytes=prepared.totalBytes;
+    return prepared.returned;
+  }
+  #prepareExecution(artifact:Artifact,parent?:ExecutionRecord):{record:ExecutionRecord;returned:ExecutionRecord;totalBytes:number} {
     check(this.#records.size<this.#maxRecords,'resource-limit','Execution record store is full; use a new Runtime');
     const result=wrap('execution-failed',()=>Q.execute(copy(artifact.program)));
     check(result.emitted.length===1&&result.emitted[0]===artifact.source,'execution-failed','Constructor did not reproduce exact source');
     if(parent)check(Q.canon(result.tasks.map((t:{output:unknown})=>t.output))===Q.canon(parent.result.tasks.map(t=>t.output)),'execution-failed','Fresh child result differs from parent');
     const record:ExecutionRecord={id:'run_'+randomUUID(),artifactId:artifact.id,source:artifact.source,result:copy(result)};
-    if(parent)record.parentRecordId=parent.id;this.#records.set(record.id,record);return copy(record);
+    if(parent)record.parentRecordId=parent.id;
+    // Include source, all duplicated traces, generated IDs and parent linkage.
+    // Check before publishing either the record or its detached response copy.
+    const bytes=Buffer.byteLength(JSON.stringify(record));
+    check(bytes<=MAX_RECORD_BYTES,'resource-limit','Execution record exceeds 2 MiB');
+    const totalBytes=this.#recordBytes+bytes;
+    check(totalBytes<=MAX_RECORD_STORE_BYTES,'resource-limit','Execution record store exceeds 64 MiB');
+    return {record,returned:copy(record),totalBytes};
   }
   reproduce(artifactId:string,recordId:string):{artifact:Artifact;record:ExecutionRecord} {
     const parent=this.#lookup(artifactId);check(typeof recordId==='string','invalid-input','Expected record ID');
@@ -170,7 +184,14 @@ export class Runtime {
     check(record.artifactId===parent.id&&record.source===parent.source,'stale-record','Record belongs to a different source');
     check(record.result.emitted[0]===parent.source,'stale-record','Record does not emit this source');
     const program=JSON.parse(record.result.emitted[0]) as unknown;
-    const artifact=this.#admit(program,parent);return {artifact,record:this.#execute({...artifact,program:JSON.parse(artifact.source) as Json[]},record)};
+    const prepared=this.#prepareArtifact(program,parent),artifact=copy(prepared.artifact);
+    const execution=this.#prepareExecution({...artifact,program:JSON.parse(artifact.source) as Json[]},record);
+    const nextWorld=this.#annotationWorld(prepared.artifact,this.#world);
+    // Reproduction stages admission and execution together; refusal publishes neither.
+    if(prepared.write){this.#artifacts.set(prepared.artifact.id,prepared.artifact);this.#artifactBytes=prepared.totalBytes;}
+    if(nextWorld)this.#world=nextWorld;
+    this.#records.set(execution.record.id,execution.record);this.#recordBytes=execution.totalBytes;
+    return {artifact,record:execution.returned};
   }
   recover(input:RecoveryInput):Artifact {
     inert(input);fields(input,[],['source','harmonics','colors']);check(Object.keys(input).length===1,'invalid-input','Supply exactly one source or genome');

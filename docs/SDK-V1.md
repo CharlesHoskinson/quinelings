@@ -1,12 +1,12 @@
-# Agent SDK v1 candidate
+# Agent SDK 1.0.0 — QDL 1
 
-Quinelings / Living Thoughts exposes its bounded declared-thought interpreter through an explicit SDK v1 entry point. This is an implemented candidate, not a stable release. The package remains `0.0.0-experimental` and has not been published to npm. Use the local build or a reviewed local package artifact.
+Quinelings / Living Thoughts exposes stable QDL 1 through SDK 1.0.0 explicit v1 entry points. The frozen registry is `43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3`. The supported scope is bounded deterministic simulation in one owner’s local memory Session on Node 22/26, with Chromium conformance for the browser runtime. Default/legacy APIs and ranch policies remain experimental. The SDK has not been published to npm; build locally or install the retained release tarball under `releases/qdl-v1.0.0`.
 
 The interpreter is deterministic and simulation-only. Its complete public declaration, typed graph, policy and body live in source; each explicit Run supplies a separate typed snapshot. Source-only verification, recovery and body sampling do not execute tasks. [QDL-V1](QDL-V1.md) defines language, identity, units, errors and compatibility; [QDL-V1-LIBRARY](QDL-V1-LIBRARY.md) describes ten reusable recipes.
 
 ## Build and run locally
 
-The package declares Node ≥22. From this repository:
+The package declares Node ≥22; release acceptance exercised Node v22.23.3 and v26.10.0. From this repository:
 
 ```sh
 cd packages/agent-sdk
@@ -30,7 +30,7 @@ Once installed from a local tarball, the public import is:
 import {Session, sourceOnly, QdlError} from '@quinelings/agent-sdk/v1';
 ```
 
-Do not substitute the legacy `@quinelings/agent-sdk` entry point: its separate experimental Runtime and literal-override semantics are not the v1 port contract. Package exports also provide `/v1-schema`, `/v1-mcp`, `/v1-a2a` and `/v1-migrate`.
+Do not substitute the legacy `@quinelings/agent-sdk` entry point: its separate experimental Runtime and literal-override semantics are not the v1 port contract. The stable explicit entry points are `/v1`, `/v1-schema`, `/v1-mcp`, `/v1-a2a` and `/v1-migrate`. `/v1-ranch` exposes experimental construction/collaboration policies; any resulting executable still requires stable QDL 1 admission.
 
 ## Session API
 
@@ -54,7 +54,7 @@ An Artifact contains id/sourceHash, canonical source, program, payload, exact po
 
 Inputs must exactly name the source's ports. Missing input, extra fields, incorrect types/refinements or malformed data refuse; incompatible symbolic source units refuse at compilation/admission. Supplied numeric magnitudes carry the port’s declared unit, whose factual correctness remains a caller obligation; optional values require explicit null. Changing only the supplied snapshot never rewrites literals or source. Each new desired invocation needs a new requestId. Repeating an identical complete run/reproduce request with its original key returns the retained record; changed payload under that key is request-conflict. The key is separate from transport message/RPC/task IDs.
 
-Defaults are 128 artifacts and 256 execution records. Aggregate caps are 32 MiB artifacts, 64 MiB records, 32 MiB request receipts and 128 MiB snapshots; individual execution records are capped at 2 MiB. Keys are not evicted or reopened. New-key capacity refusal leaves retained records available for exact replay. The interpreter's separate source/value/depth/collection/2 MiB semantic-run limits also apply; SDK record wrapping consumes additional bytes. No API here supplies durable storage or real effect authority.
+Defaults are 128 artifacts and 256 execution records. Aggregate caps are 32 MiB artifacts, 64 MiB records, 32 MiB request receipts and 128 MiB snapshots; individual execution records are capped at 2 MiB. Keys are not evicted or reopened. New-key capacity refusal leaves retained records available for exact replay. The interpreter's separate source/value/depth/collection/2 MiB semantic-run limits also apply; SDK record wrapping consumes additional bytes. No API here supplies durable storage or real effect authority. Snapshot export and import share a plain-header/dense-row validation boundary. Each row retains the depth-64 and four-million-visit inert-data checks. Source/receipt rows are bounded at 131,328 bytes, execution rows at 2 MiB, with maximum row counts 1,024/4,096/4,096 and serialized aggregate budgets 32/64/32 MiB respectively; the complete snapshot is bounded at 128 MiB. This allows a valid full-capacity session to restore passively without applying one request’s structural ceiling to its entire history. Accessors, hidden fields, sparse arrays and cycles refuse before schema reads.
 
 Frames require source assembly anatomy and gesture. Phase must be finite within ±1e9; options are `{budget?:4000..24000,crests?:2..4}` with integer values. Sampling returns points, normals, owners, ridges and node identity/color/role metadata. It neither advances a task clock nor creates a run record. A valid family-only source can verify/recover/run while frame refuses unsupported-frame.
 
@@ -62,7 +62,7 @@ Frames require source assembly anatomy and gesture. Phase must be finite within 
 
 The package exports strict recursive `IntentSchema`, `ValueTypeSchema`, `ThoughtSchema`, `RequestSchema`, `ArtifactSchema`, `RunSchema`, `ExecutionRecordSchema`, `RecoverySchema`, `SnapshotSchema`, `FrameSchema`, `ResultSchemas`, `TaggedResponseSchema` and operation-specific input schemas. `/v1-schema` provides the same contracts for clients/adapters. Schema parsing handles closed wire shapes; the shared interpreter additionally checks references, units, structural result types, registry pins and effects. Passing a wire schema alone does not establish graph admissibility or factual truth.
 
-Malformed requests and missing bindings throw `QdlError` with code/path/message. Codes include invalid-input, missing-input, type, refinement, unsupported-registry, identity, unknown-artifact, unknown-record, request-conflict, stale-record, unsupported-frame and resource-limit. Code/path carry the decision; message is explanatory. Candidate code/path spelling is not a frozen release promise.
+Malformed requests and missing bindings throw `QdlError` with code/path/message. Codes include invalid-input, missing-input, type, refinement, unsupported-registry, identity, unknown-artifact, unknown-record, request-conflict, stale-record, unsupported-frame and resource-limit. Code/path carry the decision; message is explanatory. Structured decisions are frozen with this profile; match the relevant code and checking layer rather than explanatory message text. A changed diagnostic contract requires an explicit reviewed registry/version transition.
 
 A valid invocation can return `record.result.status:"failed"`. That computed failure is a successfully delivered result with completed-node trace and bounded diagnostic; its failed occurrence publishes no outputs/effects and later occurrences stop. Earlier successful occurrences remain. Source-only constructor reproduction still succeeds independently of task failure. Do not convert a failed/missing/stale value to zero or evidence unknown.
 
@@ -143,7 +143,7 @@ Fresh reproduction of an imported record reruns its bindings and refuses stale-r
 
 ## Explicit migration
 
-The candidate's passive helper is a separate import:
+The passive migration helper is a separate import:
 
 ```js
 import {migrateLegacy} from '@quinelings/agent-sdk/v1-migrate';
@@ -173,4 +173,6 @@ npm test
 node examples/v1.mjs
 ```
 
-The example was executed against built `dist/v1.js` on Node v26.10.0 and passed its independent 9/11 outputs and lifecycle assertions. This guide does not substitute that finite example for the full release matrix. Installed tarballs, Node22/current Node, actual browser flows, transport envelopes and remaining formal correspondence require recorded acceptance evidence before the candidate can be frozen as stable.
+The built example passed independent 9/11 outputs and lifecycle assertions. Release acceptance records 109 SDK tests on each of Node v22.23.3 and v26.10.0, static negative type contracts, build checks and installed-tarball consumers covering legacy and six v1 imports. Actual Chromium conformance covers ten frozen sources, 44 fixtures, both codecs and 12 legacy sources. Official MCP and A2A transport tests cover schema discovery, keyed replay, passive restore and precommit failure. See [recorded acceptance](../research/qdl-v1/acceptance.json), [the release gate review](../research/qdl-v1/release-language-gates.md) and [model/runtime correspondence](../research/qdl-v1/formal-runtime-correspondence.md).
+
+Release designation `qdl-v1.0.0` retains the matching runtime, source, registry, goldens and package archive under `releases/qdl-v1.0.0`. Use [the matching-runtime upgrade policy](QDL-V1-UPGRADES.md) for old pins. No automatic multi-registry loader, shared-host authentication, durable storage or live-world dispatcher is part of these SDK guarantees.

@@ -1,6 +1,6 @@
-# QDL v1 candidate — Living Thoughts
+# QDL 1 — Living Thoughts
 
-Status: implemented candidate, not a stable release. This document describes the current `qdl-program` version 1 profile and its acceptance requirements. The experimental legacy profile remains separate. The package currently identifies itself as `0.0.0-experimental`; a `version:1` field does not make this candidate production-certified.
+Status: stable QDL 1 for bounded deterministic task computation with simulation-only effects in a single-owner local Session. The frozen `qdl-program` version 1 profile uses `qdl-kernels-1` at registry digest `43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3`. Supported acceptance environments are Node 22/26 and Chromium; the tested versions are recorded below. SDK 1.0.0 exposes this profile through explicit v1 entry points. The default/legacy API and ranch collaboration policies remain experimental. The SDK is distributed as a release tarball and has not been published to npm.
 
 Quinelings turns a declared task into a visible, inspectable lifeform. A Living Thought carries its public declaration, typed executable graph and authored body in exact reproducible source. Its recorded values come from an explicit Run. Validation checks structure, types, units, references, bounds and effect boundaries; it does not certify facts, recover private model reasoning or guarantee agreement with arbitrary English.
 
@@ -87,7 +87,7 @@ Inference commonly drops refinements from computed output types. Declare a compu
 
 ## Operations and deterministic policy
 
-The candidate registry contains 24 retained names and seven additions. Retained names operate under the strict new graph contract; this does not make every legacy graph admissible.
+The frozen registry contains 24 retained names and seven additions. Retained names operate under the strict new graph contract; this does not make every legacy graph admissible.
 
 ```text
 literal sum mean min max weightedMean length map sort dedupe filter compare
@@ -136,13 +136,13 @@ The limits intersect. A deeply nested value consumes wrapper depth in an enclosi
 
 `qdl-json-1` sorts record keys in UTF-16 order and uses ECMAScript JSON serialization for primitives. Array order is significant. Admission of source text requires it to equal the reserialized canonical constructor bytes; duplicate textual keys and alternate encodings fail that equality. A parsed host object cannot reveal textual duplicate keys already discarded by its parser. This named profile is not a claim of complete RFC 8785 interoperability.
 
-The source commits `qdl-kernels-1` and its SHA-256 manifest digest. The manifest pins bounds, policies, operations and implementation hashes. A different pin is rejected by the current interpreter; there is no registry fallback. During candidate development a regenerated registry changes newly compiled source identity. A stable freeze requires reviewed manifest/golden vectors and deliberate versioning rather than silently accepting old pins.
+The source commits `qdl-kernels-1` and its SHA-256 manifest digest. The manifest pins bounds, policies, operations and implementation hashes. A different pin is rejected by the current interpreter; there is no registry fallback. QDL 1 freezes the digest above and its reviewed source/genome vectors. A semantic, signature, bound, diagnostic or pinned implementation change requires a separately identified reviewed registry and explicit new artifact construction; it cannot silently replace this pin. Normal checks verify the registry rather than regenerate it.
 
 `sourceHash` is `ql_` followed by SHA-256 of canonical source; `inputHash` is `qi_` followed by SHA-256 of canonical bindings. Input values live in the run, not the source. Harmonic and RGB genomes preserve exact source; sampled harmonic recovery has explicit coefficient/residual tolerances in the existing codec. Checksums detect corruption, not historical authorship or external authenticity. Decoding bytes and admitting executable source are separate operations.
 
 ## SDK workflow and session behavior
 
-The explicit package entry point is `@quinelings/agent-sdk/v1`; legacy package entry points retain their separate experimental API. This example uses the candidate package once built/installed:
+The explicit package entry point is `@quinelings/agent-sdk/v1`; legacy package entry points retain their separate experimental API. This example uses SDK 1.0.0 once built or installed from the retained release tarball:
 
 ```ts
 import {Session, sourceOnly} from '@quinelings/agent-sdk/v1';
@@ -177,13 +177,13 @@ Default capacity is 128 artifacts and 256 records. SDK caps are 32 MiB aggregate
 
 `exportSnapshot()` returns explicit session data; `Session.fromSnapshot()` passively restores into a fresh memory session. Imported historical records are marked `evidence:"asserted"`, even if their source/binding hashes validate. Restoration does not execute tasks or establish that imported outputs really occurred. A retained live-session record is labeled retained; neither label authenticates outside world testimony.
 
-See [candidate identity and future upgrades](QDL-V1-UPGRADES.md) for immutable release retention, exact-pin refusal and the explicit matching-runtime → reviewed construction → new artifact path. No automatic multi-registry loader is implemented.
+See [release identity and future upgrades](QDL-V1-UPGRADES.md) for immutable release retention, exact-pin refusal and the explicit matching-runtime → reviewed construction → new artifact path. No automatic multi-registry loader is implemented.
 
 ## Legacy compatibility and explicit migration
 
 Legacy `graph.version:1`, visual `qdl:1`, constructor source, fixtures, genomes and literal override semantics remain experimental and separately executable. Its original 34 operation identities/colors are frozen independently; new operations append rather than renumber those existing entries. The new profile has an unmistakable `qdl-program` discriminator. A recognized malformed v1 source must refuse rather than fall back to legacy. V1 Session recovery accepts v1 source only. Recover or execute legacy source through its existing API; do not change bytes merely to give it a new label.
 
-No implicit upgrade is implemented or promised. The candidate provides passive explicit `migrateLegacy` in [qdl-v1-migrate.js](../qdl-v1-migrate.js) and SDK `@quinelings/agent-sdk/v1-migrate`. Its closed request is `{source,registryDigest,name,thought,types,ports,evidenceClaims}`: legacy constructor source, exact current target digest, authored name/full public declaration, a type for **every** old graph node, a map of deliberately selected literal IDs to required runtime names, and an explicit claim for every legacy evidence node.
+No implicit upgrade is implemented or promised. QDL 1 provides passive explicit `migrateLegacy` in [qdl-v1-migrate.js](../qdl-v1-migrate.js) and SDK `@quinelings/agent-sdk/v1-migrate`. Its closed request is `{source,registryDigest,name,thought,types,ports,evidenceClaims}`: legacy constructor source, exact current target digest, authored name/full public declaration, a type for **every** old graph node, a map of deliberately selected literal IDs to required runtime names, and an explicit claim for every legacy evidence node.
 
 Unselected literals remain constants. Design, repeats and output boundary are preserved. The helper validates the ordinary legacy task constructor and the new typed/effect-safe graph; legacy Orbit plan-only sources are outside its scope. It returns `{format:"qdl-migration-preview",version:1,legacySource,legacySourceHash,targetRegistryDigest,mapping,semanticChanges,artifact,evidence:"authored-conversion",executed:false}`. The preview carries the canonical old source and a new admitted constructor, but performs no task execution and inserts no SDK session artifact. Explicitly call `session.recover({source:preview.artifact.source})` to retain the new artifact, then Run with typed bindings only when intended. Preserved legacy family designs may lack the assembly/gesture required by SDK `frame`; successful migration does not automatically add new geometry.
 
@@ -194,18 +194,20 @@ An explicit migration review must:
 3. Treat existing literals as authored constants by default. Select runtime ports deliberately and provide exact binding schemas and independent fixtures. A legacy literal override changes the resolved graph; it is not a v1 port binding.
 4. Author the public declaration and node/output references. Keep external notes/provenance separate unless deliberately embedded. Export Boolean goal predicates when appropriate.
 5. Fix disconnected work, effect-bearing action cones and eager action branches. Choose a claim for legacy evidence aggregates; explicitly select first-report `evidence` or freshness/conflict-aware `evidenceFresh` semantics.
-6. Compile under the candidate's current registry and review the changed source identity, task outcomes, simulation receipts and body. Record old/new identities in a separate migration manifest; migration is construction of a new artifact.
+6. Compile under the target registry and review the changed source identity, task outcomes, simulation receipts and body. Record old/new identities in a separate migration manifest; migration is construction of a new artifact.
 
-## Acceptance before freezing v1
+## Release acceptance
 
-A production freeze requires evidence beyond these local examples:
+The seven release gates below passed within the stated scope. [The independent gate review](../research/qdl-v1/release-language-gates.md) maps each gate to concrete code, fixtures and test evidence:
 
 - Reviewed normative registry/signature/error/bound vectors and golden canonical source/genome bytes, including explicit legacy migration pairs.
 - Strict source, typed bindings, dependency/effect/reference checks across compiler, raw import, core, SDK and adapters; malformed sources cannot bypass shared admission.
 - Independent exact fixtures and adversarial boundaries for numeric overflow, explicit null, empty collections, unknown/pending/conflicting evidence, repeat failure publication and aggregate/wire budgets.
 - Same source with distinct inputs, three fresh constructor generations and both exact genomes recover full declaration/types/design in an empty session; source-only operations execute no task.
 - Legacy golden identities and all existing outcome fixtures preserved through the legacy entry points.
-- Node 22/current Node, actual browser and installed-package consumer agreement, real MCP/A2A serialization/schema checks and fault tests for precommit failures/keyed replay/passive restore.
+- Node 22/26, actual browser and installed-package consumer agreement, real MCP/A2A serialization/schema checks and fault tests for precommit failures/keyed replay/passive restore.
 - Correspondence between implemented checks, Lean/Quint abstractions and actual executable fixtures, with remaining obligations stated. Checked abstractions do not prove all JavaScript, renderer or external adapter behavior.
 
-The library's current local evidence is recorded separately in [QDL-V1-LIBRARY](QDL-V1-LIBRARY.md). Passing it establishes those finite supplied-snapshot results; it does not establish universal thought interpretation, factual truth, live City compatibility, durability or a stable language release.
+Recorded acceptance includes Node v22.23.3 and v26.10.0 with 109 SDK tests per runtime, typecheck/build and installed-package consumers; Chromium 153.0.8010.12 agrees on ten frozen sources, 44 independent recipe cases, both exact codecs and 12 legacy sources. The independent semantics audit passes 11 adversarial checks under the frozen pin. Legacy compatibility preserves all 53 existing outcome fixtures and 12 complete source/genome identities. See [the acceptance record](../research/qdl-v1/acceptance.json), [browser conformance](../research/qdl-v1/browser-conformance.json), [recipe evidence](QDL-V1-LIBRARY.md) and [formal correspondence](../research/qdl-v1/formal-runtime-correspondence.md).
+
+Release designation `qdl-v1.0.0` retains the matching source, manifest, goldens and SDK archive under `releases/qdl-v1.0.0`. The [upgrade policy](QDL-V1-UPGRADES.md) requires the matching archived runtime for historical pins; no universal loader is shipped. These finite checks support the bounded language contract. They do not certify outside facts, live City compatibility, durable storage, authenticated shared hosting, arbitrary English interpretation or all JavaScript behavior.

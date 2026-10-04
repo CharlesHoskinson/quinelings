@@ -4,10 +4,10 @@ const fs=require('node:fs'),path=require('node:path');
 // headings, paragraphs, lists and ordinary links. No user Markdown is rendered.
 const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const guides=[
- {source:'QDL-V1',route:'qdl-v1',title:'QDL candidate'},
+ {source:'QDL-V1',route:'qdl-v1',title:'Stable QDL 1'},
  {source:'QDL-V1-LIBRARY',route:'qdl-v1-library',title:'Reusable recipes'},
  {source:'QDL-V1-UPGRADES',route:'qdl-v1-upgrades',title:'Identity and upgrades'},
- {source:'SDK-V1',route:'sdk-v1',title:'Candidate SDK'},
+ {source:'SDK-V1',route:'sdk-v1',title:'SDK 1.0.0 · QDL 1'},
  {source:'sdk-quickstart',route:'sdk-quickstart',title:'Quickstart'},
  {source:'sdk-lifecycle',route:'sdk-lifecycle',title:'Lifecycle'},
  {source:'sdk-api',route:'sdk-api',title:'API reference'},
@@ -40,4 +40,4 @@ for(const guide of guides){
  }
  if(!checkOnly)fs.writeFileSync(path.join(__dirname,'../docs',guide.route+'.html'),html);
 }
-console.log(`${checkOnly?'Checked':'Rendered'} ${guides.length} experimental SDK guides.`);
+console.log(`${checkOnly?'Checked':'Rendered'} ${guides.length} SDK guides (stable QDL 1 and legacy experimental APIs).`);

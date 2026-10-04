@@ -1,6 +1,6 @@
-# Living Thoughts: candidate task library
+# Living Thoughts: QDL 1 task library
 
-Status: reusable QDL v1 candidate recipes with local executable fixtures, not a stable release or live City integration. [QDL-V1](QDL-V1.md) defines the source/input/type/simulation contract. The implementation is [qdl-v1-library.js](../qdl-v1-library.js), and its independent verifier is [verify-v1-library.cjs](../verify-v1-library.cjs).
+Status: ten reusable recipes for stable QDL 1 at the frozen registry pin, with independently authored conformance fixtures. Their invocation data is synthetic supplied context; live City integration is a separate host capability. [QDL-V1](QDL-V1.md) defines the source/input/type/simulation contract. The implementation is [qdl-v1-library.js](../qdl-v1-library.js), and its independent verifier is [verify-v1-library.cjs](../verify-v1-library.cjs).
 
 The library exports ten `{id,name,description,intent,fixtures}` records. `programs` is deeply frozen; `get(id)` returns detached data. Each intent contains named runtime ports, authored constants and a full six-array public declaration with observation references, a plan and task coverage. Where a goal is declared, its completion field is an explicitly exported Boolean result. Runtime observations never become source literals. All City-shaped snapshots are synthetic, supplied examples.
 
@@ -157,10 +157,10 @@ The verifier currently covers 44 fixtures across ten recipes: 39 completed outco
 - Public core dispatch, detached library access, no implicit typed defaults, extra-binding refusal and duplicate inventory refusal.
 - UMD exposure in a Node VM smoke check. This is not an actual browser conformance result.
 
-These checks passed on Node v26.10.0 during candidate development. At that measurement, graph sizes were 3–28 nodes and complete sources 8,125–23,121 UTF-8 bytes. Registry/design changes can change source bytes; the verifier compiles against the current pinned implementation rather than pretending those transient byte counts are permanent golden fixtures.
+Release acceptance passed on Node v22.23.3 and v26.10.0. Actual Chromium 153.0.8010.12 agrees on all ten frozen source/hash/codec vectors and 44 independent fixtures, with twenty fresh passive genome recoveries. The frozen registry digest is `43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3`. Complete source/genome vectors remain in `fixtures/qdl-v1/candidate`; the directory name records their development origin. Future registry changes construct new identities and fixtures explicitly. See [the acceptance record](../research/qdl-v1/acceptance.json) and [browser conformance](../research/qdl-v1/browser-conformance.json).
 
 ## Extending a recipe
 
 Start from `get(id)` and author a new intent. Changing constants/policy, task or declaration intentionally changes source identity; changing only invocation data does not. Add exact input schemas, meaningful guards, full declaration references and independent fixtures before calling the result useful. Inferred shapes do not automatically preserve integer, enum or minimum refinements; declare those computed obligations where needed.
 
-A new operation requires a closed signature, units, deterministic tie/empty/error policies, bounds and implementation tests, followed by a new reviewed registry pin. Do not hide unsupported capability in a label such as gather/craft/send. These ten recipes compose visible finite primitives and retain their local-simulation scope. The broader compatibility and production-freeze gates remain in [QDL-V1](QDL-V1.md).
+A new operation requires a closed signature, units, deterministic tie/empty/error policies, bounds and implementation tests, followed by a new reviewed registry pin. Do not hide unsupported capability in a label such as gather/craft/send. These ten recipes compose visible finite primitives and retain their local-simulation scope. The compatibility contract and completed release gates are in [QDL-V1](QDL-V1.md). Ranch composition and collaboration policies remain experimental even when a resulting task independently passes QDL 1 admission.

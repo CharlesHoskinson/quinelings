@@ -29,7 +29,7 @@ function wrap<A>(fn:()=>A):A {
 }
 /** Inspect data descriptors before schema parsers or serializers read values.
  * Parsed JSON is the wire boundary; hostile same-process proxies are not sandboxed. */
-function inert(value:unknown,maxBytes:number):void {
+function inert(value:unknown,maxBytes:number):number {
  let visits=0;const stack:{value:unknown;depth:number;seen:Set<object>;path:string}[]=[{value,depth:0,seen:new Set(),path:'$'}];
  while(stack.length){const {value:v,depth,seen,path}=stack.pop()!;check(++visits<=4000000&&depth<=64,'resource-limit','JSON resource limit exceeded',path);
   if(v===null||typeof v==='boolean')continue;
@@ -42,9 +42,33 @@ function inert(value:unknown,maxBytes:number):void {
   const next=new Set(seen).add(v);
   for(const key of keys){const p=path+'['+JSON.stringify(key)+']',d=Object.getOwnPropertyDescriptor(v,key);check(wellFormed(key)&&!['__proto__','prototype','constructor'].includes(key),'invalid-input','Unsafe property name',p);check(d&&'value'in d,'invalid-input','Accessors are forbidden',p);stack.push({value:d.value,depth:depth+1,seen:next,path:p});}
  }
- check(bytes(value)<=maxBytes,'resource-limit','JSON byte budget exceeded');
+ const size=bytes(value);check(size<=maxBytes,'resource-limit','JSON byte budget exceeded');return size;
 }
 function parse<A>(schema:z.ZodType<A>,value:unknown,maxBytes=4*1024*1024):A {inert(value,maxBytes);return wrap(()=>schema.parse(value));}
+/** Snapshot traversal is bounded per row, then by aggregate bytes/counts. A
+ * full legal session can exceed the ordinary request's four-million visits.
+ * Export and import use this same boundary; neither evaluates historical tasks. */
+function parseSnapshot(value:unknown):Snapshot {
+ check(value&&typeof value==='object'&&!Array.isArray(value),'invalid-input','Expected snapshot record');
+ const proto=Object.getPrototypeOf(value),keys=Object.keys(value),fields=['format','version','registry','registryDigest','artifacts','records','receipts'];
+ check(proto===Object.prototype||proto===null,'invalid-input','Expected plain snapshot record');
+ check(Reflect.ownKeys(value).length===keys.length&&keys.length===fields.length&&fields.every(k=>keys.includes(k)),'invalid-input','Unknown, hidden or missing snapshot fields');
+ const selected:Record<string,unknown>={};for(const key of fields){const d=Object.getOwnPropertyDescriptor(value,key);check(d&&'value'in d,'invalid-input','Snapshot accessors are forbidden');selected[key]=d.value;}
+ const header={...selected,artifacts:[],records:[],receipts:[]};parse(SnapshotSchema,header,65536);
+ let total=bytes(header);
+ const rows=[['artifacts',1024,131328,ARTIFACT_BYTES],['records',4096,RECORD_BYTES,RECORDS_BYTES],['receipts',4096,131328,RECEIPT_BYTES]] as const;
+ for(const [field,maxCount,maxRowBytes,maxAggregate] of rows){
+  const array=selected[field];check(Array.isArray(array)&&Object.getPrototypeOf(array)===Array.prototype,'invalid-input','Expected native snapshot row array');
+  const rowKeys=Object.keys(array);check(array.length<=maxCount,'resource-limit','Snapshot row count exceeded');
+  check(Reflect.ownKeys(array).length===rowKeys.length+1&&rowKeys.length===array.length&&rowKeys.every((k,i)=>k===String(i)),'invalid-input','Expected dense snapshot row array');
+  let aggregate=0;for(let i=0;i<array.length;i++){
+   const d=Object.getOwnPropertyDescriptor(array,String(i));check(d&&'value'in d,'invalid-input','Snapshot row accessors are forbidden');
+   const size=inert(d.value,maxRowBytes);aggregate+=size;total+=size+(i?1:0);
+   check(aggregate<=maxAggregate&&total<=SNAPSHOT_BYTES,'resource-limit','Snapshot aggregate byte budget exceeded');
+  }
+ }
+ return wrap(()=>SnapshotSchema.parse(value));
+}
 const optionsSchema=z.strictObject({maxArtifacts:z.number().int().min(1).max(1024).optional(),maxRecords:z.number().int().min(1).max(4096).optional(),maxRecordBytes:z.number().int().min(1).max(RECORD_BYTES).optional(),maxRecordsBytes:z.number().int().min(1).max(RECORDS_BYTES).optional()});
 type ExecutionRequest=Extract<Request,{operation:'run'|'reproduce'}>;
 /** Bounded memory session for QDL v1. No external authority or durability.
@@ -104,12 +128,12 @@ export class Session {
  exchange(request:Request):TaggedResponse {const selected=parse(RequestSchema,request);return {operation:selected.operation,result:this.dispatch(selected)} as TaggedResponse;}
  exportSnapshot():Snapshot {
   const snapshot:Snapshot={format:'qdl-session-snapshot',version:1,registry:V.registry.id,registryDigest:V.registryDigest,artifacts:[...this.#artifacts.values()].map(a=>({id:a.id,source:a.source})),records:[...this.#records.values()].map(clone),receipts:[...this.#receipts.values()].map(r=>({request:clone(r.request),recordId:r.recordId}))};
-  check(bytes(snapshot)<=SNAPSHOT_BYTES,'resource-limit','Snapshot exceeds 128 MiB');return wrap(()=>SnapshotSchema.parse(snapshot));
+  return parseSnapshot(snapshot);
  }
  /** Passive restoration into a fresh memory session. Caller JSON cannot attest
   * historical execution: all imported records are marked asserted. */
  static fromSnapshot(snapshot:Snapshot,options:SessionOptions={}):Session {
-  const selected=parse(SnapshotSchema,snapshot,SNAPSHOT_BYTES),session=new Session(options);check(selected.registry===V.registry.id&&selected.registryDigest===V.registryDigest,'unsupported-registry','Snapshot registry pin differs from this interpreter');
+  const selected=parseSnapshot(snapshot),session=new Session(options);check(selected.registry===V.registry.id&&selected.registryDigest===V.registryDigest,'unsupported-registry','Snapshot registry pin differs from this interpreter');
   for(const row of selected.artifacts){check(!session.#artifacts.has(row.id),'invalid-input','Duplicate snapshot artifact');const artifact=session.#admit(row.source);check(artifact.id===row.id,'invalid-input','Snapshot source identity mismatch');}
   check(selected.records.length<=session.#limits.maxRecords,'resource-limit','Snapshot exceeds record count budget');
   for(const imported of selected.records){check(!session.#records.has(imported.id),'invalid-input','Duplicate snapshot execution record');const artifact=session.#lookup(imported.artifactId),run=imported.result;

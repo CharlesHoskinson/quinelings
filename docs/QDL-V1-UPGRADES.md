@@ -1,12 +1,12 @@
-# Candidate identity and future upgrades
+# QDL 1 identity and future upgrades
 
-Quinelings — Living Thoughts. The current profile remains a candidate. This policy defines how a stable profile would be kept useful without rewriting historical source identities.
+Quinelings — Living Thoughts. QDL 1 freezes `qdl-kernels-1` at registry digest `43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3` for bounded deterministic simulation-only computation. SDK 1.0.0 exposes the stable profile through explicit v1 entry points; legacy/default APIs and ranch policies remain experimental. This policy preserves historical source identities across future upgrades.
 
 A source pins `format`, `version`, `canonical`, `registry` and `registryDigest` inside both constructor quotations. Its artifact ID hashes the complete canonical source. The registry manifest binds the operation contract and implementation files. A changed implementation pin produces different compiled source, even if a particular task produces the same output.
 
-During candidate development, a pin change requires explicit review, a recorded reason and reviewed new candidate fixtures. The twelve legacy golden examples are immutable and come from repository revision `10f3cfd3a1b69b40cb006abeaa4091861b8ba46e`; candidate pin changes must never rebaseline them. Normal checks run `build-v1-registry.cjs --check`, which checks both the executable registry and JSON sidecar. CI must not run a generator to make a failing pin check disappear.
+A change to the frozen semantics, signature, limits, diagnostics or pinned implementation requires a new reviewed registry identity, a recorded reason and new conformance fixtures; it must not reuse this digest or silently replace its implementation. The twelve legacy golden examples are immutable and come from repository revision `10f3cfd3a1b69b40cb006abeaa4091861b8ba46e`; future registry changes must never rebaseline them. Normal checks run `node scripts/build-v1-registry.cjs --check`, which checks both the executable registry and JSON sidecar. CI must not run a generator to make a failing pin check disappear.
 
-A stable release must retain its interpreter tarball, manifest, golden sources and exact genomes under an immutable release/tag. Retain its source checkout as well. A newer interpreter must either advertise and test support for that exact historical pin or refuse it with `unsupported-registry`; recognizing a `version:1` marker alone grants no compatibility. The current interpreter supports only its exact current pin. No multi-registry loader is implemented.
+Release designation `qdl-v1.0.0` reserves `releases/qdl-v1.0.0` for the matching source checkout/archive, registry manifest, golden sources and exact genomes, and SDK 1.0.0 tarball. These artifacts and their recorded hashes must remain immutable under the matching release/tag. The SDK is not published to npm; installing the retained tarball is the package distribution path. A newer interpreter must either advertise and test support for that exact historical pin or refuse it with `unsupported-registry`; recognizing a `version:1` marker alone grants no compatibility. The current interpreter supports only its exact current pin. No multi-registry loader is implemented.
 
 Upgrade is an explicit construction of a new artifact:
 
@@ -18,4 +18,4 @@ Upgrade is an explicit construction of a new artifact:
 
 Do not transfer old request keys into a new source's execution ledger. The original key binds the original complete request and retained record. A new source uses a new explicit request key; imported historical records remain assertions. Do not restore an incompatible whole-session snapshot by silently substituting new source or registry pins.
 
-The shipped `migrateLegacy` helper handles the experimental legacy task constructor → current candidate transition only. It requires explicit thought/type/port/evidence declarations and returns a passive preview. It is not a universal future-version translator. The matching-runtime inspection and reviewed `build` workflow above provides an upgrade path without promising an automatic migration engine.
+The shipped `migrateLegacy` helper handles the experimental legacy task constructor → QDL 1 transition only. It requires explicit thought/type/port/evidence declarations and returns a passive preview. It is not a universal future-version translator. The matching-runtime inspection and reviewed `build` workflow above provides an upgrade path without promising an automatic migration engine.

@@ -1,8 +1,9 @@
 {
   "passed": true,
-  "node": "v22.23.3",
+  "node": "v26.10.0",
   "package": "@quinelings/agent-sdk",
-  "archiveBytes": 321220,
+  "packageVersion": "1.0.0",
+  "archiveBytes": 324495,
   "checks": [
     "isolated consumer installation",
     "no dependency on repository source",

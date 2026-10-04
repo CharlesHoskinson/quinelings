@@ -75,6 +75,33 @@ test('bounded snapshots restore passively, preserve keyed replay and mark import
  snapshot.records[0]!.result.bindings.samples=[];assert.deepEqual(restored.run(request).result.bindings,{samples:[11,13]});
 }));
 
+test('full default ledger with dense trace values exports and restores passively',()=>countExecutions(calls=>{
+ const intent:Intent={format:'qdl-intent',version:1,name:'Dense snapshot',thought:'Propagate supplied inert nulls.',inputs:[{id:'yes',value:true,type:{kind:'boolean'}},{id:'data',name:'data',type:{kind:'array',element:{kind:'null'}}}],steps:Array.from({length:10},(_,i)=>({id:'v'+i,op:'choose' as const,inputs:['yes',i?'v'+(i-1):'data','data'],params:{}})),outputs:['v9']};
+ const session=new Session(),artifact=session.compile(intent),inputs={data:Array(512).fill(null)},request={artifactId:artifact.id,requestId:'dense-0',inputs};let first:ExecutionRecord|undefined;
+ for(let i=0;i<256;i++){const record=session.run({...request,requestId:'dense-'+i});assert.equal(record.result.status,'completed');if(i===0)first=record;}
+ assert.equal(calls(),256);const snapshot=session.exportSnapshot();assert.equal(snapshot.records.length,256);assert(Buffer.byteLength(JSON.stringify(snapshot))<128*1024*1024);
+ // Each trace has >16,000 scalar visits: the complete legal snapshot exceeds
+ // the ordinary request traversal ceiling while every bounded row remains safe.
+ const restored=Session.fromSnapshot(snapshot);assert.equal(calls(),256);const replay=restored.run(request);assert.equal(calls(),256);assert.equal(replay.id,first!.id);assert.equal(replay.evidence,'asserted');assert.deepEqual(replay.result,first!.result);
+ assert.throws(()=>restored.run({...request,requestId:'full'}),error('resource-limit'));assert.equal(calls(),256);assert.equal(restored.exportSnapshot().records.length,256);
+}));
+
+test('snapshot rows reject accessors, hidden properties, sparse arrays and cycles before reading them',()=>{
+ const session=new Session(),artifact=session.compile(fixture());session.run({artifactId:artifact.id,requestId:'safe',inputs:{samples:[1]}});const baseline=session.exportSnapshot();let touches=0;
+ for(const target of ['root','array','row','nested']){const changed=structuredClone(baseline);const getter={enumerable:true,get(){touches++;return [];}};
+  if(target==='root')Object.defineProperty(changed,'records',getter);
+  if(target==='array')Object.defineProperty(changed.records,'0',getter);
+  if(target==='row')Object.defineProperty(changed.records[0],'result',getter);
+  if(target==='nested')Object.defineProperty(changed.records[0]!.result.bindings,'samples',getter);
+  assert.throws(()=>Session.fromSnapshot(changed),error('invalid-input'));
+ }assert.equal(touches,0);
+ const hidden=structuredClone(baseline);Object.defineProperty(hidden.records,'extra',{value:1});assert.throws(()=>Session.fromSnapshot(hidden),error('invalid-input'));
+ const sparse=structuredClone(baseline);delete sparse.records[0];assert.throws(()=>Session.fromSnapshot(sparse),error('invalid-input'));
+ const cyclic=structuredClone(baseline);(cyclic.records[0]!.result.bindings as any).samples=cyclic.records[0];assert.throws(()=>Session.fromSnapshot(cyclic),error('invalid-input'));
+ const oversized=structuredClone(baseline);oversized.records[0]!.result.emitted[0]='x'.repeat(2*1024*1024);assert.throws(()=>Session.fromSnapshot(oversized),error('resource-limit'));
+ assert.deepEqual(session.exportSnapshot(),baseline);
+});
+
 test('snapshot corruption and fabricated computation cannot become retained evidence',()=>{
  const session=new Session(),artifact=session.compile(fixture()),parent=session.run({artifactId:artifact.id,requestId:'parent',inputs:{samples:[1,3]}}),snapshot=session.exportSnapshot();
  for(const mutate of [(s:any)=>s.artifacts.push(s.artifacts[0]),(s:any)=>s.records[0].result.inputHash='qi_'+'0'.repeat(64),(s:any)=>s.receipts[0].request.inputs.samples=[9],(s:any)=>s.registryDigest='0'.repeat(64),(s:any)=>s.records[0].parentRecordId='run_00000000-0000-0000-0000-000000000000']){const changed=structuredClone(snapshot);mutate(changed);assert.throws(()=>Session.fromSnapshot(changed),QdlError);}

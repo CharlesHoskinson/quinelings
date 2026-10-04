@@ -17,11 +17,11 @@ The creatures use continuous luminous curves, family-specific anatomy, and a sha
 
 The experimental creation compiler accepts explicit bounded thought recipes or typed IntentIR and generates new graph-derived chamber/spine bodies with exact operation ownership. Build, inspection, animation and source recovery are passive; Run and verified-copy controls explicitly evaluate the source. A ProposalProvider interface lets an agent supply broader model-generated plans through the same compiler checks.
 
-The package at `packages/agent-sdk` exposes a typed Runtime, recursive intent schemas, an MCP stdio adapter and an A2A JSON-RPC/REST hookup. Install dependencies with `npm run sdk:install`, then `npm run sdk:check`. The published downloadable tarball works independently of this checkout. Guides: [quickstart](docs/sdk-quickstart.md), [lifecycle](docs/sdk-lifecycle.md), [API reference](docs/sdk-api.md), [experimental ranch](docs/SDK-RANCH-GUIDE.md), [MCP](docs/sdk-mcp-guide.md), [A2A](docs/sdk-a2a-guide.md).
+Agent SDK 1.0.0 at `packages/agent-sdk` exposes stable QDL 1 through `Session` from `@quinelings/agent-sdk/v1`, shared schemas, MCP and A2A. Download [the 1.0.0 package](assets/sdk/quinelings-agent-sdk-1.0.0.tgz). The original `Runtime` entry point remains legacy experimental. Install dependencies with `npm run sdk:install`, then `npm run sdk:check`. The published downloadable tarball works independently of this checkout. Start with the [QDL 1 SDK guide](docs/SDK-V1.md) and [language contract](docs/QDL-V1.md). Legacy experimental guides: [quickstart](docs/sdk-quickstart.md), [lifecycle](docs/sdk-lifecycle.md), [API reference](docs/sdk-api.md), [ranch](docs/SDK-RANCH-GUIDE.md), [MCP](docs/sdk-mcp-guide.md), [A2A](docs/sdk-a2a-guide.md).
 
-The Runtime and adapters expose sixteen operations/tools. The ranch supports typed offspring previews, stateless body sampling, explicit keyed admission, session lineage and bounded reciprocal social commands. Admission and world ticks never run a task; Run remains explicit. Imported participation starts disabled. Source parent hashes are assertions, while session derivations retain the construction evidence. Original request keys and complete payloads resolve retained retries after transport loss.
+The legacy experimental Runtime and adapters expose sixteen operations/tools. The ranch supports typed offspring previews, stateless body sampling, explicit keyed admission, session lineage and bounded reciprocal social commands. Admission and world ticks never run a task; Run remains explicit. Imported participation starts disabled. Source parent hashes are assertions, while session derivations retain the construction evidence. Original request keys and complete payloads resolve retained retries after transport loss.
 
-QDL remains experimental; the compatibility marker and experimental package identifier do not freeze the language. [Formal model obligations](docs/GENERATIVE-FORMAL-MODEL.md) distinguish Lean theorems, Quint exploration, implementation tests and work still to prove.
+Stable QDL 1 freezes the bounded declared-thought simulation profile and its reviewed registry pin. Legacy source profiles and ranch construction/social policies remain experimental. [Identity and upgrades](docs/QDL-V1-UPGRADES.md) explains matching interpreters, retained release artifacts and explicit authored upgrades. [Formal model obligations](docs/GENERATIVE-FORMAL-MODEL.md) distinguish Lean theorems, Quint exploration, implementation tests and work still to prove.
 
 ## View the collection
 
@@ -89,8 +89,10 @@ The agent artwork was retrieved from public Midnight.city assets with Scrapling.
 
 `node verify-chroma.cjs` checks material ownership, quantitative scales, missing states, and pure color evaluation. `python verify-chromamapping.py` checks the colored collection, real recorded values, task-cycle selection, source invalidation, reproduction, and mobile layout.
 
-## Reusable Living Thoughts candidate
+## Stable QDL 1 · reusable Living Thoughts
 
 The new [workspace](https://charleshoskinson.github.io/quinelings/v1.html) shows ten reusable typed agent-task recipes. It links the public declaration, program nodes, source-owned body, supplied run inputs, outcomes and exact emitted constructor source. Runtime observations change results without changing source or body.
 
-The [candidate QDL contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBRARY.md), and [candidate SDK guide](docs/SDK-V1.md) document the separate profile and release gates. Legacy artifacts keep their identities and behavior; [explicit passive migration](qdl-v1-migrate.js) requires supplied declarations, types and chosen ports. Every effect remains a local simulation.
+The [stable QDL 1 contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBRARY.md), and [SDK 1.0.0 guide](docs/SDK-V1.md) document the stable local profile, typed inputs and supported boundaries. Legacy artifacts keep their identities and behavior; [explicit passive migration](qdl-v1-migrate.js) requires supplied declarations, types and chosen ports. Every effect remains a local simulation.
+
+Stable QDL 1 uses explicit public declarations, not private model reasoning. Memory sessions and simulated receipts provide no durable hosting or live City authority. The release is identified as `qdl-v1.0.0`; npm publication is separate from the downloadable package.

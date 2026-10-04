@@ -9,7 +9,7 @@ const REQUEST_BYTES=4*1024*1024,RESPONSE_BYTES=8*1024*1024;
 const RecoveryInputSchema=z.strictObject({recovery:RecoverySchema});
 /** Separate stable-profile adapter. No tools grant external host authority. */
 export function createV1McpServer(session:Session=new Session()):McpServer {
- const server=new McpServer({name:'quinelings-v1',version:'1.0.0-candidate'});
+ const server=new McpServer({name:'quinelings-v1',version:'1.0.0'});
  function register<S extends z.ZodRawShape>(operation:Request['operation'],description:string,inputSchema:z.ZodObject<S>,readOnly:boolean):void {
   const outputSchema=z.strictObject({result:ResultSchemas[operation]});
   server.registerTool<typeof outputSchema,typeof inputSchema>(`quineling_v1_${operation}`,{description,inputSchema,outputSchema,annotations:{readOnlyHint:readOnly,destructiveHint:false,idempotentHint:true,openWorldHint:false}},async(raw,extra):Promise<CallToolResult>=>{

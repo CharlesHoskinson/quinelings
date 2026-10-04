@@ -1,16 +1,16 @@
 {
-  "status": "passed-local-and-live-acceptance",
-  "languageStatus": "v1 candidate",
+  "status": "passed-local-release-acceptance",
+  "languageStatus": "QDL 1; reviewed frozen profile",
   "tagline": "Living Thoughts",
   "technicalSpecialists": 10,
   "brandingSpecialists": 5,
   "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
-  "checkedAt": "2026-10-04T15:05:09.596751+00:00",
+  "checkedAt": "2026-10-04T15:39:32.247193+00:00",
   "node": [
     "v22.23.3",
     "v26.10.0"
   ],
-  "sdkTestsPerNode": 107,
+  "sdkTestsPerNode": 109,
   "sdkTypecheckAndBuild": true,
   "strictTypes": 93,
   "contractCases": 154,
@@ -46,10 +46,10 @@
     "ranch renderer cache/context/fallback budgets"
   ],
   "packedConsumers": [
-    "Node22: fourlegacy+sixv1entrypoints, outputs9/11, recovery/replay",
-    "Node26: fourlegacy+sixv1entrypoints, outputs9/11, recovery/replay"
+    "Node22.23.3: exact1.0.0archive, fourlegacy+sixv1imports,9/11replay/recovery,child12/8and9/0",
+    "Node26.10.0: same byte-identical1.0.0archive, same independent assertions"
   ],
-  "archiveSha256": "26736a20abbc47119633864600bc67d030e6f94c21ab79333609e112819a0a82",
+  "archiveSha256": "6f94a62e7109994abcd27d00594b4e20b713f16c7295a2e1c0e128b66413c657",
   "limits": [
     "single-owner local memory session",
     "simulation-only effects",
@@ -65,8 +65,19 @@
     "ranch-browser.json",
     "final-semantics-audit.md",
     "formal-runtime-correspondence.md",
-    "ranch-implementation.md"
+    "ranch-implementation.md",
+    "release-language-gates.md",
+    "release-delivery-gates.md",
+    "release-api-gates.md"
   ],
   "publication": "publication.json",
-  "finalReleaseFreeze": "pending; profile remains candidate"
+  "finalReleaseFreeze": "reviewed pin unchanged; artifact retention/publication in progress",
+  "sdkVersion": "1.0.0",
+  "snapshotRoundtrip": {
+    "records": 256,
+    "serializedBytes": 26040091,
+    "passiveImport": true,
+    "structuralBounds": "symmetric row/aggregate validation; not a global request traversal ceiling"
+  },
+  "archiveBytes": 324495
 }

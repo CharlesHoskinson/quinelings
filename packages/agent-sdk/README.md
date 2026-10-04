@@ -1,33 +1,73 @@
 # Quinelings Agent SDK
 
-A TypeScript interface for bounded thought programs, source-authored mathematical bodies and constructor quines. The SDK and QDL are experimental; current package and source markers do not freeze the language.
+Agent SDK **1.0.0** provides stable **QDL 1**: bounded declared-thought programs, source-authored mathematical bodies and complete constructor quines. Import `Session` from the explicit `/v1` entry point. Runtime snapshots remain outside source; every effect is a local simulation. Legacy `Runtime` and ranch policies remain experimental.
 
-```ts
-import { Runtime } from '@quinelings/agent-sdk';
-const runtime = new Runtime();
-const created = runtime.create('[2,3,4] | square | sum | report total');
-if (created.status === 'supported') {
-  const record = runtime.run(created.artifact.id);
-  console.log(record.result.tasks[0]?.output); // [{ total: 29 }]
-  const child = runtime.reproduce(created.artifact.id, record.id);
-  console.log(child.artifact.source === created.artifact.source); // true
-}
+Install the [1.0.0 tarball](https://charleshoskinson.github.io/quinelings/assets/sdk/quinelings-agent-sdk-1.0.0.tgz) with Node.js 22+: `npm install ./quinelings-agent-sdk-1.0.0.tgz`. This package has not been published to npm.
+
+```js
+import { Session } from '@quinelings/agent-sdk/v1';
+
+const session = new Session();
+const liter = {kind: 'number', unit: 'L', min: 0};
+const intent = {
+  format: 'qdl-intent', version: 1, name: 'Supplied water total',
+  thought: {
+    observations: [
+      {id: 'observedReadings', text: 'Explicitly supplied liter readings.', input: 'readings', path: [], basis: 'open'},
+      {id: 'observedReserve', text: 'Explicitly supplied reserve liters; no ambient stored balance.', input: 'reserve', path: [], basis: 'open'}
+    ],
+    evidence: [], goals: [], decisions: [],
+    plans: [{id: 'plan', text: 'Sum the readings, then add the supplied reserve.', tasks: ['task']}],
+    tasks: [{id: 'task', text: 'Compute the bounded total from this snapshot.', nodes: ['readings', 'reserve', 'subtotal', 'total'], outputs: ['total']}]
+  },
+  inputs: [
+    {id: 'readings', name: 'readings', type: {kind: 'array', element: liter}},
+    {id: 'reserve', name: 'reserve', type: liter}
+  ],
+  steps: [
+    {id: 'subtotal', op: 'sum', inputs: ['readings'], params: {}},
+    {id: 'total', op: 'arithmetic', inputs: ['subtotal', 'reserve'], params: {kind: 'add'}}
+  ],
+  outputs: ['total']
+};
+const artifact = session.compile(intent);
+
+const first = session.run({
+  artifactId: artifact.id, requestId: 'water-a',
+  inputs: { readings: [2, 3], reserve: 4 }
+}); // outputs: [9]
+const second = session.run({
+  artifactId: artifact.id, requestId: 'water-b',
+  inputs: { readings: [4, 5], reserve: 2 }
+}); // outputs: [11]
+
+console.log(first.result.occurrences[0].outputs); // [9]
+console.log(second.result.occurrences[0].outputs); // [11]
+console.log(session.inspect(artifact.id).source === artifact.source); // true
+session.verify(artifact.id); // source-only; no task evaluation
 ```
 
-`create`, `compile`, `inspect`, `recover` and `frame` do not execute tasks. `run` and `reproduce` explicitly execute; all current effects are local simulations. A `ProposalProvider` can propose typed data for broader English goals; every supported proposal is checked by the same compiler. Aborting a pending proposal rejects with `cancelled` even if its provider ignores the signal; late completion admits no artifact. Providers must still cancel their own I/O or remote work. No model credential or model client is bundled.
+`compile`, `inspect`, `verify`, `recover` and `frame` are passive. `run` and `reproduce` explicitly evaluate tasks. Exact request-key replay returns the retained record without another evaluation; changed inputs need a new key. Source carries all six public declaration arrays, normalized types, policy, task and body. These declarations do not expose private reasoning or establish observation truth. Imported snapshot histories remain asserted.
 
-Candidate reusable-input profile: import `Session` from `@quinelings/agent-sdk/v1`. Authored declarations and complete normalized type contracts live inside this profile’s constructor source. `run({artifactId,requestId,inputs})` supplies observations separately; exact request replay creates no second evaluation. See [candidate SDK guide](../../docs/SDK-V1.md) and [QDL contract](../../docs/QDL-V1.md). Source-only `verify` evaluates the constructor while skipping its task. This profile remains a candidate until the documented release gates pass.
+See the [stable SDK guide](../../docs/SDK-V1.md), [QDL 1 contract](../../docs/QDL-V1.md), [ten reusable recipes](../../docs/QDL-V1-LIBRARY.md) and [identity/upgrade policy](../../docs/QDL-V1-UPGRADES.md). The release identity is `qdl-v1.0.0`.
 
 Exports:
 
-- `@quinelings/agent-sdk`: `Runtime`, `QuinelingError`, typed intent/requests/results, recipes.
+- `@quinelings/agent-sdk/v1`: stable `Session`, `sourceOnly`, `QdlError` and typed intents, requests and results.
+- `@quinelings/agent-sdk/v1-schema`, `/v1-mcp`, `/v1-a2a`, `/v1-migrate`: shared schemas, adapters and explicit passive legacy migration.
+- `@quinelings/agent-sdk/v1-ranch`: experimental typed analyze/preview/admit policies.
+- `@quinelings/agent-sdk`: legacy experimental `Runtime`, `QuinelingError`, typed intent/requests/results, recipes.
 - `@quinelings/agent-sdk/schema`: strict recursive JSON and intent Zod schemas.
 - `@quinelings/agent-sdk/mcp`: `createQuinelingMcpServer` and stdio CLI `quinelings-mcp`.
 - `@quinelings/agent-sdk/a2a`: `createA2AApp`, `BoundedTaskStore`, `QuinelingExecutor` and CLI `quinelings-a2a`.
 
 Node.js 22+; ESM and TypeScript declarations. `npm ci && npm run build && npm run typecheck && npm test` in this package builds and verifies the checkout. Then run `node examples/basic.mjs` for an asserted total-29 calculation and source-matching copy. Install a built directory or the downloadable tarball; this package has not been published to npm.
 
-Start MCP with `node dist/mcp-cli.js`. Start the loopback A2A server with `node dist/a2a-cli.js`; discovery is `http://127.0.0.1:8049/.well-known/agent-card.json`. The adapter uses official MCP and A2A SDKs. Public/multi-user hosting requires the embedder's authentication and per-session runtime isolation.
+For stable QDL 1, start MCP with `node dist/v1-mcp-cli.js` or A2A with `node dist/v1-a2a-cli.js`. The following legacy experimental API remains available.
+
+## Legacy experimental Runtime
+
+Start legacy MCP with `node dist/mcp-cli.js`. Start the loopback A2A server with `node dist/a2a-cli.js`; discovery is `http://127.0.0.1:8049/.well-known/agent-card.json`. The adapter uses official MCP and A2A SDKs. Public/multi-user hosting requires the embedder's authentication and per-session runtime isolation.
 
 Artifact IDs hash complete canonical source. Execution IDs identify individual runs. Returned data are detached snapshots. Typed interpretation metadata is a companion to the quine; persist complete artifacts when it matters. Genome recovery in a fresh runtime has no companion metadata. A matching `compile` or supported `create` can explicitly attach the first companion to the recovered source while retaining its ID. Re-admitting the same intent keeps the first companion and source map; a different intent for identical source throws `metadata-conflict` without overwriting it. Regenerating the same source requires matching compiler behavior, seed and repeat choices. Intent equality uses canonical JSON, not semantic normalization: equivalent unit spellings and omitted versus empty assumptions can still conflict. Formatting a source export is allowed: recovery canonicalizes JSON and validates the constructor.
 
@@ -66,7 +106,7 @@ For new commands, use the exact `nextSequence` and current `revision` from `worl
 
 Admission stages validation, serialization and all capacities before one synchronous store swap; refusals preserve stores and charges. This is session-local in-memory atomicity, not crash durability. Limits include source 64 KiB, candidate 2 MiB, derivation 32 KiB/64 origins, artifact aggregate 32 MiB, 128 derivations/4 MiB, 128 successful admission receipts without eviction, 32 residents/8 nursery, 16 pairs/proposals, world snapshot 1 MiB, event ring 256 and command receipt window 256. Counters/ticks stop at 1000000. Explicit Run capacity is separate from admission. Lineage/read/preview/frame operations do not tick or execute.
 
-MCP discovers all 16 `quineling_*` tools: the original parse/compile/create/inspect/run/reproduce/recover/frame and offspring_preview/offspring_frame/offspring_admit/lineage/annotate/world_create/world_inspect/world_command. Its strict schemas expose actual nested recipe/type fields, read-only/mutation annotations and structured `{code,message,path}` errors; successful results use `{result}`. A2A advertises `build`, `ranch` and `execute` skills and accepts the same structured operation union. A single user text part still means passive create; ranch requests use a single JSON data part and retain `{operation,result}` artifact envelopes. A2A task/message IDs do not replace admission/sequence keys. Cancellation can win before dispatch; synchronous evaluation/commit cannot be interrupted midway. No stable language version or full JS/compiler/SHA/formal/browser/performance proof is claimed.
+MCP discovers all 16 `quineling_*` tools: the original parse/compile/create/inspect/run/reproduce/recover/frame and offspring_preview/offspring_frame/offspring_admit/lineage/annotate/world_create/world_inspect/world_command. Its strict schemas expose actual nested recipe/type fields, read-only/mutation annotations and structured `{code,message,path}` errors; successful results use `{result}`. A2A advertises `build`, `ranch` and `execute` skills and accepts the same structured operation union. A single user text part still means passive create; ranch requests use a single JSON data part and retain `{operation,result}` artifact envelopes. A2A task/message IDs do not replace admission/sequence keys. Cancellation can win before dispatch; synchronous evaluation/commit cannot be interrupted midway. These ranch policies and legacy APIs remain experimental. Stable QDL 1 does not imply a full JS/compiler/SHA/formal/browser/performance proof.
 
 Guides and visual workspace: https://charleshoskinson.github.io/quinelings/sdk.html
 Source and tests: https://github.com/CharlesHoskinson/quinelings/tree/main/packages/agent-sdk

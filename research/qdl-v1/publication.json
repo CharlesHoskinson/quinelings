@@ -1,29 +1,37 @@
 {
-  "status": "published-and-live-verified",
-  "checkedAt": "2026-10-04T15:16:37.877611+00:00",
-  "mainImplementationCommit": "d657d77",
-  "pagesCommit": "02bf88024242c47e7411ac81b29a9b2dee5bc585",
+  "status": "stable-release-published-and-live-verified",
+  "checkedAt": "2026-10-04T15:52:52.694Z",
+  "mainImplementationCommit": "4d63e49feaae05295a5ad8933f2cd070b9447700",
+  "pagesCommit": "426a2163ca250939c1f1ea8aacd410ae6fa02258",
   "site": "https://charleshoskinson.github.io/quinelings/",
+  "release": "qdl-v1.0.0",
   "http": [
     {
       "path": "v1.html",
       "status": 200,
-      "bytes": 6780,
-      "sha256": "6e043b18b9716b09439ba81a67baa5bbc3189ca39fef24bf0c08de2df6df4824",
+      "bytes": 6785,
+      "sha256": "4007d7bccfb483793ee48419b9e2440868ab019a1d6f7872e8b0d114a5776e8f",
       "matchesLocal": true
     },
     {
       "path": "ranch-workshop.html",
       "status": 200,
-      "bytes": 5236,
-      "sha256": "bd66ce102a4d8486281f186d023a5e7ff34f77cfd85ed10f1f701017def44eda",
+      "bytes": 5305,
+      "sha256": "f0a3fa7561fd01f429a1da550f5323e63a8a635b860791e64b0995203524c70e",
+      "matchesLocal": true
+    },
+    {
+      "path": "sdk.html",
+      "status": 200,
+      "bytes": 11620,
+      "sha256": "1a2fee095f26575355dd2d5477faab3e6cc746f090a7fdd71f3e684bfbc518e5",
       "matchesLocal": true
     },
     {
       "path": "assets/ranch/quinelings-runtime.js",
       "status": 200,
-      "bytes": 1188306,
-      "sha256": "b234504d9f22421352d062df9e0585d56d619ff615d5729cdb8834273a1c3699",
+      "bytes": 1190462,
+      "sha256": "92d6d7e84b9abe4aecee8f8b8da1999aec86e5506b212bb4d8eafb85e3e054ea",
       "matchesLocal": true
     },
     {
@@ -36,52 +44,113 @@
     {
       "path": "docs/sdk-v1.html",
       "status": 200,
-      "bytes": 21228,
-      "sha256": "7cc967efa0541b7ee30a176a18cf5ec55eeca05c41c90f36ead4846332b9c307",
+      "bytes": 23154,
+      "sha256": "8203fd3c018c2fe57a34c0710e6eee7d08d656fd585420764702ba77f6ab0279",
       "matchesLocal": true
     },
     {
       "path": "docs/qdl-v1.html",
       "status": 200,
-      "bytes": 30333,
-      "sha256": "9979f7ec0eb26448174c8133ae25bcb30f79b885d315a699bf02d4e10a315764",
+      "bytes": 31784,
+      "sha256": "8984e18a6f1d0f90ffd7ff2f8416e21ece07687f1e70019a7aa353065618f1c5",
       "matchesLocal": true
     },
     {
-      "path": "assets/sdk/quinelings-agent-sdk-0.0.0-experimental.tgz",
+      "path": "assets/sdk/quinelings-agent-sdk-1.0.0.tgz",
       "status": 200,
-      "bytes": 321220,
-      "sha256": "26736a20abbc47119633864600bc67d030e6f94c21ab79333609e112819a0a82",
+      "bytes": 324495,
+      "sha256": "6f94a62e7109994abcd27d00594b4e20b713f16c7295a2e1c0e128b66413c657",
+      "matchesLocal": true
+    },
+    {
+      "path": "releases/qdl-v1.0.0/manifest.json",
+      "status": 200,
+      "bytes": 2297,
+      "sha256": "f6fe26bbf478ef9fc4e064e55d85b01dbf9994280cab01c4a57ad58b476047b3",
+      "matchesLocal": true
+    },
+    {
+      "path": "releases/qdl-v1.0.0/quinelings-qdl-v1.0.0-source.tar.gz",
+      "status": 200,
+      "bytes": 26587703,
+      "sha256": "3c046d8f818efda681ce1b6b4c1e258c0d99784bf51256d0fc44c7f023bb2451",
       "matchesLocal": true
     }
   ],
-  "browser": {
-    "status": "passed",
+  "liveBrowser": {
     "browser": "153.0.8010.12",
-    "workspace": {
+    "startup": {
       "recipes": 10,
-      "startupRecords": 0,
-      "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
-      "sourceMatchesGolden": true,
-      "outputs": [
-        {
-          "liters": 9,
-          "measurements": 3
-        }
-      ],
-      "emittedExact": true
+      "records": 0,
+      "status": true,
+      "tagline": true
     },
-    "workshop": {
-      "outputs": [
-        {
-          "allocated": 12,
-          "remaining": 8
-        }
-      ],
-      "emittedExact": true,
-      "records": 1
-    },
-    "errors": []
+    "waterOutput": [
+      {
+        "liters": 9,
+        "measurements": 3
+      }
+    ],
+    "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+    "workshop": "compose12/8 after explicit preview/admit/run",
+    "mobile": [
+      {
+        "path": "v1.html",
+        "viewport": 320,
+        "scroll": 320,
+        "tagline": true
+      },
+      {
+        "path": "sdk.html",
+        "viewport": 320,
+        "scroll": 320,
+        "tagline": true
+      },
+      {
+        "path": "ranch-workshop.html",
+        "viewport": 320,
+        "scroll": 320,
+        "tagline": true
+      }
+    ],
+    "pageErrors": []
   },
-  "scope": "Published v1 candidate; stable release freeze remains pending; no npm publication"
+  "githubRelease": {
+    "assets": [
+      {
+        "digest": "sha256:f6fe26bbf478ef9fc4e064e55d85b01dbf9994280cab01c4a57ad58b476047b3",
+        "name": "manifest.json",
+        "size": 2297,
+        "state": "uploaded"
+      },
+      {
+        "digest": "sha256:c3b062b550e81fc37b559c90571ccef779096ad0b46302a3a2c61785e602dc97",
+        "name": "qdl-v1-registry.json",
+        "size": 5426,
+        "state": "uploaded"
+      },
+      {
+        "digest": "sha256:6f94a62e7109994abcd27d00594b4e20b713f16c7295a2e1c0e128b66413c657",
+        "name": "quinelings-agent-sdk-1.0.0.tgz",
+        "size": 324495,
+        "state": "uploaded"
+      },
+      {
+        "digest": "sha256:3c046d8f818efda681ce1b6b4c1e258c0d99784bf51256d0fc44c7f023bb2451",
+        "name": "quinelings-qdl-v1.0.0-source.tar.gz",
+        "size": 26587703,
+        "state": "uploaded"
+      },
+      {
+        "digest": "sha256:f3011b588cf3ae426b6f5be3c1d55f54403c23dbdb439d7821ccb8616eba3695",
+        "name": "SHA256SUMS",
+        "size": 366,
+        "state": "uploaded"
+      }
+    ],
+    "draft": false,
+    "html_url": "https://github.com/CharlesHoskinson/quinelings/releases/tag/qdl-v1.0.0",
+    "tag_name": "qdl-v1.0.0"
+  },
+  "releaseTagCommit": "4d63e49feaae05295a5ad8933f2cd070b9447700"
 }

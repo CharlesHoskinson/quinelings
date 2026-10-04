@@ -1,5 +1,5 @@
 {
-  "status": "release-handoff",
+  "status": "completed",
   "createdAt": "2026-10-04T12:55:11.077068+00:00",
   "tagline": "Living Thoughts",
   "technicalWorkstreams": 10,
@@ -177,13 +177,13 @@
       ]
     }
   ],
-  "scopeSummary": "Ten technical and five branding workstreams complete; QDL 1 and SDK1.0.0 acceptance passed. Final release retention and website publication in progress.",
+  "scopeSummary": "Ten technical and five branding workstreams completed. Stable QDL 1 and SDK1.0.0 implemented, accepted on Node22/26 and actual Chromium, retained and released; live website verified. Ranch policies remain experimental.",
   "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
-  "updatedAt": "2026-10-04T15:39:32.247193+00:00",
+  "updatedAt": "2026-10-04T15:54:59.937702+00:00",
   "delivery": {
-    "status": "release acceptance passed; stable artifact retention and publication in progress",
-    "language": "QDL 1 frozen profile",
-    "stableRelease": false,
+    "status": "completed; stable release and website published and live verified",
+    "language": "stable QDL 1",
+    "stableRelease": true,
     "newSurfaces": [
       "v1.html",
       "ranch-workshop.html"
@@ -200,8 +200,10 @@
       "legacyGoldens": 12,
       "actualChromium": true
     },
-    "implementationCommit": "d657d77",
-    "pagesCommit": "02bf88024242c47e7411ac81b29a9b2dee5bc585",
-    "publication": "publication.json"
+    "implementationCommit": "3fa1fc49086b69d365e10d2306f34c57f27c285d",
+    "pagesCommit": "426a2163ca250939c1f1ea8aacd410ae6fa02258",
+    "publication": "publication.json",
+    "releaseTagCommit": "4d63e49feaae05295a5ad8933f2cd070b9447700",
+    "githubRelease": "https://github.com/CharlesHoskinson/quinelings/releases/tag/qdl-v1.0.0"
   }
 }

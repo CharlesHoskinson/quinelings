@@ -5,7 +5,7 @@
   "description": "Executable mathematical creatures with recoverable harmonic and color genomes",
   "scripts": {
     "dev": "python3 -m http.server 8048 --bind 127.0.0.1",
-    "test": "node verify.cjs && node verify-library.cjs && node verify-design.cjs && node audit.cjs",
+    "test": "node verify.cjs && node verify-library.cjs && node verify-design.cjs && node audit.cjs && node verify-morphology.cjs",
     "formal": "quint typecheck spec/design.qnt && quint test spec/design.qnt --max-samples=100 --backend=typescript && quint run spec/design.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261003 --backend=typescript --verbosity=1"
   },
   "engines": {

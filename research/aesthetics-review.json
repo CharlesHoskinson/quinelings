@@ -1,0 +1,56 @@
+{
+  "reviewers": 12,
+  "sourceWebsite": "https://charleshoskinson.github.io/quinelings/",
+  "reviews": [
+    {
+      "agent": "aesthetic_geometry",
+      "adopted": "Shared coordinate projection; family-aware graph spines; continuous curves."
+    },
+    {
+      "agent": "aesthetic_motion",
+      "adopted": "Elapsed-time shared phase; smooth dust opacity; independent recorded-trace activity."
+    },
+    {
+      "agent": "aesthetic_art",
+      "adopted": "Luminous path cores and restrained halos, dominant ribs, closed moth wings."
+    },
+    {
+      "agent": "aesthetic_rendering",
+      "adopted": "Cache anchors per frame; sample dependency bends using cached endpoints; skip invisible/frozen views."
+    },
+    {
+      "agent": "aesthetic_topology",
+      "adopted": "Producer/consumer pinning, depth and sibling lanes, directional edge marks."
+    },
+    {
+      "agent": "aesthetic_biology",
+      "adopted": "Rooted coral and tentacle motion; coordinated moth wing envelope."
+    },
+    {
+      "agent": "aesthetic_color",
+      "adopted": "Exact operation colors on cores; neutral structural light; resting organ visibility and local emphasis."
+    },
+    {
+      "agent": "aesthetic_accessibility",
+      "adopted": "Shared pause/reduced-motion control; selected labels; CSS-pixel hit targets; keyboard clear focus."
+    },
+    {
+      "agent": "aesthetic_dynamics",
+      "adopted": "Single phase for surfaces and organs; bounded harmonic motion; honest distinction from future attractor dynamics."
+    },
+    {
+      "agent": "aesthetic_formal",
+      "adopted": "Trace node independent from selection; source/geometry purity, endpoint and timing regression checks."
+    },
+    {
+      "agent": "aesthetic_validation",
+      "adopted": "Close bloom breathing seam; validate closed loops, default bounds, pause and hit tests."
+    },
+    {
+      "agent": "aesthetic_experience",
+      "adopted": "Reversible portrait/inspection focus and stable separation of presentation from executable behavior."
+    }
+  ],
+  "concept": "Stable executable anatomy, authored family presentation, and transient recorded execution are distinct layers.",
+  "futureResearch": "A deterministic fixed-step attractor mode and same-phase comparison of program variants remain future work."
+}

@@ -6,6 +6,8 @@ Run `bash scripts/publish-pages.sh` to verify and publish the static application
 
 Quinelings are small executable programs with animated mathematical bodies. Their anatomy reflects program structure; finite harmonic bands and an exact RGB strand preserve the complete source. Each of the ten library programs runs a useful local task and constructs its own canonical source through quotation and ordinary constructors.
 
+The creatures use continuous luminous curves, family-specific anatomy, and a shared elapsed-time motion clock. Pause freezes both viewers; Clear focus or Escape returns to the portrait. Recorded execution markers keep their identity when you inspect another operation. Twelve domain reviews informing this design are summarized in `research/aesthetics-review.json`.
+
 ## View the collection
 
 No application dependencies or build step are required. From this repository:
@@ -64,3 +66,5 @@ Twelve research agents contributed ten programs, the language audit, and the gal
 The agent artwork was retrieved from public Midnight.city assets with Scrapling. `assets/midnight/provenance.json` records the original URLs, timestamps, and SHA-256 hashes. Reproduce the retrieval with a local environment using `scripts/requirements-scraping.txt` and `python scripts/scrape-midnight-agent.py`. The art represents an illustrative agent; the thought is the explicitly authored library task.
 
 `python verify-translation.py` checks the bubble transition, linked source/organ/equation mapping, source-preserving view transitions, all ten programs, reduced motion, and mobile layout.
+
+`node verify-morphology.cjs` checks all-family geometry, endpoint pinning, closed loops, pure source-preserving projection, and frame-rate independence. `python verify-motion.py` checks the shared browser clock, pause, dynamic reduced motion, organ selection, and recorded-trace identity. Set `QUINELINGS_URL` to check a hosted website instead of its temporary local server.

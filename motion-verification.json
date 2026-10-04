@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "sharedClock": true,
+  "pauseFreezesPixelsAndClock": true,
+  "dynamicReducedMotion": true,
+  "viewPreservesSourceAndDoesNotExecute": true,
+  "selectionPreservesRecordedTrace": true,
+  "canvasHitTest": true,
+  "clearFocusKeyboard": true,
+  "mobileNoOverflow": true,
+  "pageErrors": []
+}

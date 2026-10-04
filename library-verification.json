@@ -7,7 +7,7 @@
       "family": "filament",
       "nodes": 17,
       "connections": 22,
-      "sourceBytes": 5177,
+      "sourceBytes": 5179,
       "harmonicBands": 163,
       "fixtures": [
         "default-confirmed-fault",
@@ -27,7 +27,7 @@
       "family": "comet",
       "nodes": 5,
       "connections": 6,
-      "sourceBytes": 2719,
+      "sourceBytes": 2721,
       "harmonicBands": 86,
       "fixtures": [
         "default-bridge-closure-detour",
@@ -46,7 +46,7 @@
       "family": "coral",
       "nodes": 9,
       "connections": 11,
-      "sourceBytes": 3215,
+      "sourceBytes": 3217,
       "harmonicBands": 101,
       "fixtures": [
         "sufficient-capacity",
@@ -64,7 +64,7 @@
       "family": "jelly",
       "nodes": 4,
       "connections": 4,
-      "sourceBytes": 2505,
+      "sourceBytes": 2507,
       "harmonicBands": 79,
       "fixtures": [
         "Independent sources reach quorum despite one repeated report",
@@ -82,7 +82,7 @@
       "family": "ribbon",
       "nodes": 15,
       "connections": 21,
-      "sourceBytes": 4479,
+      "sourceBytes": 4481,
       "harmonicBands": 141,
       "fixtures": [
         "limited-reservoir",
@@ -102,7 +102,7 @@
       "family": "nautilus",
       "nodes": 6,
       "connections": 7,
-      "sourceBytes": 2957,
+      "sourceBytes": 2959,
       "harmonicBands": 93,
       "fixtures": [
         "branching-repair",
@@ -119,7 +119,7 @@
       "family": "bloom",
       "nodes": 17,
       "connections": 21,
-      "sourceBytes": 4961,
+      "sourceBytes": 4963,
       "harmonicBands": 156,
       "fixtures": [
         "contradiction-and-duplicate",
@@ -137,7 +137,7 @@
       "family": "torus",
       "nodes": 16,
       "connections": 20,
-      "sourceBytes": 4783,
+      "sourceBytes": 4785,
       "harmonicBands": 150,
       "fixtures": [
         "transient failures then confirmed delivery",
@@ -155,7 +155,7 @@
       "family": "moth",
       "nodes": 6,
       "connections": 6,
-      "sourceBytes": 3243,
+      "sourceBytes": 3245,
       "harmonicBands": 102,
       "fixtures": [
         "default-priority-filter-and-dedupe",
@@ -173,7 +173,7 @@
       "family": "seed",
       "nodes": 8,
       "connections": 12,
-      "sourceBytes": 2791,
+      "sourceBytes": 2793,
       "harmonicBands": 88,
       "fixtures": [
         "surplus preserves reserve",

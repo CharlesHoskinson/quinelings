@@ -1,0 +1,11 @@
+{
+  "passed": 5,
+  "programs": 10,
+  "checks": [
+    "Default source profile matches its checked-in QDL expression",
+    "One-second phase is independent of 20/30/60/120 Hz rendering",
+    "All ten families preserve finite anatomy, graph endpoints, source, and quine identity",
+    "Closed moth, torus, and bloom ridges have no breathing seam",
+    "Valid high-bend designs receive conservative framing without changing source"
+  ]
+}

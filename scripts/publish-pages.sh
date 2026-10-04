@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 npm test
 site_dir=$(mktemp -d)
 trap 'rm -rf "$site_dir"' EXIT
-cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js core.js gallery.js translation.js "$site_dir/"
+cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js morphology.js core.js gallery.js translation.js "$site_dir/"
 cp -R programs assets docs design spec "$site_dir/"
 touch "$site_dir/.nojekyll"
 site_origin=$(git remote get-url origin)

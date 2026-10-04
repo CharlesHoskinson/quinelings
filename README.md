@@ -1,5 +1,9 @@
 # Quinelings
 
+[Open the live website](https://charleshoskinson.github.io/quinelings/).
+
+Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and specifications to `gh-pages`. GitHub Pages deploys that branch automatically.
+
 Quinelings are small executable programs with animated mathematical bodies. Their anatomy reflects program structure; finite harmonic bands and an exact RGB strand preserve the complete source. Each of the ten library programs runs a useful local task and constructs its own canonical source through quotation and ordinary constructors.
 
 ## View the collection

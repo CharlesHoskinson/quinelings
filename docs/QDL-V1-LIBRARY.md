@@ -1,6 +1,6 @@
 # Living Thoughts: QDL 1 task library
 
-Status: ten reusable recipes for stable QDL 1 at the frozen registry pin, with independently authored conformance fixtures. Their invocation data is synthetic supplied context; live City integration is a separate host capability. [QDL-V1](QDL-V1.md) defines the source/input/type/simulation contract. The implementation is [qdl-v1-library.js](../qdl-v1-library.js), and its independent verifier is [verify-v1-library.cjs](../verify-v1-library.cjs).
+Ten reusable recipes for QDL 1. Each accepts supplied inputs and returns a local calculation or simulated action. The [language reference](QDL-V1.md) defines the types and execution rules; [qdl-v1-library.js](../qdl-v1-library.js) contains the recipes.
 
 The library exports ten `{id,name,description,intent,fixtures}` records. `programs` is deeply frozen; `get(id)` returns detached data. Each intent contains named runtime ports, authored constants and a full six-array public declaration with observation references, a plan and task coverage. Where a goal is declared, its completion field is an explicitly exported Boolean result. Runtime observations never become source literals. All City-shaped snapshots are synthetic, supplied examples.
 

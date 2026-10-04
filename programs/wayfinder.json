@@ -1,0 +1,114 @@
+{
+  "id": "wayfinder",
+  "name": "Wayfinder",
+  "description": "Finds the shortest available street route from a depot to a clinic, honoring blocked intersections and deterministic neighbor order. Also checks the zero-distance trip at the depot.",
+  "graph": {
+    "version": 1,
+    "name": "Blocked-street route planner",
+    "nodes": [
+      {
+        "id": "streets",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": {
+            "depot": ["arcade", "river"],
+            "arcade": ["depot", "library"],
+            "river": ["depot", "bridge"],
+            "library": ["arcade", "square"],
+            "bridge": ["river", "square", "clinic"],
+            "square": ["library", "bridge", "clinic"],
+            "clinic": ["square", "bridge"],
+            "park": []
+          }
+        }
+      },
+      {
+        "id": "closures",
+        "op": "literal",
+        "inputs": [],
+        "params": { "value": ["bridge"] }
+      },
+      {
+        "id": "clinicRoute",
+        "op": "bfs",
+        "inputs": ["streets", "closures"],
+        "params": { "start": "depot", "goal": "clinic" }
+      },
+      {
+        "id": "zeroTrip",
+        "op": "bfs",
+        "inputs": ["streets", "closures"],
+        "params": { "start": "depot", "goal": "depot" }
+      },
+      {
+        "id": "routes",
+        "op": "report",
+        "inputs": ["clinicRoute", "zeroTrip"],
+        "params": { "labels": ["clinicRoute", "zeroTrip"] }
+      }
+    ],
+    "outputs": ["routes"]
+  },
+  "skin": { "family": "comet", "accent": "#79d6f2" },
+  "fixtures": [
+    {
+      "name": "default-bridge-closure-detour",
+      "overrides": {},
+      "expected": [{
+        "clinicRoute": { "found": true, "path": ["depot", "arcade", "library", "square", "clinic"], "distance": 4 },
+        "zeroTrip": { "found": true, "path": ["depot"], "distance": 0 }
+      }]
+    },
+    {
+      "name": "open-streets-shorter-route",
+      "overrides": { "closures": [] },
+      "expected": [{
+        "clinicRoute": { "found": true, "path": ["depot", "river", "bridge", "clinic"], "distance": 3 },
+        "zeroTrip": { "found": true, "path": ["depot"], "distance": 0 }
+      }]
+    },
+    {
+      "name": "unreachable-clinic",
+      "overrides": { "closures": ["bridge", "square"] },
+      "expected": [{
+        "clinicRoute": { "found": false, "path": [], "distance": null },
+        "zeroTrip": { "found": true, "path": ["depot"], "distance": 0 }
+      }]
+    },
+    {
+      "name": "same-start-goal-isolated-depot",
+      "overrides": { "streets": { "depot": [], "clinic": [] }, "closures": [] },
+      "expected": [{
+        "clinicRoute": { "found": false, "path": [], "distance": null },
+        "zeroTrip": { "found": true, "path": ["depot"], "distance": 0 }
+      }]
+    },
+    {
+      "name": "equal-length-routes-follow-neighbor-order",
+      "overrides": {
+        "streets": {
+          "depot": ["arcade", "river"],
+          "arcade": ["depot", "square"],
+          "river": ["depot", "bridge"],
+          "square": ["arcade", "clinic"],
+          "bridge": ["river", "clinic"],
+          "clinic": ["square", "bridge"]
+        },
+        "closures": []
+      },
+      "expected": [{
+        "clinicRoute": { "found": true, "path": ["depot", "arcade", "square", "clinic"], "distance": 3 },
+        "zeroTrip": { "found": true, "path": ["depot"], "distance": 0 }
+      }]
+    },
+    {
+      "name": "blocked-origin-including-zero-trip",
+      "overrides": { "closures": ["depot"] },
+      "expected": [{
+        "clinicRoute": { "found": false, "path": [], "distance": null },
+        "zeroTrip": { "found": false, "path": [], "distance": null }
+      }]
+    }
+  ]
+}

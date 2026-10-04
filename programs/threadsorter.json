@@ -1,0 +1,87 @@
+{
+  "id": "threadsorter",
+  "name": "Threadsorter",
+  "description": "Prepare a work queue: retain ready jobs, order by descending priority with stable ties, and keep the highest-priority eligible occurrence of each job ID.",
+  "graph": {
+    "version": 1,
+    "name": "Threadsorter work queue",
+    "nodes": [
+      {
+        "id": "jobs",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {"id": "review", "priority": 2, "status": "ready", "title": "Review proposal"},
+            {"id": "backup", "priority": 5, "status": "blocked", "title": "Await backup destination"},
+            {"id": "patch", "priority": 5, "status": "ready", "title": "Apply queued patch"},
+            {"id": "review", "priority": 4, "status": "ready", "title": "Review urgent proposal"},
+            {"id": "notes", "priority": 4, "status": "ready", "title": "Draft meeting notes"},
+            {"id": "archive", "priority": 9, "status": "done", "title": "Archive completed batch"}
+          ]
+        }
+      },
+      {"id": "ready", "op": "filter", "inputs": ["jobs"], "params": {"key": "status", "operator": "eq", "value": "ready"}},
+      {"id": "prioritized", "op": "sort", "inputs": ["ready"], "params": {"key": "priority", "descending": true}},
+      {"id": "queue", "op": "dedupe", "inputs": ["prioritized"], "params": {"key": "id"}},
+      {"id": "count", "op": "length", "inputs": ["queue"], "params": {}},
+      {"id": "result", "op": "report", "inputs": ["queue", "count"], "params": {"labels": ["queue", "count"]}}
+    ],
+    "outputs": ["result"]
+  },
+  "skin": {"family": "moth", "accent": "#d6b5ff"},
+  "fixtures": [
+    {
+      "name": "default-priority-filter-and-dedupe",
+      "overrides": {},
+      "expected": [{"queue": [
+        {"id": "patch", "priority": 5, "status": "ready", "title": "Apply queued patch"},
+        {"id": "review", "priority": 4, "status": "ready", "title": "Review urgent proposal"},
+        {"id": "notes", "priority": 4, "status": "ready", "title": "Draft meeting notes"}
+      ], "count": 3}]
+    },
+    {
+      "name": "stable-ties-keep-first-duplicate",
+      "overrides": {"jobs": [
+        {"id": "second", "priority": 3, "status": "ready", "title": "First arrival"},
+        {"id": "first", "priority": 3, "status": "ready", "title": "Second arrival"},
+        {"id": "second", "priority": 3, "status": "ready", "title": "Duplicate later arrival"},
+        {"id": "third", "priority": 3, "status": "ready", "title": "Third distinct arrival"}
+      ]},
+      "expected": [{"queue": [
+        {"id": "second", "priority": 3, "status": "ready", "title": "First arrival"},
+        {"id": "first", "priority": 3, "status": "ready", "title": "Second arrival"},
+        {"id": "third", "priority": 3, "status": "ready", "title": "Third distinct arrival"}
+      ], "count": 3}]
+    },
+    {
+      "name": "empty-input-queue",
+      "overrides": {"jobs": []},
+      "expected": [{"queue": [], "count": 0}]
+    },
+    {
+      "name": "no-eligible-jobs",
+      "overrides": {"jobs": [
+        {"id": "blocked", "priority": 100, "status": "blocked", "title": "Waiting for input"},
+        {"id": "finished", "priority": 200, "status": "done", "title": "Already finished"}
+      ]},
+      "expected": [{"queue": [], "count": 0}]
+    },
+    {
+      "name": "filter-before-dedupe-and-numeric-order",
+      "overrides": {"jobs": [
+        {"id": "same", "priority": 99, "status": "blocked", "title": "Ineligible occurrence"},
+        {"id": "negative", "priority": -2, "status": "ready", "title": "Low priority"},
+        {"id": "same", "priority": 2, "status": "ready", "title": "Eligible occurrence"},
+        {"id": "ten", "priority": 10, "status": "ready", "title": "Numeric ten precedes two"},
+        {"id": "zero", "priority": 0, "status": "ready", "title": "Neutral priority"}
+      ]},
+      "expected": [{"queue": [
+        {"id": "ten", "priority": 10, "status": "ready", "title": "Numeric ten precedes two"},
+        {"id": "same", "priority": 2, "status": "ready", "title": "Eligible occurrence"},
+        {"id": "zero", "priority": 0, "status": "ready", "title": "Neutral priority"},
+        {"id": "negative", "priority": -2, "status": "ready", "title": "Low priority"}
+      ], "count": 4}]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "qdl": 1,
+  "family": "filament",
+  "organ": {
+    "model": "rosette",
+    "baseRadius": 0.03,
+    "degreeGain": 0.004,
+    "literalGain": 0.001,
+    "amplitudes": [
+      0.2,
+      0.13
+    ]
+  },
+  "filament": {
+    "model": "pinned-sine",
+    "bend": 0.06,
+    "frequencyGain": 0.2,
+    "ripple": 0.16
+  },
+  "motion": {
+    "clock": "separate",
+    "phaseRate": 0.018,
+    "reducedMotion": "freeze"
+  },
+  "ink": {
+    "ghostAlpha": 0.09,
+    "secondaryAlpha": 0.42,
+    "ridgeAlpha": 0.72,
+    "neutral": "#d1e6dd"
+  },
+  "framing": {
+    "scale": 0.43,
+    "padding": 0.12
+  }
+}

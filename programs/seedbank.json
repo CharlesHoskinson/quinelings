@@ -1,0 +1,43 @@
+{
+  "id": "seedbank",
+  "name": "Seedbank",
+  "description": "Convert nursery tray requests into seed demand at six seeds per tray, cap the pooled withdrawal to available stock, and report the conserved reserve.",
+  "graph": {
+    "version": 1,
+    "name": "Seedbank nursery withdrawal",
+    "nodes": [
+      {"id": "stock", "op": "literal", "inputs": [], "params": {"value": 100}},
+      {"id": "trays", "op": "literal", "inputs": [], "params": {"value": [4, 6, 2]}},
+      {"id": "seed_demands", "op": "map", "inputs": ["trays"], "params": {"kind": "multiply", "factor": 6}},
+      {"id": "requested", "op": "sum", "inputs": ["seed_demands"], "params": {}},
+      {"id": "withdrawal", "op": "budget", "inputs": ["stock", "requested"], "params": {}},
+      {"id": "allocated", "op": "get", "inputs": ["withdrawal"], "params": {"path": "allocated"}},
+      {"id": "reserve", "op": "get", "inputs": ["withdrawal"], "params": {"path": "remaining"}},
+      {"id": "ledger", "op": "report", "inputs": ["stock", "trays", "seed_demands", "requested", "allocated", "reserve"], "params": {"labels": ["stock", "trays", "seedDemands", "requested", "allocated", "reserve"]}}
+    ],
+    "outputs": ["ledger"]
+  },
+  "skin": {"family": "seed", "accent": "#b4d878"},
+  "fixtures": [
+    {
+      "name": "surplus preserves reserve",
+      "overrides": {},
+      "expected": [{"stock": 100, "trays": [4, 6, 2], "seedDemands": [24, 36, 12], "requested": 72, "allocated": 72, "reserve": 28}]
+    },
+    {
+      "name": "shortage caps withdrawal",
+      "overrides": {"stock": 35},
+      "expected": [{"stock": 35, "trays": [4, 6, 2], "seedDemands": [24, 36, 12], "requested": 72, "allocated": 35, "reserve": 0}]
+    },
+    {
+      "name": "empty request preserves all stock",
+      "overrides": {"trays": []},
+      "expected": [{"stock": 100, "trays": [], "seedDemands": [], "requested": 0, "allocated": 0, "reserve": 100}]
+    },
+    {
+      "name": "empty stock grants nothing",
+      "overrides": {"stock": 0, "trays": [1, 2, 1]},
+      "expected": [{"stock": 0, "trays": [1, 2, 1], "seedDemands": [6, 12, 6], "requested": 24, "allocated": 0, "reserve": 0}]
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+// QDL safety abstraction. Codec equality here is an assumption, not a byte proof.
+module design {
+  // Integer milliscale samples of qdl.js numeric domains; model tags are fixed.
+  type Profile = {
+    family: int, a: int, b: int, baseRadius: int, degreeGain: int, literalGain: int,
+    bend: int, frequencyGain: int, ripple: int, motionRate: int,
+    ghost: int, secondary: int, ridge: int, scale: int, padding: int
+  }
+  type State = {
+    source: int, origin: int, phase: int, paused: bool, repeats: int,
+    executions: int, effects: int, emitted: int, children: int, energy: int,
+    last: str, priorEffects: int, priorExecutions: int, priorChildren: int,
+    childSource: int, guard: bool, allowed: bool,
+    profile: Profile, originProfile: Profile, emittedProfile: Profile, childProfile: Profile
+  }
+  var s: State
+
+  pure val sources = Set(1, 2, 3)
+  pure val phases = Set(0, 1, 2, 3)
+  pure val nodes = Set(0, 1, 2, 3)
+  // Fixed acyclic producer graph: input -> transform -> guard -> action.
+  pure val links = Set((0, 1), (1, 2), (2, 3))
+  pure def opcode(id: int): int = id
+  pure def role(op: int): str =
+    if (op == 0) "input" else if (op == 1) "transform"
+    else if (op == 2) "guard" else "action"
+  pure def color(op: int): int = 100 + op
+  pure def frequency(op: int): int = 1 + op
+  pure def depth(id: int): int = id
+  pure def fanout(id: int): int = links.filter(e => e._1 == id).size()
+  // Abstract finite geometry, not sin/cos or a claim of renderer refinement.
+  pure def anchor(id: int, phase: int): (int, int) = (id + phase, depth(id))
+  pure def filament(edge: (int, int), u: int, phase: int): (int, int) =
+    if (u == 0) anchor(edge._1, phase)
+    else if (u == 2) anchor(edge._2, phase)
+    else (edge._1 + phase, depth(edge._1) + 1)
+  // Tagged identity token substitutes for numeric serialization, abstractly.
+  pure def encodeToken(source: int, profile: Profile): { token: int, design: Profile } =
+    { token: source, design: profile }
+  pure def decodeToken(encoded: { token: int, design: Profile }): int = encoded.token
+  pure def validProfile(p: Profile): bool =
+    p.family >= 0 and p.family <= 9 and p.a >= 0 and p.a <= 450
+    and p.b >= 0 and p.b <= 450 and p.a + p.b < 1000
+    and p.baseRadius >= 10 and p.baseRadius <= 80
+    and p.degreeGain >= 0 and p.degreeGain <= 6 and p.literalGain >= 0 and p.literalGain <= 3
+    and p.bend >= 0 and p.bend <= 80 and p.frequencyGain >= 0 and p.frequencyGain <= 200
+    and p.ripple >= 0 and p.ripple <= 300 and p.motionRate >= 0 and p.motionRate <= 50
+    and p.ghost >= 0 and p.ghost < p.secondary and p.secondary < p.ridge and p.ridge <= 1000
+    and p.scale >= 250 and p.scale <= 470 and p.padding >= 80 and p.padding <= 250
+
+  action init = {
+    nondet source = sources.oneOf()
+    nondet repeats = 1.to(8).oneOf()
+    nondet family = 0.to(9).oneOf()
+    nondet a = 0.to(450).oneOf()
+    nondet b = 0.to(450).oneOf()
+    nondet baseRadius = 10.to(80).oneOf()
+    nondet degreeGain = 0.to(6).oneOf()
+    nondet literalGain = 0.to(3).oneOf()
+    nondet bend = 0.to(80).oneOf()
+    nondet frequencyGain = 0.to(200).oneOf()
+    nondet ripple = 0.to(300).oneOf()
+    nondet motionRate = 0.to(50).oneOf()
+    nondet ghost = 0.to(998).oneOf()
+    nondet secondary = (ghost + 1).to(999).oneOf()
+    nondet ridge = (secondary + 1).to(1000).oneOf()
+    nondet scale = 250.to(470).oneOf()
+    nondet padding = 80.to(250).oneOf()
+    val profile = {family: family, a: a, b: b, baseRadius: baseRadius,
+      degreeGain: degreeGain, literalGain: literalGain, bend: bend,
+      frequencyGain: frequencyGain, ripple: ripple, motionRate: motionRate,
+      ghost: ghost, secondary: secondary, ridge: ridge, scale: scale, padding: padding}
+    s' = {source: source, origin: source, phase: 0, paused: false, repeats: repeats,
+      executions: 0, effects: 0, emitted: 0, children: 0, energy: 10,
+      last: "init", priorEffects: 0, priorExecutions: 0, priorChildren: 0,
+      childSource: 0, guard: false, allowed: false,
+      profile: profile, originProfile: profile, emittedProfile: profile, childProfile: profile}
+  }
+  def snapshot(kind: str): State = s
+    .with("last", kind)
+    .with("priorEffects", s.effects)
+    .with("priorExecutions", s.executions)
+    .with("priorChildren", s.children)
+
+  action render = s' = snapshot("render")
+    .with("phase", if (s.paused or s.profile.motionRate == 0) s.phase else (s.phase + 1) % 4)
+  action replay = s' = snapshot("replay")
+  action togglePause = s' = snapshot("pause").with("paused", not(s.paused))
+  action execute(guard: bool, allowed: bool): bool = all {
+    s.executions < s.repeats,
+    s.energy > 0,
+    s' = snapshot("execute")
+      .with("executions", s.executions + 1)
+      .with("effects", s.effects + (if (guard and allowed) 1 else 0))
+      .with("guard", guard).with("allowed", allowed)
+      .with("emitted", decodeToken(encodeToken(s.source, s.profile)))
+      .with("emittedProfile", encodeToken(s.source, s.profile).design)
+      .with("energy", s.energy - 1)
+  }
+  def canAdmit(candidate: int, profile: Profile): bool =
+    s.emitted == s.source and s.emittedProfile == s.profile
+    and candidate == s.source and profile == s.profile and s.children < 2 and s.energy > 0
+  action admit(candidate: int, profile: Profile): bool = all {
+    canAdmit(candidate, profile),
+    s' = snapshot("admit").with("children", s.children + 1).with("energy", s.energy - 1)
+      .with("childSource", candidate)
+      .with("childProfile", profile)
+  }
+  action rejectChild(candidate: int, profile: Profile): bool = all {
+    not(canAdmit(candidate, profile)),
+    s' = snapshot("reject")
+  }
+  action step = {
+    nondet guard = Set(false, true).oneOf()
+    nondet allowed = Set(false, true).oneOf()
+    nondet candidate = sources.oneOf()
+    nondet sameProfile = Set(false, true).oneOf()
+    val profile = if (sameProfile) s.profile else s.profile.with("family", (s.profile.family + 1) % 10)
+    any {render, replay, togglePause, execute(guard, allowed), admit(candidate, profile), rejectChild(candidate, profile)}
+  }
+
+  val bounded = sources.contains(s.source) and phases.contains(s.phase)
+    and s.repeats >= 1 and s.repeats <= 8
+    and s.executions >= 0 and s.executions <= s.repeats
+    and s.effects >= 0 and s.effects <= s.executions
+    and s.children >= 0 and s.children <= 2
+    and s.energy >= 0 and s.energy <= 10
+  val conserved = s.energy + s.executions + s.children == 10
+  val sourceIdentity = s.source == s.origin and s.profile == s.originProfile
+    and (s.emitted == 0 or (s.emitted == s.source and s.emittedProfile == s.profile))
+  val admissionIdentity = s.children == 0 or (s.emitted == s.source and s.childSource == s.source
+    and s.childProfile == s.profile and s.emittedProfile == s.profile)
+  val profileBounds = validProfile(s.profile)
+  // Positive integer lower-bound numerator, assuming each cosine is in [-1,1].
+  val radialLowerBound = s.profile.baseRadius * (1000 - s.profile.a - s.profile.b) > 0
+  val guardedEffects = if (s.last == "execute")
+    s.effects == s.priorEffects + (if (s.guard and s.allowed) 1 else 0) else true
+  val viewSeparation = if (Set("render", "replay", "pause", "reject").contains(s.last))
+    s.effects == s.priorEffects and s.executions == s.priorExecutions and s.children == s.priorChildren
+    else true
+  val onlyExecutionEffects = if (s.last != "execute") s.effects == s.priorEffects else true
+  val onlyAdmissionChildren = if (s.last != "admit") s.children == s.priorChildren else true
+  val paletteIdentity = nodes.forall(a => nodes.forall(b =>
+    (color(opcode(a)) == color(opcode(b))) == (opcode(a) == opcode(b))))
+  val metadataStable = nodes.forall(id => frequency(opcode(id)) >= 1
+    and frequency(opcode(id)) <= 4 and depth(id) == id and fanout(id) <= 1)
+  val programBound = nodes.size() > 0 and nodes.size() <= 64
+  val roleDictionary = role(0) == "input" and role(1) == "transform"
+    and role(2) == "guard" and role(3) == "action"
+  val geometryBound = nodes.forall(id => phases.forall(p =>
+    anchor(id, p)._1 >= 0 and anchor(id, p)._1 <= 6
+    and anchor(id, p)._2 >= 0 and anchor(id, p)._2 <= 3))
+  val endpointsPinned = links.forall(e => phases.forall(p =>
+    filament(e, 0, p) == anchor(e._1, p) and filament(e, 2, p) == anchor(e._2, p)))
+  val acyclic = links.forall(e => depth(e._1) < depth(e._2))
+  val codecAssumption = sources.forall(source => decodeToken(encodeToken(source, s.profile)) == source
+    and encodeToken(source, s.profile).design == s.profile)
+  val safety = bounded and conserved and sourceIdentity and admissionIdentity
+    and viewSeparation and onlyExecutionEffects and onlyAdmissionChildren and guardedEffects
+    and paletteIdentity and metadataStable and programBound and roleDictionary
+    and geometryBound and endpointsPinned and acyclic and codecAssumption
+    and profileBounds and radialLowerBound
+
+  val hasEffect = s.effects > 0
+  val hasChild = s.children > 0
+  val exhaustedRepeats = s.executions == s.repeats
+  val rejectedCandidate = s.last == "reject"
+
+  run renderReplayTest = init.then(render).then(replay).then(togglePause).then(render)
+    .expect(safety and s.executions == 0 and s.effects == 0 and s.children == 0
+      and s.phase == (if (s.profile.motionRate == 0) 0 else 1))
+  run guardedExecutionTest = init.then(execute(false, true))
+    .expect(safety and s.executions == 1 and s.effects == 0 and s.emitted == s.source)
+  run admissionTest = init.then(execute(true, true)).then(admit(s.source, s.profile))
+    .expect(safety and s.effects == 1 and s.children == 1 and s.energy == 8)
+  run rejectBeforeEmissionTest = init.then(rejectChild(s.source, s.profile))
+    .expect(safety and s.children == 0 and s.energy == 10)
+  run rejectMismatchTest = init.then(execute(true, true))
+    .then(rejectChild(if (s.source == 1) 2 else 1, s.profile))
+    .expect(safety and s.children == 0 and s.effects == 1)
+  run childBudgetTest = init.then(execute(false, false)).then(admit(s.source, s.profile))
+    .then(admit(s.source, s.profile)).then(rejectChild(s.source, s.profile))
+    .expect(safety and s.children == 2 and s.energy == 7)
+  run rejectChangedProfileTest = init.then(execute(true, true))
+    .then(rejectChild(s.source, s.profile.with("family", (s.profile.family + 1) % 10)))
+    .expect(safety and s.children == 0)
+
+  // Deliberate mutation, excluded from normal step. Its test must detect failure.
+  action unsafeReplay = s' = snapshot("replay").with("effects", s.effects + 1)
+  action unsafeStep = any {step, unsafeReplay}
+  run detectsUnsafeReplayTest = init.then(unsafeReplay)
+    .expect(not(safety) and not(onlyExecutionEffects) and not(viewSeparation))
+  action unsafeProfileRender = s' = snapshot("render")
+    .with("profile", s.profile.with("family", (s.profile.family + 1) % 10))
+  run detectsUnsafeProfileRenderTest = init.then(unsafeProfileRender)
+    .expect(not(safety) and not(sourceIdentity))
+}

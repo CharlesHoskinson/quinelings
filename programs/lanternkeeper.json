@@ -1,0 +1,443 @@
+{
+  "id": "lanternkeeper",
+  "name": "Lanternkeeper",
+  "description": "Prioritizes a simulated street-lamp driver repair from weighted fault signals, independent inspection evidence, and an explicit local permission guard.",
+  "graph": {
+    "version": 1,
+    "name": "Evidence-weighted street-lamp repair decision",
+    "nodes": [
+      {
+        "id": "faultSignals",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            1,
+            1,
+            0.5
+          ]
+        }
+      },
+      {
+        "id": "signalWeights",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            4,
+            2,
+            2
+          ]
+        }
+      },
+      {
+        "id": "inspectionEvidence",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {
+              "source": "night-inspector",
+              "claim": "faultConfirmed",
+              "value": true
+            },
+            {
+              "source": "bench-diagnostic",
+              "claim": "faultConfirmed",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "repairPermitted",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": true
+        }
+      },
+      {
+        "id": "falseGuard",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": false
+        }
+      },
+      {
+        "id": "lampId",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "SIM-LAMP-017"
+        }
+      },
+      {
+        "id": "repairOperation",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": "replace-driver"
+        }
+      },
+      {
+        "id": "faultScore",
+        "op": "weightedMean",
+        "inputs": [
+          "faultSignals",
+          "signalWeights"
+        ],
+        "params": {}
+      },
+      {
+        "id": "maintenanceNeeded",
+        "op": "compare",
+        "inputs": [
+          "faultScore"
+        ],
+        "params": {
+          "operator": "gte",
+          "value": 0.625
+        }
+      },
+      {
+        "id": "corroboration",
+        "op": "evidence",
+        "inputs": [
+          "inspectionEvidence"
+        ],
+        "params": {
+          "claim": "faultConfirmed"
+        }
+      },
+      {
+        "id": "evidenceState",
+        "op": "get",
+        "inputs": [
+          "corroboration"
+        ],
+        "params": {
+          "path": "state"
+        }
+      },
+      {
+        "id": "faultSupported",
+        "op": "compare",
+        "inputs": [
+          "evidenceState"
+        ],
+        "params": {
+          "operator": "eq",
+          "value": "supported"
+        }
+      },
+      {
+        "id": "evidenceGuard",
+        "op": "choose",
+        "inputs": [
+          "maintenanceNeeded",
+          "faultSupported",
+          "falseGuard"
+        ],
+        "params": {}
+      },
+      {
+        "id": "repairGuard",
+        "op": "choose",
+        "inputs": [
+          "repairPermitted",
+          "evidenceGuard",
+          "falseGuard"
+        ],
+        "params": {}
+      },
+      {
+        "id": "repairPayload",
+        "op": "report",
+        "inputs": [
+          "lampId",
+          "repairOperation",
+          "faultScore"
+        ],
+        "params": {
+          "labels": [
+            "lampId",
+            "operation",
+            "faultScore"
+          ]
+        }
+      },
+      {
+        "id": "repairReceipt",
+        "op": "action",
+        "inputs": [
+          "repairGuard",
+          "repairPayload"
+        ],
+        "params": {
+          "allowed": true,
+          "action": "repairStreetLamp"
+        }
+      },
+      {
+        "id": "decision",
+        "op": "report",
+        "inputs": [
+          "faultScore",
+          "maintenanceNeeded",
+          "corroboration",
+          "repairPermitted",
+          "repairReceipt"
+        ],
+        "params": {
+          "labels": [
+            "faultScore",
+            "maintenanceNeeded",
+            "evidence",
+            "repairPermitted",
+            "repair"
+          ]
+        }
+      }
+    ],
+    "outputs": [
+      "decision"
+    ]
+  },
+  "skin": {
+    "family": "filament",
+    "accent": "#f4bc69"
+  },
+  "fixtures": [
+    {
+      "name": "default-confirmed-fault",
+      "overrides": {},
+      "expected": [
+        {
+          "faultScore": 0.875,
+          "maintenanceNeeded": true,
+          "evidence": {
+            "state": "supported",
+            "support": 2,
+            "refute": 0,
+            "sources": 2
+          },
+          "repairPermitted": true,
+          "repair": {
+            "status": "simulated",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.875
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "healthy-lamp-guard-false",
+      "overrides": {
+        "faultSignals": [
+          0,
+          0,
+          0.5
+        ]
+      },
+      "expected": [
+        {
+          "faultScore": 0.125,
+          "maintenanceNeeded": false,
+          "evidence": {
+            "state": "supported",
+            "support": 2,
+            "refute": 0,
+            "sources": 2
+          },
+          "repairPermitted": true,
+          "repair": {
+            "status": "skipped",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.125
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "threshold-boundary",
+      "overrides": {
+        "faultSignals": [
+          1,
+          0.5,
+          0
+        ]
+      },
+      "expected": [
+        {
+          "faultScore": 0.625,
+          "maintenanceNeeded": true,
+          "evidence": {
+            "state": "supported",
+            "support": 2,
+            "refute": 0,
+            "sources": 2
+          },
+          "repairPermitted": true,
+          "repair": {
+            "status": "simulated",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.625
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "conflicting-inspections-guard-false",
+      "overrides": {
+        "inspectionEvidence": [
+          {
+            "source": "night-inspector",
+            "claim": "faultConfirmed",
+            "value": true
+          },
+          {
+            "source": "bench-diagnostic",
+            "claim": "faultConfirmed",
+            "value": false
+          }
+        ]
+      },
+      "expected": [
+        {
+          "faultScore": 0.875,
+          "maintenanceNeeded": true,
+          "evidence": {
+            "state": "conflict",
+            "support": 1,
+            "refute": 1,
+            "sources": 2
+          },
+          "repairPermitted": true,
+          "repair": {
+            "status": "skipped",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.875
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "repair-permission-denied",
+      "overrides": {
+        "repairPermitted": false
+      },
+      "expected": [
+        {
+          "faultScore": 0.875,
+          "maintenanceNeeded": true,
+          "evidence": {
+            "state": "supported",
+            "support": 2,
+            "refute": 0,
+            "sources": 2
+          },
+          "repairPermitted": false,
+          "repair": {
+            "status": "skipped",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.875
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "duplicate-provenance-and-unrelated-claim",
+      "overrides": {
+        "inspectionEvidence": [
+          {
+            "source": "night-inspector",
+            "claim": "faultConfirmed",
+            "value": true
+          },
+          {
+            "source": "night-inspector",
+            "claim": "faultConfirmed",
+            "value": false
+          },
+          {
+            "source": "noise-monitor",
+            "claim": "trafficHeavy",
+            "value": false
+          }
+        ]
+      },
+      "expected": [
+        {
+          "faultScore": 0.875,
+          "maintenanceNeeded": true,
+          "evidence": {
+            "state": "supported",
+            "support": 1,
+            "refute": 0,
+            "sources": 1
+          },
+          "repairPermitted": true,
+          "repair": {
+            "status": "simulated",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.875
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "no-inspection-evidence",
+      "overrides": {
+        "inspectionEvidence": []
+      },
+      "expected": [
+        {
+          "faultScore": 0.875,
+          "maintenanceNeeded": true,
+          "evidence": {
+            "state": "unknown",
+            "support": 0,
+            "refute": 0,
+            "sources": 0
+          },
+          "repairPermitted": true,
+          "repair": {
+            "status": "skipped",
+            "action": "repairStreetLamp",
+            "payload": {
+              "lampId": "SIM-LAMP-017",
+              "operation": "replace-driver",
+              "faultScore": 0.875
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

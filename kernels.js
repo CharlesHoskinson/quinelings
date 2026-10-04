@@ -34,7 +34,7 @@ function calculate(op,a,p){
  case 'sum':return numbers(a[0]).reduce((s,v)=>s+v,0);
  case 'mean':{const v=numbers(a[0]);requireThat(v.length>0,'Mean requires values');return v.reduce((s,x)=>s+x,0)/v.length;}
  case 'min':case 'max':{const v=numbers(a[0]);requireThat(v.length>0,'Extremum requires values');return Math[op](...v);}
- case 'weightedMean':{const v=numbers(a[0]),w=numbers(a[1]);requireThat(v.length>0&&v.length===w.length,'Weighted arrays must match');w.forEach(nonnegative);const total=w.reduce((s,x)=>s+x,0);requireThat(total>0,'Weights have zero mass');return v.reduce((s,x,i)=>s+x*w[i],0)/total;}
+ case 'weightedMean':{const v=numbers(a[0]),w=numbers(a[1]);requireThat(v.length>0&&v.length===w.length,'Weighted arrays must match');w.forEach(nonnegative);const total=number(w.reduce((s,x)=>s+x,0));requireThat(total>0,'Weights have zero mass');const weighted=number(v.reduce((s,x,i)=>s+x*w[i],0));return number(weighted/total);}
  case 'length':requireThat(typeof a[0]==='string'||Array.isArray(a[0]),'Length needs array or string');return a[0].length;
  case 'map':requireThat(['square','multiply'].includes(p.kind),'Unknown map operation');if(p.kind==='multiply')number(p.factor);return numbers(a[0]).map(x=>p.kind==='square'?x*x:x*p.factor);
  case 'sort':{if(Object.hasOwn(p,'descending'))requireThat(typeof p.descending==='boolean','Descending flag must be Boolean');const rows=array(a[0]).map((v,i)=>({v,i,k:p.key?get(v,p.key):v}));for(const r of rows)requireThat(typeof r.k==='number'||typeof r.k==='string','Sort key must be number or string');rows.sort((a,b)=>{requireThat(typeof a.k===typeof b.k,'Mixed sort key types');return ((a.k<b.k?-1:a.k>b.k?1:0)*(p.descending?-1:1))||a.i-b.i;});return rows.map(r=>clone(r.v));}

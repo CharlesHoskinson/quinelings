@@ -25,7 +25,9 @@ function makeTaskProgram(graph,repeats=1,design=Design.create()){
  Design.validateBindings(design,graph);graph=clone(graph);graph.design=clone(design);
  const constructor=['emit',['makeApply',['makeRun',['makeQuote',['var','x']]],['makeQuote',['var','x']]]];
  const body=['lambda','x',['seq',['repeat',repeats,['task',['quote',clone(graph)]]],constructor]];
- return ['apply',['run',['quote',body]],['quote',clone(body)]];
+ const program=['apply',['run',['quote',body]],['quote',clone(body)]];
+ if(new TextEncoder().encode(canon(program)).length>65536)throw Error('Complete quine source exceeds 64 KiB');
+ return program;
 }
 function execute(program){
  let fuel=20000;const emitted=[],plans=[],tasks=[],trace=[];

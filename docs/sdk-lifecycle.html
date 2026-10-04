@@ -1,0 +1,116 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quinelings · sdk-lifecycle</title><style>body{margin:auto;max-width:940px;padding:28px;background:#080f16;color:#c5dfd5;font:17px/1.7 system-ui}a{color:#83d8be}nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:40px}h1{font-size:40px;line-height:1.15}h2{margin-top:44px;color:#f0f5ed}pre{overflow:auto;padding:22px;background:#0d1a23;border:1px solid #29403e;border-radius:12px;font:14px/1.6 monospace}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td{padding:12px;border:1px solid #29403e}tr:first-child{font-weight:bold}code{overflow-wrap:anywhere;color:#e0f5cf}li{margin:8px 0}p{overflow-wrap:anywhere}@media(max-width:600px){body{padding:18px;font-size:16px}h1{font-size:32px}}</style></head><body><nav><a href="../sdk.html">← Agent SDK</a><a href="../create.html">Creation workspace</a><a href="sdk-lifecycle.md">Markdown source</a></nav><h1>Experimental SDK: types and lifecycle</h1>
+<p>The agent SDK separates thought interpretation, canonical executable source, execution evidence, and presentation. The SDK and QDL source language remain experimental; package revisions and current format identifiers do not freeze the language.</p>
+<p>The stateful <code>Runtime</code> owns bounded artifact and execution-record stores behind ECMAScript private fields. Its operation vocabulary is <code>parse</code>, <code>compile</code>, <code>create</code>, <code>inspect</code>, <code>run</code>, <code>reproduce</code>, <code>recover</code>, and <code>frame</code>; adapters use the same operations through <code>dispatch</code>. <code>dispatch</code> infers the result type from the request operation; <code>exchange</code> adds an operation tag for consumers that need to narrow a response union. See <a href="../packages/agent-sdk/src/types.ts"><code>types.ts</code></a> for exported declarations and <a href="../packages/agent-sdk/src/index.ts"><code>index.ts</code></a> for runtime behavior.</p>
+<h2>Data boundary</h2>
+<p>Import and transport payloads require runtime validation, even when a TypeScript caller declares their shape. JSON must be finite, acyclic, plain, dense, bounded, and free of accessor/symbol/prototype hazards. A TypeScript <code>number</code> cannot establish a finite range, symbolic unit, positive total weight, or integer tick sum.</p>
+<p><code>Intent</code> supplies typed input literals, operation steps with ordered input IDs, outputs, and optional assumptions. Its <code>IntentStep</code> union encodes operation-specific parameter shapes and fixed input-port tuple arities. <code>IntentType</code> distinguishes numeric units, booleans, strings, null, arrays, records, and nullable <code>optional</code> values. Nullable does not mean a record key can be omitted. Compilation validates operation parameters, references, units, refinements, reachability, eager action restrictions, and capability availability.</p>
+<p>Parser status is <code>supported</code>, <code>clarify</code>, <code>unsupported</code>, or <code>inconsistent</code>. <code>ParseResult</code> and <code>CreationResult</code> are discriminated unions: a supported result carries an intent or artifact respectively; an unsuccessful result does not. Only a supported interpretation can become an artifact. Preserve status, compiler diagnostic codes, paths, and assumptions in agent responses. Do not turn an unresolved thought into a fabricated successful task. Compilation may evaluate pure kernels to establish refinements; those preview values are compiler evidence, not an execution record.</p>
+<h2>Artifacts and records</h2>
+<p>An <code>Artifact</code> contains complete canonical source, its SHA-256 artifact ID, validated program/graph/design, harmonic and color genomes, a source map, and available companion intent/contract. <code>contract.sourceBytes</code>, when present, counts UTF-8 bytes of the complete source including authored anatomy and duplicated constructor payload. Canonical source remains the authoritative identity. The genome's 32-bit checksum is an integrity check, not the artifact ID or an authenticity proof.</p>
+<p>An <code>ExecutionRecord</code> has its own record ID, an artifact ID, exact source, and an <code>ExecutionResult</code>. The result includes <code>tasks</code>, ordered <code>emitted</code> source, interpreter trace, and step count. Each task is an ordered execution cycle containing ordered outputs, node trace, simulated effects, and the graph actually run. Keep the cycle dimension even when repeat count is one.</p>
+<p>A supplied record is not evidence of local execution merely because its source hash matches. Runtime-generated records bind source to actual runtime evidence. Results exported across a transport are snapshots; mutating one cannot change committed source or store state.</p>
+<p>By default the runtime retains at most 128 artifacts and 256 records; constructor configuration allows limits up to 1,024 artifacts and 4,096 records. Full stores reject new entries without silently evicting history. IDs refer to the current runtime instance's retained state; they are not persistent URLs. Store source/genomes separately when later recovery is needed. Recovery in a new runtime recreates an artifact without an earlier execution history or original companion interpretation. Within the same runtime, an existing source reuses its artifact ID and stored companion metadata.</p>
+<p>Companion admission has three outcomes:</p>
+<ul>
+<li>A source with no companion, including one admitted by <code>recover</code>, can receive its first intent, source map and contract through a later matching <code>compile</code> or supported <code>create</code>. Compilation must regenerate exactly the same canonical source. Its ID and existing execution records remain unchanged.</li>
+<li>Re-admitting the same canonical intent reuses the stored companion. A newly supplied source map does not replace the first admitted one.</li>
+<li>A different canonical intent for that same source raises <code>metadata-conflict</code>, preserving the existing artifact and companion. Thought wording, unit annotations and assumptions can cause this conflict even when executable bytes are identical. Separate runtimes can retain separate interpretations. Intent equality uses canonical JSON, not semantic normalization: equivalent unit spellings and omitted versus empty assumptions can still conflict.</li>
+</ul>
+<p>There is no separate attach operation and no automatic recovery of prose. Supply the intent and matching compilation choices explicitly. Earlier returned snapshots remain unchanged when the stored artifact gains its first companion.</p>
+<h2>Lifecycle</h2>
+<table><tbody>
+<tr><td>Operation or action</td><td>Source identity</td><td>Execution evidence</td></tr>
+<tr><td><code>parse</code></td><td>No executable source yet</td><td>No run</td></tr>
+<tr><td><code>compile</code> or supported <code>create</code></td><td>Validated canonical artifact</td><td>No run</td></tr>
+<tr><td><code>inspect</code></td><td>Same committed source</td><td>No run</td></tr>
+<tr><td><code>frame</code>, animation seek, camera, node selection</td><td>Same source</td><td>No run; prior record stays associated</td></tr>
+<tr><td><code>run</code></td><td>Same source</td><td>New execution record with all task cycles</td></tr>
+<tr><td>Change literal, graph name, repeat count, anatomy, gesture, or authored QDL</td><td>New source and artifact ID</td><td>Previous record is stale for this artifact</td></tr>
+<tr><td>Change companion prose only</td><td>Same source if executable fields stay unchanged; conflicting intent rejected in the same runtime</td><td>Source association remains; prose needs separate review</td></tr>
+<tr><td><code>recover</code> from source/harmonics/colors</td><td>Recovered canonical source</td><td>No recovered run history</td></tr>
+<tr><td>Matching <code>compile</code> after metadata-free recovery</td><td>Same source and ID; first companion attaches</td><td>No new execution record</td></tr>
+<tr><td><code>reproduce</code> from artifact and its specific parent record</td><td>Child source must equal parent source</td><td>Fresh child run, linked to parent record</td></tr>
+</tbody></table>
+<p>The runtime validates the complete 64 KiB constructor source ceiling, including duplicated payload. Literal inputs, graph name, repeat count, anatomy, gesture, and other authored QDL fields are embedded in that source. Phase, camera, paused state, selected node, and selected result cycle are view state and do not modify identity.</p>
+<p>Source-matched result presentation requires <code>record.source === artifact.source</code>, an existing selected task cycle, and a valid finite value for the declared scalar binding. A scalar-presentation client must distinguish missing, stale, invalid, underflow and overflow; the current SDK <code>frame</code> returns role colors and does not resolve recorded scalar lenses. Missing execution is different from a successful zero, false, null, empty array, or skipped action.</p>
+<p><code>action</code> computes a simulated or skipped value. Only simulated receipts enter the task effects list; neither state grants authority for a real-world action. Fixtures using low-level <code>runTask(graph, overrides)</code> must attribute results to the graph actually run. Public source-bound runs execute committed source: compile changed literals into a new artifact first.</p>
+<h2>Frame and provider contracts</h2>
+<p><code>frame(artifactId, phase, options)</code> evaluates an authored assembly gesture at a phase in radians; one cycle is <code>2 * Math.PI</code>. The direct runtime accepts finite phases with magnitude at most <code>1e9</code>. Seeking to the same phase is deterministic. A phase one cycle apart represents the same mathematical pose, with floating-point rounding possible; do not require byte identity for all equivalent phase arguments. Transport schemas may impose a narrower phase range.</p>
+<p>Frame budgets are integer tissue sample counts from 4,000 to 24,000; crest counts are integers from 2 to 4. Defaults are 12,000 samples and 3 crests. The returned detached arrays contain:</p>
+<table><tbody>
+<tr><td>Field</td><td>Meaning</td></tr>
+<tr><td><code>points</code></td><td>Unprojected <code>[x, y, z, alpha]</code> groups, four numbers per tissue sample</td></tr>
+<tr><td><code>normals</code></td><td><code>[nx, ny, nz]</code> groups, three numbers per sample</td></tr>
+<tr><td><code>owners</code></td><td>One node index per sample</td></tr>
+<tr><td><code>nodeIds</code>, <code>nodeRoles</code>, <code>nodeColors</code></td><td>Parallel node identifiers, role names and role-palette RGB hex colors</td></tr>
+<tr><td><code>ridges</code></td><td>Crest polylines whose points contain position, normal and the same owner index</td></tr>
+</tbody></table>
+<p><code>nodeColors</code> honors authored chroma strength and neutral ink through the shared color contract. Omitted chroma or zero strength produces neutral ink. These are role colors, not encoded source bytes or source-matched measured quantities. The frame API accepts no record, task cycle or scalar lens selection. Its sample-layout cache retains at most two budgets per compiled body; a different valid budget cannot retain an unbounded sequence of plans.</p>
+<p><code>runtime.propose</code> accepts a <code>ProposalProvider</code> returning a <code>ParseResult</code>, validates its diagnostics and source-map references, and recompiles a supported intent. Source-map node IDs and optional spans are checked; that does not establish that a provider's wording correctly interprets the user's English. <code>propose</code> is a direct asynchronous runtime hook, outside the eight-operation <code>dispatch</code> union.</p>
+<p>Aborting its signal rejects a pending proposal with <code>QuinelingError</code> code <code>cancelled</code> even when the provider ignores that signal or its promise remains pending. Late resolution cannot admit an artifact. Forward the signal to the provider's underlying I/O as well: the runtime cannot forcibly stop remote work, charges or synchronous JavaScript. Proposal acceptance remains separate from explicit task execution.</p>
+<h2>TypeScript examples</h2>
+<p>The following examples use the exported request union, which fixes operation names and required IDs. A runtime caller can use direct methods or the equivalent <code>dispatch</code> request.</p>
+<pre><code>import { Runtime, type Intent, type Request } from '@quinelings/agent-sdk';
+
+const runtime = new Runtime();
+const intent: Intent = {
+  format: 'quineling-intent',
+  name: 'Measured total',
+  thought: 'Sum the supplied volumes.',
+  inputs: [{ id: 'volumes', value: [2, 4, 6],
+    type: { kind: 'array', element: { kind: 'number', unit: 'L' } } }],
+  steps: [{ id: 'total', op: 'sum', inputs: ['volumes'], params: {} }],
+  outputs: ['total'],
+  assumptions: [],
+};
+
+const compileRequest = { operation: 'compile', intent,
+  options: { seed: 42, repeats: 1 } } satisfies Request;
+const artifact = runtime.dispatch(compileRequest); // Inferred Artifact.
+const record = runtime.dispatch({ operation: 'run', artifactId: artifact.id });
+console.log(record.result.tasks.map(task =&gt; task.output)); // [[12]]</code></pre>
+<p>Interpretation can stop before execution:</p>
+<pre><code>const interpreted = runtime.parse('numbers [2,4,6] | sum');
+if (interpreted.status === 'supported') {
+  const artifact = runtime.compile(interpreted.intent);
+  // Compile, inspect, and frame do not create execution records.
+  const geometry = runtime.frame(artifact.id, 0, { budget: 4000, crests: 2 });
+  console.log(geometry.nodeIds);
+} else {
+  console.log(interpreted.status, interpreted.diagnostics);
+}</code></pre>
+<p>For a tagged response, narrow its operation before reading the payload:</p>
+<pre><code>const response = runtime.exchange({ operation: 'frame',
+  artifactId: artifact.id, phase: 0, options: { budget: 4000, crests: 2 } });
+if (response.operation === 'frame') console.log(response.result.nodeIds);</code></pre>
+<p>Commit changed data before running, and keep earlier records as history:</p>
+<pre><code>const revised: Intent = {
+  ...intent,
+  inputs: [{ ...intent.inputs[0]!, value: [3, 5, 7] }],
+};
+const changed = runtime.compile(revised, { seed: 42, repeats: 1 });
+console.log(changed.id === artifact.id);     // false
+console.log(record.source === changed.source); // false: stale for changed
+const changedRecord = runtime.run(changed.id);
+console.log(changedRecord.result.tasks.map(task =&gt; task.output)); // [[15]]</code></pre>
+<p>Recover source without pretending to recover provenance or old results, then explicitly run when needed:</p>
+<pre><code>const freshRuntime = new Runtime();
+const recovered = freshRuntime.recover({ source: artifact.source });
+console.log(recovered.source === artifact.source); // true
+console.log(recovered.intent); // undefined
+const attached = freshRuntime.compile(intent, { seed: 42, repeats: 1 });
+console.log(attached.id === recovered.id); // true: first companion attached
+console.log(attached.intent?.thought); // Sum the supplied volumes.
+console.log(recovered.intent); // Still undefined in the earlier snapshot.
+const recoveredRun = freshRuntime.run(recovered.id);
+
+const child = runtime.reproduce(artifact.id, record.id);
+console.log(child.artifact.source === artifact.source); // true
+console.log(child.record.parentRecordId === record.id); // true</code></pre>
+<p>Recovery takes exactly one of <code>source</code>, <code>harmonics</code>, or <code>colors</code>, as expressed by <code>RecoveryInput</code>. Source-text recovery parses JSON and returns canonical source: harmless JSON whitespace changes do not create a different artifact ID. A verified fresh generation requires the current parent artifact and a specific matching parent execution record; a previous-source record cannot verify the new artifact.</p>
+<h2>Failure and verification</h2>
+<p>Invalid build/import/run requests raise validation or runtime errors rather than return empty successful task outputs. Adapters should preserve semantic failure distinctly from transport success. An unsuccessful thought interpretation remains an explicit status with diagnostics. A failed proposal or import must not replace an existing valid artifact.</p>
+<p>Source emission, lossless genome recovery, fresh construction, and output agreement are separate evidence. Source verification requires exactly one emitted source equal to the complete canonical source. Reproduction parses and validates the matching parent's emission, executes it again, verifies its emission, and compares all ordered task-cycle outputs with the parent's. Identical source reuses the stored artifact ID; the execution record is fresh and links to its parent record. A matching first output alone is insufficient.</p>
+<p>Thought text, type/unit annotations, assumptions, and source-map prose are companion metadata in the current compiler. Recovery can inspect the graph and source-authored design, but it cannot reconstruct the original English interpretation. Source reproduction is not a proof that a program matches arbitrary prose or that its body is aesthetically successful.</p>
+<p>Lean proves the published modeled constructor and local mathematical lemmas; it does not prove the complete JavaScript interpreter, canonical serialization or whole-genome codec inversion. Quint explores bounded creation/session transition models; it does not verify MCP/A2A wire parsing, caches or every SDK execution. SDK and browser tests supply implementation evidence for their exercised cases. Neither layer establishes arbitrary English meaning or human aesthetic quality. See <a href="LEAN-FORMALIZATION.md">formal coverage and limits</a> and <a href="GENERATIVE-FORMAL-MODEL.md">generative obligations</a>.</p>
+<p>The <a href="../research/sdk-sol-2.md">type review</a> records the authoring-type design and remaining suggestions for readonly data and handle contracts. See also the <a href="PROGRAM-CONTRACT.md">program contract</a> and <a href="THOUGHT-TO-LIFEFORM.md">thought-to-lifeform design</a>.</p></body></html>

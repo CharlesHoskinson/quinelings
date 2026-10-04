@@ -1,6 +1,9 @@
 (function(root){
 'use strict';
 const TAU=Math.PI*2;
+const Anatomy=typeof module!=='undefined'?require('./anatomy.js'):root.Anatomy;
+const assemblyCache=new WeakMap();
+function assembly(s){let c=assemblyCache.get(s);const key=JSON.stringify([s.design.anatomy,s.design.motion.gesture,s.nodes.map(n=>n.id)]);if(!c||c.key!==key){c={key,body:Anatomy.compile(s.design.anatomy,s.nodes,s.design.motion.gesture)};assemblyCache.set(s,c);}return c.body;}
 const Chroma=typeof module!=='undefined'?require('./chroma.js'):root.Chroma;
 const DEFAULT_RHYTHM=Object.freeze({model:'coupled-harmonic',mode:'periodic',rate:1,breath:.06,wave:.055,waveNumber:1.6,lag:.9,asymmetry:.28,overtone:.17});
 const motionCache=new WeakMap();
@@ -75,6 +78,7 @@ function strandPoint(family,u,k,total,t,s,state){
 function bodyPoint(family,u,a,t,s){return strandPoint(family,u,(a/TAU)*24,24,t,s);}
 // Depth locates an operation on a family spine; stable lanes separate peers.
 function anchor(n,t,s){
+ if(s.design?.anatomy){const p=Anatomy.anchor(assembly(s),n.id,t);return pose(p,p.z,s.design);}
  const u=n.u,v=2*u-1,family=s.design?.family||'filament',m=motionState(s,t),r=m.rhythm;
  const peers=s.nodes.filter(x=>!x.parent&&x.level===n.level),index=Math.max(0,peers.findIndex(x=>x.id===n.id));
  const lane=peers.length>1?(index/(peers.length-1)-.5)*2:0,depth=s.maxDepth||1;let x,y;
@@ -124,6 +128,7 @@ function surfacePoint(s,u,v,k,total,t,state){
 }
 const fitCache=new WeakMap();
 function portraitFrame(s){
+ if(s.design?.anatomy){const f=Anatomy.portraitFrame(assembly(s));return {...f,width:f.width*1.5,height:f.height*1.5};}
  if(fitCache.has(s))return fitCache.get(s);const total=ribbonCount(s);let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
  const include=p=>{minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);};
  const rhythm=s.design.motion.rhythm||DEFAULT_RHYTHM,phases=Array.from({length:16},(_,i)=>TAU*i/(16*rhythm.rate));
@@ -138,6 +143,7 @@ function portraitFrame(s){
 }
 const ownerCache=new WeakMap();
 function surfaceFrame(s,t,thumb=false){
+ if(s.design?.anatomy){const f=Anatomy.frame(assembly(s),t,{budget:thumb?Math.min(4200,s.design.surface.samples):s.design.surface.samples,crests:Math.min(4,s.design.surface.crests)});for(let i=0;i<f.points.length;i+=4){const p=pose({x:f.points[i],y:f.points[i+1]},f.points[i+2],s.design);f.points[i]=p.x;f.points[i+1]=p.y;f.points[i+2]=p.z;}for(const ridge of f.ridges)ridge.line=ridge.line.map(p=>({...p,...pose(p,p.z,s.design),alpha:.18}));return f;}
  const m=motionState(s,t),total=ribbonCount(s),budget=thumb?Math.min(4200,s.design.surface.samples):s.design.surface.samples,columns=4,rows=Math.max(12,Math.floor(budget/(total*columns))),points=new Float32Array(total*rows*columns*4);let cursor=0;
  const compiled=Chroma.compile(s);let cached=ownerCache.get(s);
  if(!cached||cached.field!==compiled){cached={field:compiled};ownerCache.set(s,cached);}

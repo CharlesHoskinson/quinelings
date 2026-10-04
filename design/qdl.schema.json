@@ -182,6 +182,9 @@
               "maximum": 0.35
             }
           }
+        },
+        "gesture": {
+          "$ref": "anatomy.schema.json#/$defs/gesture"
         }
       }
     },
@@ -469,9 +472,46 @@
         }
       },
       "description": "Optional source-authored color fields. Omission preserves the neutral legacy material without rewriting source."
+    },
+    "anatomy": {
+      "$ref": "anatomy.schema.json"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Experimental Quineling Design Language",
-  "description": "Single evolving prototype schema. qdl.js additionally checks opacity order, radial positivity, scalar domain/threshold relations, unique bindings, and graph binding references."
+  "description": "Single evolving prototype schema. qdl.js additionally checks opacity order, radial positivity, scalar domain/threshold relations, unique bindings, and graph binding references.",
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "anatomy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "motion": {
+            "required": [
+              "gesture"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "motion": {
+            "required": [
+              "gesture"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "anatomy"
+        ]
+      }
+    }
+  ]
 }

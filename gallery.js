@@ -50,7 +50,7 @@ function syncChroma(){
  $('chroma-lens').hidden=chromaMode!=='scalar';
  $('chroma-role-legend').replaceChildren();
  const roles=new Set(shape.nodes.map(n=>C.role(n.op)));
- for(const key of roles){const role=C.ROLES[key],span=document.createElement('span'),dot=document.createElement('i');dot.style.background=role.color;span.append(dot,document.createTextNode(role.label));$('chroma-role-legend').append(span);}
+ for(const key of roles){const role=C.ROLES[key],span=document.createElement('span'),dot=document.createElement('i');dot.style.background=C.colorFor(shape,shape.nodes.findIndex(n=>C.role(n.op)===key));span.append(dot,document.createTextNode(role.label));$('chroma-role-legend').append(span);}
  const current=recording?.source===sourceIdentity;
  const tasks=current?recording.tasks:[];chromaCycle=Math.max(0,Math.min(chromaCycle,tasks.length-1));
  $('chroma-cycle').replaceChildren();
@@ -110,12 +110,22 @@ function render(context,w,h,s,family,t,thumb=false,externalLabel=false){
  const dot=thumb?1.15:Math.max(1.4,Math.min(w,h)/400);
  for(let layer=0;layer<4;layer++)for(let level=0;level<32;level++){context.globalAlpha=(level+.5)/32;for(const [color,points] of buckets[layer*32+level]){context.fillStyle=color;for(let i=0;i<points.length;i+=2)context.fillRect(cx+points[i]*scale,cy+points[i+1]*scale,dot,dot);}}
  // Continuous crest contours belong to the same surface; compression determines their light.
- for(const ridge of material.ridges){for(let i=0;i<ridge.line.length-1;i+=5){
-  const segment=ridge.line.slice(i,i+6),p=ridge.line[i],alpha=Math.min(.98,.14+p.alpha*3),entry=lensState?.byNode[nodes[p.owner]?.id];
-  if(entry&&!['valid','underflow','overflow'].includes(entry.status)&&Math.floor(i/5)%2)continue;
+ function crestStroke(segment,p,index){
+  const alpha=Math.min(.98,.14+p.alpha*3),entry=lensState?.byNode[nodes[p.owner]?.id];
+  if(entry&&!['valid','underflow','overflow'].includes(entry.status)&&Math.floor(index/5)%2)return;
   if(pigmented){path(segment,colors[p.owner]||ink.neutral,alpha,thumb?1:1.65,false);path(segment,ink.neutral,alpha*.55,thumb?.25:.45,false);}
   else path(segment,ink.neutral,alpha,thumb?.75:1.2,false);
- }}
+ }
+ for(const ridge of material.ridges){
+  let segment=[ridge.line[0]],start=0;
+  for(let i=1;i<ridge.line.length;i++){
+   const p=ridge.line[i],previous=ridge.line[i-1];
+   if(p.owner!==previous.owner){
+    const boundary={x:(p.x+previous.x)/2,y:(p.y+previous.y)/2};segment.push(boundary);crestStroke(segment,ridge.line[start],start);segment=[boundary,p];start=i;
+   }else segment.push(p);
+   if(segment.length>=6||i===ridge.line.length-1){crestStroke(segment,ridge.line[start],start);segment=[p];start=i;}
+  }
+ }
  for(const link of s.links){
   const source=nodeMap.get(link.from),A=positions.get(link.from),B=positions.get(link.to),dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1,f=1+link.port+source.frequency;
   const edgeAt=u=>{const bend=D.filamentBend(design,f,u,motionPhase);return {x:A.x+dx*u-dy/len*bend,y:A.y+dy*u+dx/len*bend};};

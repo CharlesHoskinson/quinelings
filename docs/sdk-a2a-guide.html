@@ -1,0 +1,114 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quinelings · sdk-a2a-guide</title><style>body{margin:auto;max-width:940px;padding:28px;background:#080f16;color:#c5dfd5;font:17px/1.7 system-ui}a{color:#83d8be}nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:40px}h1{font-size:40px;line-height:1.15}h2{margin-top:44px;color:#f0f5ed}pre{overflow:auto;padding:22px;background:#0d1a23;border:1px solid #29403e;border-radius:12px;font:14px/1.6 monospace}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td{padding:12px;border:1px solid #29403e}tr:first-child{font-weight:bold}code{overflow-wrap:anywhere;color:#e0f5cf}li{margin:8px 0}p{overflow-wrap:anywhere}@media(max-width:600px){body{padding:18px;font-size:16px}h1{font-size:32px}}</style></head><body><nav><a href="../sdk.html">← Agent SDK</a><a href="../create.html">Creation workspace</a><a href="sdk-a2a-guide.md">Markdown source</a></nav><h1>Quineling A2A integration</h1>
+<p>The experimental agent SDK adapts the local thought-to-lifeform runtime to Agent2Agent requests. The package pins <code>@a2a-js/sdk</code> <strong>1.3.0</strong>; examples here target its native <strong>A2A 1.0</strong> wire model. QDL remains experimental. Protocol compatibility does not freeze source formats or imply unrestricted thought compilation.</p>
+<p>Runtime operation names and arguments follow <code>packages/agent-sdk/src/types.ts</code>; transport behavior follows <code>src/a2a.ts</code>. The adapter mounts JSON-RPC and HTTP+JSON, supports streaming, and enables JSON-RPC v0.3 compatibility by default. Its unauthenticated server is intended for local use.</p>
+<p>The <a href="https://github.com/a2aproject/a2a-js">official SDK</a> supplies discovery, clients, request handlers, stores, and transports. Consult the <a href="https://a2a-protocol.org/v1.0.0/specification/">released A2A specification</a> for protocol requirements and the <a href="https://github.com/a2aproject/a2a-js/blob/main/docs/compatibility-v0_3.md">compatibility guide</a> before connecting v0.3 peers.</p>
+<h2>Discovery and versioning</h2>
+<p><code>createA2AApp</code> serves <code>/.well-known/agent-card.json</code> with the SDK <code>agentCardHandler</code>. The card identifies the transport endpoint independently of the discovery URL. A native card has an ordered <code>supportedInterfaces</code> array; its default preferred entry is:</p>
+<pre><code>{
+  &quot;url&quot;: &quot;http://127.0.0.1:8049/a2a/jsonrpc&quot;,
+  &quot;protocolBinding&quot;: &quot;JSONRPC&quot;,
+  &quot;protocolVersion&quot;: &quot;1.0&quot;
+}</code></pre>
+<p>The CLI defaults to this local port; no deployment is implied. HTTP+JSON is mounted at <code>/a2a/rest</code>. Agent <code>version</code> is <code>0.0.0-experimental</code>, separate from interface <code>protocolVersion</code>. The card advertises streaming and disables push notifications; it does not configure an extended authenticated card.</p>
+<p>The card has two skills: <code>build</code> covers passive creation and inspection operations; <code>execute</code> covers explicit <code>run</code> and <code>reproduce</code>. Skills describe discovery capabilities; the request's <code>operation</code> selects the runtime action. A2A has no standard execution <code>skillId</code> argument.</p>
+<p>After building the package, run <code>node dist/a2a-cli.js</code> from <code>packages/agent-sdk</code>; set <code>QUINELING_A2A_PORT</code> to change its port. The CLI binds to <code>127.0.0.1</code>. To embed it:</p>
+<pre><code>import { createA2AApp } from '@quinelings/agent-sdk/a2a';
+const { app, runtime, card } = createA2AApp({
+  baseUrl: 'http://127.0.0.1:8049',
+  legacyCompat: false
+});
+const server = app.listen(8049, '127.0.0.1');</code></pre>
+<p>The factory also accepts <code>runtime</code>, <code>taskStore</code>, and <code>requestLimitBytes</code>. Its default JSON body limit is 2 MiB. Supply the advertised listener origin as <code>baseUrl</code>; changing the card alone does not open a listener.</p>
+<h2>Structured request contract</h2>
+<p>Send a user message with exactly one JSON data part containing a request; use <code>mediaType: &quot;application/json&quot;</code>. A single text part is shorthand for <code>create</code> with that exact thought. Text is passed unchanged to the runtime: empty or whitespace-only thoughts request clarification, and the 16,384-character limit applies before trimming. The integration preserves the runtime argument names:</p>
+<table><tbody>
+<tr><td><code>operation</code></td><td>Fields beyond <code>operation</code></td><td>Runtime response</td></tr>
+<tr><td><code>parse</code></td><td><code>thought</code></td><td>Parse status, intent when supported, diagnostics, assumptions, source map</td></tr>
+<tr><td><code>create</code></td><td><code>thought</code>, optional <code>options</code></td><td>Creation status and artifact when supported</td></tr>
+<tr><td><code>compile</code></td><td>typed <code>intent</code>, optional <code>options</code></td><td>Validated artifact; invalid intent raises an error</td></tr>
+<tr><td><code>inspect</code></td><td><code>artifactId</code></td><td>Full stored Quineling artifact</td></tr>
+<tr><td><code>run</code></td><td><code>artifactId</code></td><td>Fresh source-bound execution record</td></tr>
+<tr><td><code>reproduce</code></td><td><code>artifactId</code>, <code>recordId</code></td><td><code>{artifact, record}</code> for a fresh child execution</td></tr>
+<tr><td><code>recover</code></td><td><code>recovery</code></td><td>Artifact validated from source or one genome</td></tr>
+<tr><td><code>frame</code></td><td><code>artifactId</code>, finite <code>phase</code>, optional <code>options</code></td><td>Geometry points, normals, owners, ridges, node IDs</td></tr>
+</tbody></table>
+<p>Creation options are <code>{seed?, repeats?}</code>. Frame options are <code>{budget?, crests?}</code>. Recovery accepts exactly one of <code>{source}</code>, <code>{harmonics}</code>, or <code>{colors}</code>. Use the actual types rather than inventing a numeric genome array or transport-specific source format. Imported source is validated as a Quineling program; recovery never invokes arbitrary JavaScript evaluation.</p>
+<p><code>compile.intent</code> uses <code>format: &quot;quineling-intent&quot;</code>, a name and thought, typed supplied inputs, ordered operation steps, and declared outputs. See the source <a href="../design/intent.schema.json">intent schema</a> and SDK declarations. Units and ordered ports affect task meaning. An unsupported operation cannot be enabled by adding its name to a remote request.</p>
+<p>Example raw JSON-RPC request to the advertised endpoint:</p>
+<pre><code>POST /a2a/jsonrpc HTTP/1.1
+Host: 127.0.0.1:8049
+Content-Type: application/json
+A2A-Version: 1.0
+
+{
+  &quot;jsonrpc&quot;: &quot;2.0&quot;,
+  &quot;id&quot;: &quot;create-1&quot;,
+  &quot;method&quot;: &quot;SendMessage&quot;,
+  &quot;params&quot;: {
+    &quot;message&quot;: {
+      &quot;messageId&quot;: &quot;msg-create-1&quot;,
+      &quot;role&quot;: &quot;ROLE_USER&quot;,
+      &quot;parts&quot;: [{
+        &quot;mediaType&quot;: &quot;application/json&quot;,
+        &quot;data&quot;: {
+          &quot;operation&quot;: &quot;create&quot;,
+          &quot;thought&quot;: &quot;[2,3,4] | square | sum | report total&quot;
+        }
+      }]
+    }
+  }
+}</code></pre>
+<p>Native SDK objects differ from serialized JSON. Use codecs to supply defaults and flatten protobuf unions:</p>
+<pre><code>import { randomUUID } from 'node:crypto';
+import { SendMessageRequest } from '@a2a-js/sdk';
+import { ClientFactory } from '@a2a-js/sdk/client';
+
+const client = await new ClientFactory().createFromUrl('http://127.0.0.1:8049');
+const request = SendMessageRequest.fromJSON({
+  message: {
+    messageId: randomUUID(),
+    role: 'ROLE_USER',
+    parts: [{
+      mediaType: 'application/json',
+      data: { operation: 'create', thought: '[2,3,4] | square | sum | report total' }
+    }]
+  }
+});
+const response = await client.sendMessage(request);
+if ('artifacts' in response) {
+  for (const artifact of response.artifacts) {
+    for (const part of artifact.parts) {
+      if (part.content?.$case === 'data') console.log(part.content.value);
+    }
+  }
+}</code></pre>
+<p>Do not JSON.stringify an SDK <code>content: {$case: &quot;data&quot;, value: ...}</code> object and post it directly; use <code>SendMessageRequest.toJSON</code> for manual transport. Native wire parts have no <code>kind: &quot;data&quot;</code>, user role is not <code>&quot;user&quot;</code>, and the RPC method is not <code>message/send</code>.</p>
+<h2>Results, identity, and execution</h2>
+<p>The response is an A2A task carrying a structured artifact whose data is <code>{operation, result}</code>. Each task uses the stable result-container ID <code>quineling-result</code>; a follow-up replaces that container, so a successful result supersedes the earlier clarification payload. Successful requests complete the task. A <code>clarify</code> result interrupts it with <code>TASK_STATE_INPUT_REQUIRED</code>; <code>unsupported</code> or <code>inconsistent</code> rejects it with <code>TASK_STATE_REJECTED</code>. The structured result retains status and diagnostics with no created artifact. Read <code>result.status</code> before treating creation as successful. Typed <code>compile</code> returns the artifact directly as <code>result</code>, rather than a creation-status wrapper.</p>
+<p>The A2A result artifact is a protocol container. Its <code>artifactId</code> identifies that container inside the A2A task. The nested Quineling artifact <code>id</code> identifies canonical source using SHA-256. A2A task ID, context ID, and message ID are separate identifiers. Preserve the returned runtime <code>artifact.id</code> for <code>inspect</code>, <code>run</code>, and <code>frame</code> requests, and the returned execution record <code>id</code> for <code>reproduce.recordId</code>.</p>
+<p>Thought, typed intent, contract, and source map are companion metadata; they do not change source identity. If the same canonical source is already stored with an intent, submitting a different companion intent raises <code>metadata-conflict</code> rather than overwriting the existing interpretation. Use separate Runtime instances to retain both interpretations. Recovering source into a fresh Runtime restores the program without those omitted companions; recovery into a Runtime that already knows the source returns its retained artifact.</p>
+<p>Creation constructs validated source and authored anatomy without executing the program. Inspection and frame sampling are observations. <code>run</code> executes explicitly; <code>reproduce</code> verifies the specific parent record and performs a fresh child execution. A reproduced source must match exactly, while execution records have their own identity and parent lineage. Actions supported by the kernel registry are simulations, not external world actions.</p>
+<p>The runtime defaults to at most 128 artifacts and 256 execution records in memory; its constructor allows bounded overrides. A full store rejects new entries with <code>resource-limit</code>; it does not silently evict retained entries. Process restart loses those entries. Source and genome exports can recover a validated program; they do not recover omitted thought provenance or historical execution records. A reproduction request must use a currently retained record associated with that exact artifact/source.</p>
+<h2>Lifecycle and errors</h2>
+<p>Malformed JSON and oversized HTTP bodies fail before dispatch (400/413). The executor creates an initial task, then validates message role/content and runtime arguments. Failures at that stage, including unknown runtime artifact/record references, produce <code>TASK_STATE_FAILED</code> with a status message rather than a success artifact. Runtime errors retain their structured <code>{code,message,path}</code> at <code>task.status.message.metadata.quinelingError</code>, including in later <code>GetTask</code> responses. A malformed role/part envelope on an existing interrupted task leaves it <code>TASK_STATE_INPUT_REQUIRED</code>, allowing a corrected follow-up; a valid envelope that fails runtime validation still produces a failed task. Unknown A2A task IDs and terminal cancellation use SDK semantic errors. These identifiers must remain distinct.</p>
+<p>The implementation uses <code>AgentExecutor</code>, <code>DefaultRequestHandler</code>, and <code>AgentEvent</code> from <code>@a2a-js/sdk/server</code>. Each invocation publishes an initial task before updates. JSON-RPC mounting uses <code>jsonRpcHandler({requestHandler, userBuilder})</code>; discovery uses <code>agentCardHandler({agentCardProvider})</code>. SDK error classes come from <code>@a2a-js/sdk/errors</code>.</p>
+<p>A retained clarification response can be continued with a new message ID and the same task/context. Previous user and agent messages remain in the task history, including unsuccessful message attempts. Send a complete replacement thought or structured request: the executor does not merge partial data or infer omitted arguments. On entering <code>TASK_STATE_INPUT_REQUIRED</code>, it releases active execution state and the SDK event bus; follow-up and cancellation are reconstructed from retained task storage. Streaming uses <code>client.sendMessageStream(request)</code> and yields SDK <code>StreamResponse.payload</code> values (<code>task</code>, <code>statusUpdate</code>, <code>artifactUpdate</code>, or <code>message</code>). The artifact arrives before the terminal/interrupted status. Cancellation can win before synchronous dispatch or while a clarification task remains retained; once bounded synchronous evaluation begins, it is not interruptible. Disconnecting does not establish cancellation. Send retries may duplicate work; the adapter has no message deduplication.</p>
+<p>The default <code>BoundedTaskStore</code> retains up to 128 tasks and 64 MiB, with a 16 MiB per-task limit. At capacity it evicts eligible terminal or paused tasks in order of their last update. Paused tasks also expire after 15 minutes; expiry is checked lazily on load, save, or list. Active and resuming work is protected within the task's tenant/user scope. Failed capacity admission or cloning leaves existing task entries intact; eviction is committed only after the replacement is prepared and shown to fit. Polling a task does not extend its lifetime. Once an ID is evicted or expires, polling, cancellation, or follow-up returns task-not-found; start a new task with a complete request. Runtime artifact/record stores instead reject new entries at capacity.</p>
+<p>To change paused-task retention, supply <code>taskStore: new BoundedTaskStore(128, 64 * 1024 * 1024, {interruptedTtlMs: 30 * 60 * 1000})</code> to <code>createA2AApp</code>; import <code>BoundedTaskStore</code> from <code>@quinelings/agent-sdk/a2a</code>. The optional <code>now</code> callback supports deterministic expiry tests. Custom task stores own their retention policy.</p>
+<p><code>ListTasks</code> uses an opaque signed cursor bound to the store instance, tenant/user scope, and context/status/timestamp filters. Results are ordered by status timestamp from newest to oldest; immutable admission sequence breaks equal-time ties. The cursor records both values, so eviction of earlier rows or the cursor row does not shift the continuation. Reusing a cursor with changed membership filters or another scope/store is rejected. This is a live listing: status changes can move a task across the cursor, and eviction or expiry can remove it. It does not promise snapshot consistency or exactly-once enumeration during mutation. Start a fresh listing to refresh changed results; <code>totalSize</code> counts the currently retained matches.</p>
+<p><code>statusTimestampAfter</code> compares parsed instants, including timezone offsets, and includes a task at exactly the supplied instant. Missing or invalid stored timestamps are excluded when that filter is present. Inclusive filtering and newest-first ordering follow the <a href="https://a2a-protocol.org/v1.0.0/specification/#314-list-tasks">A2A 1.0 List Tasks contract</a>; the installed SDK's reference in-memory store uses a stricter timestamp comparison, which this adapter deliberately does not copy.</p>
+<p>The factory mounts <code>UserBuilder.noAuthentication</code> and a shared Runtime. Remote service use requires an adapted authenticated mount and principal-scoped runtime access in addition to the task store's tenant/user scope. Runtime IDs are references, not access tokens. Source/thought artifacts may contain supplied data; apply the same authorization to downloads. No credentials belong in source or the agent card.</p>
+<h2>Interoperability checks before release</h2>
+<p>Use isolated runtimes and an ephemeral loopback listener. This checklist specifies required coverage; it is not a test result report.</p>
+<ul>
+<li>Discover with the official client; validate interface version, endpoint, modes, skills, and examples against the actual mounted service.</li>
+<li>Create the square/sum example, inspect its source, then run and assert total <strong>29</strong> independently. Reproduce using the returned current record, assert exact source and fresh parent-linked record, then recover separately through each genome representation.</li>
+<li>Exercise every structured operation through transport and compare it with direct <code>Runtime.dispatch</code>. Frame/inspect/recover must not create execution records.</li>
+<li>Preserve clarification/unsupported/inconsistent diagnostics and reject unknown operations, multiple data payloads, malformed intent, non-finite inputs, and conflicting recovery representations before mutation.</li>
+<li>Test polling, history limits, clarification transcript preservation/result replacement, malformed follow-up recovery, terminal cancellation, wrong task/context pairs, missing runtime references, and unsupported push/stream requests. Card claims must agree with observed behavior.</li>
+<li>Submit more clarification requests than the task capacity, then create a valid lifeform. Verify retained clarification follow-up/cancellation, expired or evicted IDs returning task-not-found, and active/resuming tasks surviving cleanup. Check conflicting companion intents preserve the existing artifact.</li>
+<li>Test cursor continuation after eviction, newest-first ordering, inclusive chronological timestamp filters, atomic failed saves, and tenant-scoped active protection.</li>
+<li>Include raw HTTP fixtures to catch accidental v0.3 wire fields. When possible, add an official independent-language client or conformance suite; same-SDK round trips alone do not establish interoperability.</li>
+</ul>
+<p>JSON-RPC legacy compatibility defaults to enabled; <code>legacyCompat: false</code> disables it. Discovery and JSON-RPC handlers use the upstream compat layer, and the card advertises a v0.3 JSON-RPC interface. REST remains native A2A 1.0. For a legacy server client, enable upstream compat in card resolution and the selected client transport, and test it separately. Do not send old field names to a native-only service.</p>
+<p>Detailed design decisions and installed SDK evidence are recorded in <a href="../research/sdk-sol-4.md">the A2A review</a>.</p></body></html>

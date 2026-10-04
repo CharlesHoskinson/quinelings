@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quinelings.example/design/anatomy.schema.json",
+  "title": "Experimental source-authored QDL assembly",
+  "$comment": "Runtime additionally checks parent order/root/depth/fanout/hinge paths, exact complete ownership partitions with representable interiors and graph-owner coverage. Gesture ticks sum exactly 1000 at runtime. This schema is experimental, not a version freeze.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "model",
+    "compiler",
+    "seed",
+    "components",
+    "owners"
+  ],
+  "properties": {
+    "model": {
+      "const": "assembly"
+    },
+    "compiler": {
+      "const": "qdl-assembly-experimental"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "kind",
+              "length",
+              "radii",
+              "bend",
+              "parent"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "kind": {
+                "const": "spine"
+              },
+              "length": {
+                "type": "number",
+                "minimum": 0.12,
+                "maximum": 1.2
+              },
+              "radii": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number",
+                  "minimum": 0.015,
+                  "maximum": 0.16
+                }
+              },
+              "bend": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number",
+                  "minimum": -0.2,
+                  "maximum": 0.2
+                }
+              },
+              "parent": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "component",
+                      "socket",
+                      "angle",
+                      "hinge"
+                    ],
+                    "properties": {
+                      "component": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "socket": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "u",
+                          "v"
+                        ],
+                        "properties": {
+                          "u": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "v": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        }
+                      },
+                      "angle": {
+                        "type": "number",
+                        "minimum": -3.141592653589793,
+                        "maximum": 3.141592653589793
+                      },
+                      "hinge": {
+                        "type": "number",
+                        "minimum": -0.12,
+                        "maximum": 0.12
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "kind",
+              "axes",
+              "parent"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "kind": {
+                "const": "chamber"
+              },
+              "axes": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0.04,
+                  "maximum": 0.35
+                }
+              },
+              "parent": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "component",
+                      "socket",
+                      "angle",
+                      "hinge"
+                    ],
+                    "properties": {
+                      "component": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "socket": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "u",
+                          "v"
+                        ],
+                        "properties": {
+                          "u": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "v": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        }
+                      },
+                      "angle": {
+                        "type": "number",
+                        "minimum": -3.141592653589793,
+                        "maximum": 3.141592653589793
+                      },
+                      "hinge": {
+                        "type": "number",
+                        "minimum": -0.12,
+                        "maximum": 0.12
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "owners": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "node",
+          "component",
+          "u"
+        ],
+        "properties": {
+          "node": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "component": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "u": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "gesture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "strength",
+        "ticks"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "gather",
+            "unfurl",
+            "glide",
+            "hover"
+          ]
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ticks": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 700
+          }
+        }
+      }
+    }
+  }
+}

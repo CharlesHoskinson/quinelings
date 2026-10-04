@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quinelings · sdk-mcp-guide</title><style>body{margin:auto;max-width:940px;padding:28px;background:#080f16;color:#c5dfd5;font:17px/1.7 system-ui}a{color:#83d8be}nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:40px}h1{font-size:40px;line-height:1.15}h2{margin-top:44px;color:#f0f5ed}pre{overflow:auto;padding:22px;background:#0d1a23;border:1px solid #29403e;border-radius:12px;font:14px/1.6 monospace}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td{padding:12px;border:1px solid #29403e}tr:first-child{font-weight:bold}code{overflow-wrap:anywhere;color:#e0f5cf}li{margin:8px 0}p{overflow-wrap:anywhere}@media(max-width:600px){body{padding:18px;font-size:16px}h1{font-size:32px}}</style></head><body><nav><a href="../sdk.html">← Agent SDK</a><a href="../create.html">Creation workspace</a><a href="sdk-mcp-guide.md">Markdown source</a></nav><h1>Quinelings MCP guide</h1>
+<p>The experimental <code>@quinelings/agent-sdk</code> exposes bounded thought compilation, authored anatomy, explicit simulated execution, source recovery, and numeric animation frames through MCP. QDL remains experimental; the package revision does not freeze the language. The adapter uses a process-local artifact and execution-record store. Restarting it discards that store.</p>
+<h2>Start the local adapter</h2>
+<p>From the checkout, install and build the SDK:</p>
+<pre><code>cd packages/agent-sdk
+npm ci
+npm run build
+node dist/mcp-cli.js</code></pre>
+<p>The CLI is an MCP stdio process. Start it through an MCP client; it is not an interactive terminal program. Configure the client with the Node executable and an absolute path to <code>packages/agent-sdk/dist/mcp-cli.js</code>. The package also declares a <code>quinelings-mcp</code> binary. No registry publication or deployment is implied by building locally.</p>
+<p>The exported <code>createQuinelingMcpServer(runtime = new Runtime())</code> factory is intended for applications that own the SDK transport and runtime lifecycle. Import it from <code>@quinelings/agent-sdk/mcp</code>. The CLI supplies the stdio transport. Stdout carries protocol messages; diagnostics belong on stderr. <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/transports">MCP stdio transport</a>.</p>
+<p><code>@quinelings/agent-sdk/schema</code> exports <code>JsonSchema</code>, <code>IntentTypeSchema</code>, <code>IntentStepSchema</code>, and <code>IntentSchema</code>. These recursive Zod schemas expose nested types, units, ordered input counts, and closed operation parameters in <code>tools/list</code>. Applications can validate proposal structure with <code>IntentSchema.parse(proposal)</code>. Schema parsing does not execute kernels. <code>JsonSchema</code> rejects nonfinite numbers, arrays or records with more than 512 entries, and values nested beyond 24 levels. <code>IntentSchema</code> also checks the depth of the complete intent envelope; wrapping a value adds levels. <code>tools/list</code> exposes recursive type references and the record/array size limits; depth is enforced by a Zod refinement and the compiler. <code>Runtime.compile</code> additionally checks references, acyclicity, units, operation refinements, the combined node count, and source budgets.</p>
+<h2>Tool catalog</h2>
+<table><tbody>
+<tr><td>Tool</td><td>Arguments</td><td>Purpose</td></tr>
+<tr><td><code>quineling_parse</code></td><td><code>{thought}</code></td><td>Return supported intent or explicit clarification, unsupported, or inconsistent status.</td></tr>
+<tr><td><code>quineling_compile</code></td><td><code>{intent, options?}</code></td><td>Compile an explicit typed intent into a stored artifact.</td></tr>
+<tr><td><code>quineling_create</code></td><td><code>{thought, options?}</code></td><td>Parse a bounded recipe and build it when supported.</td></tr>
+<tr><td><code>quineling_inspect</code></td><td><code>{artifactId}</code></td><td>Read a stored artifact and its companion information.</td></tr>
+<tr><td><code>quineling_run</code></td><td><code>{artifactId}</code></td><td>Execute the stored source and add a fresh record.</td></tr>
+<tr><td><code>quineling_reproduce</code></td><td><code>{artifactId, recordId}</code></td><td>Verify the parent's emitted source, reconstruct a child, and execute it.</td></tr>
+<tr><td><code>quineling_recover</code></td><td>Exactly one of <code>{source}</code>, <code>{harmonics}</code>, <code>{colors}</code></td><td>Recover and store source from one exact representation.</td></tr>
+<tr><td><code>quineling_frame</code></td><td><code>{artifactId, phase, options?}</code></td><td>Obtain deterministic numeric tissue, normals, ownership, and ridges.</td></tr>
+</tbody></table>
+<p><code>options</code> on create/compile accepts <code>seed</code> and <code>repeats</code>. The seed is an unsigned 32-bit integer; repeats is 1–8 and defaults to 1. An omitted seed is derived deterministically from the graph. Frame options are <code>budget</code> (4,000–24,000, default 12,000) and <code>crests</code> (2–4, default 3), both integers. MCP <code>phase</code> is a finite raw phase value within ±1,000,000, not wall-clock time. Use <code>tools/list</code> to inspect the running adapter's schemas.</p>
+<h2>Build, inspect, then execute</h2>
+<p>The following are <code>tools/call</code> parameter objects; the MCP client supplies initialization and JSON-RPC request IDs.</p>
+<pre><code>{
+  &quot;name&quot;: &quot;quineling_create&quot;,
+  &quot;arguments&quot;: {
+    &quot;thought&quot;: &quot;[2,3,4] | square | sum | report total&quot;,
+    &quot;options&quot;: {&quot;seed&quot;: 17, &quot;repeats&quot;: 1}
+  }
+}</code></pre>
+<p>A supported creation supplies an artifact containing canonical <code>source</code>, <code>program</code>, <code>graph</code>, authored <code>design</code>, harmonic and color genomes, and available companion intent/contract/source mappings. Use the returned artifact's <code>id</code> as <code>artifactId</code>; do not generate an ID from its title.</p>
+<pre><code>{&quot;name&quot;:&quot;quineling_inspect&quot;,&quot;arguments&quot;:{&quot;artifactId&quot;:&quot;&lt;returned artifact.id&gt;&quot;}}</code></pre>
+<p>Creation validates and stores the artifact. It does not execute the task. Execute deliberately:</p>
+<pre><code>{&quot;name&quot;:&quot;quineling_run&quot;,&quot;arguments&quot;:{&quot;artifactId&quot;:&quot;&lt;returned artifact.id&gt;&quot;}}</code></pre>
+<p>The execution record contains an <code>id</code>, <code>artifactId</code>, exact <code>source</code>, and <code>result</code>. For this one-cycle example, <code>result.tasks[0].output</code> is <code>[{&quot;total&quot;:29}]</code>. <code>result.emitted</code> contains the exact canonical source. A second run creates another record even if its source and outputs are identical.</p>
+<p>To verify and run a fresh child from that record:</p>
+<pre><code>{
+  &quot;name&quot;:&quot;quineling_reproduce&quot;,
+  &quot;arguments&quot;:{
+    &quot;artifactId&quot;:&quot;&lt;returned artifact.id&gt;&quot;,
+    &quot;recordId&quot;:&quot;&lt;returned execution record.id&gt;&quot;
+  }
+}</code></pre>
+<p>Reproduction returns <code>{artifact,record}</code>. An exact quine's child retains its source identity; the child execution is fresh and its record names <code>parentRecordId</code>. Supplying a record for another source fails. Reproduction includes execution, so call it only when a fresh simulated task cycle is intended.</p>
+<h2>Interpretation results and errors</h2>
+<p>Results use <code>structuredContent.result</code>; a JSON text block mirrors the same envelope for clients that consume text. MCP structured results are server data rather than model-generated schema-constrained text. <a href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools">MCP tool results</a>.</p>
+<p>Parse statuses have distinct meanings:</p>
+<table><tbody>
+<tr><td>Status</td><td>Client behavior</td></tr>
+<tr><td><code>supported</code></td><td>Inspect the proposed intent and assumptions; compile or create explicitly.</td></tr>
+<tr><td><code>clarify</code></td><td>Request the missing data or a complete supported recipe.</td></tr>
+<tr><td><code>unsupported</code></td><td>Explain the named capability obligation; no artifact exists.</td></tr>
+<tr><td><code>inconsistent</code></td><td>Correct the supplied plan/data using diagnostics.</td></tr>
+</tbody></table>
+<p>These statuses are interpretation results. They must not be mistaken for successful task execution. Parse diagnostics include <code>code</code>, <code>path</code>, and <code>message</code>. Domain failures such as invalid compilation, missing artifact IDs, or corrupted genomes use <code>isError: true</code> and <code>structuredContent.error</code>, mirrored as JSON text:</p>
+<pre><code>{&quot;error&quot;:{&quot;code&quot;:&quot;unknown-artifact&quot;,&quot;path&quot;:&quot;$&quot;,&quot;message&quot;:&quot;Artifact is not in this runtime&quot;}}</code></pre>
+<p>MCP argument-schema failures usually happen before the tool handler and may have SDK-generated text without this structured envelope. If the handler’s own defensive schema check rejects an input, it returns structured <code>invalid-input</code> with the first issue’s path. Runtime domain errors preserve their original <code>code</code>, <code>path</code>, and <code>message</code>. Unknown tools and malformed protocol requests can produce protocol errors. Check <code>isError</code>, structured error data, text, and protocol failures; do not retry an unchanged invalid request indefinitely.</p>
+<p>For example, <code>&quot;make my city happy&quot;</code> needs clarification, <code>&quot;monitor continuously and send email&quot;</code> is unsupported, and <code>&quot;[] | mean&quot;</code> is inconsistent. The adapter does not invent supplied data or quietly substitute another task.</p>
+<h2>Recovery and animation</h2>
+<p>MCP recovery arguments contain exactly one representation. The advertised object schema includes <code>oneOf</code> alternatives requiring <code>source</code>, <code>harmonics</code>, or <code>colors</code>; the SDK and handler both reject missing or multiple encodings. Use actual artifact fields:</p>
+<pre><code>{&quot;name&quot;:&quot;quineling_recover&quot;,&quot;arguments&quot;:{&quot;source&quot;:&quot;&lt;artifact.source&gt;&quot;}}</code></pre>
+<p>Alternatively send <code>{&quot;harmonics&quot;: &lt;artifact.harmonics&gt;}</code> or <code>{&quot;colors&quot;: &lt;artifact.colors&gt;}</code> as the arguments. The SDK's generic <code>dispatch</code> API nests these inside <code>recovery</code>; the MCP tool uses the three fields directly. Byte encodings recover executable source and authored design. They do not recover original English, types, units, or external notes that were stored only as companion information. Source checksums detect encoding corruption; semantic validation remains necessary.</p>
+<pre><code>{
+  &quot;name&quot;:&quot;quineling_frame&quot;,
+  &quot;arguments&quot;:{
+    &quot;artifactId&quot;:&quot;&lt;returned artifact.id&gt;&quot;,
+    &quot;phase&quot;:0.5,
+    &quot;options&quot;:{&quot;budget&quot;:4000,&quot;crests&quot;:2}
+  }
+}</code></pre>
+<p>Frames contain numeric arrays, not images: <code>points</code>, <code>normals</code>, <code>owners</code>, <code>ridges</code>, and <code>nodeIds</code>. The same authored source, phase, and options produce the same geometry. Frame seeking does not run the task, create an execution record, or change source identity. Renderers should treat owner indices as references into <code>nodeIds</code>. Start with a modest sample budget because JSON geometry can be large.</p>
+<h2>Identity, limits, and effects</h2>
+<p>Artifact IDs identify SHA-256 canonical source. Thought, units, and provenance are companion evidence and need separate interpretation: two companion documents may describe the same executable source. A stored artifact keeps its first companion metadata. Compiling different intent for an existing source with companion intent returns <code>metadata-conflict</code>; use separate runtime sessions to preserve both interpretations. Recovering into a fresh runtime supplies no companion intent. Source equality proves exact program identity within this runtime, not fidelity to arbitrary English or a frozen cross-version semantics contract. An artifact's available <code>contract.sourceBytes</code> measures its complete canonical source in UTF-8 bytes, including authored anatomy.</p>
+<p>The default runtime stores at most 128 artifacts and 256 execution records. A full store rejects new entries rather than evicting existing evidence. The framework additionally bounds graph nodes, task repeats, anatomy, finite JSON, and the complete canonical source to 65,536 bytes. MCP handlers check parsed request JSON against 4 MiB and each success result envelope against 8 MiB; these are handler limits rather than transport-wide preparse limits. Export source/genomes when the client needs recovery across process restarts.</p>
+<p>The handler checks the MCP request’s cancellation signal before dispatch. A request already cancelled at that point returns a <code>cancelled</code> error when the transport still accepts a response, and performs no compilation, admission, or execution. The MCP SDK may discard a cancelled request’s response entirely. Once synchronous kernel work starts, it runs to completion; cancellation cannot interrupt it midway.</p>
+<p>The response-size check follows the runtime call. An oversized response can therefore fail after a run has created a record; an error or timeout does not establish nonexecution. Repeating <code>run</code> or <code>reproduce</code> requests another fresh simulated execution.</p>
+<p>All <code>action</code> results are local simulation receipts. Their names and <code>allowed</code> parameters do not authorize email, filesystem changes, network calls, purchases, or deployment. MCP hints describe actual store effects: parse/inspect/frame are reads; compile/create/recover store artifacts; run/reproduce add execution records. Clients should treat annotations as advisory. <a href="https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-11-25/schema.ts">Official tool annotations</a>.</p>
+<h2>Validation</h2>
+<p>Run package verification from <code>packages/agent-sdk</code>:</p>
+<pre><code>npm run typecheck
+npm test
+npm run build</code></pre>
+<p>The MCP integration tests cover discovery with resolved recursive schemas, exactly-one recovery, independent task outcomes, quine and codec recovery, direct structured error paths, JSON depth/record bounds, an actual stdio exchange, and a same-turn call/cancellation pair that consumes no execution-record slot. Package tests separately cover frame determinism and store isolation/capacity. The <a href="../research/sdk-sol-3.md">MCP boundary review</a> records the detailed acceptance matrix and remaining design risks; it distinguishes requested coverage from tests actually executed.</p></body></html>

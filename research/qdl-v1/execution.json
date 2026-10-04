@@ -1,5 +1,5 @@
 {
-  "status": "implementation",
+  "status": "release-handoff",
   "createdAt": "2026-10-04T12:55:11.077068+00:00",
   "tagline": "Living Thoughts",
   "technicalWorkstreams": 10,
@@ -126,7 +126,7 @@
     }
   ],
   "brandingIntegration": {
-    "status": "copy-integrated; final publication pending",
+    "status": "integrated and published; live desktop/mobile paths verified",
     "surfaces": [
       "index.html",
       "create.html",
@@ -138,7 +138,7 @@
       320,
       1280
     ],
-    "productionReleaseClaims": "experimental; v1 acceptance remains pending",
+    "productionReleaseClaims": "Stable QDL 1 bounded simulation profile; legacy/default SDK and ranch policies experimental",
     "commit": "94e0bcd"
   },
   "implementationWorkstreams": [
@@ -177,20 +177,20 @@
       ]
     }
   ],
-  "scopeSummary": "Ten technical reports and five branding reports complete. Stable QDL v1 has not been implemented or accepted. Result-budget fix is underway.",
+  "scopeSummary": "Ten technical and five branding workstreams complete; QDL 1 and SDK1.0.0 acceptance passed. Final release retention and website publication in progress.",
   "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
-  "updatedAt": "2026-10-04T15:03:34.219360+00:00",
+  "updatedAt": "2026-10-04T15:39:32.247193+00:00",
   "delivery": {
-    "status": "integrated; package and publication verification pending",
-    "language": "v1 candidate",
+    "status": "release acceptance passed; stable artifact retention and publication in progress",
+    "language": "QDL 1 frozen profile",
     "stableRelease": false,
     "newSurfaces": [
       "v1.html",
       "ranch-workshop.html"
     ],
     "verification": {
-      "sdkTestsNode22": 107,
-      "sdkTestsNode26": 107,
+      "sdkTestsNode22": 109,
+      "sdkTestsNode26": 109,
       "leanTheorems": 239,
       "quintV1Scenarios": 26,
       "tokenModelStates": 98,
@@ -199,6 +199,9 @@
       "recipeFixtures": 44,
       "legacyGoldens": 12,
       "actualChromium": true
-    }
+    },
+    "implementationCommit": "d657d77",
+    "pagesCommit": "02bf88024242c47e7411ac81b29a9b2dee5bc585",
+    "publication": "publication.json"
   }
 }

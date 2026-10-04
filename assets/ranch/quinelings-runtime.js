@@ -26266,11 +26266,46 @@ function inert2(value, maxBytes) {
       stack.push({ value: d.value, depth: depth2 + 1, seen: next, path: p });
     }
   }
-  check3(bytes(value) <= maxBytes, "resource-limit", "JSON byte budget exceeded");
+  const size = bytes(value);
+  check3(size <= maxBytes, "resource-limit", "JSON byte budget exceeded");
+  return size;
 }
 function parse3(schema, value, maxBytes = 4 * 1024 * 1024) {
   inert2(value, maxBytes);
   return wrap2(() => schema.parse(value));
+}
+function parseSnapshot(value) {
+  check3(value && typeof value === "object" && !Array.isArray(value), "invalid-input", "Expected snapshot record");
+  const proto = Object.getPrototypeOf(value), keys = Object.keys(value), fields2 = ["format", "version", "registry", "registryDigest", "artifacts", "records", "receipts"];
+  check3(proto === Object.prototype || proto === null, "invalid-input", "Expected plain snapshot record");
+  check3(Reflect.ownKeys(value).length === keys.length && keys.length === fields2.length && fields2.every((k) => keys.includes(k)), "invalid-input", "Unknown, hidden or missing snapshot fields");
+  const selected = {};
+  for (const key of fields2) {
+    const d = Object.getOwnPropertyDescriptor(value, key);
+    check3(d && "value" in d, "invalid-input", "Snapshot accessors are forbidden");
+    selected[key] = d.value;
+  }
+  const header = { ...selected, artifacts: [], records: [], receipts: [] };
+  parse3(SnapshotSchema, header, 65536);
+  let total = bytes(header);
+  const rows = [["artifacts", 1024, 131328, ARTIFACT_BYTES], ["records", 4096, RECORD_BYTES, RECORDS_BYTES], ["receipts", 4096, 131328, RECEIPT_BYTES]];
+  for (const [field, maxCount, maxRowBytes, maxAggregate] of rows) {
+    const array2 = selected[field];
+    check3(Array.isArray(array2) && Object.getPrototypeOf(array2) === Array.prototype, "invalid-input", "Expected native snapshot row array");
+    const rowKeys = Object.keys(array2);
+    check3(array2.length <= maxCount, "resource-limit", "Snapshot row count exceeded");
+    check3(Reflect.ownKeys(array2).length === rowKeys.length + 1 && rowKeys.length === array2.length && rowKeys.every((k, i) => k === String(i)), "invalid-input", "Expected dense snapshot row array");
+    let aggregate = 0;
+    for (let i = 0; i < array2.length; i++) {
+      const d = Object.getOwnPropertyDescriptor(array2, String(i));
+      check3(d && "value" in d, "invalid-input", "Snapshot row accessors are forbidden");
+      const size = inert2(d.value, maxRowBytes);
+      aggregate += size;
+      total += size + (i ? 1 : 0);
+      check3(aggregate <= maxAggregate && total <= SNAPSHOT_BYTES, "resource-limit", "Snapshot aggregate byte budget exceeded");
+    }
+  }
+  return wrap2(() => SnapshotSchema.parse(value));
 }
 var optionsSchema = external_exports.strictObject({ maxArtifacts: external_exports.number().int().min(1).max(1024).optional(), maxRecords: external_exports.number().int().min(1).max(4096).optional(), maxRecordBytes: external_exports.number().int().min(1).max(RECORD_BYTES).optional(), maxRecordsBytes: external_exports.number().int().min(1).max(RECORDS_BYTES).optional() });
 var Session = class _Session {
@@ -26405,13 +26440,12 @@ var Session = class _Session {
   }
   exportSnapshot() {
     const snapshot = { format: "qdl-session-snapshot", version: 1, registry: import_qdl_v1.default.registry.id, registryDigest: import_qdl_v1.default.registryDigest, artifacts: [...this.#artifacts.values()].map((a) => ({ id: a.id, source: a.source })), records: [...this.#records.values()].map(clone2), receipts: [...this.#receipts.values()].map((r) => ({ request: clone2(r.request), recordId: r.recordId })) };
-    check3(bytes(snapshot) <= SNAPSHOT_BYTES, "resource-limit", "Snapshot exceeds 128 MiB");
-    return wrap2(() => SnapshotSchema.parse(snapshot));
+    return parseSnapshot(snapshot);
   }
   /** Passive restoration into a fresh memory session. Caller JSON cannot attest
    * historical execution: all imported records are marked asserted. */
   static fromSnapshot(snapshot, options2 = {}) {
-    const selected = parse3(SnapshotSchema, snapshot, SNAPSHOT_BYTES), session = new _Session(options2);
+    const selected = parseSnapshot(snapshot), session = new _Session(options2);
     check3(selected.registry === import_qdl_v1.default.registry.id && selected.registryDigest === import_qdl_v1.default.registryDigest, "unsupported-registry", "Snapshot registry pin differs from this interpreter");
     for (const row of selected.artifacts) {
       check3(!session.#artifacts.has(row.id), "invalid-input", "Duplicate snapshot artifact");

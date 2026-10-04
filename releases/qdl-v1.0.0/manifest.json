@@ -1,0 +1,33 @@
+{
+  "release": "qdl-v1.0.0",
+  "language": "qdl-program",
+  "version": 1,
+  "canonical": "qdl-json-1",
+  "registry": "qdl-kernels-1",
+  "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+  "sdkVersion": "1.0.0",
+  "sourceCommit": "3fa1fc49086b69d365e10d2306f34c57f27c285d",
+  "tagPolicy": "Never retag or replace retained release assets; verify SHA-256 before use.",
+  "scope": "Bounded deterministic local single-owner Session; simulation-only effects. Stable v1/schema/mcp/a2a/migrate entrypoints; legacy/default and ranch policies experimental.",
+  "implementationHashes": {
+    "qdl-v1.js": "8dca8132a86802187413e1cc1e076d02922e60574aff794fc34c22ad4b505b97",
+    "qdl-v1-types.js": "7a69e9a038d6124dade34e7425bdc8392fd25ac46c8b60149d2e4ee28c146c6d",
+    "qdl-v1-contract.js": "8a66b962af23c469e5adfba9743de32155d36ee85965aa7a94104140cca51c9f",
+    "qdl-v1-kernels.js": "b43b3a793c6395702c687f0632b4ceb85eabdfb5c6f9253c6b36fc7cebcfe4f1",
+    "kernels.js": "e9ca88a7260c3fd97a963952424e7f383a5e7aeea672c8f64283bedcc6cde351",
+    "core.js": "21ecf6bad1566e5af023e0bd788fb9bfd33fcf4ab93471f953280688a7d8bb1f",
+    "orbit.js": "74b0118ddae0cd0668d46de18ed64a593293873e9df3285dca3dcdc827eb7063",
+    "qdl.js": "08317452d2c49f833669f5448fa8ec2f085f51d40ab6f02bb1bfbba4a80fa465",
+    "anatomy.js": "5e993f7e40ca92eeb43fb929abe9ca3fbec1fdb4bee62c4bda610486693a93d1",
+    "chroma.js": "50ffdc73eaf2077af6d6f2a6fd3c68e75b991594a00726d29c2f1ad3b9d5050f",
+    "morphology.js": "25995d09cb10127c66d2a933d2a12e00b70d4af175b14f8bda8a78e426339111",
+    "ranch-crypto.js": "7f0476d07df8354441782289eef8a803d4e8b4bfb23fcda6aa3350bc81fe2b6c"
+  },
+  "assets": {
+    "qdl-v1-registry.json": "c3b062b550e81fc37b559c90571ccef779096ad0b46302a3a2c61785e602dc97",
+    "quinelings-agent-sdk-1.0.0.tgz": "6f94a62e7109994abcd27d00594b4e20b713f16c7295a2e1c0e128b66413c657",
+    "quinelings-qdl-v1.0.0-source.tar.gz": "3c046d8f818efda681ce1b6b4c1e258c0d99784bf51256d0fc44c7f023bb2451"
+  },
+  "acceptance": "research/qdl-v1/acceptance.json; research/qdl-v1/release-*-gates.md",
+  "archiveContents": "Complete tracked source checkout including matching interpreter, registry, normative docs, independent golden sources/genomes and migration fixtures; SDK distribution separately retained."
+}

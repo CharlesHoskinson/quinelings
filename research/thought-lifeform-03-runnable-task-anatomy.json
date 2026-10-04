@@ -1,0 +1,326 @@
+{
+  "graph": {
+    "version": 1,
+    "name": "Rooftop planter reserve steward",
+    "nodes": [
+      {
+        "id": "water",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": 9
+        }
+      },
+      {
+        "id": "beds",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {
+              "id": "fern",
+              "amount": 4,
+              "active": true
+            },
+            {
+              "id": "moss",
+              "amount": 5,
+              "active": false
+            },
+            {
+              "id": "sage",
+              "amount": 7,
+              "active": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "eligible",
+        "op": "filter",
+        "inputs": [
+          "beds"
+        ],
+        "params": {
+          "key": "active",
+          "operator": "eq",
+          "value": true
+        }
+      },
+      {
+        "id": "grants",
+        "op": "allocate",
+        "inputs": [
+          "water",
+          "eligible"
+        ],
+        "params": {}
+      },
+      {
+        "id": "reserve",
+        "op": "get",
+        "inputs": [
+          "grants"
+        ],
+        "params": {
+          "path": "remaining"
+        }
+      },
+      {
+        "id": "count",
+        "op": "length",
+        "inputs": [
+          "eligible"
+        ],
+        "params": {}
+      },
+      {
+        "id": "ledger",
+        "op": "report",
+        "inputs": [
+          "grants",
+          "reserve",
+          "count"
+        ],
+        "params": {
+          "labels": [
+            "allocation",
+            "reserve",
+            "eligibleBeds"
+          ]
+        }
+      }
+    ],
+    "outputs": [
+      "ledger"
+    ]
+  },
+  "anatomy": {
+    "name": "Rooftop planter reserve steward",
+    "motif": "fork",
+    "statistics": {
+      "depth": 4,
+      "forkExcess": 2,
+      "mergeExcess": 3
+    },
+    "components": [
+      {
+        "id": "trunk",
+        "kind": "spine",
+        "parent": null,
+        "owners": [
+          "beds"
+        ],
+        "control": [
+          [
+            0,
+            0.69
+          ],
+          [
+            0,
+            0.38
+          ],
+          [
+            0.012599999999999997,
+            0.03
+          ],
+          [
+            0,
+            -0.15
+          ]
+        ],
+        "width": 0.045,
+        "vertices": 3000
+      },
+      {
+        "id": "branch0",
+        "kind": "spine",
+        "parent": {
+          "component": "trunk",
+          "u": 0.6
+        },
+        "owners": [
+          "water"
+        ],
+        "control": [
+          [
+            0,
+            0
+          ],
+          [
+            -0.0528,
+            -0.1
+          ],
+          [
+            -0.33,
+            -0.32000000000000006
+          ],
+          [
+            -0.44,
+            -0.4
+          ]
+        ],
+        "width": 0.022,
+        "vertices": 3000
+      },
+      {
+        "id": "tip0",
+        "kind": "chamber",
+        "parent": {
+          "component": "branch0",
+          "u": 1
+        },
+        "owners": [
+          "eligible"
+        ],
+        "axes": [
+          0.075,
+          0.12
+        ],
+        "vertices": 3000
+      },
+      {
+        "id": "branch1",
+        "kind": "spine",
+        "parent": {
+          "component": "trunk",
+          "u": 0.6
+        },
+        "owners": [
+          "count"
+        ],
+        "control": [
+          [
+            0,
+            0
+          ],
+          [
+            0.0,
+            -0.1
+          ],
+          [
+            0.0,
+            -0.4800000000000001
+          ],
+          [
+            0.0,
+            -0.6000000000000001
+          ]
+        ],
+        "width": 0.022,
+        "vertices": 3000
+      },
+      {
+        "id": "tip1",
+        "kind": "chamber",
+        "parent": {
+          "component": "branch1",
+          "u": 1
+        },
+        "owners": [
+          "grants"
+        ],
+        "axes": [
+          0.075,
+          0.12
+        ],
+        "vertices": 3000
+      },
+      {
+        "id": "branch2",
+        "kind": "spine",
+        "parent": {
+          "component": "trunk",
+          "u": 0.6
+        },
+        "owners": [
+          "reserve"
+        ],
+        "control": [
+          [
+            0,
+            0
+          ],
+          [
+            0.0528,
+            -0.1
+          ],
+          [
+            0.33,
+            -0.32000000000000006
+          ],
+          [
+            0.44,
+            -0.4
+          ]
+        ],
+        "width": 0.022,
+        "vertices": 3000
+      },
+      {
+        "id": "tip2",
+        "kind": "chamber",
+        "parent": {
+          "component": "branch2",
+          "u": 1
+        },
+        "owners": [
+          "ledger"
+        ],
+        "axes": [
+          0.075,
+          0.12
+        ],
+        "vertices": 3000
+      },
+      {
+        "id": "apron",
+        "kind": "fin",
+        "parent": {
+          "component": "trunk",
+          "u": 0.39
+        },
+        "owners": [
+          "beds"
+        ],
+        "span": 0.26,
+        "width": 0.14,
+        "side": -1,
+        "vertices": 3000
+      }
+    ],
+    "operationAnchors": {
+      "beds": {
+        "component": "trunk",
+        "u": 0.1
+      },
+      "water": {
+        "component": "branch0",
+        "u": 0.1
+      },
+      "eligible": {
+        "component": "tip0",
+        "u": 0.3
+      },
+      "count": {
+        "component": "branch1",
+        "u": 0.5
+      },
+      "grants": {
+        "component": "tip1",
+        "u": 0.5
+      },
+      "reserve": {
+        "component": "branch2",
+        "u": 0.7
+      },
+      "ledger": {
+        "component": "tip2",
+        "u": 0.9
+      }
+    },
+    "surfaceVertexBudget": 24000,
+    "exactSourceIdentity": "Not supplied: fixtures illustrate compiler topology only."
+  },
+  "executionValidation": "See workstream 1 results; this file only compiles structural anatomy."
+}

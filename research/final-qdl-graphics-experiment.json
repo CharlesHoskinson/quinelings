@@ -1,0 +1,12 @@
+{
+  "experiment": "round tissue marks and low-alpha crest underlight",
+  "sourceUnchanged": true,
+  "phase": 0,
+  "families": [
+    "jelly",
+    "moth",
+    "torus"
+  ],
+  "productionEdited": false,
+  "timing": "Not benchmarked; per-point arcs deliberately a visual experiment only."
+}

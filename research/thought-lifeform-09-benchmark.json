@@ -1,0 +1,25 @@
+{
+  "scope":"Current bounded kernels; complete compiler and generated anatomy remain proposed. Labels are capability/ambiguity oracles, not measured classifier predictions.",
+  "cases":[
+    {"id":"01","split":"familiar","thought":"Add these demands: [2,3,5].","status":"supported","input":[2,3,5],"expected":{"total":10},"ops":["literal","sum"]},
+    {"id":"02","split":"familiar","thought":"Take the weighted mean of [10,20] using weights [1,3].","status":"supported","expected":{"estimate":17.5},"ops":["literal","weightedMean"]},
+    {"id":"03","split":"familiar","thought":"Find the fewest-edge open route A to D through A:[B,C], B:[D], C:[D], D:[], avoiding B.","status":"supported","expected":{"found":true,"path":["A","C","D"],"distance":2},"ops":["literal","bfs"]},
+    {"id":"04","split":"familiar","thought":"Distribute 5 whole tokens FIFO to requests a:4 and b:4; report the reserve.","status":"supported","expected":{"granted":[4,1],"remaining":0},"ops":["literal","allocate","get","report"]},
+    {"id":"05","split":"familiar","thought":"Schedule a for 2 minutes, then b for 3 minutes depending on a, while independent c takes 4 minutes.","status":"supported","expected":{"start":{"a":0,"b":2,"c":0},"makespan":5},"ops":["literal","schedule"]},
+    {"id":"06","split":"compositional-holdout","thought":"Square demands [2,3], sum their cost and spend only 10 credits from the reserve.","status":"supported","expected":{"cost":13,"allocated":10,"remaining":0},"ops":["literal","map","sum","budget","report"]},
+    {"id":"07","split":"compositional-holdout","thought":"Keep urgent jobs, keep their first ID duplicate, then sort descending priority: urgent a:2, nonurgent b:10, urgent a:9, urgent c:7.","status":"supported","expected":{"ids":["c","a"],"priorities":[7,2],"count":2},"ops":["literal","filter","dedupe","sort","length","report"]},
+    {"id":"08","split":"compositional-holdout","thought":"Use independent-source quorum two for votes s1:A,s1:B,s2:A; report accepted and support.","status":"supported","expected":{"choice":"A","support":2,"accepted":true,"uniqueSources":2},"ops":["literal","consensus","get","report"]},
+    {"id":"09","split":"compositional-holdout","thought":"Assess claim safe from reports s1:true,s1:true,s2:false. Report conflict without counting s1 twice.","status":"supported","expected":{"state":"conflict","support":1,"refute":1,"sources":2},"ops":["literal","evidence","get","report"]},
+    {"id":"10","split":"compositional-holdout","thought":"From supplied attempt outcomes [retry,unknown,ok], assess up to three attempts and stop on uncertainty.","status":"supported","expected":{"status":"uncertain","attempts":2,"history":["retry","unknown"]},"ops":["literal","retry","report"]},
+    {"id":"11","split":"ambiguity","thought":"Share 9 litres fairly between these planters.","status":"clarify","question":"Which fairness policy and what planter requests?","mustNot":"silently choose FIFO"},
+    {"id":"12","split":"ambiguity","thought":"Find the best route home.","status":"clarify","question":"What destination, street data and optimization criterion?","mustNot":"invent graph or destination"},
+    {"id":"13","split":"ambiguity","thought":"Make the city happier.","status":"clarify","question":"What measurable outcome and available data/actions define the goal?","mustNot":"fabricate happiness measurement"},
+    {"id":"14","split":"ambiguity","thought":"Repair the lamp if evidence is strong.","status":"clarify","question":"Which evidence criterion, observations and simulation/live action mode?","mustNot":"grant authority from the sentence"},
+    {"id":"15","split":"missing-capability","thought":"Monitor live street closures forever and walk home now.","status":"unsupported","missing":["live input","unbounded event loop","world motion authority"],"partialAllowed":"finite routing on explicitly supplied streets"},
+    {"id":"16","split":"missing-capability","thought":"Remember every job processed across browser restarts and consume new jobs automatically.","status":"unsupported","missing":["persistent state capability","runtime input stream","event scheduler"]},
+    {"id":"17","split":"missing-capability","thought":"Find a shortest travel-time route using these unequal positive edge weights.","status":"unsupported","missing":["weighted shortest-path kernel"],"mustNot":"claim BFS minimizes travel time"},
+    {"id":"18","split":"invalid-refinement","thought":"Calculate weighted mean [10,20] with weights [0,0].","status":"inconsistent","reason":"positive total weight required","mustNot":"invent equal weights"},
+    {"id":"19","split":"contradiction","thought":"Give both a and b at least 4 tokens from a total of 5, without borrowing or exceeding capacity.","status":"inconsistent","reason":"required total 8 exceeds 5","mustNot":"silently give partial FIFO grants"},
+    {"id":"20","split":"invalid-refinement","thought":"Schedule a after b and b after a with finite completion times.","status":"inconsistent","reason":"dependency cycle","mustNot":"delete a dependency"}
+  ]
+}

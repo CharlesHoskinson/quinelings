@@ -1,0 +1,259 @@
+{
+  "examples": [
+    {
+      "id": "open-route",
+      "graph": {
+        "version": 1,
+        "name": "Plan a route through supplied open streets",
+        "nodes": [
+          {
+            "id": "streets",
+            "op": "literal",
+            "inputs": [],
+            "params": {
+              "value": {
+                "A": [
+                  "B",
+                  "C"
+                ],
+                "B": [
+                  "D"
+                ],
+                "C": [
+                  "D"
+                ],
+                "D": []
+              }
+            }
+          },
+          {
+            "id": "blocked",
+            "op": "literal",
+            "inputs": [],
+            "params": {
+              "value": [
+                "B"
+              ]
+            }
+          },
+          {
+            "id": "route",
+            "op": "bfs",
+            "inputs": [
+              "streets",
+              "blocked"
+            ],
+            "params": {
+              "start": "A",
+              "goal": "D"
+            }
+          },
+          {
+            "id": "found",
+            "op": "get",
+            "inputs": [
+              "route"
+            ],
+            "params": {
+              "path": "found"
+            }
+          },
+          {
+            "id": "path",
+            "op": "get",
+            "inputs": [
+              "route"
+            ],
+            "params": {
+              "path": "path"
+            }
+          },
+          {
+            "id": "distance",
+            "op": "get",
+            "inputs": [
+              "route"
+            ],
+            "params": {
+              "path": "distance"
+            }
+          },
+          {
+            "id": "simulateWalk",
+            "op": "action",
+            "inputs": [
+              "found",
+              "path"
+            ],
+            "params": {
+              "action": "walk-route",
+              "allowed": true
+            }
+          },
+          {
+            "id": "result",
+            "op": "report",
+            "inputs": [
+              "route",
+              "simulateWalk"
+            ],
+            "params": {
+              "labels": [
+                "route",
+                "walk"
+              ]
+            }
+          }
+        ],
+        "outputs": [
+          "result"
+        ]
+      },
+      "output": [
+        {
+          "route": {
+            "found": true,
+            "path": [
+              "A",
+              "C",
+              "D"
+            ],
+            "distance": 2
+          },
+          "walk": {
+            "status": "simulated",
+            "action": "walk-route",
+            "payload": [
+              "A",
+              "C",
+              "D"
+            ]
+          }
+        }
+      ],
+      "generations": 3,
+      "exactSource": true,
+      "structuralDescriptionEqual": true,
+      "newGenerativeBodyImplemented": false
+    },
+    {
+      "id": "urgent-queue",
+      "graph": {
+        "version": 1,
+        "name": "Keep first urgent duplicate, prioritize surviving work",
+        "nodes": [
+          {
+            "id": "queue",
+            "op": "literal",
+            "inputs": [],
+            "params": {
+              "value": [
+                {
+                  "id": "a",
+                  "urgent": true,
+                  "priority": 2
+                },
+                {
+                  "id": "b",
+                  "urgent": false,
+                  "priority": 10
+                },
+                {
+                  "id": "a",
+                  "urgent": true,
+                  "priority": 9
+                },
+                {
+                  "id": "c",
+                  "urgent": true,
+                  "priority": 7
+                }
+              ]
+            }
+          },
+          {
+            "id": "urgent",
+            "op": "filter",
+            "inputs": [
+              "queue"
+            ],
+            "params": {
+              "key": "urgent",
+              "operator": "eq",
+              "value": true
+            }
+          },
+          {
+            "id": "unique",
+            "op": "dedupe",
+            "inputs": [
+              "urgent"
+            ],
+            "params": {
+              "key": "id"
+            }
+          },
+          {
+            "id": "ordered",
+            "op": "sort",
+            "inputs": [
+              "unique"
+            ],
+            "params": {
+              "key": "priority",
+              "descending": true
+            }
+          },
+          {
+            "id": "count",
+            "op": "length",
+            "inputs": [
+              "ordered"
+            ],
+            "params": {}
+          },
+          {
+            "id": "result",
+            "op": "report",
+            "inputs": [
+              "ordered",
+              "count"
+            ],
+            "params": {
+              "labels": [
+                "work",
+                "count"
+              ]
+            }
+          }
+        ],
+        "outputs": [
+          "result"
+        ]
+      },
+      "output": [
+        {
+          "work": [
+            {
+              "id": "c",
+              "urgent": true,
+              "priority": 7
+            },
+            {
+              "id": "a",
+              "urgent": true,
+              "priority": 2
+            }
+          ],
+          "count": 2
+        }
+      ],
+      "generations": 3,
+      "exactSource": true,
+      "structuralDescriptionEqual": true,
+      "newGenerativeBodyImplemented": false
+    }
+  ],
+  "literalOverrideChangesCompiledSource": true,
+  "blockedRouteSkipsSimulatedEffect": true
+}

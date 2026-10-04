@@ -1,5 +1,5 @@
 {
-  "status": "candidate_audit_gpt_wave",
+  "status": "candidate_audit_native_wave",
   "queuedWorkstreams": [],
   "auditAfterConvergence": {
     "grok": 3,
@@ -72,25 +72,33 @@
   "candidate": "../../docs/RANCH-CANDIDATE.md",
   "candidateSha256": "d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416",
   "candidateRevision": "c8a1264",
-  "activeAuditThreads": [
+  "completedAuditThreads": [
     {
       "provider": "GPT",
       "focus": "semantics",
-      "threadId": "01a10614-51b4-74b2-86e7-11a9b17db348"
+      "threadId": "01a10614-51b4-74b2-86e7-11a9b17db348",
+      "status": "completed",
+      "report": "audit-gpt-semantics.md"
     },
     {
       "provider": "GPT",
       "focus": "world",
-      "threadId": "01a10614-5601-7a50-84dd-6a36274748e3"
+      "threadId": "01a10614-5601-7a50-84dd-6a36274748e3",
+      "status": "completed",
+      "report": "audit-gpt-world.md"
     },
     {
       "provider": "GPT",
       "focus": "experience",
-      "threadId": "01a10614-53dc-7c91-b63c-53b8858d51dd"
+      "threadId": "01a10614-53dc-7c91-b63c-53b8858d51dd",
+      "status": "completed",
+      "report": "audit-gpt-experience.md"
     }
   ],
-  "queuedNativeAudits": {
-    "Grok": 3,
-    "Gemini": 3
+  "nativeAuditProcess": {
+    "execSessionId": 60288,
+    "runner": "scripts/audit-ranch-candidate.py",
+    "concurrency": 3,
+    "status": "running"
   }
 }

@@ -1,0 +1,47 @@
+{
+  "reviewers": 10,
+  "liveWebsite": "https://charleshoskinson.github.io/quinelings/",
+  "reviewedImplementation": true,
+  "reviews": [
+    {
+      "agent": "explain_newcomer",
+      "adopted": "Define Quineling and quine before introducing the metaphor."
+    },
+    {
+      "agent": "explain_runtime",
+      "adopted": "State browser interpretation; separate computation, rendering, and emitted source."
+    },
+    {
+      "agent": "explain_visual",
+      "adopted": "Add an anatomy key and distinguish body colors from source colors."
+    },
+    {
+      "agent": "explain_tutorial",
+      "adopted": "Provide a concrete Lanternkeeper experiment with observable results."
+    },
+    {
+      "agent": "explain_quine",
+      "adopted": "Explain fresh-generation verification and source construction."
+    },
+    {
+      "agent": "explain_genome",
+      "adopted": "Explain why recovery uses all wave bands or exact RGB records."
+    },
+    {
+      "agent": "explain_midnight",
+      "adopted": "Clarify authored task pairing and the Midnight.city ambition."
+    },
+    {
+      "agent": "explain_accessibility",
+      "adopted": "Add formula glossary, non-color selection state, readable text."
+    },
+    {
+      "agent": "explain_usefulness",
+      "adopted": "Show visual inspection and comparison across prepared scenarios."
+    },
+    {
+      "agent": "explain_editor",
+      "adopted": "Unify task terminology, specify default inputs, avoid strict symmetry claims."
+    }
+  ]
+}

@@ -26,6 +26,8 @@ with sync_playwright() as p:
     page.evaluate('translation.stop();translation.setStage(2)')
     page.locator('.program-line[data-node="faultScore"]').click()
     assert page.evaluate('quineling.selected')=='faultScore'
+    assert page.locator('.program-line[data-node="faultScore"]').get_attribute('aria-pressed')=='true'
+    assert page.locator('.program-line[aria-pressed="true"]').count()==1
     assert 'weightedMean' in page.locator('#translation-node-name').inner_text()
     frequency=page.evaluate('quineling.shape.nodes.find(n=>n.id==="faultScore").frequency')
     assert f'cos({frequency}θ)' in page.locator('#translation-equation').inner_text()

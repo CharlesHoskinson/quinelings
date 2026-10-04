@@ -1,11 +1,11 @@
 {
-  "status": "passed-local-release-acceptance",
+  "status": "passed-local-and-live-stable-release-acceptance",
   "languageStatus": "stable QDL 1",
   "tagline": "Living Thoughts",
   "technicalSpecialists": 10,
   "brandingSpecialists": 5,
   "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
-  "checkedAt": "2026-10-04T15:39:32.247193+00:00",
+  "checkedAt": "2026-10-04T15:54:59.937458+00:00",
   "node": [
     "v22.23.3",
     "v26.10.0"
@@ -68,7 +68,8 @@
     "ranch-implementation.md",
     "release-language-gates.md",
     "release-delivery-gates.md",
-    "release-api-gates.md"
+    "release-api-gates.md",
+    "completion-checklist.md"
   ],
   "publication": "publication.json",
   "finalReleaseFreeze": "complete; matching source/interpreter, SDK1.0.0, registry and goldens retained with SHA-256",
@@ -82,5 +83,7 @@
   "archiveBytes": 324495,
   "release": "qdl-v1.0.0",
   "releaseManifest": "../../releases/qdl-v1.0.0/manifest.json",
-  "stableScope": "bounded deterministic local single-owner simulation-only profile; legacy/default and ranch policies experimental"
+  "stableScope": "bounded deterministic local single-owner simulation-only profile; legacy/default and ranch policies experimental",
+  "githubRelease": "https://github.com/CharlesHoskinson/quinelings/releases/tag/qdl-v1.0.0",
+  "releaseAssets": "Five uploaded assets; GitHub SHA-256 digests match retained bytes"
 }

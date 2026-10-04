@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "midnightAgentImageLoaded": true,
+  "bubbleMovesIntoProgram": true,
+  "viewPreservesSourceAndDoesNotExecute": true,
+  "linkedProgramOrganFrequencyAndColor": true,
+  "explicitFilamentFrequencyAndStrandCount": true,
+  "cyclesExecute": 3,
+  "programsChecked": 10,
+  "canonicalGraphMatches": true,
+  "mobileNoOverflow": true,
+  "reducedMotion": true,
+  "pageErrors": []
+}

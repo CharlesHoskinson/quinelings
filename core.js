@@ -100,7 +100,8 @@ function describe(program){
  top.forEach(n=>depth(n.id));const max=Math.max(...depths.values(),1);
  nodes.forEach((n,i)=>{n.outdegree=links.filter(e=>e.from===n.id).length;n.indegree=links.filter(e=>e.to===n.id).length;n.frequency=OPS.indexOf(n.op)+1;n.level=n.parent?depths.get(n.parent)||0:depths.get(n.id);n.u=(n.level+.5)/(max+1);n.side=((i%2)*2-1)*(n.op==='Permit'?.62:n.op==='Box'?.42:.24);});
  const design=isTask?(graph.design||Design.create()):Design.create();Design.validate(design);
- return {graph,nodes,links,repeats,quoteDepth,branches:top.reduce((s,n)=>s+Math.max(0,n.outdegree-1),0),maxDepth:max,design};
+ const branches=top.reduce((s,n)=>s+Math.max(0,n.outdegree-1),0);
+ return {graph,nodes,links,repeats,quoteDepth,branches,strandCount:Math.min(22,12+Math.floor(branches/2)),maxDepth:max,design};
 }
 function nodePosition(n,t,shape){if(n.parent){const p=nodePosition(shape.nodes.find(x=>x.id===n.parent),t,shape);return {x:p.x+.015*Math.sin(t+n.frequency),y:p.y+.016*Math.cos(t+n.frequency)};}const y=(n.u-.5)*1.65;return {x:.11*Math.sin(TAU*n.u+.3*Math.sin(t))+n.side*(.75+.09*Math.sin(t+n.frequency)),y:y+.028*Math.sin(t+n.frequency)};}
 function edgePoint(link,s,t,shape){const a=nodePosition(shape.nodes.find(n=>n.id===link.from),t,shape),b=nodePosition(shape.nodes.find(n=>n.id===link.to),t,shape);const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;const f=1+link.port+shape.nodes.find(n=>n.id===link.from).frequency;const bend=Design.filamentBend(shape.design||Design.DEFAULT,f,s,t);return {x:a.x+dx*s-dy/len*bend,y:a.y+dy*s+dx/len*bend};}

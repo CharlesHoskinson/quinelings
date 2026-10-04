@@ -10,7 +10,9 @@ No application dependencies or build step are required. From this repository:
 python3 -m http.server 8048 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:8048 . Select a specimen, choose a task fixture, run its task and quine, inspect the output, and reproduce a fresh generation. Recover the source from harmonic samples or exact RGB data, or download either genome.
+Open http://127.0.0.1:8048 . The Midnight.city walkthrough moves an agent’s declared thought bubble into the executable graph, then shows the exact QDL equations and linked animation. Select a program line to highlight its organ. Changing thought cycles changes the actual program; translating or replaying alone does not execute it.
+
+Select a specimen, choose a task fixture, run its task and quine, inspect the output, and reproduce a fresh generation. Recover the source from harmonic samples or exact RGB data, or download either genome.
 
 | Quineling | Computation | Family |
 | --- | --- | --- |
@@ -54,3 +56,7 @@ The model searches bounded transitions; it does not prove the JavaScript rendere
 For optional browser checks, install Playwright in a local virtual environment and its Chromium browser, then run `python verify-browser.py`. Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` only when using an existing browser binary. The script creates and stops its own local server.
 
 Twelve research agents contributed ten programs, the language audit, and the gallery. Their notes are in `research/`.
+
+The agent artwork was retrieved from public Midnight.city assets with Scrapling. `assets/midnight/provenance.json` records the original URLs, timestamps, and SHA-256 hashes. Reproduce the retrieval with a local environment using `scripts/requirements-scraping.txt` and `python scripts/scrape-midnight-agent.py`. The art represents an illustrative agent; the thought is the explicitly authored library task.
+
+`python verify-translation.py` checks the bubble transition, linked source/organ/equation mapping, source-preserving view transitions, all ten programs, reduced motion, and mobile layout.

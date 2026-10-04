@@ -1,0 +1,25 @@
+{
+  "source": "https://midnight.city/",
+  "retrievedAt": "2026-10-04T03:54:08.796802+00:00",
+  "homepageStatus": 200,
+  "pageScripts": [
+    "/assets/index-JDqEnY20.js"
+  ],
+  "assets": [
+    {
+      "url": "https://midnight.city/home/activity-character-diamond.png",
+      "path": "assets/midnight/activity-character-diamond.png",
+      "bytes": 11555,
+      "sha256": "6a7ad452254454f3844323b0944167c108c11a370f6b82d6522906f6063913d6",
+      "fetcher": "Scrapling Fetcher 0.4.15"
+    },
+    {
+      "url": "https://midnight.city/home/activity-character-armor.png",
+      "path": "assets/midnight/activity-character-armor.png",
+      "bytes": 17141,
+      "sha256": "52aea70088596958bec28dd62ba5e05de01daf7cc8b71fb923dd078db2ab8fea",
+      "fetcher": "Scrapling Fetcher 0.4.15"
+    }
+  ],
+  "use": "Public agent artwork used in a local illustrative thought-to-program demo; no live agent identity or hidden thought is claimed."
+}

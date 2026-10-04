@@ -27,7 +27,7 @@
 2. **Deficit 2 (Motion & Choreography):** The homepage bodies appear largely static across phase changes; they only tilt or pivot rigidly at joints. They lack the continuous, rippling, wave-like displacement seen in the original fluid animation.
 3. **Deficit 3 (Light & Texture):** The homepage textures present opaque, harsh horizontal stripes with heavy solid shading. The original uses fine, densely packed dots that form bright, additive, semi-transparent spectral trails.
 
-#### Code Inference and Actionable Fixes 
+#### Code Inference and Actionable Fixes
 *Note: Because the anatomy data structures (AST/JSON) are frozen in the quine source, fixes target the runtime mathematics and renderer (`anatomy.js`, `lifeform-renderer.js`) without altering the generated component definitions.*
 
 1. **Fix for Form/Boundaries (Lifeform Renderer):**
@@ -41,4 +41,3 @@
 3. **Fix for Light/Texture (Renderer Blending):**
    - **Inference:** `lifeform-renderer.js` uses standard alpha compositing with low-transparency overlapping sprites, leading to muddy, solid color bands mapped strictly to territorial ownership.
    - **Proposal:** Change the canvas compositing mode to additive blending (`ctx.globalCompositeOperation = 'lighter'`) and lower the base alpha multiplier. This allows the distinct semantic role hues to blend naturally into bright, glowing whites where overlapping is dense, matching the original's ethereal light while strictly preserving the underlying hue identities.
-

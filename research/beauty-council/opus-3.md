@@ -66,7 +66,7 @@ Read-only review. I edited no files, used no credentials or subagents, and sent 
   - soft radial-gradient dot sprites, sorted into 12 depth layers;
   - per-dot lighting from surface normals, with alpha weighted per point;
   - ridges stroked in three passes: glow, core and a white highlight.
-  
+
   This matches the gallery's look, but I didn't confirm that `gallery.js` calls this renderer.
 
 ## Three precise deficits

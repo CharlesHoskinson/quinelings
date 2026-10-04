@@ -24,12 +24,12 @@
 ## Code Inference & Actionable Proposals
 *These technical fixes preserve the frozen runtime/source and semantic role hue identities.*
 
-1.  **Form (Layout Geometry)** 
-    *   **Inference**: `anatomy.js` dictates chunky geometry through rigid `chamber` and `spine` bounding boxes. 
+1.  **Form (Layout Geometry)**
+    *   **Inference**: `anatomy.js` dictates chunky geometry through rigid `chamber` and `spine` bounding boxes.
     *   **Proposal**: Repurpose the spatial sampling budget away from these rigid volumetric primitives. Instead, distribute the nodes along continuous splines or a unified trigonometric vector field to restore the intricate, flowing filamentous structure.
 2.  **Motion (Animation Math)**
-    *   **Inference**: Motion is currently driven by the `score()` function in `anatomy.js`, which uses discrete, segmented cubic bezier interpolation (`g.ticks`) applied to joint rotations (`lean`, `opening`). 
+    *   **Inference**: Motion is currently driven by the `score()` function in `anatomy.js`, which uses discrete, segmented cubic bezier interpolation (`g.ticks`) applied to joint rotations (`lean`, `opening`).
     *   **Proposal**: Replace the discrete bezier segments with continuous trigonometric phase functions (sine/cosine). Apply these directly to the vertex frames to reintroduce a smooth, global undulating wave field that isn't bottlenecked by segmented hinges.
 3.  **Light & Texture (Rendering Strategy)**
-    *   **Inference**: `lifeform-renderer.js` plots thick lines (`lineWidth = 4.5`) and large semi-opaque gradient sprites (via `ctx.globalAlpha`). 
+    *   **Inference**: `lifeform-renderer.js` plots thick lines (`lineWidth = 4.5`) and large semi-opaque gradient sprites (via `ctx.globalAlpha`).
     *   **Proposal**: Drastically reduce crest line widths to sub-pixel values and lower the base alpha of the sprites. Switch the canvas composition to additive blending (e.g., `globalCompositeOperation = 'lighter'`) and use fine, glowing point plotting. This will recreate the original's luminous, translucent texture while successfully mapping the required semantic role colors.

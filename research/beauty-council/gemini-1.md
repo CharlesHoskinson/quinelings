@@ -38,4 +38,3 @@
 **3. Fibrous Ridge Adjustments (Addresses Rigid Segmentation)**
 *   **Inference:** Structural boundaries are aggressively outlined by drawing continuous crests and ridges with multiple, thick overlapping strokes (`lineWidth` of 4.5, 1.3, and 0.45 in `lifeform-renderer.js`). This visually emphasizes the rigid underlying skeletal components (spines, chambers).
 *   **Proposal:** Without modifying the frozen anatomical graph generation, alter the rendering of crests to deemphasize the skeleton. Reduce the `lineWidth` of the ridge strokes dramatically, lower their opacity, and increase the crest sampling budget. This will convert thick structural outlines into fine, fibrous textures that better match the delicate, filamentous look of the reference artwork.
-

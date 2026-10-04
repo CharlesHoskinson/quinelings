@@ -1,6 +1,7 @@
 (function(root){
 'use strict';
 const TAU=Math.PI*2;
+const Chroma=typeof module!=='undefined'?require('./chroma.js'):root.Chroma;
 const DEFAULT_RHYTHM=Object.freeze({model:'coupled-harmonic',mode:'periodic',rate:1,breath:.06,wave:.055,waveNumber:1.6,lag:.9,asymmetry:.28,overtone:.17});
 const motionCache=new WeakMap();
 function bodyTransform(family,r,pulse,secondary){const scale=1+r.breath*pulse,angle=(family==='seed'?.18:family==='bloom'?.10:family==='moth'?.035:.055)*r.wave/.18*secondary;return {family,scale,stretch:1/Math.sqrt(scale),pivot:family==='coral'?.48:0,c:Math.cos(angle),sn:Math.sin(angle),lift:family==='coral'?0:r.wave*.22*secondary};}
@@ -135,17 +136,24 @@ function portraitFrame(s){
  const padding=.035+.30*rhythm.wave+.10*rhythm.breath+.025*rhythm.overtone;
  const result={cx:(minX+maxX)/2,cy:(minY+maxY)/2,width:(maxX-minX+2*padding)*1.08,height:(maxY-minY+2*padding)*1.08};fitCache.set(s,result);return result;
 }
+const ownerCache=new WeakMap();
 function surfaceFrame(s,t,thumb=false){
  const m=motionState(s,t),total=ribbonCount(s),budget=thumb?Math.min(4200,s.design.surface.samples):s.design.surface.samples,columns=4,rows=Math.max(12,Math.floor(budget/(total*columns))),points=new Float32Array(total*rows*columns*4);let cursor=0;
+ const compiled=Chroma.compile(s);let cached=ownerCache.get(s);
+ if(!cached||cached.field!==compiled){cached={field:compiled};ownerCache.set(s,cached);}
+ const key=String(thumb),count=points.length/4,rebuild=!cached[key]||cached[key].total!==total||cached[key].rows!==rows;
+ const owners=rebuild?new Uint16Array(count):cached[key].owners;
  for(let k=0;k<total;k++)for(let j=0;j<columns;j++)for(let i=0;i<rows;i++){
   const u=(i+.5+((k*.618+j*.381)%1-.5)*.75)/rows,v=Math.cos(Math.PI*(j+.5)/columns),p=surfacePoint(s,u,v,k,total,t,m);
+  if(rebuild)owners[cursor/4]=compiled.owner(u,v,k,total);
   points[cursor++]=p.x;points[cursor++]=p.y;points[cursor++]=p.z;points[cursor++]=p.alpha;
  }
  const ridges=[];for(let j=0;j<s.design.surface.crests;j++){const k=Math.floor(j*total/s.design.surface.crests),a=TAU*k/total,line=[];
-  for(let i=0;i<=300;i++){const u=i/300,spatial=closedFamily(s.design.family)?Math.sin(TAU*u):u,v=.92*Math.cos(m.phase-s.design.surface.phaseLag*spatial+a*.5);line.push(surfacePoint(s,u,v,k,total,t,m));}
+  for(let i=0;i<=300;i++){const u=i/300,spatial=closedFamily(s.design.family)?Math.sin(TAU*u):u,v=.92*Math.cos(m.phase-s.design.surface.phaseLag*spatial+a*.5);const p=surfacePoint(s,u,v,k,total,t,m);p.owner=compiled.owner(u,v,k,total);line.push(p);}
   ridges.push({line,primary:true});
  }
- return {points,ridges};
+ if(rebuild)cached[key]={owners,total,rows};
+ return {points,ridges,owners};
 }
 // phaseRate retains its nominal 24-frame-per-second QDL meaning.
 function advancePhase(phase,rate,seconds,moving=true){return moving?phase+rate*24*Math.max(0,Math.min(.1,seconds)):phase;}

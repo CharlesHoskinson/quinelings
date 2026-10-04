@@ -5,6 +5,7 @@ import QDL.Semantics
 import QDL.Quine
 import QDL.Integration
 import QDL.Rhythm
+import QDL.Chroma
 
 /-! The build's proof-dependency audit. The standard Lean/mathlib foundation
 may use propext, Classical.choice and Quot.sound. No project axiom or admitted
@@ -43,6 +44,14 @@ proof is permitted. The executable audit runner checks these printed closures. -
 #print axioms QDL.RhythmSafety.valid_breathStretch_defined
 #print axioms QDL.RhythmSafety.valid_normalizedWave_bounds
 
+#print axioms QDL.ChromaView.displayed_scalar_has_provenance
+#print axioms QDL.ChromaView.stale_source_is_unavailable
+#print axioms QDL.ChromaView.failed_trace_is_unavailable
+#print axioms QDL.ChromaView.zero_is_a_value
+#print axioms QDL.ChromaView.normalized_bounded
+#print axioms QDL.ChromaView.normalized_monotone
+#print axioms QDL.ChromaView.mode_change_preserves_runtime
+
 namespace QDL.Audit
 
 /-- Reject a timing asymmetry outside the runtime's authored domain. -/
@@ -60,5 +69,19 @@ example : RhythmSafety.phaseVelocity 1 1 Real.pi = 0 := by
 /-- The authored breath bound is essential for invertible body stretch. -/
 example : RhythmSafety.breathScale 1 (-(Real.pi / 2)) = 0 := by
   simp [RhythmSafety.breathScale]
+
+/-- A finite scalar scale must have positive width. -/
+example : ¬ ({ id := "fault", label := "Fault", unit := "", lower := 1, upper := 1, bindings := [{ node := "score", path := [] }] } : ScalarLens).Valid := by
+  norm_num [ScalarLens.Valid]
+
+/-- Threshold metadata cannot silently leave its declared domain. -/
+example : ¬ ({ id := "fault", label := "Fault", unit := "", lower := 0, upper := 1, threshold := some 2, bindings := [{ node := "score", path := [] }] } : ScalarLens).Valid := by
+  norm_num [ScalarLens.Valid]
+
+example : ¬ (LensPathSegment.key "__proto__").Valid := by
+  simp [LensPathSegment.Valid]
+
+example : ¬ (LensPathSegment.index 512).Valid := by
+  norm_num [LensPathSegment.Valid]
 
 end QDL.Audit

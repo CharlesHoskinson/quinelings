@@ -20,6 +20,9 @@ Open http://127.0.0.1:8048 . The Midnight.city walkthrough moves an agent’s de
 
 Select a specimen, choose a task fixture, run its task and quine, inspect the output, and reproduce a fresh generation. Recover the source from harmonic samples or exact RGB data, or download either genome.
 
+Chromamapping gives each membrane stable color territories for six program roles. Under the selected portrait, choose **Program roles**, **Pearl study**, or an authored recorded-value lens. Lanternkeeper includes **Fault score**: select a scenario, run the task, and inspect its value on a fixed 0–1 scale with a 0.625 reference threshold. The task-cycle selector chooses an existing record; changing views never executes the program. Source edits clear previous values. Color recipes survive source reproduction and both genomes.
+
+
 | Quineling | Computation | Family |
 | --- | --- | --- |
 | Lanternkeeper | Corroborated, guarded lamp repair decision | Filament |
@@ -68,3 +71,5 @@ The agent artwork was retrieved from public Midnight.city assets with Scrapling.
 `python verify-translation.py` checks the bubble transition, linked source/organ/equation mapping, source-preserving view transitions, all ten programs, reduced motion, and mobile layout.
 
 `node verify-morphology.cjs` checks all-family geometry, endpoint pinning, closed loops, pure source-preserving projection, and frame-rate independence. `python verify-motion.py` checks the shared browser clock, pause, dynamic reduced motion, organ selection, and recorded-trace identity. Set `QUINELINGS_URL` to check a hosted website instead of its temporary local server.
+
+`node verify-chroma.cjs` checks material ownership, quantitative scales, missing states, and pure color evaluation. `python verify-chromamapping.py` checks the colored collection, real recorded values, task-cycle selection, source invalidation, reproduction, and mobile layout.

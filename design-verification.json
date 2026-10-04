@@ -1,5 +1,5 @@
 {
-  "passed": 12,
+  "passed": 18,
   "checks": [
     "All ten families are bounded valid QDL expressions",
     "Unknown syntax, families and models are rejected",
@@ -12,7 +12,13 @@
     "Rhythm syntax is closed, complete, finite and bounded",
     "Legacy rhythm omission validates without rewriting canonical source",
     "Every rhythm parameter is source identity while task results stay constant",
-    "Published default and independent authored family rhythms remain consistent"
+    "Published default and independent authored family rhythms remain consistent",
+    "Chroma schema and published default describe the same closed contract",
+    "Chroma and scalar fields reject unknown, malformed and ambiguous declarations",
+    "Scalar strings, paths and domains accept their bounds without coercion",
+    "Binding checks reject absent nodes and program profiles are independent copies",
+    "Authored scalar fields survive three generations and both genomes",
+    "Legacy chroma omission validates and reproduces without source insertion"
   ],
   "numericalGeometry": "sampled floating-point checks, not a theorem"
 }

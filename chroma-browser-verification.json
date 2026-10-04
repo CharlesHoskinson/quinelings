@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "checks": [
+    "Lens view cannot execute or fabricate an unevaluated value",
+    "Recorded low/high fixtures have distinct fixed-domain colors",
+    "View changes preserve source and execution result",
+    "Source/fixture changes invalidate prior recording",
+    "Fresh quine retains lens and recorded value",
+    "Unbound species disable scalar view",
+    "Mobile and desktop controls fit; no browser errors"
+  ]
+}

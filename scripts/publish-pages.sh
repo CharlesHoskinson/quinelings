@@ -5,7 +5,7 @@ npm test
 npm run formal:all
 site_dir=$(mktemp -d)
 trap 'rm -rf "$site_dir"' EXIT
-cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js morphology.js core.js gallery.js translation.js "$site_dir/"
+cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js chroma.js morphology.js core.js gallery.js translation.js "$site_dir/"
 cp -R programs assets docs design "$site_dir/"
 cp lean-verification.json "$site_dir/"
 # Publish only tracked specifications, never Lean toolchains or compiled dependency caches.

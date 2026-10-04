@@ -1,9 +1,10 @@
 /* The body is a bounded projection; only the independently encoded genome preserves source. */
 'use strict';
 (() => {
-const Q=globalThis.Quinelings,D=globalThis.QDL,M=globalThis.Morphology,$=id=>document.getElementById(id),TAU=Math.PI*2;
+const Q=globalThis.Quinelings,D=globalThis.QDL,M=globalThis.Morphology,C=globalThis.Chroma,$=id=>document.getElementById(id),TAU=Math.PI*2;
 const canvas=$('creature'),ctx=canvas.getContext('2d');
 let library=[],current=null,program,shape,genome,result,designDraft,generation=0,phase=0,selected=null,traceIndex=0,tracePulse=null,traceNode=null,viewSeconds=0;
+let chromaMode='roles',chromaCycle=0,chromaState=null,recording=null,runSerial=0,sourceIdentity='';
 const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
 let moving=!motionPreference.matches,dirty=true,viewRevision=0,canvasVisible=true;
 $('pause').textContent=moving?'Pause motion':'Resume motion';
@@ -12,8 +13,8 @@ function color(op){return Q.instructionColor(op);}
 function fail(error){$('receipt').textContent=error.message;$('status').textContent='REJECTED';console.error(error);}
 function guard(fn){return (...args)=>{try{return fn(...args);}catch(e){fail(e);}};}
 function literalGraph(){const fixture=current.fixtures[Number($('fixture').value)]||{overrides:{}};const graph=JSON.parse(JSON.stringify(current.graph));for(const node of graph.nodes)if(node.op==='literal'&&Object.hasOwn(fixture.overrides||{},node.id))node.params.value=fixture.overrides[node.id];return graph;}
-function install(ast,reset=true){dirty=true;viewRevision++;program=ast;tracePulse=null;traceNode=null;shape=Q.describe(ast);designDraft=JSON.parse(JSON.stringify(shape.design));syncRhythm();genome=Q.encode(ast);result=null;selected=null;traceIndex=0;if(reset)generation=0;$('generation').textContent=`GENERATION ${generation}`;$('source').value=Q.canon(ast);$('metrics').textContent=`${shape.nodes.length} ORGANS / ${shape.links.length} FILAMENTS`;$('band').max=genome.bands.length-1;$('band').value=0;$('status').textContent='READY TO EXECUTE';$('task-output').textContent='Run the selected task to inspect its output.';$('trace').textContent='Each colored organ corresponds to a graph operation.';$('organ-info').textContent='Select a colored organ to inspect its operation.';$('proof').textContent=`${new TextEncoder().encode(Q.canon(ast)).length} canonical source bytes\n${genome.bands.length} harmonic bands\n32 integer coefficients per band`;legend();drawWave();window.dispatchEvent(new CustomEvent('quineling:changed'));}
-function select(item){current=item;designDraft=D.create(item.skin.family);$('identity').textContent=item.name;$('description').textContent=item.description;$('specimen-id').textContent=`SPECIMEN ${String(library.indexOf(item)+1).padStart(2,'0')} / ${item.id.toUpperCase()}`;$('family-label').textContent=`${item.skin.family.toUpperCase()} / GRAPH PROJECTION`;$('fixture').replaceChildren();item.fixtures.forEach((fixture,i)=>{const option=document.createElement('option');option.value=i;option.textContent=fixture.name;$('fixture').append(option);});$('repeats').value=1;$('repeats-label').textContent='1';rebuild();for(const card of document.querySelectorAll('.creature-card')){const active=card.dataset.id===item.id;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));}}
+function install(ast,reset=true){dirty=true;viewRevision++;program=ast;tracePulse=null;traceNode=null;shape=Q.describe(ast);sourceIdentity=Q.canon(ast);recording=null;chromaCycle=0;designDraft=JSON.parse(JSON.stringify(shape.design));syncRhythm();genome=Q.encode(ast);result=null;selected=null;traceIndex=0;syncChroma();if(reset)generation=0;$('generation').textContent=`GENERATION ${generation}`;$('source').value=Q.canon(ast);$('metrics').textContent=`${shape.nodes.length} ORGANS / ${shape.links.length} FILAMENTS`;$('band').max=genome.bands.length-1;$('band').value=0;$('status').textContent='READY TO EXECUTE';$('task-output').textContent='Run the selected task to inspect its output.';$('trace').textContent='Each colored organ corresponds to a graph operation.';$('organ-info').textContent='Select a colored organ to inspect its operation.';$('proof').textContent=`${new TextEncoder().encode(Q.canon(ast)).length} canonical source bytes\n${genome.bands.length} harmonic bands\n32 integer coefficients per band`;legend();drawWave();window.dispatchEvent(new CustomEvent('quineling:changed'));}
+function select(item){current=item;designDraft=D.forProgram(item);$('identity').textContent=item.name;$('description').textContent=item.description;$('specimen-id').textContent=`SPECIMEN ${String(library.indexOf(item)+1).padStart(2,'0')} / ${item.id.toUpperCase()}`;$('family-label').textContent=`${item.skin.family.toUpperCase()} / GRAPH PROJECTION`;$('fixture').replaceChildren();item.fixtures.forEach((fixture,i)=>{const option=document.createElement('option');option.value=i;option.textContent=fixture.name;$('fixture').append(option);});$('repeats').value=1;$('repeats-label').textContent='1';rebuild();for(const card of document.querySelectorAll('.creature-card')){const active=card.dataset.id===item.id;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));}}
 function rebuild(){if(!current)return;install(Q.makeTaskProgram(literalGraph(),Number($('repeats').value),designDraft));$('repeats-label').textContent=$('repeats').value;$('receipt').textContent='Selected inputs are encoded in the source. All effects are local simulations.';}
 const gestures={filament:'A breathing spine sends a wave through its folds.',jelly:'The bell contracts while the trailing tissue follows.',moth:'Paired wings open with a delayed ripple toward their edges.',coral:'The branches bend more strongly toward their tips.',ribbon:'A traveling wave folds and unfolds the long membrane.',nautilus:'A coiled body expands around its fixed spiral.',seed:'A quiet pulse stretches the body as its width contracts.',torus:'Waves circulate around a continuous closed ring.',comet:'Motion gathers at the head and travels into the tail.',bloom:'Petals open around a breathing center.'};
 function syncRhythm(){
@@ -37,9 +38,48 @@ for(const key of ['breath','wave','lag']){
 }
 $('rhythm-mode').onchange=guard(editRhythm);
 $('rhythm-reset').onclick=guard(()=>{designDraft=JSON.parse(JSON.stringify(shape.design));designDraft.motion=D.create(current.skin.family).motion;rebuild();});
-function run(){result=Q.execute(Q.decode(genome));const source=Q.canon(program),same=result.emitted.length===1&&result.emitted[0]===source;if(!same)throw Error('Quine source identity failed');const tasks=result.tasks||[];const output=tasks[0]?.output;const fixture=current.fixtures[Number($('fixture').value)];const matches=Q.canon(output)===Q.canon(fixture.expected);$('task-output').textContent=pretty(output);$('receipt').textContent=`${tasks.length} task cycle${tasks.length===1?'':'s'} completed. Fixture ${matches?'matched':'MISMATCHED'}. Exact canonical source reproduced.`;$('status').textContent=matches?'TASK + QUINE VERIFIED':'FIXTURE MISMATCH';$('proof').textContent=`Emitted source = canonical program: EXACT\nFixture output: ${matches?'MATCH':'MISMATCH'}\nRuntime steps: ${result.steps}\nSource reconstructed by the constructor quine`;traceIndex=0;step();return result;}
+function syncChroma(){
+ if(!shape)return;
+ const profile=shape.design.chroma,lens=profile?.lens;
+ $('chroma-controls').hidden=!profile;
+ if(chromaMode==='scalar'&&!lens)chromaMode='roles';
+ $('chroma-view').value=chromaMode;
+ $('chroma-scalar-option').disabled=!lens;
+ $('chroma-scalar-option').textContent=lens?lens.label+' · recorded value':'No scalar lens authored';
+ $('chroma-role-legend').hidden=chromaMode!=='roles';
+ $('chroma-lens').hidden=chromaMode!=='scalar';
+ $('chroma-role-legend').replaceChildren();
+ const roles=new Set(shape.nodes.map(n=>C.role(n.op)));
+ for(const key of roles){const role=C.ROLES[key],span=document.createElement('span'),dot=document.createElement('i');dot.style.background=role.color;span.append(dot,document.createTextNode(role.label));$('chroma-role-legend').append(span);}
+ const current=recording?.source===sourceIdentity;
+ const tasks=current?recording.tasks:[];chromaCycle=Math.max(0,Math.min(chromaCycle,tasks.length-1));
+ $('chroma-cycle').replaceChildren();
+ for(let i=0;i<Math.max(1,tasks.length);i++){const option=document.createElement('option');option.value=i;option.textContent=tasks.length?`Run ${recording.id} / cycle ${i+1} of ${tasks.length}`:'No recorded execution';$('chroma-cycle').append(option);}
+ $('chroma-cycle').value=chromaCycle;$('chroma-cycle').disabled=!tasks.length;
+ chromaState=lens?C.resolveLens(shape.design,tasks[chromaCycle]||null,recording&&!current?'stale':'current'):null;
+ if(lens){
+  const [lo,hi]=lens.domain,unit=lens.unit?' '+lens.unit:'';
+  $('chroma-lens-description').textContent=`${lens.label} colors ${lens.bindings.map(b=>b.node).join(', ')} using the fixed domain ${lo}–${hi}${unit}. Organ markers retain their operation colors.`;
+  const first=lens.bindings[0].node,target=shape.nodes.findIndex(n=>n.id===first);
+  const stops=Array.from({length:9},(_,i)=>C.colorFor(shape,target,{lens,byNode:{[first]:{color:C.scalarColor(i/8)}}})+' '+i*12.5+'%');
+  $('chroma-scale-bar').style.background='linear-gradient(to right, '+stops.join(', ')+')';
+  $('chroma-min').textContent=lo+unit;$('chroma-max').textContent=hi+unit;
+  $('chroma-threshold').hidden=lens.threshold===undefined;
+  if(lens.threshold!==undefined)$('chroma-threshold').style.left=((lens.threshold-lo)/(hi-lo)*100)+'%';
+  $('chroma-threshold-label').textContent=lens.threshold===undefined?'Fixed scale across every run.':`Reference threshold: ${lens.threshold}${unit}. Color alone does not determine permission or an action.`;
+  $('chroma-value').textContent=chromaState.entries.map(e=>{
+   const valid=typeof e.value==='number'&&Number.isFinite(e.value);
+   const comparison=valid&&lens.threshold!==undefined?` · ${e.value>=lens.threshold?'≥':'<'} ${lens.threshold}`:'';
+   return `${e.node}: ${valid?e.value+unit+' · ':''}${C.STATUS_LABELS[e.status]||e.status}${comparison}`;
+  }).join('\n');
+ }
+ dirty=true;viewRevision++;
+}
+$('chroma-view').onchange=()=>{chromaMode=$('chroma-view').value;syncChroma();};
+$('chroma-cycle').onchange=()=>{chromaCycle=Number($('chroma-cycle').value);syncChroma();};
+function run(){result=Q.execute(Q.decode(genome));const source=Q.canon(program),same=result.emitted.length===1&&result.emitted[0]===source;if(!same)throw Error('Quine source identity failed');const tasks=result.tasks||[];const output=tasks[0]?.output;const fixture=current.fixtures[Number($('fixture').value)];const matches=Q.canon(output)===Q.canon(fixture.expected);$('task-output').textContent=pretty(output);$('receipt').textContent=`${tasks.length} task cycle${tasks.length===1?'':'s'} completed. Fixture ${matches?'matched':'MISMATCHED'}. Exact canonical source reproduced.`;$('status').textContent=matches?'TASK + QUINE VERIFIED':'FIXTURE MISMATCH';$('proof').textContent=`Emitted source = canonical program: EXACT\nFixture output: ${matches?'MATCH':'MISMATCH'}\nRuntime steps: ${result.steps}\nSource reconstructed by the constructor quine`;recording={id:++runSerial,source:sourceIdentity,tasks:result.tasks};chromaCycle=0;syncChroma();traceIndex=0;step();return result;}
 function step(){if(!result)return;const rows=result.tasks?.flatMap(task=>task.trace)||result.trace||[];if(!rows.length)return;const row=rows[traceIndex%rows.length];selected=row.edge||row.id||row.node||null;$('trace').textContent=`Step ${traceIndex%rows.length+1} / ${rows.length}\n${pretty(row)}`;traceIndex++;traceNode=selected;tracePulse=viewSeconds;organInfo(shape.nodes.find(n=>n.id===selected));}
-function reproduce(){const parent=run(),source=parent.emitted[0],child=JSON.parse(source),fresh=Q.execute(child);if(fresh.emitted.length!==1||fresh.emitted[0]!==source)throw Error('Fresh generation did not reproduce its source');if(Q.canon(fresh.tasks.map(t=>t.output))!==Q.canon(parent.tasks.map(t=>t.output)))throw Error('Fresh generation task outputs changed');generation++;install(child,false);result=fresh;$('task-output').textContent=pretty(fresh.tasks[0]?.output);$('status').textContent='FRESH GENERATION VERIFIED';$('receipt').textContent=`Generation ${generation} was constructed from emitted source and executed again. Source and task outputs match.`;$('proof').textContent='Parent output = child source: EXACT\nFresh child emitted source: EXACT\nFresh child task outputs: EXACT';}
+function reproduce(){const parent=run(),source=parent.emitted[0],child=JSON.parse(source),fresh=Q.execute(child);if(fresh.emitted.length!==1||fresh.emitted[0]!==source)throw Error('Fresh generation did not reproduce its source');if(Q.canon(fresh.tasks.map(t=>t.output))!==Q.canon(parent.tasks.map(t=>t.output)))throw Error('Fresh generation task outputs changed');generation++;install(child,false);result=fresh;recording={id:++runSerial,source:sourceIdentity,tasks:fresh.tasks};chromaCycle=0;syncChroma();$('task-output').textContent=pretty(fresh.tasks[0]?.output);$('status').textContent='FRESH GENERATION VERIFIED';$('receipt').textContent=`Generation ${generation} was constructed from emitted source and executed again. Source and task outputs match.`;$('proof').textContent='Parent output = child source: EXACT\nFresh child emitted source: EXACT\nFresh child task outputs: EXACT';}
 function recover(mode){const restored=mode==='rgb'?Q.decodeColors(Q.encodeColors(program)):Q.decode(Q.fromSamples(Q.samples(genome)));if(Q.canon(restored)!==Q.canon(program))throw Error('Recovered source changed');const check=Q.execute(restored);if(check.emitted[0]!==Q.canon(restored))throw Error('Recovered program failed source reproduction');$('proof').textContent=mode==='rgb'?'Exact RGB byte strand → source: EXACT\nRedundant byte palette + checksum: VERIFIED\nRecovered source execution: QUINE VERIFIED':`${genome.bands.length*65} numerical samples\nCosine coefficients + checksum: VERIFIED\nRecovered source: EXACT\nRecovered source execution: QUINE VERIFIED`;$('receipt').textContent=`Complete source recovered from ${mode==='rgb'?'exact RGB data':'all harmonic samples'} and successfully executed.`;}
 function legend(){const ops=[...new Set(shape.nodes.map(n=>n.op))];$('color-legend').replaceChildren();for(const op of ops){const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('i');dot.className='legend-dot';dot.style.background=color(op);span.append(dot,document.createTextNode(op));$('color-legend').append(span);}}
 // Portraits are sampled folded membranes; inspection reveals executable anatomy.
@@ -58,12 +98,24 @@ function render(context,w,h,s,family,t,thumb=false,externalLabel=false){
   if(halo){context.globalAlpha=alpha*.1;context.lineWidth=width+4;context.stroke();context.globalAlpha=alpha*.16;context.lineWidth=width+1.8;context.stroke();}
   context.globalAlpha=alpha;context.lineWidth=width;context.stroke();
  }
- const material=M.surfaceFrame(s,t,thumb),buckets=Array.from({length:128},()=>[]),vertices=material.points;
- for(let i=0;i<vertices.length;i+=4){const layer=Math.max(0,Math.min(3,Math.floor((vertices[i+2]+.7)/1.4*4))),level=Math.max(0,Math.min(31,Math.floor(vertices[i+3]*32)));buckets[layer*32+level].push(vertices[i],vertices[i+1]);}
- context.fillStyle=ink.neutral;const dot=thumb?1.15:Math.max(1.4,Math.min(w,h)/400);
- for(let layer=0;layer<4;layer++)for(let level=0;level<32;level++){context.globalAlpha=(level+.5)/32;const points=buckets[layer*32+level];for(let i=0;i<points.length;i+=2)context.fillRect(cx+points[i]*scale,cy+points[i+1]*scale,dot,dot);}
+ const material=M.surfaceFrame(s,t,thumb),buckets=Array.from({length:128},()=>new Map()),vertices=material.points;
+ const pigmented=!!design.chroma&&(thumb||chromaMode!=='neutral'),lensState=!thumb&&s===shape&&chromaMode==='scalar'?chromaState:null;
+ const colors=nodes.map((_,i)=>pigmented?C.colorFor(s,i,lensState):ink.neutral);
+ for(let i=0;i<vertices.length;i+=4){
+  const owner=material.owners[i/4],entry=lensState?.byNode[nodes[owner]?.id];
+  if(entry&&!['valid','underflow','overflow'].includes(entry.status)&&i/4%6>=3)continue;
+  const layer=Math.max(0,Math.min(3,Math.floor((vertices[i+2]+.7)/1.4*4))),level=Math.max(0,Math.min(31,Math.floor(vertices[i+3]*32))),bucket=buckets[layer*32+level],color=colors[owner]||ink.neutral;
+  if(!bucket.has(color))bucket.set(color,[]);bucket.get(color).push(vertices[i],vertices[i+1]);
+ }
+ const dot=thumb?1.15:Math.max(1.4,Math.min(w,h)/400);
+ for(let layer=0;layer<4;layer++)for(let level=0;level<32;level++){context.globalAlpha=(level+.5)/32;for(const [color,points] of buckets[layer*32+level]){context.fillStyle=color;for(let i=0;i<points.length;i+=2)context.fillRect(cx+points[i]*scale,cy+points[i+1]*scale,dot,dot);}}
  // Continuous crest contours belong to the same surface; compression determines their light.
- for(const ridge of material.ridges){for(let i=0;i<ridge.line.length-1;i+=5){const segment=ridge.line.slice(i,i+6),p=ridge.line[i],alpha=Math.min(.98,.14+p.alpha*3);path(segment,ink.neutral,alpha,thumb?.75:1.2,false);}}
+ for(const ridge of material.ridges){for(let i=0;i<ridge.line.length-1;i+=5){
+  const segment=ridge.line.slice(i,i+6),p=ridge.line[i],alpha=Math.min(.98,.14+p.alpha*3),entry=lensState?.byNode[nodes[p.owner]?.id];
+  if(entry&&!['valid','underflow','overflow'].includes(entry.status)&&Math.floor(i/5)%2)continue;
+  if(pigmented){path(segment,colors[p.owner]||ink.neutral,alpha,thumb?1:1.65,false);path(segment,ink.neutral,alpha*.55,thumb?.25:.45,false);}
+  else path(segment,ink.neutral,alpha,thumb?.75:1.2,false);
+ }}
  for(const link of s.links){
   const source=nodeMap.get(link.from),A=positions.get(link.from),B=positions.get(link.to),dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1,f=1+link.port+source.frequency;
   const edgeAt=u=>{const bend=D.filamentBend(design,f,u,motionPhase);return {x:A.x+dx*u-dy/len*bend,y:A.y+dy*u+dx/len*bend};};
@@ -100,7 +152,7 @@ motionPreference.addEventListener('change',e=>{moving=!e.matches;motionChanged()
 for(const id of ['semantic-color','topology'])$(id).addEventListener('change',()=>{dirty=true;viewRevision++;});
 if('IntersectionObserver' in window)new IntersectionObserver(entries=>{canvasVisible=entries[0].isIntersecting;dirty=true;},{rootMargin:'80px'}).observe(canvas);
 async function fetchJSON(path){const response=await fetch(path);if(!response.ok)throw Error(`Could not load ${path} (${response.status})`);return response.json();}
-async function start(){try{if(!Q?.makeTaskProgram||!D?.create)throw Error('The task runtime is not available yet.');const ids=await fetchJSON('programs/manifest.json');library=await Promise.all(ids.map(id=>fetchJSON(`programs/${id}.json`)));for(const [i,item] of library.entries()){const ast=Q.makeTaskProgram(item.graph,1,D.create(item.skin.family)),s=Q.describe(ast),card=document.createElement('button');card.className='creature-card';card.dataset.id=item.id;card.setAttribute('aria-label',`Select ${item.name}, ${item.skin.family} family`);card.setAttribute('aria-pressed','false');const thumb=document.createElement('canvas');thumb.width=360;thumb.height=220;thumb.setAttribute('aria-hidden','true');const index=document.createElement('span');index.className='card-index';index.textContent=String(i+1).padStart(2,'0');const info=document.createElement('div');info.className='card-info';const name=document.createElement('strong');name.textContent=item.name;const meta=document.createElement('span');meta.textContent=item.skin.family;const count=document.createElement('span');count.textContent=`${item.graph.nodes.length} nodes`;meta.append(count);info.append(name,meta);card.append(index,thumb,info);card.onclick=guard(()=>select(item));$('library').append(card);render(thumb.getContext('2d'),360,220,s,item.skin.family,0,true);}$('library-count').textContent=`${library.length} EXECUTABLE SPECIMENS`;select(library[0]);}catch(e){fail(e);$('library-count').textContent='LIBRARY UNAVAILABLE';}}
+async function start(){try{if(!Q?.makeTaskProgram||!D?.create)throw Error('The task runtime is not available yet.');const ids=await fetchJSON('programs/manifest.json');library=await Promise.all(ids.map(id=>fetchJSON(`programs/${id}.json`)));for(const [i,item] of library.entries()){const ast=Q.makeTaskProgram(item.graph,1,D.forProgram(item)),s=Q.describe(ast),card=document.createElement('button');card.className='creature-card';card.dataset.id=item.id;card.setAttribute('aria-label',`Select ${item.name}, ${item.skin.family} family`);card.setAttribute('aria-pressed','false');const thumb=document.createElement('canvas');thumb.width=360;thumb.height=220;thumb.setAttribute('aria-hidden','true');const index=document.createElement('span');index.className='card-index';index.textContent=String(i+1).padStart(2,'0');const info=document.createElement('div');info.className='card-info';const name=document.createElement('strong');name.textContent=item.name;const meta=document.createElement('span');meta.textContent=item.skin.family;const count=document.createElement('span');count.textContent=`${item.graph.nodes.length} nodes`;meta.append(count);info.append(name,meta);card.append(index,thumb,info);card.onclick=guard(()=>select(item));$('library').append(card);render(thumb.getContext('2d'),360,220,s,item.skin.family,0,true);}$('library-count').textContent=`${library.length} EXECUTABLE SPECIMENS`;select(library[0]);}catch(e){fail(e);$('library-count').textContent='LIBRARY UNAVAILABLE';}}
 let previous=0,clockTime=null;
 document.addEventListener('visibilitychange',()=>{clockTime=null;dirty=true;});
 function animate(now){
@@ -110,6 +162,6 @@ function animate(now){
  }
  requestAnimationFrame(animate);
 }requestAnimationFrame(animate);
-window.quineling={Q,clearFocus,toggleMotion,run,reproduce,recover,select,focusNode(id){const n=shape.nodes.find(n=>n.id===id);if(!n)throw Error('Unknown organ');selected=id;organInfo(n);},renderOn(target,t){return render(target.getContext('2d'),target.width,target.height,shape,current.skin.family,t,false,target.id==='translation-form');},get phase(){return phase;},get viewSeconds(){return viewSeconds;},get traceNode(){return traceNode;},get moving(){return moving;},get viewRevision(){return viewRevision;},get selected(){return selected;},get current(){return current;},get library(){return library;},get program(){return program;},get genome(){return genome;},get shape(){return shape;},get generation(){return generation;},get result(){return result;}};
+window.quineling={Q,clearFocus,toggleMotion,run,reproduce,recover,select,focusNode(id){const n=shape.nodes.find(n=>n.id===id);if(!n)throw Error('Unknown organ');selected=id;organInfo(n);},renderOn(target,t){return render(target.getContext('2d'),target.width,target.height,shape,current.skin.family,t,false,target.id==='translation-form');},get chromaState(){return chromaState;},get chromaMode(){return chromaMode;},get chromaCycle(){return chromaCycle;},get phase(){return phase;},get viewSeconds(){return viewSeconds;},get traceNode(){return traceNode;},get moving(){return moving;},get viewRevision(){return viewRevision;},get selected(){return selected;},get current(){return current;},get library(){return library;},get program(){return program;},get genome(){return genome;},get shape(){return shape;},get generation(){return generation;},get result(){return result;}};
 start();
 })();

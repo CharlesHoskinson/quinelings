@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "coloredSpecies": 10,
+  "fixedDomainAndThreshold": true,
+  "missingDistinctFromZero": true,
+  "sameValueSameColorAcrossEvidenceStates": true,
+  "viewDoesNotExecuteOrEditSource": true,
+  "explicitTaskOccurrence": true,
+  "editsInvalidateTrace": true,
+  "reproductionAndBothCodecs": true,
+  "mobileNoOverflow": true,
+  "pageErrors": []
+}

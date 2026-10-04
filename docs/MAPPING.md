@@ -51,7 +51,11 @@ R=b; G=255-b; B=(73*b+19) mod 256
 
 Null represents padding. R recovers the byte, while the other channels reject color drift before checking the source frame. This codec independently recovers the same source as the harmonic genome. Image compression or a display transform can destroy its exactness.
 
-The operation palette is separate: observation is cyan, pure transformations are mint/cool colors, judgment is amber, actions are coral, quotation is violet, and reporting is green. Exact opcode colors are versioned with the interpreter; organ frequency and labels remain additional cues. Intensity marks selected/executed state, not authority. A decorative family accent cannot change instruction meaning.
+The exact operation palette is separate from both the byte strand and membrane role colors. Organ frequency and labels remain additional opcode cues. The source-authored `chroma` record selects the fixed `roles-1` dictionary and a bounded color strength: inputs, arithmetic, transforms, decisions, evidence, planning, actions, reports, and reflection have stable shared colors. A categorical material territory belongs to one node, ordered by dependency level and stable peer ID, and moves with the membrane. Bright crests and compression/depth opacity preserve the folded material. Omitted `chroma` retains the neutral legacy material.
+
+An optional scalar lens binds named node outputs or bounded own-property paths to one fixed numeric domain, label, and unit. It uses an actual recorded task occurrence and recolors only the bound territories. Zero remains a measured value; no execution, invalid data, stale source, and out-of-range data have explicit statuses. Different values across the same graph can change tissue colors without changing its geometry. Thresholds in the legend do not grant permissions or create guards. No averaging of adjacent scalar measurements or automatic domain rescaling invents values.
+
+Chroma declarations are copied into the canonical quoted graph, so edits change source identity and survive both genome codecs and reproduction. Lens selection and recorded values remain outside source. Rendering and inspection only read a trace associated with the current source; source edits invalidate that association. See [QDL chromamapping](QDL.md#authored-chromamapping) for validation and binding bounds.
 
 ## Structural phenotype
 

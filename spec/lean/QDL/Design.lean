@@ -147,6 +147,75 @@ def Composition.Valid (c : Composition) : Prop :=
   Bounded (-1/2) (1/2) c.lean ∧ Bounded (-1/2) (1/2) c.yaw ∧
   Bounded (-1/2) (1/2) c.pitch ∧ Bounded (15/100) (8/10) c.focus
 
+inductive ChromaModel where | materialTerritories deriving DecidableEq, Repr
+inductive ChromaPalette where | roles1 deriving DecidableEq, Repr
+inductive LensKind where | scalar deriving DecidableEq, Repr
+
+/-- Typed path segments distinguish object keys from array indices. -/
+inductive LensPathSegment where
+  | key (name : String)
+  | index (value : Nat)
+  deriving DecidableEq, Repr
+
+def LensPathSegment.Valid : LensPathSegment → Prop
+  | .key name => 1 ≤ name.length ∧ name.length ≤ 64 ∧
+      name ≠ "__proto__" ∧ name ≠ "constructor" ∧ name ≠ "prototype"
+  | .index value => value ≤ 511
+
+instance (p : LensPathSegment) : Decidable p.Valid := by
+  cases p <;> unfold LensPathSegment.Valid <;> infer_instance
+
+structure LensBinding where
+  node : String
+  path : List LensPathSegment
+  deriving DecidableEq, Repr
+
+def LensBinding.Valid (b : LensBinding) : Prop :=
+  1 ≤ b.node.length ∧ b.node.length ≤ 64 ∧ b.path.length ≤ 8 ∧
+  ∀ segment ∈ b.path, segment.Valid
+
+instance (b : LensBinding) : Decidable b.Valid := by
+  unfold LensBinding.Valid
+  infer_instance
+
+structure ScalarLens where
+  kind : LensKind := .scalar
+  id : String
+  label : String
+  unit : String
+  lower : ℚ
+  upper : ℚ
+  threshold : Option ℚ := none
+  bindings : List LensBinding
+  deriving DecidableEq, Repr
+
+/-- Rational domains model finite authored values; JS overflow checks remain external. -/
+def ScalarLens.Valid (l : ScalarLens) : Prop :=
+  (1 ≤ l.id.length ∧ l.id.length ≤ 64) ∧
+  (1 ≤ l.label.length ∧ l.label.length ≤ 80) ∧ l.unit.length ≤ 24 ∧
+  l.lower < l.upper ∧
+  (match l.threshold with | none => True | some v => l.lower ≤ v ∧ v ≤ l.upper) ∧
+  (1 ≤ l.bindings.length ∧ l.bindings.length ≤ 64) ∧
+  (l.bindings.map LensBinding.node).Nodup ∧ ∀ b ∈ l.bindings, b.Valid
+
+instance (l : ScalarLens) : Decidable l.Valid := by
+  unfold ScalarLens.Valid
+  cases l.threshold <;> infer_instance
+
+structure Chroma where
+  model : ChromaModel := .materialTerritories
+  palette : ChromaPalette := .roles1
+  strength : ℚ
+  lens : Option ScalarLens := none
+  deriving DecidableEq, Repr
+
+def Chroma.Valid (c : Chroma) : Prop := Bounded 0 1 c.strength ∧
+  (match c.lens with | none => True | some l => l.Valid)
+
+instance (c : Chroma) : Decidable c.Valid := by
+  unfold Chroma.Valid
+  cases c.lens <;> infer_instance
+
 structure Design where
   formatMarker : Nat := 1
   family : Family
@@ -157,17 +226,18 @@ structure Design where
   surface : Surface
   light : Light
   composition : Composition
+  chroma : Option Chroma := none
   deriving DecidableEq, Repr
 
 def Design.Valid (d : Design) : Prop :=
   d.formatMarker = 1 ∧ d.organ.Valid ∧ d.filament.Valid ∧
   d.motion.Valid ∧ d.ink.Valid ∧ d.surface.Valid ∧ d.light.Valid ∧
-  d.composition.Valid
+  d.composition.Valid ∧ (match d.chroma with | none => True | some c => c.Valid)
 
 instance (d : Design) : Decidable d.Valid := by
   unfold Design.Valid Organ.Valid Filament.Valid Motion.Valid Ink.Valid
     Surface.Valid Light.Valid Composition.Valid Rhythm.Valid
-  cases d.motion.rhythm <;> infer_instance
+  cases d.motion.rhythm <;> cases d.chroma <;> infer_instance
 
 def validateDesign (d : Design) : Bool := decide d.Valid
 
@@ -183,7 +253,7 @@ theorem Design.Valid.motion_valid {d : Design} (h : d.Valid) : d.motion.Valid :=
 theorem Design.Valid.ink_valid {d : Design} (h : d.Valid) : d.ink.Valid := h.2.2.2.2.1
 theorem Design.Valid.surface_valid {d : Design} (h : d.Valid) : d.surface.Valid := h.2.2.2.2.2.1
 theorem Design.Valid.light_valid {d : Design} (h : d.Valid) : d.light.Valid := h.2.2.2.2.2.2.1
-theorem Design.Valid.composition_valid {d : Design} (h : d.Valid) : d.composition.Valid := h.2.2.2.2.2.2.2
+theorem Design.Valid.composition_valid {d : Design} (h : d.Valid) : d.composition.Valid := h.2.2.2.2.2.2.2.1
 
 theorem Organ.Valid.radial_envelope_positive {o : Organ} (h : o.Valid) :
     0 < 1 - o.amplitude₀ - o.amplitude₁ := by
@@ -209,10 +279,11 @@ def defaultDesign : Design := {
   surface := { ribbons := 28, crests := 4, spread := 16/100, folds := 7, taper := 65/100, asymmetry := 25/100, depth := 28/100, twist := 19/10, phaseLag := 14/10, samples := 24000 }
   light := { recessAlpha := 45/1000, crestAlpha := 58/100, depthContrast := 65/100 }
   composition := { occupancy := 76/100, lean := -12/100, yaw := 3/10, pitch := 12/100, focus := 38/100 }
+  chroma := some { strength := 85/100 }
 }
 
 theorem defaultDesign_valid : defaultDesign.Valid := by
   norm_num [Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid,
-    Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded, defaultDesign]
+    Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, Bounded, defaultDesign]
 
 end QDL

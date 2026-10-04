@@ -18,11 +18,12 @@ The language needs to be predictable enough for an agent to generate valid creat
 
 ## Syntax
 
-The following grammar fixes the top-level vocabulary; nested records have the exact fields illustrated in the complete default expression, except that `motion.rhythm` may be omitted by existing designs. JSON supplies string/number/array lexical rules.
+The following grammar fixes the top-level vocabulary; nested records have the exact fields illustrated in the complete default expression, except that `motion.rhythm` and the top-level `chroma` record may be omitted by existing designs. JSON supplies string/number/array lexical rules.
 
 ```ebnf
 Design = '{', Marker, ',', Family, ',', Organ, ',', Filament, ',',
-         Motion, ',', Ink, ',', Surface, ',', Light, ',', Composition, '}' ;
+         Motion, ',', Ink, ',', Surface, ',', Light, ',', Composition,
+         [ ',', Chroma ], '}' ;
 Marker = '"qdl":1' ; (* prototype marker *)
 Family = '"family":', ('"filament"' | '"jelly"' | '"moth"' | '"coral"' |
          '"ribbon"' | '"nautilus"' | '"seed"' | '"torus"' | '"comet"' | '"bloom"') ;
@@ -34,6 +35,9 @@ Motion.rhythm.model = '"coupled-harmonic"' ; (* optional rhythm record *)
 Motion.rhythm.mode = '"periodic"' | '"quasiperiodic"' ;
 Surface.model = '"folded-ribbon"' ;
 Light.model = '"density-crest"' ;
+Chroma.model = '"material-territories"' ; (* optional chroma record *)
+Chroma.palette = '"roles-1"' ;
+Chroma.lens.kind = '"scalar"' ; (* optional lens record *)
 ```
 
 Object order is not significant; the displayed order is conventional. Required keys, primitive types, and independent numeric bounds are specified in `design/qdl.schema.json`. The executable validator additionally checks cross-field relationships.
@@ -74,6 +78,43 @@ clock = separate; reducedMotion = freeze
 A program task graph must also satisfy the independent kernel judgment `validGraph(G)`: unique node IDs, known operations, correct arities, explicit dependency endpoints, finite acyclic ordering, finite JSON values, and source/node/value bounds. Operation input types are checked when each node evaluates. QDL does not make an ill-typed program valid.
 
 Compilation `compile(G,D)` copies G and attaches the full validated D as `graph.design` inside the quoted task. The constructor quine therefore reconstructs the design annotation too. A design edit changes canonical source identity but leaves task results unchanged when executable fields are unchanged.
+
+## Authored chromamapping
+
+`chroma` binds persistent membrane color to declared program information. It is optional: omission retains neutral legacy material and validation never inserts a record. New `create(family)` designs contain `{model:"material-territories", palette:"roles-1", strength:0.85}`. `strength` is finite in `[0,1]`, mixing semantic color with the existing neutral material. Model and palette tags are fixed; arbitrary colors, shaders, expressions, and species hue rotations are not part of this record.
+
+An optional scalar lens adds a second, explicitly named reading. This valid fragment illustrates a graph containing node `budget` whose recorded output has a numeric `remaining` property:
+
+```json
+"chroma": {
+  "model": "material-territories",
+  "palette": "roles-1",
+  "strength": 0.85,
+  "lens": {
+    "kind": "scalar",
+    "id": "remaining-budget",
+    "label": "Remaining budget",
+    "unit": "credits",
+    "domain": [0, 100],
+    "threshold": 20,
+    "bindings": [{"node": "budget", "path": ["remaining"]}]
+  }
+}
+```
+
+All shown fields are required except `lens` and its `threshold`. Every nested record rejects unknown fields. Lens IDs and binding node IDs have 1–64 Unicode code points; labels have 1–80, and units 0–24. A domain contains two finite numbers `lo < hi` whose difference is also finite. An optional threshold must be finite and inside the inclusive domain; it is a legend reference, not an executable guard. Domains do not adapt to the current trace or visible nodes.
+
+A lens has 1–64 bindings with unique node IDs. Each path has 0–8 segments. A segment is either a string of 1–64 Unicode code points or an integer index in `[0,511]`; `__proto__`, `constructor`, and `prototype` are forbidden keys. An empty path selects the complete node output. Runtime lookup traverses own properties only and accepts a finite number without coercion: zero is valid; `false`, `null`, strings, missing properties, and nonnumeric values are not numbers for this lens. All bindings share the declared quantity, unit, and scale.
+
+`validate(d)` checks the closed design vocabulary and numeric relationships without mutating `d`. `validateBindings(d, graph)` additionally requires every binding to name a node in the task graph. Kernel output types are checked when reading the trace, rather than inferred from the design. `forProgram(item)` creates the family's design, replaces its chroma record with an independent copy of `item.skin.chroma` when present, and validates it; graph binding validation remains the compiler's responsibility.
+
+Membrane territories have deterministic owners in material coordinates `(u,v,k)`. Their role colors stay attached while the authored periodic or quasiperiodic motion deforms the surface. Dependency levels order longitudinal bands and stable node IDs order peer lanes. Bound nodes receive extra territory weight for visibility. This is a categorical ownership map: neighboring scalar measurements are not averaged into an unrecorded value. Closed-family seams meet inside the same territory. Material compression and depth continue to determine opacity; colored tissue and sparse neutral crests retain the fold hierarchy.
+
+The `roles-1` dictionary groups inputs, arithmetic, transforms, decisions, evidence, planning, actions, reports, and reflection. It is separate from the exact opcode palette: organ markers, frequencies, and labels still identify individual operations. The exact RGB byte genome is a third, independent color representation.
+
+Selecting the scalar lens recolors bound territories from one recorded task occurrence; unbound territories retain their roles. A fixed violet-to-pale-gold scale maps the authored domain, with explicit status labels for below-domain and above-domain values. Endpoint clipping never changes the displayed original number. Missing execution is `not-evaluated`; an incompatible path or value is `invalid`; a result belonging to an earlier source is `stale`. These states are labeled and never reinterpreted as zero, false, or unknown evidence. The current implementation has one scalar lens; it does not reduce evidence conflict to a number or claim to visualize general causal provenance.
+
+The caller associates the recorded task with the exact current source and selects a single repeat occurrence before resolving bindings. Any source edit invalidates that association. Selecting a lens, rendering, pausing, or replaying cannot run a task or dispatch effects. The lens declaration is source; active lens, trace selection, and current values are presentation/runtime state. All authored chroma fields survive source reproduction and both genome codecs. Designs that omit chroma retain that omission across the same operations.
 
 ## Authored rhythms
 

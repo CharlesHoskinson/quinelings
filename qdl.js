@@ -4,13 +4,28 @@ const FAMILIES=['filament','jelly','moth','coral','ribbon','nautilus','seed','to
 const DEFAULT={qdl:1,family:'filament',organ:{model:'rosette',baseRadius:.03,degreeGain:.004,literalGain:.001,amplitudes:[.2,.13]},filament:{model:'pinned-sine',bend:.04,frequencyGain:.07,ripple:.16},motion:{clock:'separate',phaseRate:.038,reducedMotion:'freeze',rhythm:{model:'coupled-harmonic',mode:'periodic',rate:1,breath:.06,wave:.055,waveNumber:1.6,lag:.9,asymmetry:.28,overtone:.17}},ink:{ghostAlpha:.09,secondaryAlpha:.42,ridgeAlpha:.88,neutral:'#f0f1eb'},
  surface:{model:'folded-ribbon',ribbons:28,crests:4,spread:.16,folds:7,taper:.65,asymmetry:.25,depth:.28,twist:1.9,phaseLag:1.4,samples:24000},
  light:{model:'density-crest',recessAlpha:.045,crestAlpha:.58,depthContrast:.65},
- composition:{occupancy:.76,lean:-.12,yaw:.3,pitch:.12,focus:.38}};
+ composition:{occupancy:.76,lean:-.12,yaw:.3,pitch:.12,focus:.38},
+ chroma:{model:'material-territories',palette:'roles-1',strength:.85}};
 const clone=x=>JSON.parse(JSON.stringify(x));
 function check(ok,message){if(!ok)throw Error('QDL: '+message);}
 function fields(obj,names,optional=[]){check(obj&&typeof obj==='object'&&!Array.isArray(obj),'expected record');check(Object.keys(obj).every(k=>names.includes(k)||optional.includes(k))&&names.every(k=>Object.hasOwn(obj,k)),'unknown or missing fields');}
 function range(v,min,max){check(typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max,'number outside ['+min+','+max+']');}
+function boundedString(v,min,max){check(typeof v==='string'&&Array.from(v).length>=min&&Array.from(v).length<=max,'string length outside ['+min+','+max+']');}
+function validateChroma(c){
+ fields(c,['model','palette','strength'],['lens']);check(c.model==='material-territories','unknown chroma model');check(c.palette==='roles-1','unknown chroma palette');range(c.strength,0,1);
+ if(Object.hasOwn(c,'lens')){
+  const l=c.lens;fields(l,['kind','id','label','unit','domain','bindings'],['threshold']);check(l.kind==='scalar','unknown chroma lens');boundedString(l.id,1,64);boundedString(l.label,1,80);boundedString(l.unit,0,24);
+  check(Array.isArray(l.domain)&&l.domain.length===2&&l.domain.every(x=>typeof x==='number'&&Number.isFinite(x)),'need two finite domain endpoints');const [lo,hi]=l.domain;check(lo<hi&&Number.isFinite(hi-lo),'scalar domain must have finite positive width');
+  if(Object.hasOwn(l,'threshold'))range(l.threshold,lo,hi);
+  check(Array.isArray(l.bindings)&&l.bindings.length>=1&&l.bindings.length<=64,'need 1–64 scalar bindings');const ids=new Set();
+  for(const b of l.bindings){fields(b,['node','path']);boundedString(b.node,1,64);check(!ids.has(b.node),'duplicate scalar node binding');ids.add(b.node);check(Array.isArray(b.path)&&b.path.length<=8,'scalar path exceeds eight segments');
+   for(const part of b.path){if(typeof part==='string'){boundedString(part,1,64);check(!['__proto__','constructor','prototype'].includes(part),'unsafe scalar property key');}else{check(Number.isInteger(part),'scalar path needs property keys or integer indices');range(part,0,511);}}
+  }
+ }
+}
 function validate(d){
- fields(d,['qdl','family','organ','filament','motion','ink','surface','light','composition']);check(d.qdl===1,'invalid format marker');check(FAMILIES.includes(d.family),'unknown family');
+ fields(d,['qdl','family','organ','filament','motion','ink','surface','light','composition'],['chroma']);check(d.qdl===1,'invalid format marker');check(FAMILIES.includes(d.family),'unknown family');
+ if(Object.hasOwn(d,'chroma'))validateChroma(d.chroma);
  fields(d.organ,['model','baseRadius','degreeGain','literalGain','amplitudes']);check(d.organ.model==='rosette','unknown organ model');range(d.organ.baseRadius,.01,.08);range(d.organ.degreeGain,0,.006);range(d.organ.literalGain,0,.003);check(Array.isArray(d.organ.amplitudes)&&d.organ.amplitudes.length===2,'need two radial harmonics');d.organ.amplitudes.forEach(a=>range(a,0,.45));check(d.organ.amplitudes[0]+d.organ.amplitudes[1]<1,'radial envelope may collapse');
  fields(d.filament,['model','bend','frequencyGain','ripple']);check(d.filament.model==='pinned-sine','unknown filament model');range(d.filament.bend,0,.08);range(d.filament.frequencyGain,0,.2);range(d.filament.ripple,0,.3);
  fields(d.motion,['clock','phaseRate','reducedMotion'],['rhythm']);check(d.motion.clock==='separate'&&d.motion.reducedMotion==='freeze','motion may not control execution');range(d.motion.phaseRate,0,.05);
@@ -55,7 +70,14 @@ function create(family='filament'){const d=clone(DEFAULT);d.family=family;
  };
  Object.assign(d.motion.rhythm,rhythms[family]||{});
  validate(d);return d;}
+function validateBindings(d,graph){
+ validate(d);if(!d.chroma?.lens)return true;
+ check(graph&&Array.isArray(graph.nodes),'scalar bindings require a task graph');const ids=new Set(graph.nodes.map(n=>n.id));
+ for(const b of d.chroma.lens.bindings)check(ids.has(b.node),'unknown scalar binding node '+b.node);
+ return true;
+}
+function forProgram(item){const d=create(item.skin.family);if(Object.hasOwn(item.skin,'chroma')){validateChroma(item.skin.chroma);d.chroma=clone(item.skin.chroma);}validate(d);return d;}
 function organRadius(d,n,a,t){const value=n.params?.value,magnitude=typeof value==='number'?Math.min(6,Math.abs(value)):Array.isArray(value)?Math.min(6,value.length):1;const r=Math.min(.16,d.organ.baseRadius+d.organ.degreeGain*(n.indegree+n.outdegree)+d.organ.literalGain*magnitude);return r*(1+d.organ.amplitudes[0]*Math.cos(n.frequency*a)+d.organ.amplitudes[1]*Math.cos((n.outdegree+1)*a+t));}
 function filamentBend(d,frequency,u,t){return d.filament.bend*(1+d.filament.frequencyGain*frequency)*Math.sin(Math.PI*u)*(1+d.filament.ripple*Math.sin(2*Math.PI*frequency*u+t));}
-const api={FAMILIES,DEFAULT,validate,create,organRadius,filamentBend};if(typeof module!=='undefined')module.exports=api;root.QDL=api;
+const api={FAMILIES,DEFAULT,validate,validateBindings,create,forProgram,organRadius,filamentBend};if(typeof module!=='undefined')module.exports=api;root.QDL=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

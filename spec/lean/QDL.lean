@@ -7,3 +7,7 @@ import QDL.Integration
 import QDL.ClosedSurface
 import QDL.Rhythm
 import QDL.RhythmDefaults
+import QDL.ByteColors
+import QDL.ChromaSyntax
+import QDL.Chroma
+import QDL.ChromaSemantics

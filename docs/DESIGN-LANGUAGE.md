@@ -66,16 +66,13 @@ These are design targets. A renderer must compute its body from program structur
 
 ## Color grammar
 
-Keep most body ink neutral and low saturation. Use concentrated semantic color on organs, selected filaments, and execution pulses. The reference's density hierarchy should survive a grayscale view.
+New designs carry persistent colored membrane territories. A territory follows its operation through material coordinates while motion changes its position. Keep the colored midtones visible, the recessed folds translucent, and a few long crests near neutral white. Opacity and depth retain the reference's density hierarchy.
 
-- Cyan: observation or input.
-- Mint or cool blue: pure transformations and data movement.
-- Amber: evaluation, choice, and guards.
-- Coral: effect requests or action receipts.
-- Violet: quotation and source construction.
-- Soft green: confirmation, reporting, or emitted results.
+The fixed `roles-1` dictionary uses cyan for inputs, blue for arithmetic, violet for transforms, amber for decisions, pink for evidence, orange for planning, coral for actions, green for reports, and lavender for reflection. This body palette groups related operations. The exact opcode palette, organ glyph/frequency, and inspection label still distinguish individual operations. Species never rotate these meanings.
 
-Hue indicates role; the exact opcode uses the declared palette and organ glyph. Intensity reports idle, selected, or executed state. Do not change meaning by applying an arbitrary species hue rotation. Species accent belongs to a decorative halo, separate from the opcode colors.
+An authored scalar lens can recolor bound territories from actual recorded values. Its name, units, fixed domain, and optional reference threshold appear with the scale; unbound tissue keeps its role color. Each territory shows its owner's recorded quantity without spatial averaging. A changed value can therefore change tissue color across unchanged program topology. Not-evaluated, invalid, stale, and out-of-domain states remain explicit. Values are never inferred from motion or decorative intensity, and changing the lens never executes the task. See [QDL chromamapping](QDL.md#authored-chromamapping) for the source contract.
+
+Legacy designs without `chroma` retain neutral material. Exact opcode colors and the byte strand remain available independently of this optional tissue layer.
 
 A separately indexed RGB strand carries exact source bytes. Byte b maps to (b,255−b,(73b+19) mod 256), with explicit padding. This is a lossless numerical color record checked by framing and checksum. Its saturated colors are shown on inspection, rather than covering the portrait with a rainbow. It is independent of the semantic role palette. Video compression, antialiasing, screen color correction, and a screenshot can alter those values; none is an exact source decoder.
 
@@ -103,7 +100,7 @@ The eight design reviews converge on a continuous sculpture before its diagram. 
 
 Material light comes from transverse projected compression and actual depth. Recesses stay faint, compressed folds brighten, and a few long connected crest contours carry the gesture. These contours sample the same surface; they are not a search for exact compression maxima. Dense points overlap into luminous veils. There is no independent confetti layer or broad glow filter. A portrait uses at most 24,000 points, with a reduced thumbnail budget.
 
-Composition uses a fixed sampled envelope and an authored occupancy target of 60–84% of the available frame, reduced when dependency bends need extra clearance. Lean, yaw, pitch, taper, and asymmetric spread establish posture without a spinning camera. At rest the graph remains quiet; selecting a program line or enabling topology reveals the exact organs and dependencies. Semantic colors belong to inspection and trace events, while the material remains neutral.
+Composition uses a fixed sampled envelope and an authored occupancy target of 60–84% of the available frame, reduced when dependency bends need extra clearance. Lean, yaw, pitch, taper, and asymmetric spread establish posture without a spinning camera. At rest the graph remains quiet; selecting a program line or enabling topology reveals the exact organs and dependencies. Authored role colors remain visible in the material at rest; inspection adds exact organ markers and trace attribution. A named scalar lens exposes recorded numerical data in its bound territories.
 
 Perceptual acceptance targets are a connected focal gesture, a clear luminous crest against recessed material, a recognizable thumbnail silhouette, and coherent motion through folds. These are visual review targets, not schema guarantees. Numeric bounds guarantee finite controls, not beauty. Distinct families retain their own backbones and source-embedded surface presets.
 

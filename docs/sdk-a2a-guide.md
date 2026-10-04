@@ -230,6 +230,4 @@ Use isolated runtimes and an ephemeral loopback listener. This checklist specifi
 
 JSON-RPC legacy compatibility defaults to enabled; `legacyCompat: false` disables it. Discovery and JSON-RPC handlers use the upstream compat layer, and the card advertises a v0.3 JSON-RPC interface. REST remains native A2A 1.0. For a legacy server client, enable upstream compat in card resolution and the selected client transport, and test it separately. Do not send old field names to a native-only service.
 
-Detailed design decisions and installed SDK evidence are recorded in [the A2A review](../research/sdk-sol-4.md).
-
 On 2026-10-04, native `SendMessage` envelopes were exercised through an ephemeral loopback service using actual SDK source: all eight ranch operations, the build/ranch/execute discovery skills, stateless frame budget 4000, exact admission/command retries with new transport message IDs, lineage/annotation, and a separate composed child run returning `{allocated:12,remaining:8}` passed. This supplies same-SDK HTTP payload evidence; it does not establish independent-language interoperability or remote deployment.

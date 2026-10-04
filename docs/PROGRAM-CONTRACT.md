@@ -1,6 +1,6 @@
 # Program authors' contract
 
-Each program agent owns programs/<id>.json and research/<id>.md ONLY. Root integrates a shared executable runtime and website. Do not add host code or change shared files. All arithmetic, effects, and algorithms must use the finite kernels below. Suggest extensions in research notes if blocked. Produce a genuinely distinct useful task, not merely recolor the lamp program.
+Programs use the finite kernels below. Each operation declares its inputs and outputs.
 
 File envelope:
 
@@ -51,7 +51,7 @@ Global Quinelings loaded after orbit.js, kernels.js, core.js.
 - Q.instructionColor(op),Q.instructionFromColor(hex): shared exact opcode palette.
 - Q.canon, Q.encode,Q.decode, Q.samples,Q.fromSamples,Q.encodeColors,Q.decodeColors as current core.js.
 
-programs/manifest.json will be a JSON array of 10 IDs. Fetch programs/<id>.json. Website owns index.html, style.css, gallery.js only; root owns all shared runtime files. Save feedback/questions in research/website.md.
+`programs/manifest.json` lists the ten gallery program IDs.
 
 ## Chromamapping profiles
 

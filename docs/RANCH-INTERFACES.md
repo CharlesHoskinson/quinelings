@@ -1,6 +1,6 @@
 # Experimental ranch implementation interfaces
 
-Normative integration contract after the nine candidate audits, 2026-10-04. Read RANCH-CANDIDATE.md and RANCH-AUDIT-RESOLUTION.md. The language remains experimental. Implementations must not claim execution/formal/performance evidence until measured. Root integrates shared modules, source validation, Runtime, browser bundle, adapters and formal gates. Assigned workers edit only their listed files.
+The Ranch interface supports local worlds, explicit participation and typed child construction. Construction policies remain experimental.
 
 ## Pure offspring module
 

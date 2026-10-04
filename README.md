@@ -79,7 +79,6 @@ The model searches bounded transitions; it does not prove the JavaScript rendere
 
 For optional browser checks, install Playwright in a local virtual environment and its Chromium browser, then run `python verify-browser.py`. Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` only when using an existing browser binary. The script creates and stops its own local server.
 
-Twelve research agents contributed ten programs, the language audit, and the gallery. Their notes are in `research/`.
 
 The agent artwork was retrieved from public Midnight.city assets with Scrapling. `assets/midnight/provenance.json` records the original URLs, timestamps, and SHA-256 hashes. Reproduce the retrieval with a local environment using `scripts/requirements-scraping.txt` and `python scripts/scrape-midnight-agent.py`. The art represents an illustrative agent; the thought is the explicitly authored library task.
 
@@ -97,6 +96,5 @@ The [stable QDL 1 contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBR
 
 Stable QDL 1 uses explicit public declarations, not private model reasoning. Memory sessions and simulated receipts provide no durable hosting or live City authority. The release is identified as `qdl-v1.0.0`; npm publication is separate from the downloadable package.
 
-The homepage lab has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution. [Review evidence](research/website-overhaul/findings.md) records the assumptions and limits.
+The homepage lab has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution.
 
-The [audit implementation checklist](research/website-overhaul/implementation-checklist.md) covers 52 prepared runtime cases, result graphics for every recipe, named refusal/guard explanations, a body-only offspring experiment and bounded-session recovery. The [beauty council](research/beauty-council/README.md) separately compares the homepage and archived gallery with the original artwork; passing execution tests is not an aesthetic verdict.

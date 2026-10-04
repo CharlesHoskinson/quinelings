@@ -17,12 +17,41 @@ node scripts/verify-v1-release.cjs
 site_dir=$(mktemp -d)
 trap 'rm -rf "$site_dir"' EXIT
 cp gallery.html living-thoughts.css living-thoughts.js lab-examples.js lab-insights.js lab-offspring.js living-copy.json ranch-workshop.html ranch-workshop.js qdl-v1-offspring.js v1.html v1.css v1-workspace.js qdl-v1.js qdl-v1-types.js qdl-v1-contract.js qdl-v1-kernels.js qdl-v1-library.js qdl-v1-registry.js qdl-v1-migrate.js index.html create.html sdk.html ranch.html ranch.css ranch.js ranch-renderer.js ranch-world.js ranch-crypto.js offspring.js style.css creation.css translation.css learning.css orbit.js kernels.js anatomy.js qdl.js chroma.js morphology.js core.js thought.js lifeform-renderer.js creation.js gallery.js translation.js "$site_dir/"
-cp -R programs assets docs design releases "$site_dir/"
-cp creation-verification.json sdk-package-verification.json lean-verification.json "$site_dir/"
-# Keep the separately labeled generative design studies available across releases.
-git ls-files -z 'research/final-qdl-*' 'research/thought-lifeform-*' 'research/creation-*.png' 'research/sdk-*.md' 'research/sdk-*.json' 'research/sdk-*.png' 'research/ranch/*' 'research/qdl-v1/*' 'research/website-overhaul/*' 'research/beauty-council/*' 'fixtures/qdl-v1/*' | xargs -0 -r cp --parents -t "$site_dir/"
-# Publish only tracked specifications, never Lean toolchains or compiled dependency caches.
-git ls-files -z spec | xargs -0 cp --parents -t "$site_dir/"
+# Publish the product and reference documentation, not internal reports or test logs.
+cp -R programs assets design releases "$site_dir/"
+mkdir -p "$site_dir/docs"
+site_docs=(
+  docs/DESIGN-LANGUAGE.md
+  docs/LEAN-FORMALIZATION.md
+  docs/LOCAL-PROPOSALS.md
+  docs/MAPPING.md
+  docs/PROGRAM-CONTRACT.md
+  docs/QDL-V1-LIBRARY.md
+  docs/QDL-V1-UPGRADES.md
+  docs/QDL-V1.md
+  docs/QDL.md
+  docs/RANCH-INTERFACES.md
+  docs/SDK-RANCH-GUIDE.md
+  docs/SDK-V1.md
+  docs/TRANSLATION.md
+  docs/qdl-v1-library.html
+  docs/qdl-v1-upgrades.html
+  docs/qdl-v1.html
+  docs/sdk-a2a-guide.html
+  docs/sdk-a2a-guide.md
+  docs/sdk-api.html
+  docs/sdk-api.md
+  docs/sdk-lifecycle.html
+  docs/sdk-lifecycle.md
+  docs/sdk-mcp-guide.html
+  docs/sdk-mcp-guide.md
+  docs/sdk-quickstart.html
+  docs/sdk-quickstart.md
+  docs/sdk-ranch-guide.html
+  docs/sdk-v1.html
+)
+cp "${site_docs[@]}" "$site_dir/docs/"
+node scripts/check-public-site.cjs "$site_dir"
 touch "$site_dir/.nojekyll"
 site_origin=$(git remote get-url origin)
 site_revision=$(git rev-parse --short HEAD)

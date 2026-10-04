@@ -173,6 +173,4 @@ npm test
 node examples/v1.mjs
 ```
 
-The built example passed independent 9/11 outputs and lifecycle assertions. Release acceptance records 109 SDK tests on each of Node v22.23.3 and v26.10.0, static negative type contracts, build checks and installed-tarball consumers covering legacy and six v1 imports. Actual Chromium conformance covers ten frozen sources, 44 fixtures, both codecs and 12 legacy sources. Official MCP and A2A transport tests cover schema discovery, keyed replay, passive restore and precommit failure. See [recorded acceptance](../research/qdl-v1/acceptance.json), [the release gate review](../research/qdl-v1/release-language-gates.md) and [model/runtime correspondence](../research/qdl-v1/formal-runtime-correspondence.md).
-
 Release designation `qdl-v1.0.0` retains the matching runtime, source, registry, goldens and package archive under `releases/qdl-v1.0.0`. Use [the matching-runtime upgrade policy](QDL-V1-UPGRADES.md) for old pins. No automatic multi-registry loader, shared-host authentication, durable storage or live-world dispatcher is part of these SDK guarantees.

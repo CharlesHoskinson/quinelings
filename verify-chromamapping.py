@@ -30,6 +30,7 @@ try:
         page.locator('#chroma-view').select_option('scalar')
         assert page.evaluate('quineling.chromaState.byNode.faultScore.status') == 'not-evaluated'
         assert 'Not evaluated' in page.locator('#chroma-value').inner_text()
+        assert page.evaluate('Chroma.resolveLens(quineling.shape.design, {trace:[{edge:"faultScore",value:0}]}).byNode.faultScore.status') == 'valid'
         assert '0.625' in page.locator('#chroma-threshold-label').inner_text()
         cases = [('healthy-lamp-guard-false', .125, 'skipped'), ('threshold-boundary', .625, 'simulated'), ('default-confirmed-fault', .875, 'simulated'), ('conflicting-inspections-guard-false', .875, 'skipped')]
         colors = {}

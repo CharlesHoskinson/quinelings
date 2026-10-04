@@ -3,6 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 node scripts/generate-lean-fixtures.cjs --check
 node scripts/check-qdl-domains.cjs
+node scripts/check-assembly-domains.cjs
 if command -v lake >/dev/null 2>&1; then
   qdl_lake=$(command -v lake)
 elif [[ -x "$HOME/.elan/bin/lake" ]]; then

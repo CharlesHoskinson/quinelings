@@ -8,6 +8,17 @@ Quinelings are small executable programs with animated mathematical bodies. Thei
 
 The creatures use continuous luminous curves, family-specific anatomy, and a shared elapsed-time motion clock. Pause freezes both viewers; Clear focus or Escape returns to the portrait. Recorded execution markers keep their identity when you inspect another operation. Twelve domain reviews informing this design are summarized in `research/aesthetics-review.json`.
 
+
+## Create new programs and connect agents
+
+[Creation workspace](https://charleshoskinson.github.io/quinelings/create.html) · [TypeScript library and adapters](https://charleshoskinson.github.io/quinelings/sdk.html).
+
+The experimental creation compiler accepts explicit bounded thought recipes or typed IntentIR and generates new graph-derived chamber/spine bodies with exact operation ownership. Build, inspection, animation and source recovery are passive; Run and verified-copy controls explicitly evaluate the source. A ProposalProvider interface lets an agent supply broader model-generated plans through the same compiler checks.
+
+The package at `packages/agent-sdk` exposes a typed Runtime, recursive intent schemas, an MCP stdio adapter and an A2A JSON-RPC/REST hookup. Install dependencies with `npm run sdk:install`, then `npm run sdk:check`. The published downloadable tarball works independently of this checkout. Guides: [quickstart](docs/sdk-quickstart.md), [lifecycle](docs/sdk-lifecycle.md), [MCP](docs/sdk-mcp-guide.md), [A2A](docs/sdk-a2a-guide.md).
+
+QDL remains experimental; the compatibility marker and experimental package identifier do not freeze the language. [Formal model obligations](docs/GENERATIVE-FORMAL-MODEL.md) distinguish Lean theorems, Quint exploration, implementation tests and work still to prove.
+
 ## View the collection
 
 No application dependencies or build step are required. From this repository:
@@ -34,7 +45,7 @@ Chromamapping gives each membrane stable color territories for six program roles
 | Memorybloom | Evidence support, refutation, and conflict | Bloom |
 | Pulsekeeper | Bounded retries and uncertain outcomes | Torus |
 | Threadsorter | Stable filtering, deduplication, and priority ordering | Moth |
-| Seedbank | Sum-of-squares work and resource conservation | Seed |
+| Seedbank | Six-seeds-per-tray demand and resource conservation | Seed |
 
 ## Design and language
 

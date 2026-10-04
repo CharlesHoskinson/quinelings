@@ -1,5 +1,6 @@
 (function(root){
 'use strict';
+const Anatomy=typeof module!=='undefined'?require('./anatomy.js'):root.Anatomy;
 const FAMILIES=['filament','jelly','moth','coral','ribbon','nautilus','seed','torus','comet','bloom'];
 const DEFAULT={qdl:1,family:'filament',organ:{model:'rosette',baseRadius:.03,degreeGain:.004,literalGain:.001,amplitudes:[.2,.13]},filament:{model:'pinned-sine',bend:.04,frequencyGain:.07,ripple:.16},motion:{clock:'separate',phaseRate:.038,reducedMotion:'freeze',rhythm:{model:'coupled-harmonic',mode:'periodic',rate:1,breath:.06,wave:.055,waveNumber:1.6,lag:.9,asymmetry:.28,overtone:.17}},ink:{ghostAlpha:.09,secondaryAlpha:.42,ridgeAlpha:.88,neutral:'#f0f1eb'},
  surface:{model:'folded-ribbon',ribbons:28,crests:4,spread:.16,folds:7,taper:.65,asymmetry:.25,depth:.28,twist:1.9,phaseLag:1.4,samples:24000},
@@ -24,11 +25,14 @@ function validateChroma(c){
  }
 }
 function validate(d){
- fields(d,['qdl','family','organ','filament','motion','ink','surface','light','composition'],['chroma']);check(d.qdl===1,'invalid format marker');check(FAMILIES.includes(d.family),'unknown family');
+ fields(d,['qdl','family','organ','filament','motion','ink','surface','light','composition'],['chroma','anatomy']);check(d.qdl===1,'invalid format marker');check(FAMILIES.includes(d.family),'unknown family');
  if(Object.hasOwn(d,'chroma'))validateChroma(d.chroma);
+ if(Object.hasOwn(d,'anatomy')){check(Anatomy,'assembly module missing');Anatomy.validate(d.anatomy);check(Object.hasOwn(d.motion||{},'gesture'),'assembly requires an authored gesture');}
+
  fields(d.organ,['model','baseRadius','degreeGain','literalGain','amplitudes']);check(d.organ.model==='rosette','unknown organ model');range(d.organ.baseRadius,.01,.08);range(d.organ.degreeGain,0,.006);range(d.organ.literalGain,0,.003);check(Array.isArray(d.organ.amplitudes)&&d.organ.amplitudes.length===2,'need two radial harmonics');d.organ.amplitudes.forEach(a=>range(a,0,.45));check(d.organ.amplitudes[0]+d.organ.amplitudes[1]<1,'radial envelope may collapse');
  fields(d.filament,['model','bend','frequencyGain','ripple']);check(d.filament.model==='pinned-sine','unknown filament model');range(d.filament.bend,0,.08);range(d.filament.frequencyGain,0,.2);range(d.filament.ripple,0,.3);
- fields(d.motion,['clock','phaseRate','reducedMotion'],['rhythm']);check(d.motion.clock==='separate'&&d.motion.reducedMotion==='freeze','motion may not control execution');range(d.motion.phaseRate,0,.05);
+ fields(d.motion,['clock','phaseRate','reducedMotion'],['rhythm','gesture']);check(d.motion.clock==='separate'&&d.motion.reducedMotion==='freeze','motion may not control execution');range(d.motion.phaseRate,0,.05);
+ if(Object.hasOwn(d.motion,'gesture')){check(Object.hasOwn(d,'anatomy'),'gesture requires assembly anatomy');Anatomy.validateGesture(d.motion.gesture);}
  if(Object.hasOwn(d.motion,'rhythm')){const r=d.motion.rhythm;fields(r,['model','mode','rate','breath','wave','waveNumber','lag','asymmetry','overtone']);check(r.model==='coupled-harmonic','unknown rhythm model');check(['periodic','quasiperiodic'].includes(r.mode),'unknown rhythm mode');range(r.rate,.25,2);range(r.breath,0,.18);range(r.wave,0,.18);range(r.waveNumber,0,4);range(r.lag,0,2);range(r.asymmetry,0,.8);range(r.overtone,0,.35);}
  fields(d.ink,['ghostAlpha','secondaryAlpha','ridgeAlpha','neutral']);for(const k of ['ghostAlpha','secondaryAlpha','ridgeAlpha'])range(d.ink[k],0,1);check(d.ink.ghostAlpha<d.ink.secondaryAlpha&&d.ink.secondaryAlpha<d.ink.ridgeAlpha,'ink hierarchy must be ghost < secondary < ridge');check(/^#[0-9a-f]{6}$/.test(d.ink.neutral),'invalid neutral RGB');
  {
@@ -71,7 +75,7 @@ function create(family='filament'){const d=clone(DEFAULT);d.family=family;
  Object.assign(d.motion.rhythm,rhythms[family]||{});
  validate(d);return d;}
 function validateBindings(d,graph){
- validate(d);if(!d.chroma?.lens)return true;
+ validate(d);if(d.anatomy)Anatomy.validateOwners(d.anatomy,graph);if(!d.chroma?.lens)return true;
  check(graph&&Array.isArray(graph.nodes),'scalar bindings require a task graph');const ids=new Set(graph.nodes.map(n=>n.id));
  for(const b of d.chroma.lens.bindings)check(ids.has(b.node),'unknown scalar binding node '+b.node);
  return true;

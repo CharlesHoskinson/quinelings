@@ -1,0 +1,193 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quinelings · sdk-quickstart</title><style>body{margin:auto;max-width:940px;padding:28px;background:#080f16;color:#c5dfd5;font:17px/1.7 system-ui}a{color:#83d8be}nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:40px}h1{font-size:40px;line-height:1.15}h2{margin-top:44px;color:#f0f5ed}pre{overflow:auto;padding:22px;background:#0d1a23;border:1px solid #29403e;border-radius:12px;font:14px/1.6 monospace}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td{padding:12px;border:1px solid #29403e}tr:first-child{font-weight:bold}code{overflow-wrap:anywhere;color:#e0f5cf}li{margin:8px 0}p{overflow-wrap:anywhere}@media(max-width:600px){body{padding:18px;font-size:16px}h1{font-size:32px}}</style></head><body><nav><a href="../sdk.html">← Agent SDK</a><a href="../create.html">Creation workspace</a><a href="sdk-quickstart.md">Markdown source</a></nav><h1>Agent SDK quickstart</h1>
+<p>The experimental <code>@quinelings/agent-sdk</code> package turns bounded tasks into source-authored mathematical bodies, runs their local programs, and verifies fresh copies. It wraps this repository's thought compiler, anatomy, and executable quine runtime. QDL and the SDK may evolve together; the package does not freeze a language version.</p>
+<h2>Build the checkout</h2>
+<p>Use Node.js 22 or later. From the repository root:</p>
+<pre><code>cd packages/agent-sdk
+npm ci
+npm run build
+npm run typecheck
+npm test
+node examples/basic.mjs</code></pre>
+<p>The checked-in <code>examples/basic.mjs</code> asserts the total of 29 and the reproduced source. The examples below import the built checkout. Save JavaScript examples as <code>.mjs</code> files inside <code>packages/agent-sdk</code> and run them with <code>node</code>. A consumer project can install the local directory with <code>npm install /absolute/path/to/quinelings/packages/agent-sdk</code>, then import <code>@quinelings/agent-sdk</code> instead of <code>./dist/index.js</code>.</p>
+<h2>Create, inspect, run, and reproduce</h2>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime } from './dist/index.js';
+
+const runtime = new Runtime();
+const created = runtime.create('[2,3,4] | square | sum | report total');
+if (created.status !== 'supported') {
+  throw new Error(JSON.stringify(created.diagnostics));
+}
+const artifact = created.artifact;
+const inspected = runtime.inspect(artifact.id);
+console.log(inspected.graph.nodes.map(node =&gt; [node.id, node.op, node.inputs]));
+
+const record = runtime.run(artifact.id);
+assert.deepEqual(record.result.tasks[0].output, [{ total: 29 }]);
+assert.deepEqual(record.result.emitted, [artifact.source]);
+
+const child = runtime.reproduce(artifact.id, record.id);
+assert.equal(child.artifact.source, artifact.source);
+assert.equal(child.record.parentRecordId, record.id);
+assert.deepEqual(child.record.result.tasks[0].output, [{ total: 29 }]);
+console.log({ artifactId: artifact.id, runId: record.id, childRunId: child.record.id });</code></pre>
+<p><code>create</code> constructs and validates an artifact without running its task. <code>inspect</code> exposes the admitted source, graph, design, and codecs. <code>run</code> creates an execution record. <code>reproduce</code> uses a specific parent record to reconstruct and explicitly execute a fresh copy; it verifies source and outputs against that parent.</p>
+<p>Artifact IDs identify canonical source using SHA-256. Reproduction of identical source retains the artifact identity and creates a new record identity. Source equality establishes exact reproduction; agreement with the original English requires separate assessment.</p>
+<h2>Supply a typed plan</h2>
+<p>Agents can supply explicit <code>Intent</code> instead of relying on the local text parser. Save this example as <code>typed-plan.ts</code> in the package directory and run it with <code>npx tsx typed-plan.ts</code> after building:</p>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime, type Intent } from './dist/index.js';
+
+const intent: Intent = {
+  format: 'quineling-intent',
+  name: 'Water total',
+  thought: 'Add the supplied water quantities in litres.',
+  assumptions: ['All supplied quantities use L.'],
+  inputs: [{
+    id: 'water', value: [2, 3, 4],
+    type: { kind: 'array', element: { kind: 'number', unit: 'L' } },
+  }],
+  steps: [{ id: 'total', op: 'sum', inputs: ['water'], params: {} }],
+  outputs: ['total'],
+};
+
+const runtime = new Runtime();
+const artifact = runtime.compile(intent);
+assert.deepEqual(artifact.contract?.types.total, { kind: 'number', unit: 'L' });
+assert.deepEqual(runtime.run(artifact.id).result.tasks[0]?.output, [9]);</code></pre>
+<p>The TypeScript <code>IntentStep</code> union gives each operation its own ordered input tuple and parameter shape. <code>ParseResult</code> and <code>CreationResult</code> discriminate on <code>status</code>: a supported result contains its intent or artifact; an unresolved result does not. The compiler also validates types, units, graph reachability, and resource limits at runtime. <code>artifact.contract.sourceBytes</code> counts the complete canonical artifact source in UTF-8 bytes, including its body and gesture.</p>
+<p>Quantity units, assumptions, and original thought are companion metadata; save the complete artifact when that provenance matters. Source recovery in a fresh runtime does not recover companion metadata. A later compilation can attach the first explicitly supplied companion if it regenerates that exact source; the recovery example below shows this transition.</p>
+<h2>Handle unresolved thoughts</h2>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime } from './dist/index.js';
+
+const runtime = new Runtime();
+for (const [thought, expected] of [
+  ['make my city happy', 'clarify'],
+  ['monitor continuously and send email', 'unsupported'],
+  ['[] | mean', 'inconsistent'],
+]) {
+  const parsed = runtime.parse(thought);
+  assert.equal(parsed.status, expected);
+  console.log(parsed.status, parsed.diagnostics);
+}</code></pre>
+<p>The local parser understands explicit JSON data and a bounded pipeline grammar. <code>clarify</code> needs more precise input; <code>unsupported</code> needs unavailable capabilities; <code>inconsistent</code> fails validation. Use each diagnostic's <code>code</code>, <code>path</code>, and <code>message</code> to revise the request. A model-generated plan must pass the same typed compiler.</p>
+<p>Runtime validation failures throw <code>QuinelingError</code>, exported from the SDK with <code>code</code>, <code>path</code>, and <code>message</code> fields and a <code>toJSON()</code> method. For example, malformed typed plans throw <code>invalid-intent</code>; missing session IDs throw <code>unknown-artifact</code> or <code>unknown-record</code>; reproducing from a record for another source throws <code>stale-record</code>. Handle thrown errors in addition to proposal statuses.</p>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime, QuinelingError } from './dist/index.js';
+
+try {
+  new Runtime().inspect('ql_missing');
+  assert.fail('Expected an unknown artifact error');
+} catch (error: unknown) {
+  if (!(error instanceof QuinelingError)) throw error;
+  assert.equal(error.code, 'unknown-artifact');
+  console.log(error.toJSON());
+}</code></pre>
+<p>Branch on <code>code</code>; diagnostic messages may change. <code>metadata-conflict</code> means that identical source already has a different companion intent in this session. For example, compiling the same graph and seed with revised thought or units can produce identical source. Use separate runtimes to retain both interpretations. The first intent, contract and source map remain stored. Re-admitting the same intent reuses them; an alternative source map does not replace the first one. A source recovered without a companion can receive its first companion through a subsequent matching <code>compile</code> or supported <code>create</code>. This does not change its source, ID or execution history. Intent equality uses canonical JSON, not semantic normalization: equivalent unit spellings and omitted versus empty assumptions can still conflict.</p>
+<h2>Supply a proposal provider</h2>
+<p><code>runtime.propose</code> accepts a provider implementing <code>ProposalProvider</code>. The hook returns a <code>ParseResult</code>; the runtime revalidates every supported intent through its typed compiler. This example uses an explicit local proposal fixture for a previously interpreted request:</p>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime, type ProposalProvider } from './dist/index.js';
+
+const runtime = new Runtime();
+const fixture = runtime.parse('[2,3,4] | sum');
+if (fixture.status !== 'supported') throw new Error('Invalid proposal fixture');
+const provider: ProposalProvider = {
+  async propose(thought, { signal }) {
+    signal?.throwIfAborted();
+    return {
+      ...fixture,
+      intent: { ...fixture.intent, thought },
+    };
+  },
+};
+
+const controller = new AbortController();
+const proposal = await runtime.propose(
+  'Add my supplied quantities: 2, 3, and 4.', provider, {}, controller.signal,
+);
+if (proposal.status !== 'supported') {
+  throw new Error(JSON.stringify(proposal.diagnostics));
+}
+assert.deepEqual(runtime.run(proposal.artifact.id).result.tasks[0]?.output, [9]);</code></pre>
+<p>A real provider performs its own interpretation and returns <code>clarify</code>, <code>unsupported</code>, or <code>inconsistent</code> when it cannot supply a complete plan. Forward the supplied signal to asynchronous provider work. While the asynchronous hook is pending, aborting the signal rejects <code>runtime.propose</code> with <code>QuinelingError</code> code <code>cancelled</code>, even if the provider ignores the signal or never resolves. A late result is not admitted. This stops the runtime from accepting the proposal; it cannot stop provider-side network activity, billing or synchronous work. The provider must forward the signal to cancel its own resources. Successful proposal construction still requires a separate <code>run</code> call to execute the task.</p>
+<h2>Simulate a guarded action</h2>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime } from './dist/index.js';
+
+const runtime = new Runtime();
+for (const [blocked, status, payload] of [
+  [['B'], 'simulated', ['A', 'C', 'D']],
+  [['B', 'C'], 'skipped', []],
+]) {
+  const thought = `route A to D in {&quot;A&quot;:[&quot;B&quot;,&quot;C&quot;],&quot;B&quot;:[&quot;D&quot;],&quot;C&quot;:[&quot;D&quot;],&quot;D&quot;:[]} blocked ${JSON.stringify(blocked)} | simulate &quot;walk-route&quot;`;
+  const created = runtime.create(thought);
+  if (!created.artifact) throw new Error(JSON.stringify(created.diagnostics));
+  const record = runtime.run(created.artifact.id);
+  assert.deepEqual(record.result.tasks[0].output, [{
+    status, action: 'walk-route', payload,
+  }]);
+}</code></pre>
+<p>The action is a local simulated receipt guarded by route success. It grants no network or filesystem authority. Task DAG evaluation is eager; <code>choose</code> is not a lazy branch for effects. Supply an explicit boolean action guard.</p>
+<h2>Recover source and sample a body</h2>
+<pre><code>import assert from 'node:assert/strict';
+import { Runtime } from './dist/index.js';
+
+const runtime = new Runtime();
+const options = { seed: 42, repeats: 1 };
+const created = runtime.create('[2,3,4] | sum', options);
+if (!created.artifact) throw new Error(JSON.stringify(created.diagnostics));
+const artifact = created.artifact;
+
+for (const recovery of [
+  { source: artifact.source },
+  { harmonics: artifact.harmonics },
+  { colors: artifact.colors },
+]) {
+  const recovered = runtime.recover(recovery);
+  assert.equal(recovered.source, artifact.source);
+  assert.equal(recovered.id, artifact.id);
+}
+
+const freshRuntime = new Runtime();
+const imported = freshRuntime.recover({
+  source: JSON.stringify(artifact.program, null, 2),
+});
+assert.equal(imported.source, artifact.source);
+assert.equal(imported.intent, undefined);
+assert.equal(imported.contract, undefined);
+
+// Supply the original companion explicitly; it was not recovered from bytes.
+assert.ok(artifact.intent);
+const attached = freshRuntime.compile(artifact.intent, options);
+assert.equal(attached.id, imported.id);
+assert.equal(attached.source, imported.source);
+assert.deepEqual(attached.intent, artifact.intent);
+assert.equal(imported.intent, undefined); // Earlier snapshots remain detached.
+assert.throws(() =&gt; freshRuntime.compile({
+  ...artifact.intent, thought: 'A different interpretation of the same program.',
+}, options), { code: 'metadata-conflict' });
+
+const frame = runtime.frame(artifact.id, 0, { budget: 4000, crests: 3 });
+assert.ok(frame.points.length &gt; 0);
+assert.ok(frame.points.every(Number.isFinite));
+const owner = frame.owners[0];
+assert.equal(frame.nodeColors.length, frame.nodeIds.length);
+assert.equal(frame.nodeRoles.length, frame.nodeIds.length);
+console.log({ node: frame.nodeIds[owner], role: frame.nodeRoles[owner],
+  color: frame.nodeColors[owner], samples: frame.owners.length });</code></pre>
+<p><code>recover</code> accepts exactly one encoding and validates recovered source. Formatted source JSON is normalized to canonical source, retaining its artifact identity. An existing artifact in the same runtime keeps its stored companion metadata; a fresh runtime has only the recovered program. Harmonics are numerical genome data; colors are exact RGB byte records. A screenshot is not a lossless source export. Reattaching a companion requires the original intent and compilation choices to regenerate the same complete source; compilation with a different design or compiler result instead creates a different artifact. Recovery, companion attachment and sampling do not execute the task or create a result.</p>
+<p><code>frame</code> takes a phase in radians: one authored gesture cycle is <code>2 * Math.PI</code>. The direct runtime accepts finite phases with magnitude at most <code>1e9</code>; use numerical tolerance when comparing phases one cycle apart. Its integer sample budget is 4,000–24,000, with 2–4 crests. <code>points</code> contains repeated <code>[x, y, z, alpha]</code> groups, <code>normals</code> contains <code>[nx, ny, nz]</code> groups, and <code>owners</code> indexes the parallel <code>nodeIds</code>, <code>nodeRoles</code> and <code>nodeColors</code> arrays. Coordinates are unprojected 3D material geometry.</p>
+<p><code>nodeColors</code> applies the source’s role palette, color strength and neutral ink. <code>frame</code> has no run-record or scalar-lens selector; these colors do not claim a measured result. A client displaying recorded scalar quantities must separately validate source, cycle and binding provenance. See the <a href="sdk-lifecycle.md">lifecycle guide</a> for the complete boundary.</p>
+<h2>Connect an agent</h2>
+<p>The same operations are available as discriminated requests through <code>runtime.dispatch</code>:</p>
+<pre><code>import { Runtime } from './dist/index.js';
+const runtime = new Runtime();
+const parsed = runtime.dispatch({ operation: 'parse', thought: '[2,3] | sum' });
+console.log(parsed);</code></pre>
+<p>Keep one <code>Runtime</code> for an agent session: it holds bounded in-memory artifact and execution-record stores, with defaults of 128 artifacts and 256 records. Full stores throw <code>resource-limit</code>. IDs must resolve in that runtime; persist exported artifacts explicitly if you need another process to recover their source.</p>
+<p>The MCP entry point is <code>@quinelings/agent-sdk/mcp</code>, exporting <code>createQuinelingMcpServer(runtime)</code>. For a client that launches an MCP stdio subprocess, configure command <code>node</code> with an absolute path to the built <code>dist/mcp-cli.js</code> as its argument. Its eight tools are <code>quineling_parse</code>, <code>quineling_compile</code>, <code>quineling_create</code>, <code>quineling_inspect</code>, <code>quineling_run</code>, <code>quineling_reproduce</code>, <code>quineling_recover</code>, and <code>quineling_frame</code>. Successful calls return <code>structuredContent.result</code>, mirrored as JSON text; check <code>isError</code> before consuming a result.</p>
+<p>The A2A entry point is <code>@quinelings/agent-sdk/a2a</code>, exporting <code>createA2AApp</code>. From the built package directory, <code>node dist/a2a-cli.js</code> starts the local server on <code>127.0.0.1:8049</code>; <code>QUINELING_A2A_PORT</code> selects another port. Discovery is at <code>/.well-known/agent-card.json</code>, with JSON-RPC at <code>/a2a/jsonrpc</code> and HTTP+JSON at <code>/a2a/rest</code>. Its plain-text input creates a proposal; explicit structured <code>run</code> and <code>reproduce</code> requests execute tasks. Both transports expose the same local lifecycle and simulated effects.</p>
+<p>Verification is split between SDK/runtime tests, browser behavior tests, finite Quint models and Lean lemmas about the modeled mathematics and constructor. These do not prove arbitrary English meaning, visual beauty, complete codec inversion, or a refinement of the entire JavaScript SDK. See <a href="GENERATIVE-FORMAL-MODEL.md">formal scope</a>.</p>
+<p>For the underlying contracts, see <a href="../design/intent.schema.json">typed intent schema</a>, <a href="PROGRAM-CONTRACT.md">program contract</a>, and <a href="THOUGHT-TO-LIFEFORM.md">thought-to-lifeform design</a>.</p></body></html>

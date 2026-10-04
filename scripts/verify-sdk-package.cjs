@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),cp=require('node:child_process'),assert=require('node:assert/strict');
+const project=path.join(__dirname,'..'),archive=path.join(project,'assets/sdk/quinelings-agent-sdk-0.0.0-experimental.tgz'),sandbox=fs.mkdtempSync(path.join(os.tmpdir(),'quinelings-package-'));
+fs.writeFileSync(path.join(sandbox,'package.json'),JSON.stringify({private:true,type:'module'}));
+cp.execFileSync('npm',['install','--ignore-scripts','--no-audit','--no-fund',archive],{cwd:sandbox,stdio:'pipe'});
+fs.writeFileSync(path.join(sandbox,'check.mjs'),`import assert from 'node:assert/strict';
+import { Runtime, QuinelingError } from '@quinelings/agent-sdk';
+import { createQuinelingMcpServer } from '@quinelings/agent-sdk/mcp';
+import { createA2AApp } from '@quinelings/agent-sdk/a2a';
+import { IntentSchema } from '@quinelings/agent-sdk/schema';
+const runtime=new Runtime(); const created=runtime.create('[2,3,4] | square | sum | report total');
+assert.equal(created.status,'supported'); IntentSchema.parse(created.artifact.intent);
+assert.deepEqual(runtime.run(created.artifact.id).result.tasks[0].output,[{total:29}]);
+assert.equal(runtime.recover({colors:created.artifact.colors}).source,created.artifact.source);
+const adapter=createA2AApp({runtime}); assert(adapter.runtime instanceof Runtime);
+const mcp=createQuinelingMcpServer(runtime);await mcp.close();
+try {runtime.run('missing');assert.fail('must reject');}catch(e){assert(e instanceof QuinelingError);assert.equal(e.code,'unknown-artifact');}
+console.log('Installed tarball: source-independent runtime, all four entrypoints, shared module identity and exact recovery passed.');`);
+const output=cp.execFileSync(process.execPath,['check.mjs'],{cwd:sandbox,encoding:'utf8'});assert(output.includes('passed'));console.log(output.trim());
+fs.writeFileSync(path.join(project,'sdk-package-verification.json'),JSON.stringify({passed:true,node:process.version,package:'@quinelings/agent-sdk',archiveBytes:fs.statSync(archive).size,checks:['isolated consumer installation','no dependency on repository source','all four public entrypoints','shared Runtime identity','independent expected total29','RGB source recovery','typed runtime error identity'],sourceIndependent:true},null,2)+'\n');

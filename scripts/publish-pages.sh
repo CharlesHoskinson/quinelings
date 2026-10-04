@@ -3,13 +3,17 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 npm test
 npm run formal:all
+npm run sdk:check
+npm run sdk:pack
+node scripts/render-sdk-docs.cjs
+node scripts/verify-sdk-package.cjs
 site_dir=$(mktemp -d)
 trap 'rm -rf "$site_dir"' EXIT
-cp index.html style.css translation.css learning.css orbit.js kernels.js qdl.js chroma.js morphology.js core.js gallery.js translation.js "$site_dir/"
+cp index.html create.html sdk.html style.css creation.css translation.css learning.css orbit.js kernels.js anatomy.js qdl.js chroma.js morphology.js core.js thought.js lifeform-renderer.js creation.js gallery.js translation.js "$site_dir/"
 cp -R programs assets docs design "$site_dir/"
-cp lean-verification.json "$site_dir/"
+cp creation-verification.json sdk-package-verification.json lean-verification.json "$site_dir/"
 # Keep the separately labeled generative design studies available across releases.
-git ls-files -z 'research/final-qdl-*' 'research/thought-lifeform-*' | xargs -0 -r cp --parents -t "$site_dir/"
+git ls-files -z 'research/final-qdl-*' 'research/thought-lifeform-*' 'research/creation-*.png' 'research/sdk-*.md' 'research/sdk-*.json' 'research/sdk-*.png' | xargs -0 -r cp --parents -t "$site_dir/"
 # Publish only tracked specifications, never Lean toolchains or compiled dependency caches.
 git ls-files -z spec | xargs -0 cp --parents -t "$site_dir/"
 touch "$site_dir/.nojekyll"

@@ -5,12 +5,17 @@
   "description": "Executable mathematical creatures with recoverable harmonic and color genomes",
   "scripts": {
     "dev": "python3 -m http.server 8048 --bind 127.0.0.1",
-    "test": "node verify.cjs && node verify-library.cjs && node verify-design.cjs && node audit.cjs && node verify-morphology.cjs && node verify-chroma.cjs",
+    "test": "node verify.cjs && node verify-library.cjs && node verify-design.cjs && node audit.cjs && node verify-morphology.cjs && node verify-chroma.cjs && node verify-thought.cjs && node verify-anatomy.cjs && node verify-runtime-boundaries.cjs",
     "formal": "quint typecheck spec/design.qnt && quint test spec/design.qnt --max-samples=100 --backend=typescript && quint run spec/design.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261003 --backend=typescript --verbosity=1",
     "lean:fixtures": "node scripts/generate-lean-fixtures.cjs",
     "formal:lean": "bash scripts/check-lean.sh",
     "lean:install": "bash scripts/install-lean.sh",
-    "formal:all": "npm run formal:lean && npm run formal"
+    "formal:all": "npm run formal:lean && npm run formal && npm run formal:creation && npm run formal:session",
+    "formal:creation": "quint typecheck spec/creation.qnt && quint test spec/creation.qnt --max-samples=100 --backend=typescript && quint run spec/creation.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
+    "sdk:install": "npm ci --prefix packages/agent-sdk",
+    "sdk:check": "npm run typecheck --prefix packages/agent-sdk && npm run build --prefix packages/agent-sdk && npm test --prefix packages/agent-sdk",
+    "sdk:pack": "mkdir -p assets/sdk && npm pack ./packages/agent-sdk --pack-destination assets/sdk",
+    "formal:session": "quint typecheck spec/agent-session.qnt && quint test spec/agent-session.qnt --max-samples=100 --backend=typescript && quint run spec/agent-session.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1"
   },
   "engines": {
     "node": ">=22"

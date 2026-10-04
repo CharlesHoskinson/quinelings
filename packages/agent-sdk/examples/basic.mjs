@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {Runtime} from '../dist/index.js';
+const runtime=new Runtime();
+const created=runtime.create('[2,3,4] | square | sum | report total');
+if(created.status!=='supported')throw Error(JSON.stringify(created.diagnostics));
+const record=runtime.run(created.artifact.id);
+assert.deepEqual(record.result.tasks[0].output,[{total:29}]);
+const child=runtime.reproduce(created.artifact.id,record.id);
+assert.equal(child.artifact.source,created.artifact.source);
+console.log(JSON.stringify({result:record.result.tasks[0].output,artifactId:created.artifact.id,childRunId:child.record.id}));

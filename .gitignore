@@ -5,3 +5,6 @@ research/reference-frame-*.png
 *.log
 
 spec/lean/.lake/
+
+packages/agent-sdk/dist/
+*.tgz

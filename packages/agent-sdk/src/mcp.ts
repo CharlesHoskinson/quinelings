@@ -2,8 +2,8 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import { Runtime, QuinelingError } from './index.js';
-import { IntentSchema } from './schema.js';
-export { JsonSchema, IntentTypeSchema, IntentStepSchema, IntentSchema } from './schema.js';
+import {IntentSchema,OffspringInputSchema,OffspringFrameSchema,AdmissionSchema,LineageSchema,AnnotationSchema,WorldConfigSchema,WorldCommandSchema} from './schema.js';
+export * from './schema.js';
 
 const REQUEST_BYTES = 4 * 1024 * 1024;
 const RESPONSE_BYTES = 8 * 1024 * 1024;
@@ -29,7 +29,7 @@ export function createQuinelingMcpServer(runtime: Runtime = new Runtime()): McpS
 
   function register<S extends z.ZodRawShape>(name: string, description: string,
     shape: S, run: (args: z.infer<z.ZodObject<S>>) => unknown,
-    readOnly: boolean, idempotent: boolean, exactlyOne = false): void {
+    readOnly: boolean, idempotent: boolean, exactlyOne = false, destructive = false): void {
     let inputSchema = z.strictObject(shape);
     if(exactlyOne){
       const keys=Object.keys(shape);
@@ -42,7 +42,7 @@ export function createQuinelingMcpServer(runtime: Runtime = new Runtime()): McpS
     server.registerTool<z.ZodRawShape, typeof inputSchema>(name, {
       description,
       inputSchema,
-      annotations: { readOnlyHint: readOnly, destructiveHint: false, idempotentHint: idempotent, openWorldHint: false }
+      annotations: { readOnlyHint: readOnly, destructiveHint: destructive, idempotentHint: idempotent, openWorldHint: false }
     }, async (raw, extra): Promise<CallToolResult> => {
       try {
         if(extra.signal.aborted)throw new QuinelingError('cancelled','MCP request cancelled before dispatch.');
@@ -113,6 +113,14 @@ export function createQuinelingMcpServer(runtime: Runtime = new Runtime()): McpS
       crests: z.number().int().min(2).max(4).optional()
     }).optional() }, ({ artifactId, phase, options: selected }) => runtime.frame(artifactId, phase, selected), true, true);
 
+  register('quineling_offspring_preview','Prepare a source-backed typed compose/mate/merge/body candidate without storing, executing, ticking or creating offspring. Bounded pure refinement evaluation is allowed; units/guards are checked.',{input:OffspringInputSchema},({input})=>runtime.offspringPreview(input),true,true);
+  register('quineling_offspring_frame','Statelessly rebuild a prepared candidate and sample its body. Both candidate and exact child-source identities must match. No admission or execution.',OffspringFrameSchema.shape,input=>runtime.offspringFrame(input),true,true);
+  register('quineling_offspring_admit','Explicitly admit rebuilt offspring to the library or a fresh world proposal. Atomically stores source/lineage/receipt; world birth charges both parents once. Retry the same requestId and payload after transport loss. Never runs a task.',AdmissionSchema.shape,input=>runtime.offspringAdmit(input),false,true);
+  register('quineling_lineage','Read bounded flat append-order derivation evidence. Source heredity is asserted; only session derivations have replay inputs. No ancestor recursion or task execution.',LineageSchema.shape,input=>runtime.lineage(input),true,true);
+  register('quineling_annotate','Attach an explicitly supplied typed interpretation to a source-only artifact after exact task graph comparison. Existing conflicting metadata refuses; world parent proposals are invalidated atomically.',AnnotationSchema.shape,input=>runtime.annotate(input),false,true);
+  register('quineling_world_create','Create one bounded experimental ranch in this session. Same worldKey/seed/affinity is idempotent; a different configuration refuses. Residents start with participation disabled.',WorldConfigSchema.shape,input=>runtime.worldCreate(input),false,true);
+  register('quineling_world_inspect','Read a detached ranch snapshot without advancing social time, animating or executing tasks.',{worldId:z.string().min(1).max(128)},({worldId})=>runtime.worldInspect(worldId),true,true);
+  register('quineling_world_command','Explicit bounded import/retire/participate/invite/cancelProposal/advance command. Exact next sequence and revision required; replay same sequence and complete payload, never allocate a new sequence to retry. Social steps never run tasks.',WorldCommandSchema.shape,input=>runtime.worldCommand(input),false,true,false,true);
   return server;
 }
 

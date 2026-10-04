@@ -1,0 +1,8 @@
+'use strict';
+const assert=require('node:assert/strict'),A=require('./anatomy.js'),T=require('./thought.js');
+let checks=0;
+for(const thought of T.examples){const intent=T.parse(thought).intent,g=T.compile(intent).graph;for(const seed of [0,17,4294967295]){const a=A.generate(g,seed),body=A.compile(a.anatomy,g.nodes,a.gesture);for(const budget of [1000,2000,4000]){const layout=A.restLayout(body,{budget});assert.equal(layout.positions.length,budget*3);assert.equal(layout.components.length,budget);assert.deepEqual([...new Set(layout.owners)].sort((a,b)=>a-b),g.nodes.map((_,i)=>i));assert.ok(Math.abs(layout.weights.reduce((a,b)=>a+b,0)-1)<1e-6);assert.ok([...layout.weights].every(x=>x>0&&Number.isFinite(x)));for(let i=0;i<body.parts.length;i++)assert.ok(layout.components.includes(i));checks+=5;
+ if(budget===4000){const frame=A.frame(body,.67,{budget,crests:2}),pose=A.pose(body,.67);for(let j=0;j<budget;j++){const f=pose.maps[layout.components[j]],p=layout.positions.slice(j*3,j*3+3);for(let k=0;k<3;k++){const projected=f.m[k*3]*p[0]+f.m[k*3+1]*p[1]+f.m[k*3+2]*p[2]+f.t[k];assert.ok(Math.abs(projected-frame.points[j*4+k])<2e-6);}assert.equal(layout.owners[j],frame.owners[j]);}checks+=budget*4;}
+ }}}
+assert.throws(()=>A.restLayout({},{}));const g=T.compile(T.parse(T.examples[0]).intent).graph,a=A.generate(g,1),b=A.compile(a.anatomy,g.nodes,a.gesture);assert.throws(()=>A.restLayout(b,{budget:999}));assert.throws(()=>A.restLayout(b,{budget:1001.5}));assert.throws(()=>A.restLayout(b,{budget:1000,unknown:true}));
+console.log('Ranch rest layouts: '+checks+' sampler/coverage/density/pose correspondence checks and4 invalid input cases passed');

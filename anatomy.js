@@ -79,7 +79,7 @@ function area(c){return c.kind==='spine'?TAU*(c.radii[0]+c.radii[1])*.5*c.length
 function plan(c,budget){let plans=planCache.get(c);if(!plans){plans=new Map();planCache.set(c,plans);}if(plans.has(budget)){const cached=plans.get(budget);plans.delete(budget);plans.set(budget,cached);return cached;}const items=[];
  // Reserve an interior sample for every region and a sample for every cap or
  // hemisphere before distributing the remaining global budget by rest area.
- c.parts.forEach((p,i)=>{for(const r of p.regions)items.push({i,p:local(p,(r.u[0]+r.u[1])/2,.375)});for(const chart of p.charts)if(chart!=='side')items.push({i,p:chartLocal(p,chart,.31,.23)});});
+ c.parts.forEach((p,i)=>{for(const r of p.regions)items.push({i,p:local(p,(r.u[0]+r.u[1])/2,.375),reserved:true});for(const chart of p.charts)if(chart!=='side')items.push({i,p:chartLocal(p,chart,.31,.23),reserved:true});});
  const total=c.parts.reduce((s,p)=>s+area(p),0),remaining=budget-items.length;check(remaining>=0,'sample budget cannot cover owners/charts');let cumulative=0,allocated=0;
  c.parts.forEach((p,i)=>{cumulative+=area(p)/total;const upto=i===c.parts.length-1?remaining:Math.floor(cumulative*remaining),count=upto-allocated;allocated=upto;
   for(let j=0;j<count;j++){const v=(j*.6180339887498949)%1,u=(j+.5)/Math.max(1,count);
@@ -88,6 +88,15 @@ function plan(c,budget){let plans=planCache.get(c);if(!plans){plans=new Map();pl
   }
  });
  for(const item of items)item.owner=owner(c.parts[item.i],item.p.u);const result=freeze(items);plans.set(budget,result);while(plans.size>2)plans.delete(plans.keys().next().value);return result;
+}
+// GPU rest layout shares the exact sampler/ownership reservations with frame().
+// Area estimates are a bounded optical-density convention, not an atlas proof.
+function restLayout(c,options={}){assertCompiled(c);const budget=options.budget??2000;number(budget,1000,4000);check(Number.isInteger(budget),'integer rest layout budget required');check(Object.keys(options).every(k=>k==='budget'),'unknown rest layout option');
+ const items=plan(c,budget),positions=new Float32Array(budget*3),normals=new Float32Array(budget*3),owners=new Uint16Array(budget),components=new Uint16Array(budget),weights=new Float32Array(budget),reserved=new Uint8Array(budget),counts=c.parts.map(()=>[0,0]);
+ for(const it of items)counts[it.i][it.reserved?0:1]++;
+ const total=c.parts.reduce((sum,p)=>sum+area(p),0);
+ for(let j=0;j<items.length;j++){const it=items[j],k=j*3;positions.set(it.p.p,k);normals.set(it.p.n,k);owners[j]=it.owner;components[j]=it.i;reserved[j]=it.reserved?1:0;const [anchors,samples]=counts[it.i],fraction=it.reserved?(samples?.05:1):.95;weights[j]=area(c.parts[it.i])/total*fraction/(it.reserved?anchors:samples);}
+ return {positions,normals,owners,components,weights,reserved,sampleCount:budget};
 }
 function frame(c,phase,options={}){assertCompiled(c);const budget=options.budget??12000,crests=options.crests??3;number(budget,4000,24000);number(crests,2,4);check(Number.isInteger(budget)&&Number.isInteger(crests),'integer frame budgets required');const maps=pose(c,phase).maps,items=plan(c,budget);let buffers=options.reuse?bufferCache.get(c):null;if(!buffers||buffers.owners.length!==items.length){buffers={points:new Float32Array(items.length*4),normals:new Float32Array(items.length*3),owners:new Uint16Array(items.length)};if(options.reuse)bufferCache.set(c,buffers);}const {points,normals,owners}=buffers;
  for(let j=0;j<items.length;j++){const it=items[j],f=maps[it.i],m=f.m,n=f.n,p=it.p.p,v=it.p.n,k=4*j,q=3*j,nx=n[0]*v[0]+n[1]*v[1]+n[2]*v[2],ny=n[3]*v[0]+n[4]*v[1]+n[5]*v[2],nz=n[6]*v[0]+n[7]*v[1]+n[8]*v[2],length=Math.hypot(nx,ny,nz);points[k]=m[0]*p[0]+m[1]*p[1]+m[2]*p[2]+f.t[0];points[k+1]=m[3]*p[0]+m[4]*p[1]+m[5]*p[2]+f.t[1];points[k+2]=m[6]*p[0]+m[7]*p[1]+m[8]*p[2]+f.t[2];points[k+3]=.18;normals[q]=nx/length;normals[q+1]=ny/length;normals[q+2]=nz/length;owners[j]=it.owner;}
@@ -140,5 +149,5 @@ function generate(graph,seed=0){const ids=nodeIDs(graph);number(seed,0,429496729
  const owners=[];parts.forEach((p,i)=>buckets[i].forEach((node,j)=>owners.push({node,component:p.id,u:[j/buckets[i].length,(j+1)/buckets[i].length]})));
  const anatomy={model:'assembly',compiler:COMPILER,seed,components:parts,owners},gesture={kind,strength:.55+Math.round(rnd()*15)/100,ticks:kind==='gather'?[180,180,420,220]:kind==='unfurl'?[220,170,430,180]:[180,170,450,200]};validateOwners(anatomy,graph);validateGesture(gesture);return {anatomy,gesture};
 }
-const api={COMPILER,validate,validateOwners,validateGesture,generate,compile,score,pose,sample,sampleChart,anchor,socket,frame,portraitFrame};if(typeof module!=='undefined')module.exports=api;root.Anatomy=api;
+const api={COMPILER,validate,validateOwners,validateGesture,generate,compile,score,pose,sample,sampleChart,anchor,socket,frame,restLayout,portraitFrame};if(typeof module!=='undefined')module.exports=api;root.Anatomy=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

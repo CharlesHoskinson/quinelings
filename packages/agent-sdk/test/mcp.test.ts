@@ -30,7 +30,7 @@ test('official MCP client executes complete artifact lifecycle over paired trans
   await client.connect(clientTransport);
   try {
     const tools=await client.listTools();
-    assert.equal(tools.tools.length,8);
+    assert.equal(tools.tools.length,16);
     // Inspect the actual JSON Schema emitted by the official SDK, including recursive refs.
     const schema=tools.tools.find(t=>t.name==='quineling_compile')!.inputSchema as any;
     const intentSchema=schema.properties.intent;
@@ -124,7 +124,7 @@ test('official stdio transport launches CLI with clean protocol output', async (
     await client.connect(transport);
     const parsed=result(await client.callTool({name:'quineling_parse',arguments:{thought:'[7,2] | sum'}}));
     assert.equal(parsed.status,'supported');
-    assert.equal((await client.listTools()).tools.length,8);
+    assert.equal((await client.listTools()).tools.length,16);
     domainError(await client.callTool({name:'quineling_inspect',arguments:{artifactId:'missing'}}),'unknown-artifact','$');
   } finally {await client.close();}
   assert.doesNotMatch(stderr,/Unhandled|Error:/);

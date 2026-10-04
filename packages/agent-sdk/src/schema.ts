@@ -82,3 +82,27 @@ export const IntentSchema = z.strictObject({
   outputs:z.array(id).min(1).max(16),
   assumptions:z.array(z.string().max(512)).max(32).optional()
 }).superRefine(depthBound) satisfies z.ZodType<Intent>;
+
+/** Experimental source-authored genetics: closed integer authoring fields. */
+export const TraitsSchema=z.strictObject({elongation:z.number().int().min(-1000).max(1000),spread:z.number().int().min(-1000).max(1000),curvature:z.number().int().min(-1000).max(1000),gestureGain:z.number().int().min(-1000).max(1000),tempo:z.number().int().min(-1000).max(1000),pigmentGain:z.number().int().min(-1000).max(1000)});
+const ranchId=z.string().min(1).max(128),digest=z.string().regex(/^[0-9a-f]{64}$/),counter=z.number().int().min(0).max(1000000);
+export const ParentPinSchema=z.strictObject({artifactId:ranchId,intentHash:digest.nullable()});
+export const OffspringRecipeSchema=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('compose'),donorOutput:id,recipientInput:id}),
+ z.strictObject({kind:z.literal('mate'),donorNode:id,replaceNode:id}),
+ z.strictObject({kind:z.literal('merge')}),z.strictObject({kind:z.literal('body'),base:z.union([z.literal(0),z.literal(1)])})]);
+export const OffspringOriginSchema=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('manual')}),z.strictObject({kind:z.literal('pairing'),worldId:ranchId,proposalId:ranchId,parentResidents:z.tuple([ranchId,ranchId]),epochs:z.tuple([counter,counter])})]);
+export const OffspringInputSchema=z.strictObject({parents:z.tuple([ParentPinSchema,ParentPinSchema]),recipe:OffspringRecipeSchema,nonce:z.number().int().min(0).max(4294967295),style:z.strictObject({mutation:z.enum(['none','gentle']),traits:TraitsSchema.optional()}),origin:OffspringOriginSchema}).superRefine((x,c)=>{if(x.style.traits&&x.style.mutation!=='none')c.addIssue({code:'custom',path:['style','mutation'],message:'Complete traits override requires mutation:none'});});
+export const FrameOptionsSchema=z.strictObject({budget:z.number().int().min(4000).max(24000).optional(),crests:z.number().int().min(2).max(4).optional()});
+export const OffspringFrameSchema=z.strictObject({input:OffspringInputSchema,candidateId:z.string().regex(/^qc_[0-9a-f]{64}$/),childSourceHash:digest,phase:z.number().finite().min(-1e9).max(1e9),options:FrameOptionsSchema.optional()});
+export const OffspringTargetSchema=z.discriminatedUnion('kind',[z.strictObject({kind:z.literal('library')}),z.strictObject({kind:z.literal('world'),worldId:ranchId,expectedRevision:counter})]);
+export const AdmissionSchema=z.strictObject({input:OffspringInputSchema,candidateId:z.string().regex(/^qc_[0-9a-f]{64}$/),childSourceHash:digest,target:OffspringTargetSchema,requestId:ranchId});
+export const LineageSchema=z.strictObject({artifactId:ranchId.optional(),cursor:z.number().int().min(0).max(128).optional(),limit:z.number().int().min(1).max(32).optional()});
+export const AnnotationSchema=z.strictObject({artifactId:ranchId,intent:IntentSchema});
+export const WorldConfigSchema=z.strictObject({worldKey:z.string().min(1).max(64),seed:z.number().int().min(0).max(4294967295),affinity:z.enum(['structural','neutral']).optional()});
+export const WorldActionSchema=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('import'),artifactId:ranchId}),z.strictObject({kind:z.literal('retire'),residentId:ranchId}),
+ z.strictObject({kind:z.literal('participate'),residentId:ranchId,enabled:z.boolean()}),z.strictObject({kind:z.literal('invite'),residentId:ranchId,partnerId:ranchId}),
+ z.strictObject({kind:z.literal('cancelProposal'),proposalId:ranchId}),z.strictObject({kind:z.literal('advance'),ticks:z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4)])})]);
+export const WorldCommandSchema=z.strictObject({worldId:ranchId,expectedRevision:counter,sequence:z.number().int().min(1).max(1000000),command:WorldActionSchema});

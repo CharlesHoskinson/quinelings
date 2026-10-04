@@ -1,0 +1,484 @@
+{
+  "generatedAt": "2026-10-04T09:59:13.920Z",
+  "baseURL": "http://127.0.0.1:8765",
+  "softwareRequested": true,
+  "browserArgs": [
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader"
+  ],
+  "browserExecutable": "/home/hoskinson/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+  "status": "passed-declared-optical-tolerances",
+  "tolerance": {
+    "integratedLuminanceRelative": 0.2,
+    "silhouetteAreaRelative": 0.25
+  },
+  "conditions": {
+    "viewport": [
+      1440,
+      1000
+    ],
+    "phase": 0,
+    "budgets": [
+      1000,
+      2000,
+      4000
+    ],
+    "backgroundRGB": [
+      16,
+      31,
+      34
+    ],
+    "silhouetteLinearLuminanceThreshold": 0.003,
+    "selectedOwner": null
+  },
+  "limitations": [
+    "Three source/pose fixtures are measured; this is not a proof over all accepted anatomy or phases.",
+    "Finite sampling, opacity caps and RGBA8 quantization permit optical variation. Exact optical invariance is not claimed.",
+    "Readback and gl.finish are diagnostics in this harness only; no production synchronous GPU readback is added.",
+    "No physical GPU performance or 24fps acceptance is inferred."
+  ],
+  "pageErrors": [],
+  "bundleSHA256": "02241b7fa65ea1398b04ce368618dae464bbd090f04f04910e4492f9235c8a39",
+  "browserVersion": "153.0.8010.12",
+  "rows": [
+    {
+      "fixture": "Reservoir",
+      "artifactId": "ql_01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "rendering": "complete",
+      "budget": 1000,
+      "integratedLinearLuminance": 45.17031561542219,
+      "silhouetteArea": 1012,
+      "integratedAlpha": 296.7960784313727,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 2,
+      "operationCount": 2
+    },
+    {
+      "fixture": "Reservoir",
+      "artifactId": "ql_01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "rendering": "complete",
+      "budget": 2000,
+      "integratedLinearLuminance": 43.398975532616895,
+      "silhouetteArea": 1007,
+      "integratedAlpha": 290.5568627450987,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 2,
+      "operationCount": 2
+    },
+    {
+      "fixture": "Reservoir",
+      "artifactId": "ql_01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "rendering": "complete",
+      "budget": 4000,
+      "integratedLinearLuminance": 40.768447645477075,
+      "silhouetteArea": 982,
+      "integratedAlpha": 281.7450980392163,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 2,
+      "operationCount": 2
+    },
+    {
+      "fixture": "Reservoir",
+      "artifactId": "ql_01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "rendering": "tissue-only",
+      "budget": 1000,
+      "integratedLinearLuminance": 32.85466105583236,
+      "silhouetteArea": 1012,
+      "integratedAlpha": 268.09019607843175,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 2,
+      "operationCount": 2
+    },
+    {
+      "fixture": "Reservoir",
+      "artifactId": "ql_01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "rendering": "tissue-only",
+      "budget": 2000,
+      "integratedLinearLuminance": 31.073004188319807,
+      "silhouetteArea": 1007,
+      "integratedAlpha": 261.5450980392165,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 2,
+      "operationCount": 2
+    },
+    {
+      "fixture": "Reservoir",
+      "artifactId": "ql_01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "rendering": "tissue-only",
+      "budget": 4000,
+      "integratedLinearLuminance": 28.437732823130112,
+      "silhouetteArea": 982,
+      "integratedAlpha": 252.25882352941284,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 2,
+      "operationCount": 2
+    },
+    {
+      "fixture": "Waterkeeper",
+      "artifactId": "ql_767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "rendering": "complete",
+      "budget": 1000,
+      "integratedLinearLuminance": 52.47808164974619,
+      "silhouetteArea": 860,
+      "integratedAlpha": 290.3411764705883,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 3,
+      "operationCount": 3
+    },
+    {
+      "fixture": "Waterkeeper",
+      "artifactId": "ql_767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "rendering": "complete",
+      "budget": 2000,
+      "integratedLinearLuminance": 50.75616438592454,
+      "silhouetteArea": 852,
+      "integratedAlpha": 284.20784313725494,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 3,
+      "operationCount": 3
+    },
+    {
+      "fixture": "Waterkeeper",
+      "artifactId": "ql_767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "rendering": "complete",
+      "budget": 4000,
+      "integratedLinearLuminance": 47.954415251860915,
+      "silhouetteArea": 832,
+      "integratedAlpha": 276.3058823529414,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 3,
+      "operationCount": 3
+    },
+    {
+      "fixture": "Waterkeeper",
+      "artifactId": "ql_767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "rendering": "tissue-only",
+      "budget": 1000,
+      "integratedLinearLuminance": 36.45002115855419,
+      "silhouetteArea": 860,
+      "integratedAlpha": 259.21176470588216,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 3,
+      "operationCount": 3
+    },
+    {
+      "fixture": "Waterkeeper",
+      "artifactId": "ql_767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "rendering": "tissue-only",
+      "budget": 2000,
+      "integratedLinearLuminance": 34.7023706360611,
+      "silhouetteArea": 852,
+      "integratedAlpha": 252.72941176470627,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 3,
+      "operationCount": 3
+    },
+    {
+      "fixture": "Waterkeeper",
+      "artifactId": "ql_767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "rendering": "tissue-only",
+      "budget": 4000,
+      "integratedLinearLuminance": 31.858238496687978,
+      "silhouetteArea": 832,
+      "integratedAlpha": 244.3333333333337,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 3,
+      "operationCount": 3
+    },
+    {
+      "fixture": "Pathfinder",
+      "artifactId": "ql_8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "rendering": "complete",
+      "budget": 1000,
+      "integratedLinearLuminance": 43.64628497063675,
+      "silhouetteArea": 706,
+      "integratedAlpha": 271.6470588235297,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 6,
+      "operationCount": 6
+    },
+    {
+      "fixture": "Pathfinder",
+      "artifactId": "ql_8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "rendering": "complete",
+      "budget": 2000,
+      "integratedLinearLuminance": 41.94879703366713,
+      "silhouetteArea": 695,
+      "integratedAlpha": 266.07843137254906,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 6,
+      "operationCount": 6
+    },
+    {
+      "fixture": "Pathfinder",
+      "artifactId": "ql_8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "rendering": "complete",
+      "budget": 4000,
+      "integratedLinearLuminance": 39.26772282356241,
+      "silhouetteArea": 676,
+      "integratedAlpha": 258.54901960784326,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 6,
+      "operationCount": 6
+    },
+    {
+      "fixture": "Pathfinder",
+      "artifactId": "ql_8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "rendering": "tissue-only",
+      "budget": 1000,
+      "integratedLinearLuminance": 32.8003413437616,
+      "silhouetteArea": 706,
+      "integratedAlpha": 248.32156862745117,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 6,
+      "operationCount": 6
+    },
+    {
+      "fixture": "Pathfinder",
+      "artifactId": "ql_8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "rendering": "tissue-only",
+      "budget": 2000,
+      "integratedLinearLuminance": 31.07846554589942,
+      "silhouetteArea": 695,
+      "integratedAlpha": 242.36470588235338,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 6,
+      "operationCount": 6
+    },
+    {
+      "fixture": "Pathfinder",
+      "artifactId": "ql_8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "rendering": "tissue-only",
+      "budget": 4000,
+      "integratedLinearLuminance": 28.348984742721875,
+      "silhouetteArea": 676,
+      "integratedAlpha": 234.4196078431374,
+      "pointDiameter": 5,
+      "framebuffer": [
+        1326,
+        678
+      ],
+      "ownerCount": 6,
+      "operationCount": 6
+    }
+  ],
+  "comparisons": [
+    {
+      "fixture": "Reservoir",
+      "rendering": "complete",
+      "budget": 1000,
+      "luminanceRelative": 0,
+      "areaRelative": 0
+    },
+    {
+      "fixture": "Reservoir",
+      "rendering": "complete",
+      "budget": 2000,
+      "luminanceRelative": 0.03921469351435125,
+      "areaRelative": 0.004940711462450564
+    },
+    {
+      "fixture": "Reservoir",
+      "rendering": "complete",
+      "budget": 4000,
+      "luminanceRelative": 0.09745045855827972,
+      "areaRelative": 0.029644268774703608
+    },
+    {
+      "fixture": "Reservoir",
+      "rendering": "tissue-only",
+      "budget": 1000,
+      "luminanceRelative": 0,
+      "areaRelative": 0
+    },
+    {
+      "fixture": "Reservoir",
+      "rendering": "tissue-only",
+      "budget": 2000,
+      "luminanceRelative": 0.05422843548697254,
+      "areaRelative": 0.004940711462450564
+    },
+    {
+      "fixture": "Reservoir",
+      "rendering": "tissue-only",
+      "budget": 4000,
+      "luminanceRelative": 0.1344384051077634,
+      "areaRelative": 0.029644268774703608
+    },
+    {
+      "fixture": "Waterkeeper",
+      "rendering": "complete",
+      "budget": 1000,
+      "luminanceRelative": 0,
+      "areaRelative": 0
+    },
+    {
+      "fixture": "Waterkeeper",
+      "rendering": "complete",
+      "budget": 2000,
+      "luminanceRelative": 0.03281212288425894,
+      "areaRelative": 0.009302325581395321
+    },
+    {
+      "fixture": "Waterkeeper",
+      "rendering": "complete",
+      "budget": 4000,
+      "luminanceRelative": 0.08620106253268789,
+      "areaRelative": 0.032558139534883734
+    },
+    {
+      "fixture": "Waterkeeper",
+      "rendering": "tissue-only",
+      "budget": 1000,
+      "luminanceRelative": 0,
+      "areaRelative": 0
+    },
+    {
+      "fixture": "Waterkeeper",
+      "rendering": "tissue-only",
+      "budget": 2000,
+      "luminanceRelative": 0.04794648856007466,
+      "areaRelative": 0.009302325581395321
+    },
+    {
+      "fixture": "Waterkeeper",
+      "rendering": "tissue-only",
+      "budget": 4000,
+      "luminanceRelative": 0.12597475984698026,
+      "areaRelative": 0.032558139534883734
+    },
+    {
+      "fixture": "Pathfinder",
+      "rendering": "complete",
+      "budget": 1000,
+      "luminanceRelative": 0,
+      "areaRelative": 0
+    },
+    {
+      "fixture": "Pathfinder",
+      "rendering": "complete",
+      "budget": 2000,
+      "luminanceRelative": 0.03889192260261365,
+      "areaRelative": 0.015580736543909346
+    },
+    {
+      "fixture": "Pathfinder",
+      "rendering": "complete",
+      "budget": 4000,
+      "luminanceRelative": 0.1003192402290376,
+      "areaRelative": 0.04249291784702547
+    },
+    {
+      "fixture": "Pathfinder",
+      "rendering": "tissue-only",
+      "budget": 1000,
+      "luminanceRelative": 0,
+      "areaRelative": 0
+    },
+    {
+      "fixture": "Pathfinder",
+      "rendering": "tissue-only",
+      "budget": 2000,
+      "luminanceRelative": 0.05249566703639419,
+      "areaRelative": 0.015580736543909346
+    },
+    {
+      "fixture": "Pathfinder",
+      "rendering": "tissue-only",
+      "budget": 4000,
+      "luminanceRelative": 0.13571067917823187,
+      "areaRelative": 0.04249291784702547
+    }
+  ],
+  "maxVariation": {
+    "integratedLuminanceRelative": 0.13571067917823187,
+    "silhouetteAreaRelative": 0.04249291784702547
+  },
+  "bundleSHA256After": "02241b7fa65ea1398b04ce368618dae464bbd090f04f04910e4492f9235c8a39"
+}

@@ -287,6 +287,28 @@ quint test spec/design.qnt --max-samples=100 --backend=typescript
 quint run spec/design.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261003 --backend=typescript
 ```
 
-Quint was chosen because behavior evolves through transitions, asynchronous-style boundaries, replay, and reproduction. Lean would be appropriate for later general analytic proofs about codec inversion and continuous geometry. Neither formal method establishes visual beauty; the reference breakdown and human inspection remain part of design acceptance.
+Quint was chosen because behavior evolves through transitions, asynchronous-style boundaries, replay, and reproduction. Lean supplies complementary local source, geometry, rhythm, chroma, assembly and ranch theorems; the claim ledger records remaining obligations. Neither formal method establishes visual beauty; the reference breakdown and human inspection remain part of design acceptance.
 
 Official language and property-checking documentation: https://quint.sh/docs/ .
+
+
+## Experimental heredity and the ranch
+
+The complete visual design can now contain optional `heredity`, validated against [heredity.schema.json](../design/heredity.schema.json):
+
+```text
+heredity = {
+  model: "bounded-traits-experimental",
+  parents: [lowercaseSHA256, lowercaseSHA256],
+  seedDigest: lowercaseSHA256,
+  nonce: unsigned32,
+  traits: {elongation, spread, curvature, gestureGain, tempo, pigmentGain}
+}
+traits ∈ integers[-1000,1000]^6
+```
+
+These fields are part of the complete constructor source and survive both genomes. Parent hashes are assertions; recovering source does not recover an English thought, units or independently verified ancestry. The optional record preserves older source without insertion. Deterministic inheritance uses named hash draws, floor-midpoint selection and bounded mutation, followed by existing visual-domain clamps. It changes the resolved anatomy and gesture without changing task literals.
+
+[The ranch guide](SDK-RANCH-GUIDE.md) defines four closed construction recipes: compose a declared output into a matching input; mate a pure dependency slice; merge both graphs into one labeled report; or inherit a body while preserving one exact task. Task-changing construction requires supplied graph-matching typed companions. Guard/action cones remain protected, normalized types must agree, and a substitution must contribute to an output. Admission is explicit and records a flat session derivation; previews and rendering execute no tasks.
+
+The ranch social world has its own explicit tick/revision/command sequence, reciprocal pairing, meeting clearings, energy, cooldown, proposals and nursery. A proposal is not a birth. Atomic birth rechecks both parents and charges each once; original admission keys retain exact retry acknowledgements. Presentation time remains independent of world ticks and explicit Run. [Exact interfaces](RANCH-INTERFACES.md), [audit resolutions](RANCH-AUDIT-RESOLUTION.md) and [model obligations](GENERATIVE-FORMAL-MODEL.md) describe limits. QDL and these policies remain experimental.

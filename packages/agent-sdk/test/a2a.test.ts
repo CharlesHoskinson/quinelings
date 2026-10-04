@@ -22,7 +22,7 @@ function payload(task:any) {assert(task.artifacts?.length);return task.artifacts
 test('A2A HTTP card, passive create, explicit run, source copy, frame and recovery',async()=>{
   const s=await server();try {
     const card=await (await fetch(s.base+'/.well-known/agent-card.json',{headers:{'A2A-Version':'1.0'}})).json() as any;
-    assert(card.supportedInterfaces.some((i:any)=>i.protocolVersion==='1.0'&&i.url===s.base+'/a2a/jsonrpc'));assert.equal(card.skills.length,2);
+    assert(card.supportedInterfaces.some((i:any)=>i.protocolVersion==='1.0'&&i.url===s.base+'/a2a/jsonrpc'));assert.deepEqual(card.skills.map((x:any)=>x.id).sort(),['build','execute','ranch']);
     const made=await rpc(s.base,'SendMessage',message('[2,3,5] | square | sum',true));assert(!made.error,JSON.stringify(made));const task=made.result.task;assert.equal(task.status.state,'TASK_STATE_COMPLETED');const build=payload(task);assert.equal(build.operation,'create');assert.equal(build.result.status,'supported');assert(!('record' in build.result));const artifact=build.result.artifact;
     const retrieved=await rpc(s.base,'GetTask',{id:task.id});assert.equal(retrieved.result.id,task.id);assert.equal(payload(retrieved.result).result.artifact.source,artifact.source);
     const inspect=await rpc(s.base,'SendMessage',message({operation:'inspect',artifactId:artifact.id}));assert.equal(payload(inspect.result.task).result.source,artifact.source);

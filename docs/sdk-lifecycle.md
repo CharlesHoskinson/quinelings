@@ -2,7 +2,7 @@
 
 The agent SDK separates thought interpretation, canonical executable source, execution evidence, and presentation. The SDK and QDL source language remain experimental; package revisions and current format identifiers do not freeze the language.
 
-The stateful `Runtime` owns bounded artifact and execution-record stores behind ECMAScript private fields. Its operation vocabulary is `parse`, `compile`, `create`, `inspect`, `run`, `reproduce`, `recover`, and `frame`; adapters use the same operations through `dispatch`. `dispatch` infers the result type from the request operation; `exchange` adds an operation tag for consumers that need to narrow a response union. See [`types.ts`](../packages/agent-sdk/src/types.ts) for exported declarations and [`index.ts`](../packages/agent-sdk/src/index.ts) for runtime behavior.
+The stateful `Runtime` owns bounded artifact and execution-record stores behind ECMAScript private fields. Its original operation vocabulary is `parse`, `compile`, `create`, `inspect`, `run`, `reproduce`, `recover`, and `frame`; adapters use the same operations through `dispatch`. `dispatch` infers the result type from the request operation; `exchange` adds an operation tag for consumers that need to narrow a response union. See [`types.ts`](../packages/agent-sdk/src/types.ts) for exported declarations and [`index.ts`](../packages/agent-sdk/src/index.ts) for runtime behavior.
 
 ## Data boundary
 
@@ -67,7 +67,7 @@ Frame budgets are integer tissue sample counts from 4,000 to 24,000; crest count
 
 `nodeColors` honors authored chroma strength and neutral ink through the shared color contract. Omitted chroma or zero strength produces neutral ink. These are role colors, not encoded source bytes or source-matched measured quantities. The frame API accepts no record, task cycle or scalar lens selection. Its sample-layout cache retains at most two budgets per compiled body; a different valid budget cannot retain an unbounded sequence of plans.
 
-`runtime.propose` accepts a `ProposalProvider` returning a `ParseResult`, validates its diagnostics and source-map references, and recompiles a supported intent. Source-map node IDs and optional spans are checked; that does not establish that a provider's wording correctly interprets the user's English. `propose` is a direct asynchronous runtime hook, outside the eight-operation `dispatch` union.
+`runtime.propose` accepts a `ProposalProvider` returning a `ParseResult`, validates its diagnostics and source-map references, and recompiles a supported intent. Source-map node IDs and optional spans are checked; that does not establish that a provider's wording correctly interprets the user's English. `propose` is a direct asynchronous runtime hook, outside the sixteen-operation `dispatch` union.
 
 Aborting its signal rejects a pending proposal with `QuinelingError` code `cancelled` even when the provider ignores that signal or its promise remains pending. Late resolution cannot admit an artifact. Forward the signal to the provider's underlying I/O as well: the runtime cannot forcibly stop remote work, charges or synchronous JavaScript. Proposal acceptance remains separate from explicit task execution.
 
@@ -164,3 +164,7 @@ Thought text, type/unit annotations, assumptions, and source-map prose are compa
 Lean proves the published modeled constructor and local mathematical lemmas; it does not prove the complete JavaScript interpreter, canonical serialization or whole-genome codec inversion. Quint explores bounded creation/session transition models; it does not verify MCP/A2A wire parsing, caches or every SDK execution. SDK and browser tests supply implementation evidence for their exercised cases. Neither layer establishes arbitrary English meaning or human aesthetic quality. See [formal coverage and limits](LEAN-FORMALIZATION.md) and [generative obligations](GENERATIVE-FORMAL-MODEL.md).
 
 The [type review](../research/sdk-sol-2.md) records the authoring-type design and remaining suggestions for readonly data and handle contracts. See also the [program contract](PROGRAM-CONTRACT.md) and [thought-to-lifeform design](THOUGHT-TO-LIFEFORM.md).
+
+## Ranch lifecycle extension
+
+The Runtime now exposes sixteen dispatch operations. See the [API reference](sdk-api.md) and [ranch guide](SDK-RANCH-GUIDE.md) for offspring preview/frame/admission, annotation, lineage and world operations. Preview and frames are stateless and passive; admission stores source/evidence without a task run. First companion attachment through annotation or existing compile also invalidates affected social epochs/proposals atomically. Successful compound birth commits one public world revision. Aggregate serialized artifacts are bounded at 32 MiB in addition to count caps; session derivations and admission retry receipts are separately bounded.

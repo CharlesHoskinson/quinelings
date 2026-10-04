@@ -1,3 +1,5 @@
+import type {Heredity,RanchRequest,RanchResponse,RanchResponseFor} from './ranch-types.js';
+export type * from './ranch-types.js';
 /** QDL is experimental; package revisions do not freeze the language. */
 export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export type IntentType =
@@ -53,7 +55,7 @@ export interface Anatomy {
 }
 export interface Gesture {kind:'gather'|'unfurl'|'glide'|'hover'; strength:number; ticks:[number,number,number,number]}
 export interface Design {
-  qdl:1; family:string; anatomy?:Anatomy;
+  qdl:1; family:string; anatomy?:Anatomy; heredity?:Heredity;
   motion:{clock:'separate'; phaseRate:number; reducedMotion:'freeze'; rhythm?:Record<string,Json>; gesture?:Gesture};
   organ:Record<string,Json>; filament:Record<string,Json>; ink:Record<string,Json>;
   surface:Record<string,Json>; light:Record<string,Json>; composition:Record<string,number>;
@@ -93,8 +95,9 @@ export type Request =
   | {operation:'run'; artifactId:string}
   | {operation:'reproduce'; artifactId:string; recordId:string}
   | {operation:'recover'; recovery:RecoveryInput}
-  | {operation:'frame'; artifactId:string; phase:number; options?:FrameOptions};
-export type Response = ParseResult|CreationResult|Artifact|ExecutionRecord|{artifact:Artifact;record:ExecutionRecord}|Frame;
+  | {operation:'frame'; artifactId:string; phase:number; options?:FrameOptions}
+  | RanchRequest;
+export type Response = RanchResponse|ParseResult|CreationResult|Artifact|ExecutionRecord|{artifact:Artifact;record:ExecutionRecord}|Frame;
 export interface ProposalProvider {propose(thought:string, context:{signal?:AbortSignal}):Promise<ParseResult>}
 
 export type ResponseFor<R extends Request> =
@@ -103,5 +106,5 @@ export type ResponseFor<R extends Request> =
   R extends {operation:'compile'|'inspect'|'recover'} ? Artifact :
   R extends {operation:'run'} ? ExecutionRecord :
   R extends {operation:'reproduce'} ? {artifact:Artifact;record:ExecutionRecord} :
-  R extends {operation:'frame'} ? Frame : never;
+  R extends {operation:'frame'} ? Frame : RanchResponseFor<R>;
 export type TaggedResponse = {[O in Request['operation']]:{operation:O;result:ResponseFor<Extract<Request,{operation:O}>>}}[Request['operation']];

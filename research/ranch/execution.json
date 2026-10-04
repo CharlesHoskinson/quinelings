@@ -1,5 +1,5 @@
 {
-  "status": "eight_reports_received_one_native_session_resumed",
+  "status": "implementation_verified_ready_for_publication",
   "queuedWorkstreams": [],
   "auditAfterConvergence": {
     "grok": 3,
@@ -69,7 +69,7 @@
     }
   ],
   "activeThreads": [],
-  "candidate": "../../docs/RANCH-CANDIDATE.md",
+  "candidate": "../../docs/RANCH-CANDIDATE-AUDITED.md",
   "candidateSha256": "d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416",
   "candidateRevision": "c8a1264",
   "completedAuditThreads": [
@@ -93,6 +93,48 @@
       "threadId": "01a10614-53dc-7c91-b63c-53b8858d51dd",
       "status": "completed",
       "report": "audit-gpt-experience.md"
+    },
+    {
+      "provider": "Grok",
+      "focus": "semantics",
+      "status": "completed",
+      "report": "audit-grok-1.md",
+      "nativeLedger": "native-audit-execution.json"
+    },
+    {
+      "provider": "Grok",
+      "focus": "world",
+      "status": "completed",
+      "report": "audit-grok-2.md",
+      "nativeLedger": "native-audit-execution.json"
+    },
+    {
+      "provider": "Grok",
+      "focus": "experience",
+      "status": "completed",
+      "report": "audit-grok-3.md",
+      "nativeLedger": "native-audit-execution.json"
+    },
+    {
+      "provider": "Gemini",
+      "focus": "semantics",
+      "status": "completed",
+      "report": "audit-gemini-1.md",
+      "nativeLedger": "native-audit-execution.json"
+    },
+    {
+      "provider": "Gemini",
+      "focus": "world",
+      "status": "completed",
+      "report": "audit-gemini-2.md",
+      "nativeLedger": "native-audit-execution.json"
+    },
+    {
+      "provider": "Gemini",
+      "focus": "experience",
+      "status": "completed",
+      "report": "audit-gemini-3.md",
+      "nativeLedger": "native-audit-execution.json"
     }
   ],
   "nativeAuditProcess": {
@@ -104,6 +146,7 @@
   "grokWorldResume": {
     "execSessionId": 25815,
     "nativeSession": "ef54e1c5-4c39-485a-bc0b-ef5f7fa823d1",
-    "status": "running"
-  }
+    "status": "completed_report_received"
+  },
+  "revisedCandidate": "../../docs/RANCH-CANDIDATE.md"
 }

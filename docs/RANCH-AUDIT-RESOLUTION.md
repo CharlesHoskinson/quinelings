@@ -1,6 +1,6 @@
 # Ranch candidate audit resolution
 
-Status: collecting the nine requested independent candidate audits. This is a resolution ledger in progress, not implementation acceptance or verification. The audited snapshot is commit c8a1264, SHA256 d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416. Reports under research/ranch are inspection evidence; their suggested tests remain obligations until actually run.
+Status: all nine requested independent candidate reports have been received, read and resolved. The revised candidate may now be implemented. This is design acceptance, not implementation verification. The audited snapshot is commit c8a1264, SHA256 d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416. Reports under research/ranch are inspection evidence; their suggested tests remain obligations until actually run.
 
 ## GPT corrections
 
@@ -71,6 +71,22 @@ Namespace finding: make the existing role/index naming requirement explicitly ap
 
 Retain full guard-ancestor protection, including values and ordered computation, rather than weakening it to same-typed Boolean inputs. Shared guard/payload ancestors deliberately cannot be replaced; payload-only nodes remain eligible. Keep deterministic a0..bN merge report labels and expose original output IDs/types through the actual origin map/inspector for agent usability. Compact source heredity remains asserted, not an authenticated proof: adding recipe/style alone would not authenticate absent parents. The separate derivation includes reconstructible input/policies, and verified replay requires exact parents plus companions.
 
-## Pending reports
+## Grok world resolution
 
-Grok world: original process actually terminated on its540-second deadline; same native session resumed for a concise report. Gemini semantics is complete. The remaining substantive Grok world report and root resolution are required before candidate revision/implementation.
+Finding1: accept globally serialized synchronous world transitions, complete fresh birth preconditions, geometry-safe nursery admission, consumed-proposal uniqueness and atomic charges. Ordinary JavaScript run-to-completion plus no await/user callbacks inside preparation/commit provides session-local serialization; no cross-process shared-world guarantee is claimed. A social proposal pins ordered parents and their source/intent/epochs. It does not select a recipe before the user prepares one. The explicit admission request binds complete construction input, candidate ID and child source hash; changing the recipe requires a matching rebuilt identity. Preserve that deliberate choice instead of storing a preview or silently choosing a recipe at courtship. Annotating a resident's previously absent companion invalidates its associated proposals atomically.
+
+Finding2: cancel invitation timers when a mutual pair forms; stop the approach-only deadline after arrival; preserve immutable overall attempt deadline across dwell resets. Proposal creation releases both pair links/reservations and enters cooldown, permitting recovery rather than freezing energy. Keep the artificial60/50 thresholds and test delayed recovery before600-tick expiry. Check geometric slot availability and maximum unit-move distance before pairing; no congestion liveness guarantee. All new deadlines must fit the ceiling; inspect and safe management commands remain possible at tick ceiling while counter capacity remains.
+
+Finding3: adopt exact next sequence watermark, canonical payload binding, retained matching receipt replay, conflict/stale/gap refusal, one revision per complete command batch, and same-key timeout retry documentation. Window eviction removes old acknowledgement bodies, never the monotonic sequence watermark. Different receipt-retention policies are explicit: world command window256 versus admission success ledger128 with no eviction. Rejected operations do not write receipts.
+
+## Implementation acceptance and remaining evidence
+
+All three GPT, three native Grok4.7 and three native AGY Gemini3.1 Pro reports reviewed the same pinned candidate. Grok world completed after resuming its actual timed-out native session; its original empty timeout output is not counted as an audit. No ranch runtime, renderer, API extension, theorem or browser acceptance has yet been delivered by these reports. The revised normative candidate and interface contract guide implementation; all listed independent checks remain required before publication.
+
+## Integration corrections
+
+Derivation identity additionally binds social origin. Candidate identity and source generation exclude origin so identical construction can be recognized independently of its meeting history. Every first companion attachment—including existing compile after recovery—stages world epoch/pair/proposal invalidation, preventing an older API route from leaving stale social interpretation pins. Compound birth and metadata enrichment still commit one public revision. These corrections are covered by SDK tests; the candidate audits are design evidence rather than a claim that auditors reviewed the final implementation.
+
+A final implementation review found resident-order dependence in low-energy pair cleanup. Both energy rows are now staged before cleanup, so paired parents at energy21 both reach19/rest at the boundary regardless of resident order. A production regression covers both orders and subsequent recovery, and selected runtime/Quint trace correspondence checks this boundary.
+
+The direct Runtime and pure offspring validators now require native JSON array prototypes, matching the world validator. Custom array prototypes cannot introduce inherited getter callbacks during validation or canonicalization; a regression asserts refusal with zero getter evaluations. Network JSON already constructs native arrays, and valid serialized requests are unaffected.

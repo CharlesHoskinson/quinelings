@@ -52,3 +52,23 @@ Maintain a claim ledger with four labels: kernel-checked theorem, finite model e
 The essential properties are inspectability, reproducibility and useful bounded computation. A person should trace a clause to its operation, find that operation's colored territory, inspect its inputs and output, and recover the same executable source from the genome. Different thoughts should create new graphs and bodies without requiring a new hand-authored family.
 
 Beauty is evaluated through visual review, silhouette diversity, coherent material and motion, mobile readability, performance and accessibility. English meaning requires explicit assumptions, clarification and user inspection of the typed plan. Neither is established by a theorem about a polynomial or a finite state machine.
+
+
+## Implemented ranch evidence
+
+`QDL/Ranch.lean` contributes 37 local kernel-checked theorems covering bounded integer traits/nonce endpoints, midpoint/mutation arithmetic, namespace injection, conditional guarded substitution and staged birth accounting. The complete project audit passes 213 exported theorems with no placeholders or project axioms. Schema gates compare 14 gene/nonce numeric bounds. These results do not prove arbitrary compiler substitutions, SHA-256 security, JS transactions or appearance.
+
+`spec/ranch.qnt` has 31 deterministic tests, including nine deliberately unsafe transitions detected by safety checks. The bounded model uses four actors, a two-receipt command window and 20-production-tick phases. Root verification searches 1000 general and 500 paired traces, each up to 80 steps. This is finite counterexample exploration; it proves neither liveness nor a complete JavaScript refinement. Selected trace correspondence is a separate executable gate.
+
+Production checks cover independent useful offspring outputs, protected guards/refusals, exact source/codec reproduction, atomic failure/retry/capacity behavior, real MCP/A2A transports, guard geometry and render passivity. Browser evidence includes family admission, source recovery, mobile/reduced motion, context restoration and bounded Canvas caching. LOD optical tolerances are measured for three fixtures; software Chromium dense cadence remains below 24fps and hardware GPU cadence is unverified. The source and session derivation distinguish asserted ancestry from independently validated source identity.
+
+```sh
+npm test
+npm run sdk:check
+npm run formal:all
+node verify-ranch-model.cjs
+node scripts/verify-ranch-browser.cjs
+node scripts/verify-ranch-lod.cjs
+```
+
+Browser checks require Playwright, Chromium and a running static server; their reports identify the actual environment. Full IntentIR type-soundness, compiler/runtime refinement, global anatomical nonintersection, floating-point refinement and subjective beauty remain separate obligations.

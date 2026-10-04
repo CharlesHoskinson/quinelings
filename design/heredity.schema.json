@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Experimental bounded Quineling heredity assertions",
+  "description": "Source-authored traits and asserted parent hashes; not authenticated external derivation or recovered companion authorship.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "model",
+    "parents",
+    "seedDigest",
+    "nonce",
+    "traits"
+  ],
+  "properties": {
+    "model": {
+      "const": "bounded-traits-experimental"
+    },
+    "parents": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nonce": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "traits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "elongation",
+        "spread",
+        "curvature",
+        "gestureGain",
+        "tempo",
+        "pigmentGain"
+      ],
+      "properties": {
+        "elongation": {
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "spread": {
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "curvature": {
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "gestureGain": {
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "tempo": {
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "pigmentGain": {
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        }
+      }
+    }
+  }
+}

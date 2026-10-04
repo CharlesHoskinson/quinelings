@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quinelings · Experimental ranch</title><style>body{margin:auto;max-width:940px;padding:28px;background:#080f16;color:#c5dfd5;font:17px/1.7 system-ui}a{color:#83d8be}nav{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:24px}nav[aria-label="SDK guides"]{gap:16px;margin-bottom:40px;font-size:15px}a[aria-current="page"]{color:#f0f5ed;text-decoration-thickness:3px}h1{font-size:40px;line-height:1.15}h2{margin-top:44px;color:#f0f5ed}pre{overflow:auto;padding:22px;background:#0d1a23;border:1px solid #29403e;border-radius:12px;font:14px/1.6 monospace}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td{padding:12px;border:1px solid #29403e}tr:first-child{font-weight:bold}code{overflow-wrap:anywhere;color:#e0f5cf}li{margin:8px 0}p{overflow-wrap:anywhere}@media(max-width:600px){body{padding:18px;font-size:16px}h1{font-size:32px}}</style></head><body><nav aria-label="Project"><a href="../sdk.html">← Agent SDK</a><a href="../create.html">Creation workspace</a><a href="../ranch.html">Experimental ranch</a><a href="SDK-RANCH-GUIDE.md">Markdown source</a></nav><nav aria-label="SDK guides"><a href="sdk-quickstart.html">Quickstart</a><a href="sdk-lifecycle.html">Lifecycle</a><a href="sdk-api.html">API reference</a><a href="sdk-ranch-guide.html" aria-current="page">Experimental ranch</a><a href="sdk-mcp-guide.html">MCP guide</a><a href="sdk-a2a-guide.html">A2A guide</a></nav><h1>Experimental ranch SDK guide</h1>
+<p>The ranch builds complete source-backed offspring and manages an explicit, bounded social world in one <code>Runtime</code>. QDL, recipes, policy names, package versions and source markers remain experimental. Construction and social transitions do not execute tasks. Only <code>run</code> and <code>reproduce</code> invoke the task interpreter; compiler validation may evaluate bounded pure refinements without evaluating action nodes.</p>
+<h2>Compose two useful tasks, inspect, admit and recover</h2>
+<p>This runnable Node ESM example uses the installed <code>@quinelings/agent-sdk</code> package. Compile two typed parents: a reservoir mean of 20 litres and a budget that initially has 5 litres available against 12 desired. The compose selector connects declared output <code>mean</code> to literal input <code>available</code>; the child imports the mean computation and returns <code>{allocated:12,remaining:8}</code>. No parent output cache supplies that value.</p>
+<pre><code>import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {Runtime} from '@quinelings/agent-sdk';
+
+// Project canonical JSON: sorted object keys, ordered arrays. Not an RFC8785 claim.
+const canonical = value =&gt; Array.isArray(value)
+  ? '[' + value.map(canonical).join(',') + ']'
+  : value !== null &amp;&amp; typeof value === 'object'
+    ? '{' + Object.keys(value).sort().map(key =&gt;
+        JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}'
+    : JSON.stringify(value);
+const sha256 = text =&gt; createHash('sha256').update(text, 'utf8').digest('hex');
+const pin = artifact =&gt; ({artifactId:artifact.id,
+  intentHash:artifact.intent ? sha256(canonical(artifact.intent)) : null});
+const numberL = {kind:'number',unit:'L'};
+const reservoirIntent = {
+  format:'quineling-intent',name:'Reservoir mean',thought:'Average supplied litre readings.',
+  inputs:[{id:'readings',value:[10,20,30],type:{kind:'array',element:numberL}}],
+  steps:[{id:'mean',op:'mean',inputs:['readings'],params:{}}],
+  outputs:['mean'],assumptions:[]
+};
+const budgetIntent = {
+  format:'quineling-intent',name:'Water budget',thought:'Budget available litres against desired litres.',
+  inputs:[{id:'available',value:5,type:numberL},{id:'desired',value:12,type:numberL}],
+  steps:[{id:'budget',op:'budget',inputs:['available','desired'],params:{}}],
+  outputs:['budget'],assumptions:[]
+};
+const runtime = new Runtime();
+const a = runtime.compile(reservoirIntent,{seed:17});
+const b = runtime.compile(budgetIntent,{seed:23,repeats:3});
+const input = {
+  parents:[pin(a),pin(b)],
+  recipe:{kind:'compose',donorOutput:'mean',recipientInput:'available'},
+  nonce:42,style:{mutation:'none'},origin:{kind:'manual'}
+};
+const preview = runtime.offspringPreview(input);
+assert.equal(preview.status,'ready');
+if (preview.status !== 'ready') throw new Error(JSON.stringify(preview.diagnostics));
+const candidate = preview.candidate;
+assert.equal(candidate.changes.taskSyntaxChanged,true);
+assert.equal(candidate.lineage.seam.integrationNode,'p1n2');
+assert.deepEqual(runtime.lineage(),{derivations:[]}); // Preview writes no lineage.
+const pose = runtime.offspringFrame({input,candidateId:candidate.candidateId,
+  childSourceHash:candidate.childSourceHash,phase:0,options:{budget:4000,crests:2}});
+assert.equal(pose.frame.owners.length,4000);
+const admissionRequest = {input,candidateId:candidate.candidateId,
+  childSourceHash:candidate.childSourceHash,target:{kind:'library'},
+  requestId:'guide-manual-compose-1'};
+const admitted = runtime.offspringAdmit(admissionRequest);
+assert.deepEqual(runtime.offspringAdmit(admissionRequest),admitted); // Exact retry.
+const stored = runtime.inspect(admitted.artifactId);
+assert.equal(stored.source,candidate.child.source);
+assert.equal(runtime.lineage({artifactId:stored.id}).derivations.length,1);
+
+// Fresh runtime receives only source, with no parents, companions or run records.
+const fresh = new Runtime();
+const recovered = fresh.recover({source:stored.source});
+assert.equal(recovered.intent,undefined);
+assert.equal(recovered.contract,undefined);
+assert.deepEqual(fresh.lineage({artifactId:recovered.id}),{derivations:[]});
+const run = fresh.run(recovered.id); // This explicit call creates the execution record.
+assert.deepEqual(run.result.tasks[0].output,[{allocated:12,remaining:8}]);
+assert.equal(run.result.tasks.length,1); // Task-changing recipes reset repeats to1.
+assert.equal(run.result.tasks[0].effects.length,0);
+assert.equal(run.result.emitted[0],stored.source);
+const copied = fresh.reproduce(recovered.id,run.id); // Explicit fresh execution/copy.
+assert.equal(copied.artifact.source,stored.source);
+assert.deepEqual(copied.record.result.tasks[0].output,[{allocated:12,remaining:8}]);
+for (const encoding of [{harmonics:stored.harmonics},{colors:stored.colors}]) {
+  const genomeRuntime = new Runtime();
+  assert.equal(genomeRuntime.recover(encoding).source,stored.source);
+}</code></pre>
+<p>A candidate is detached evidence, never an admission token or a stored child. <code>offspringFrame</code> and <code>offspringAdmit</code> rebuild from the complete input and compare candidate/source pins. Frame is a pose sample with operation owners/colors, not a recorded task measurement. Its budget is 4000..24000, crests 2..4 and finite phase magnitude ≤ 1e9; phase uses radians over a 2π gesture cycle. Keep the actual admission acknowledgement after transport loss.</p>
+<p>Malformed closed requests throw <code>QuinelingError</code> with <code>code/message/path</code>. A well-formed preview can return <code>status:'rejected'</code> and diagnostics for a semantic recipe refusal; unknown parent artifacts throw. Never assume ready because residents paired. A typed seam compares recomputed complete structural types, including units, arrays/records and optionality. <code>L*s*s^-1</code> normalizes to <code>L</code>; <code>mL</code>, <code>s</code>, <code>L^2</code> and an optional number do not match required <code>number&lt;L&gt;</code>. Negative supplied donor results can still fail the child's nonnegative budget refinement after substitution.</p>
+<h2>Four recipes and body metadata</h2>
+<table><tbody>
+<tr><td>Recipe</td><td>Exact request selectors</td><td>Behavior</td></tr>
+<tr><td>Compose</td><td><code>{kind:'compose',donorOutput:'mean',recipientInput:'available'}</code></td><td>Parent 0 declared output replaces a parent 1 literal. Imports pure predecessor closure, rewrites all uses, prunes unused recipient nodes and requires a donor→original recipient nonliteral→child output witness.</td></tr>
+<tr><td>Mate</td><td><code>{kind:'mate',donorNode:'filtered',replaceNode:'values'}</code></td><td>Explicit parent 0 donor node replaces a parent 1 node. Same purity, structural type, action/guard protection and integration checks. The names must exist in those actual parents.</td></tr>
+<tr><td>Merge</td><td><code>{kind:'merge'}</code></td><td>Retains both complete DAGs in disjoint namespaces and joins declared outputs under ordered labels <code>a0..</code> then <code>b0..</code>. Preserves unlike units in separate fields; no averaging or conversion.</td></tr>
+<tr><td>Body</td><td><code>{kind:'body',base:1}</code></td><td>Preserves the selected base's exact task name, node IDs/order, inputs/outputs, parameters, repeats and compatible companion metadata; generates new anatomy and resolved visual traits.</td></tr>
+</tbody></table>
+<p>Compose and mate protect all original recipient actions and every ancestor of their direct Boolean guards before and after pruning. Shared guard/payload ancestors are protected too. Pure payload donation can preserve a false guard without permission changes. Any action in the donor closure rejects; eager <code>choose</code> action branches reject. Replacing the terminal task alone or retaining an unrelated recipient operation fails integration. Both typed companions are required for compose/mate/merge and are recompiled against exact parent source. Stored contracts alone are not accepted as type evidence.</p>
+<p>Every inherited task node, including literals, gets an injective role/index namespace for task-changing recipes. Ordered repeated ports survive. Origin rows name each original parent node; generated report nodes are labeled generated. Mechanical source clauses explain the child graph without fabricating English spans. The resulting child is limited to 64 nodes; merged reports accept at most 16 combined outputs. Equal-source parents reject task recipes. Body accepts same-source variation but does not present it as distinct-parent computational inheritance. World residents always remain separate individuals; self-pairing of one resident rejects.</p>
+<p>Continue the preceding example to compare typed body retention and source-only body variation:</p>
+<pre><code>const bodyInput = {...input,recipe:{kind:'body',base:1},nonce:43};
+const bodyPreview = runtime.offspringPreview(bodyInput);
+assert.equal(bodyPreview.status,'ready');
+if (bodyPreview.status !== 'ready') throw new Error(JSON.stringify(bodyPreview.diagnostics));
+const bodyChild = bodyPreview.candidate.child;
+assert.equal(bodyPreview.candidate.changes.taskSyntaxChanged,false);
+assert.deepEqual(bodyChild.intent,b.intent);
+const baseTask = structuredClone(b.graph); delete baseTask.design;
+assert.deepEqual(bodyChild.graph,baseTask); // IDs/ports/name/order stay exact.
+const bodyFresh = new Runtime();
+const bodyRecovered = bodyFresh.recover({source:bodyChild.source});
+const bodyRun = bodyFresh.run(bodyRecovered.id);
+assert.equal(bodyRun.result.tasks.length,3);
+assert.deepEqual(bodyRun.result.tasks[0].output,[{allocated:5,remaining:0}]);
+const sourceOnlyRuntime = new Runtime();
+const sourceOnly = sourceOnlyRuntime.recover({source:b.source});
+const sourceOnlyBody = sourceOnlyRuntime.offspringPreview({
+  parents:[pin(sourceOnly),pin(sourceOnly)],recipe:{kind:'body',base:0},
+  nonce:44,style:{mutation:'none'},origin:{kind:'manual'}
+});
+assert.equal(sourceOnlyBody.status,'ready');
+if (sourceOnlyBody.status !== 'ready') throw new Error(JSON.stringify(sourceOnlyBody.diagnostics));
+assert.equal(sourceOnlyBody.candidate.classification,'same-source body variation');
+assert.equal(sourceOnlyBody.candidate.child.intent,undefined);
+// Explicit interpretation attachment after exact graph comparison; no historical authorship claim.
+const annotated = sourceOnlyRuntime.annotate({artifactId:sourceOnly.id,intent:budgetIntent});
+assert.deepEqual(annotated.intent,budgetIntent);</code></pre>
+<p>Source-only SDK artifacts must contain authored assembly anatomy and gesture. Sources without these cannot be admitted to the SDK; offspring construction cannot silently measure nonexistent legacy anatomy. <code>annotate</code> attaches only absent or identical metadata. A conflicting companion refuses without replacing the first interpretation. Adding metadata to a world artifact updates affected resident pins/epochs and invalidates affected pair/proposal links atomically.</p>
+<h2>Deterministic visual heredity and identity</h2>
+<p>The ordered exact source/companion pins, complete recipe/style, uint32 nonce and compiler/assembly/heredity/quantization policy names form the construction key. SHA256 domain-separated draws determine one candidate with no ambient randomness, wall time or task results. Candidate IDs are <code>qc_...</code>; source artifacts are <code>ql_...</code>; derivations are <code>qd_...</code>; world residents are world-scoped <code>wr_...</code>; execution records are <code>run_...</code>. Candidate and source identity exclude social origin. Derivation identity additionally binds origin, so different social proposals/residents can retain separate birth evidence for the same child source.</p>
+<p>Six traits are integers in[-1000, 1000]. Let <code>g=trait/1000</code>:</p>
+<table><tbody>
+<tr><td>Trait</td><td>Resolved visual authoring rule</td></tr>
+<tr><td><code>elongation</code></td><td>Axial dimensions multiplied by <code>1+.12*g</code>.</td></tr>
+<tr><td><code>spread</code></td><td>Radial dimensions multiplied by <code>1+.10*g</code>.</td></tr>
+<tr><td><code>curvature</code></td><td>Spine bendX offset by <code>.025*g</code>.</td></tr>
+<tr><td><code>gestureGain</code></td><td>Gesture strength <code>.65+.10*g</code>.</td></tr>
+<tr><td><code>tempo</code></td><td>Separate presentation phase rate <code>.038+.007*g</code>.</td></tr>
+<tr><td><code>pigmentGain</code></td><td>Role chroma strength <code>.85+.10*g</code>; operation role colors remain associated with the actual child operations.</td></tr>
+</tbody></table>
+<p>Parents with authored heredity supply their six traits. Otherwise assembly controls supply a labeled <code>legacy-phenotype</code> approximation, not recovered historic genes. Each named draw chooses A, B or floor midpoint by modulo 3. <code>mutation:'gentle'</code> selects two distinct loci, applies signed integer magnitudes 1..80 and saturates; derivation records actual deltas/saturation. These modulo draws are deterministic, not advertised as unbiased. <code>mutation:'none'</code> adds no perturbation, but the regenerated anatomy can differ. Complete six-trait overrides require <code>mutation:'none'</code>; arbitrary field paths are unsupported. Authoring values clamp to accepted domains and round to 1e-6, normalizing negative zero. Hinges, owners and task literals are not mutated; incompatible scalar lenses drop with a diagnostic.</p>
+<p>Source carries bounded <code>design.heredity</code> parent hashes, seed digest, nonce and traits, plus resolved task/anatomy/motion/chroma. Those parent hashes are assertions, not authenticated ancestry. A source-only recovery retains assertions while losing thought, unit interpretation, external derivation and prior execution records. <code>lineage</code> reads the session's admitted flat derivations, with original construction/policy/origin/seam evidence. Replay verification requires the exact parent sources and companions. Different source hashes alone do not establish novelty: candidates changing neither normalized executable task nor resolved body refuse. Structural task change does not prove different results on every input.</p>
+<h2>Reciprocal social commands and explicit birth</h2>
+<p>Continue with the two typed parents above. One world per Runtime starts empty; identical <code>worldKey/seed/affinity</code> creation is idempotent and a different configuration conflicts. Imported adults start energy 60 with participation disabled. Neutral affinity uses distance; structural affinity is an inspectable heuristic of operation roles, gesture, diversity and distance, never English understanding or typed compatibility.</p>
+<pre><code>const world = runtime.worldCreate({worldKey:'guide-ranch',seed:23,affinity:'neutral'});
+// Keep each outbound payload and its receipt; retries use this exact payload.
+function worldCommand(command) {
+  const snapshot = runtime.worldInspect(world.id);
+  const request = {worldId:world.id,expectedRevision:snapshot.revision,
+    sequence:snapshot.nextSequence,command};
+  const acknowledgement = runtime.worldCommand(request);
+  assert.deepEqual(runtime.worldCommand(request),acknowledgement);
+  return acknowledgement;
+}
+const adult0 = worldCommand({kind:'import',artifactId:a.id}).residentId;
+const adult1 = worldCommand({kind:'import',artifactId:b.id}).residentId;
+worldCommand({kind:'participate',residentId:adult0,enabled:true});
+worldCommand({kind:'participate',residentId:adult1,enabled:true});
+worldCommand({kind:'invite',residentId:adult0,partnerId:adult1});
+worldCommand({kind:'invite',residentId:adult1,partnerId:adult0});
+let proposal;
+for (let batch=0; batch&lt;200 &amp;&amp; !proposal; batch++) {
+  worldCommand({kind:'advance',ticks:4}); // Explicit social time, no interpreter.
+  const snapshot = runtime.worldInspect(world.id);
+  proposal = snapshot.proposals.find(p =&gt; p.parentResidents.every(id =&gt;
+    snapshot.residents.find(r =&gt; r.id === id).energy &gt;= 50));
+}
+assert.ok(proposal,'No eligible proposal before this bounded demonstration ended');
+const pairedInput = {...input,
+  parents:proposal.artifactIds.map((artifactId,i) =&gt;
+    ({artifactId,intentHash:proposal.intentHashes[i]})),
+  origin:{kind:'pairing',worldId:world.id,proposalId:proposal.id,
+    parentResidents:proposal.parentResidents,epochs:proposal.epochs}
+};
+const pairPreview = runtime.offspringPreview(pairedInput);
+assert.equal(pairPreview.status,'ready');
+if (pairPreview.status !== 'ready') throw new Error(JSON.stringify(pairPreview.diagnostics));
+const pairCandidate = pairPreview.candidate;
+assert.equal(pairCandidate.candidateId,candidate.candidateId);
+assert.equal(pairCandidate.childSourceHash,candidate.childSourceHash);
+assert.notEqual(pairCandidate.derivationId,candidate.derivationId);
+const beforeBirth = runtime.worldInspect(world.id);
+const worldAdmission = {input:pairedInput,candidateId:pairCandidate.candidateId,
+  childSourceHash:pairCandidate.childSourceHash,
+  target:{kind:'world',worldId:world.id,expectedRevision:beforeBirth.revision},
+  requestId:'guide-social-birth-1'};
+const birth = runtime.offspringAdmit(worldAdmission);
+assert.deepEqual(runtime.offspringAdmit(worldAdmission),birth);
+const afterBirth = runtime.worldInspect(world.id);
+assert.equal(afterBirth.revision,beforeBirth.revision+1);
+assert.equal(afterBirth.residents.length,beforeBirth.residents.length+1);
+for (const id of proposal.parentResidents) {
+  assert.equal(afterBirth.residents.find(r =&gt; r.id === id).energy,
+    beforeBirth.residents.find(r =&gt; r.id === id).energy-30);
+}
+const nursery = afterBirth.residents.find(r =&gt; r.id === birth.residentId);
+assert.equal(nursery.energy,40);
+assert.equal(nursery.enabled,false);
+assert.equal(nursery.nurseryUntil,beforeBirth.tick+200);
+assert.equal(runtime.lineage({artifactId:birth.artifactId}).derivations.length,2);
+console.log('Guide assertions passed: composed 12/8, body 5/0 with three repeats, explicit reciprocal birth.');</code></pre>
+<p>Commands are <code>import</code>, <code>retire</code>, <code>participate</code>, <code>invite</code>, <code>cancelProposal</code> and <code>advance</code> 1..4. Use the exact next sequence and current expected revision for new commands. Each successful new command increments revision once, including a multi-tick batch; a matching retained duplicate returns its acknowledgement without another tick/mutation. Sequence and revision are different counters. Admission and annotation can change world revision without using a world command sequence. Retried lost responses must preserve the original sequence <strong>and complete request</strong>, including the old revision. Never allocate a fresh sequence to retry the same action.</p>
+<p>Only reciprocal invitations on a common snapshot create a pair. Invitations expire 120 ticks; approach is limited to 160 and the entire pair attempt to 240; proposal requires 80 consecutive arrived court ticks. Proposal creation clears the pair/invitations/reservations and starts cooldown 200; proposal is valid only while <code>tick&lt;expiry</code>, for 600 ticks. It selects no recipe and creates no child. Blocked paths and capacity can prevent success; the bounded example is a fixture, not a liveness guarantee.</p>
+<p>Every 20 ticks, energy changes by priority: nursery/rest +4, paired -2, cooldown +2, adult roam/invite -1, saturated 0..100. Below 20 latches rest and cancels links; reaching 60 clears rest. Pending proposals allow recovery. At birth both parents must still be eligible adults, enabled/no rest, match source/companion/epoch pins and each have ≥ 50. Admission consumes the live proposal, charges 30 each, starts cooldown 200, and inserts a disabled child at energy 40 with 200 nursery ticks. No execution record or authority is inherited. Turning participation off, retirement, or annotation invalidates affected links/epochs; enabling later cannot revive a proposal. Participation is a local simulation setting, not creature consent.</p>
+<p><code>worldInspect</code>, preview and rendering do not tick. Scheduling explicit social commands is the embedder's responsibility. A frame phase or animation completion cannot admit offspring or run a task. Manual input can admit only to the library; world targets require pairing origin and the exact fresh proposal/revision.</p>
+<h2>Sixteen MCP tools and structured A2A</h2>
+<p>MCP retains eight existing tools and adds eight ranch tools with recursive closed discovery schemas and <code>{code,message,path}</code> structured errors:</p>
+<table><tbody>
+<tr><td>Runtime operation</td><td>MCP tool</td><td>Store/state behavior</td></tr>
+<tr><td><code>parse</code></td><td><code>quineling_parse</code></td><td>Read-only parsing.</td></tr>
+<tr><td><code>compile</code></td><td><code>quineling_compile</code></td><td>Stores validated source/companion.</td></tr>
+<tr><td><code>create</code></td><td><code>quineling_create</code></td><td>Parses and may store an artifact.</td></tr>
+<tr><td><code>inspect</code></td><td><code>quineling_inspect</code></td><td>Read-only artifact.</td></tr>
+<tr><td><code>run</code></td><td><code>quineling_run</code></td><td>Explicit task execution and new record.</td></tr>
+<tr><td><code>reproduce</code></td><td><code>quineling_reproduce</code></td><td>Explicit fresh copy execution and record.</td></tr>
+<tr><td><code>recover</code></td><td><code>quineling_recover</code></td><td>Stores recovered source, no companion invention.</td></tr>
+<tr><td><code>frame</code></td><td><code>quineling_frame</code></td><td>Read-only body pose.</td></tr>
+<tr><td><code>offspringPreview</code></td><td><code>quineling_offspring_preview</code></td><td>Stateless ready/rejected candidate.</td></tr>
+<tr><td><code>offspringFrame</code></td><td><code>quineling_offspring_frame</code></td><td>Stateless rebuild and pose.</td></tr>
+<tr><td><code>offspringAdmit</code></td><td><code>quineling_offspring_admit</code></td><td>Explicit atomic admission under request key.</td></tr>
+<tr><td><code>lineage</code></td><td><code>quineling_lineage</code></td><td>Read-only flat derivations.</td></tr>
+<tr><td><code>annotate</code></td><td><code>quineling_annotate</code></td><td>Explicit companion attachment/invalidation.</td></tr>
+<tr><td><code>worldCreate</code></td><td><code>quineling_world_create</code></td><td>Idempotent same-config world creation.</td></tr>
+<tr><td><code>worldInspect</code></td><td><code>quineling_world_inspect</code></td><td>Read-only world snapshot.</td></tr>
+<tr><td><code>worldCommand</code></td><td><code>quineling_world_command</code></td><td>Explicit simulation mutation; can retire/cancel.</td></tr>
+</tbody></table>
+<p>MCP successful <code>structuredContent</code> is <code>{result:...}</code>; errors have <code>isError:true</code> and <code>structuredContent:{error:{code,message,path}}</code>. Preview semantic refusal is a successful tool result containing <code>status:'rejected'</code>. MCP <code>frame</code> advertises phase ± 1e6; ranch <code>offspringFrame</code> accepts ± 1e9. Read-only annotations distinguish inspection from mutation; request-key/sequence idempotency is explicit. Cancellation before dispatch prevents work, but synchronous evaluation/commit is not preemptible. Requests/results are capped at 4 MiB/8 MiB.</p>
+<p>A2A discovery advertises <code>build</code>, <code>ranch</code>, and <code>execute</code> skills. Send exactly one user JSON data part containing a Runtime dispatch request. Examples are <code>{operation:'offspringPreview',input}</code>, <code>{operation:'offspringAdmit',...admissionRequest}</code>, <code>{operation:'worldCreate',worldKey:'garden',seed:23,affinity:'neutral'}</code>, and <code>{operation:'worldCommand',worldId,expectedRevision,sequence,command}</code>. Text input still means passive <code>create</code>; it does not request execution or birth. Results retain the existing <code>{operation,result}</code> artifact envelope, with no new wrapper/version freeze. Quineling failures carry <code>quinelingError</code> metadata on the task status message. Task lifecycle/history is separately bounded/scoped; a new A2A message or task ID does not replace application admission or sequence keys. Only structured <code>run</code>/<code>reproduce</code> execute tasks.</p>
+<h2>Atomic admission, bounds and lost responses</h2>
+<p>Admission stages exact parents and companions, recipe/policy identity, world proposal/membership/pins/energy/revision, geometry/spawn/timers, metadata conflict, all store capacities, byte budgets and acknowledgement serialization before a synchronous store swap. A refusal preserves authoritative stores, parent charges and counters. No <code>await</code> or user callback occurs in that commit. This is one Runtime's in-memory transaction, not crash durability or cross-process shared-world storage.</p>
+<p>Successful admission receipts are checked before stale world freshness: the same <code>requestId</code> and canonical payload returns the original acknowledgement even after the proposal was consumed. Reusing a key with different input/target/identity/revision refuses. Distinct derivations may share an artifact source without replacing companion metadata. After network loss, resend the original complete admission request; keep its request key and old expected revision. If the Runtime session itself was lost, its in-memory receipts/world/lineage are lost too.</p>
+<table><tbody>
+<tr><td>Bound</td><td>Limit</td></tr>
+<tr><td>Complete canonical source</td><td>65536 UTF8 bytes.</td></tr>
+<tr><td>Candidate / one derivation</td><td>2 MiB / 32 KiB; at most 64 origin rows.</td></tr>
+<tr><td>Artifact store</td><td>Default 128 artifacts, configurable 1..1024; aggregate 32 MiB including genomes/companions.</td></tr>
+<tr><td>Execution store</td><td>Default 256 records, configurable 1..4096; admission uses no record capacity.</td></tr>
+<tr><td>World</td><td>One per Runtime;32 residents including at most 8 nursery, 16 pairs, 16 live proposals, snapshot ≤ 1 MiB.</td></tr>
+<tr><td>World events</td><td>Ring 256 with dropped count; informational only.</td></tr>
+<tr><td>World command receipts</td><td>Retained window 256; older sequences refuse, never re-execute.</td></tr>
+<tr><td>Admission receipt / derivation ledgers</td><td>128 each; full ledgers reject without eviction. Derivation aggregate ≤ 4 MiB.</td></tr>
+<tr><td>Admission acknowledgement</td><td>≤ 4 KiB.</td></tr>
+<tr><td>Tick / revision / sequence / epoch counters</td><td>Bounded at 1000000, never wrap. New deadlines must fit.</td></tr>
+<tr><td>Lineage pagination</td><td>Flat append-order cursor; limit 1..32, default 16. Known artifact with no derivations returns empty.</td></tr>
+</tbody></table>
+<p>The constructor can independently execute/copy in a fresh runtime, as checked above. Local Lean ranch lemmas cover bounded integer genes, positive scale factors, namespace/protected-guard premises and staged bookkeeping models. Quint models and executable SDK/world/offspring tests supply separate evidence. None proves all 23 kernels, JS/compiler/SHA refinement, all world transactions, English semantics, authenticated ancestry, beauty, browser accessibility or renderer performance.</p>
+<p>The JavaScript blocks above were executed together against the actual SDK source on 2026-10-04, with handwritten 12/8 and 5/0 output assertions, exact emitted-source/copy/genome checks, typed/source-only body metadata checks and explicit reciprocal social birth/charge/retry checks. No browser/performance evidence is claimed by this guide.</p></body></html>

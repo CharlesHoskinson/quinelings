@@ -1,8 +1,0 @@
-{
-  "repeatable": true,
-  "sourceUnchanged": true,
-  "reducedMotionStartsStill": true,
-  "mobileNoOverflow": true,
-  "errors": [],
-  "label": "Standalone research anatomy/motion preview; not production QDL/compiler"
-}

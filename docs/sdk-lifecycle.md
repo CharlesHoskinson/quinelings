@@ -161,10 +161,6 @@ Source emission, lossless genome recovery, fresh construction, and output agreem
 
 Thought text, type/unit annotations, assumptions, and source-map prose are companion metadata in the current compiler. Recovery can inspect the graph and source-authored design, but it cannot reconstruct the original English interpretation. Source reproduction is not a proof that a program matches arbitrary prose or that its body is aesthetically successful.
 
-Lean proves the published modeled constructor and local mathematical lemmas; it does not prove the complete JavaScript interpreter, canonical serialization or whole-genome codec inversion. Quint explores bounded creation/session transition models; it does not verify MCP/A2A wire parsing, caches or every SDK execution. SDK and browser tests supply implementation evidence for their exercised cases. Neither layer establishes arbitrary English meaning or human aesthetic quality. See [formal coverage and limits](LEAN-FORMALIZATION.md) and [generative obligations](GENERATIVE-FORMAL-MODEL.md).
-
-The [type review](../research/sdk-sol-2.md) records the authoring-type design and remaining suggestions for readonly data and handle contracts. See also the [program contract](PROGRAM-CONTRACT.md) and [thought-to-lifeform design](THOUGHT-TO-LIFEFORM.md).
-
 ## Ranch lifecycle extension
 
 The Runtime now exposes sixteen dispatch operations. See the [API reference](sdk-api.md) and [ranch guide](SDK-RANCH-GUIDE.md) for offspring preview/frame/admission, annotation, lineage and world operations. Preview and frames are stateless and passive; admission stores source/evidence without a task run. First companion attachment through annotation or existing compile also invalidates affected social epochs/proposals atomically. Successful compound birth commits one public world revision. Aggregate serialized artifacts are bounded at 32 MiB in addition to count caps; session derivations and admission retry receipts are separately bounded.

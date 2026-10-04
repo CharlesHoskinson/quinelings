@@ -217,6 +217,4 @@ npm test
 npm run build
 ```
 
-The MCP integration tests cover discovery with resolved recursive schemas, exactly-one recovery, independent task outcomes, quine and codec recovery, direct structured error paths, JSON depth/record bounds, an actual stdio exchange, and a same-turn call/cancellation pair that consumes no execution-record slot. Package tests separately cover frame determinism and store isolation/capacity. The [MCP boundary review](../research/sdk-sol-3.md) records the detailed acceptance matrix and remaining design risks; it distinguishes requested coverage from tests actually executed.
-
 Ranch payloads were exercised against the actual SDK source on 2026-10-04 with the official MCP client over linked in-memory transports: all eight ranch tools, discovery of sixteen tools and destructive world-command annotation, candidate frame budget 4000, exact admission/command retries, lineage, identical annotation, and a separately requested composed child run with handwritten output `{allocated:12,remaining:8}` passed. These are adapter payload checks, not browser or remote-service evidence.

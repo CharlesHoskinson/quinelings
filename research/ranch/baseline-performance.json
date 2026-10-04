@@ -1,8 +1,0 @@
-{
-  "specimens": 8,
-  "globalTissueSamples": 32000,
-  "frameSamples": 30,
-  "medianMs": 81.3999999910593,
-  "p95Ms": 106.6000000089407,
-  "scope": "Headless Chromium CPU geometry and Canvas submission only; 8 offscreen240px creatures at minimum4000 samples each. No task execution."
-}

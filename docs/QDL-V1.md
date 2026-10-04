@@ -196,18 +196,6 @@ An explicit migration review must:
 5. Fix disconnected work, effect-bearing action cones and eager action branches. Choose a claim for legacy evidence aggregates; explicitly select first-report `evidence` or freshness/conflict-aware `evidenceFresh` semantics.
 6. Compile under the target registry and review the changed source identity, task outcomes, simulation receipts and body. Record old/new identities in a separate migration manifest; migration is construction of a new artifact.
 
-## Release acceptance
-
-The seven release gates below passed within the stated scope. [The independent gate review](../research/qdl-v1/release-language-gates.md) maps each gate to concrete code, fixtures and test evidence:
-
-- Reviewed normative registry/signature/error/bound vectors and golden canonical source/genome bytes, including explicit legacy migration pairs.
-- Strict source, typed bindings, dependency/effect/reference checks across compiler, raw import, core, SDK and adapters; malformed sources cannot bypass shared admission.
-- Independent exact fixtures and adversarial boundaries for numeric overflow, explicit null, empty collections, unknown/pending/conflicting evidence, repeat failure publication and aggregate/wire budgets.
-- Same source with distinct inputs, three fresh constructor generations and both exact genomes recover full declaration/types/design in an empty session; source-only operations execute no task.
-- Legacy golden identities and all existing outcome fixtures preserved through the legacy entry points.
-- Node 22/26, actual browser and installed-package consumer agreement, real MCP/A2A serialization/schema checks and fault tests for precommit failures/keyed replay/passive restore.
-- Correspondence between implemented checks, Lean/Quint abstractions and actual executable fixtures, with remaining obligations stated. Checked abstractions do not prove all JavaScript, renderer or external adapter behavior.
-
-Recorded acceptance includes Node v22.23.3 and v26.10.0 with 109 SDK tests per runtime, typecheck/build and installed-package consumers; Chromium 153.0.8010.12 agrees on ten frozen sources, 44 independent recipe cases, both exact codecs and 12 legacy sources. The independent semantics audit passes 11 adversarial checks under the frozen pin. Legacy compatibility preserves all 53 existing outcome fixtures and 12 complete source/genome identities. See [the acceptance record](../research/qdl-v1/acceptance.json), [browser conformance](../research/qdl-v1/browser-conformance.json), [recipe evidence](QDL-V1-LIBRARY.md) and [formal correspondence](../research/qdl-v1/formal-runtime-correspondence.md).
+## Compatibility
 
 Release designation `qdl-v1.0.0` retains the matching source, manifest, goldens and SDK archive under `releases/qdl-v1.0.0`. The [upgrade policy](QDL-V1-UPGRADES.md) requires the matching archived runtime for historical pins; no universal loader is shipped. These finite checks support the bounded language contract. They do not certify outside facts, live City compatibility, durable storage, authenticated shared hosting, arbitrary English interpretation or all JavaScript behavior.

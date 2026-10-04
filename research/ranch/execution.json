@@ -1,8 +1,6 @@
 {
-  "status": "brainstorm_wave_3",
-  "queuedWorkstreams": [
-    "examples"
-  ],
+  "status": "candidate_ready_for_audit",
+  "queuedWorkstreams": [],
   "auditAfterConvergence": {
     "grok": 3,
     "gemini": 3,
@@ -44,23 +42,32 @@
       "threadId": "01a10602-426c-7613-9f39-6d530c0ebe17",
       "status": "completed",
       "report": "brainstorm-experience.md"
-    }
-  ],
-  "activeThreads": [
+    },
     {
       "workstream": "api",
       "threadId": "01a10605-2550-7842-bad8-931a78de7fe5",
-      "status": "started"
+      "status": "completed",
+      "report": "brainstorm-api.md"
     },
     {
       "workstream": "formal",
       "threadId": "01a10605-5cba-7a92-ab1b-6f05a836a8f8",
-      "status": "started"
+      "status": "completed",
+      "report": "brainstorm-formal.md"
     },
     {
       "workstream": "robustness",
       "threadId": "01a10605-86ee-79f0-9abf-d441fb275a41",
-      "status": "started"
+      "status": "completed",
+      "report": "brainstorm-robustness.md"
+    },
+    {
+      "workstream": "examples",
+      "threadId": "01a10609-dbd9-7793-9bf0-49e788b22bee",
+      "status": "completed",
+      "report": "brainstorm-examples.md"
     }
-  ]
+  ],
+  "activeThreads": [],
+  "candidate": "../../docs/RANCH-CANDIDATE.md"
 }

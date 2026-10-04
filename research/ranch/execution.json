@@ -99,6 +99,26 @@
     "execSessionId": 60288,
     "runner": "scripts/audit-ranch-candidate.py",
     "concurrency": 3,
-    "status": "running"
+    "status": "running",
+    "activeSessions": [
+      {
+        "pid": 743633,
+        "session": "58b7ce8f-af07-4668-ba1b-6d69b78929e2",
+        "provider": "Grok",
+        "status": "running"
+      },
+      {
+        "pid": 743634,
+        "session": "ef54e1c5-4c39-485a-bc0b-ef5f7fa823d1",
+        "provider": "Grok",
+        "status": "running"
+      },
+      {
+        "pid": 743635,
+        "session": "b8f6bb4a-2dda-46cf-83db-12b4c25b7150",
+        "provider": "Grok",
+        "status": "running"
+      }
+    ]
   }
 }

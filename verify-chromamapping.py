@@ -15,7 +15,7 @@ try:
         browser = p.chromium.launch(**options)
         page = browser.new_page(viewport={'width': 1450, 'height': 1100}, reduced_motion='reduce')
         errors = []; page.on('pageerror', lambda e: errors.append(str(e)))
-        page.goto(f'http://127.0.0.1:{server.server_port}/')
+        page.goto(f'http://127.0.0.1:{server.server_port}/gallery.html')
         page.wait_for_function('window.quineling?.shape && quineling.library.length === 10')
         assert page.locator('.creature-card').count() == 10
         assert page.evaluate('quineling.library.every(item => QDL.forProgram(item).chroma.palette === "roles-1")')

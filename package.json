@@ -21,7 +21,9 @@
     "formal:correspondence": "node verify-ranch-model.cjs",
     "test:v1": "node scripts/build-v1-registry.cjs --check && node verify-v1-types.cjs && node verify-v1-contract.cjs && node verify-v1-kernels.cjs && node verify-v1.cjs && node verify-v1-library.cjs && node verify-v1-migrate.cjs && node verify-v1-compatibility.cjs && node verify-v1-goldens.cjs && node verify-v1-offspring.cjs",
     "formal:v1": "quint typecheck spec/v1-session.qnt && quint test spec/v1-session.qnt --max-samples=100 --backend=typescript && quint run spec/v1-session.qnt --invariant=safety --max-samples=1000 --max-steps=80 --seed=20261004 --backend=typescript --verbosity=1 && node verify-v1-model.cjs",
-    "test:browser:v1": "node verify-v1-conformance-browser.cjs && node verify-v1-browser.cjs && node verify-ranch-render-cache.cjs && node verify-v1-ranch-browser.cjs"
+    "test:browser:v1": "node verify-v1-conformance-browser.cjs && node verify-v1-browser.cjs && node verify-ranch-render-cache.cjs && node verify-v1-ranch-browser.cjs",
+    "formal:website": "quint typecheck spec/website-lab.qnt && quint test spec/website-lab.qnt --max-samples=100 --backend=typescript && quint run spec/website-lab.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
+    "test:browser:website": "node verify-living-thoughts.cjs"
   },
   "engines": {
     "node": ">=22"

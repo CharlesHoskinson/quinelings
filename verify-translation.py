@@ -12,7 +12,7 @@ with sync_playwright() as p:
     elif cached.exists():options['executable_path']=str(cached)
     browser=p.chromium.launch(**options);page=browser.new_page(viewport={'width':1450,'height':1050})
     errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-    page.goto(f'http://127.0.0.1:{server.server_port}/');page.wait_for_function('window.quineling?.library.length===10 && window.translation?.activeNode')
+    page.goto(f'http://127.0.0.1:{server.server_port}/gallery.html');page.wait_for_function('window.quineling?.library.length===10 && window.translation?.activeNode')
     assert page.locator('#city-agent').evaluate('(e)=>e.complete&&e.naturalWidth>0')
     source=page.evaluate('Quinelings.canon(quineling.program)');assert page.evaluate('quineling.result') is None
     origin=page.locator('#thought-bubble').bounding_box()

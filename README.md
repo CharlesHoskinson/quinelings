@@ -6,9 +6,9 @@
 
 Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and specifications to `gh-pages`. GitHub Pages deploys that branch automatically.
 
-Quinelings are small executable programs with animated mathematical bodies. Their anatomy reflects program structure; finite harmonic bands and an exact RGB strand preserve the complete source. Each of the ten library programs runs a useful local task and constructs its own canonical source through quotation and ordinary constructors.
+Quinelings are authored local programs with mathematical bodies. The homepage runs reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data.
 
-The creatures use continuous luminous curves, family-specific anatomy, and a shared elapsed-time motion clock. Pause freezes both viewers; Clear focus or Escape returns to the portrait. Recorded execution markers keep their identity when you inspect another operation. Twelve domain reviews informing this design are summarized in `research/aesthetics-review.json`.
+The body gives each program a visual index: select an operation to inspect its connections and the tissue it owns. On the homepage, a recorded run adds value labels to that anatomy. Gesture playback changes the pose without running the task. Different programs can look alike; exact identity comes from source bytes.
 
 
 ## Create new programs and connect agents
@@ -23,7 +23,7 @@ The legacy experimental Runtime and adapters expose sixteen operations/tools. Th
 
 Stable QDL 1 freezes the bounded declared-thought simulation profile and its reviewed registry pin. Legacy source profiles and ranch construction/social policies remain experimental. [Identity and upgrades](docs/QDL-V1-UPGRADES.md) explains matching interpreters, retained release artifacts and explicit authored upgrades. [Formal model obligations](docs/GENERATIVE-FORMAL-MODEL.md) distinguish Lean theorems, Quint exploration, implementation tests and work still to prove.
 
-## View the collection
+## Explore the lab and original gallery
 
 No application dependencies or build step are required. From this repository:
 
@@ -31,9 +31,9 @@ No application dependencies or build step are required. From this repository:
 python3 -m http.server 8048 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:8048 . The Midnight.city walkthrough moves an agent’s declared thought bubble into the executable graph, then shows the exact QDL equations and linked animation. Select a program line to highlight its organ. Changing thought cycles changes the actual program; translating or replaying alone does not execute it.
+Open http://127.0.0.1:8048 . Choose a homepage example, load the suggested change, and run both input snapshots. Select a highlighted operation to inspect its values before and after. The source and body stay the same. The separate source experiment adds a water cap and compares the resulting programs.
 
-Select a specimen, choose a task fixture, run its task and quine, inspect the output, and reproduce a fresh generation. Recover the source from harmonic samples or exact RGB data, or download either genome.
+In the [original gallery](gallery.html), select a specimen and a task scenario, run its task, then reproduce a fresh generation. The scenario writes values into the program’s source. Changing task cycles also changes that source; walkthrough playback and trace replay do not execute it. Pause freezes both gallery viewers; Clear focus or Escape returns to the portrait. Recover the source from harmonic samples or exact RGB data, or download either genome.
 
 Chromamapping gives each membrane stable color territories for six program roles. Under the selected portrait, choose **Program roles**, **Pearl study**, or an authored recorded-value lens. Lanternkeeper includes **Fault score**: select a scenario, run the task, and inspect its value on a fixed 0–1 scale with a 0.625 reference threshold. The task-cycle selector chooses an existing record; changing views never executes the program. Source edits clear previous values. Color recipes survive source reproduction and both genomes.
 
@@ -47,7 +47,7 @@ Chromamapping gives each membrane stable color territories for six program roles
 | Raincatcher | Weighted sensor fusion and bounded irrigation budget | Ribbon |
 | Tidemender | Dependency-aware parallel scheduling | Nautilus |
 | Memorybloom | Evidence support, refutation, and conflict | Bloom |
-| Pulsekeeper | Bounded retries and uncertain outcomes | Torus |
+| Pulsekeeper | Prepared outcome review with a fixed four-attempt cap | Torus |
 | Threadsorter | Stable filtering, deduplication, and priority ordering | Moth |
 | Seedbank | Six-seeds-per-tray demand and resource conservation | Seed |
 
@@ -85,14 +85,16 @@ The agent artwork was retrieved from public Midnight.city assets with Scrapling.
 
 `python verify-translation.py` checks the bubble transition, linked source/organ/equation mapping, source-preserving view transitions, all ten programs, reduced motion, and mobile layout.
 
-`node verify-morphology.cjs` checks all-family geometry, endpoint pinning, closed loops, pure source-preserving projection, and frame-rate independence. `python verify-motion.py` checks the shared browser clock, pause, dynamic reduced motion, organ selection, and recorded-trace identity. Set `QUINELINGS_URL` to check a hosted website instead of its temporary local server.
+`node verify-morphology.cjs` checks all-family geometry, endpoint pinning, closed loops, pure source-preserving projection, and frame-rate independence. `python verify-motion.py` checks the shared browser clock, pause, dynamic reduced motion, organ selection, and recorded-trace identity. Set `QUINELINGS_URL` to the hosted `gallery.html` URL to check the archived gallery instead of its temporary local server.
 
 `node verify-chroma.cjs` checks material ownership, quantitative scales, missing states, and pure color evaluation. `python verify-chromamapping.py` checks the colored collection, real recorded values, task-cycle selection, source invalidation, reproduction, and mobile layout.
 
 ## Stable QDL 1 · reusable Living Thoughts
 
-The new [workspace](https://charleshoskinson.github.io/quinelings/v1.html) shows ten reusable typed agent-task recipes. It links the public declaration, program nodes, source-owned body, supplied run inputs, outcomes and exact emitted constructor source. Runtime observations change results without changing source or body.
+The [QDL 1 workspace](https://charleshoskinson.github.io/quinelings/v1.html) opens the homepage’s ten reusable recipes for declaration editing and named inputs. It links the public declaration, program nodes, source-owned body, run records and exact emitted constructor source. Runtime observations can change results without changing source or body.
 
 The [stable QDL 1 contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBRARY.md), and [SDK 1.0.0 guide](docs/SDK-V1.md) document the stable local profile, typed inputs and supported boundaries. Legacy artifacts keep their identities and behavior; [explicit passive migration](qdl-v1-migrate.js) requires supplied declarations, types and chosen ports. Every effect remains a local simulation.
 
 Stable QDL 1 uses explicit public declarations, not private model reasoning. Memory sessions and simulated receipts provide no durable hosting or live City authority. The release is identified as `qdl-v1.0.0`; npm publication is separate from the downloadable package.
+
+The homepage lab has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution. [Review evidence](research/website-overhaul/findings.md) records the assumptions and limits.

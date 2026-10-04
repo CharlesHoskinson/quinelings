@@ -11,7 +11,7 @@ with sync_playwright() as p:
     if os.environ.get('PLAYWRIGHT_CHROMIUM_EXECUTABLE'): options['executable_path']=os.environ['PLAYWRIGHT_CHROMIUM_EXECUTABLE']
     browser=p.chromium.launch(**options)
     page=browser.new_page(viewport={'width':1450,'height':1100});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-    page.goto(os.environ.get('QUINELINGS_URL',f'http://127.0.0.1:{server.server_port}/'));page.wait_for_function('quineling.library.length===10 && translation.activeNode')
+    page.goto(os.environ.get('QUINELINGS_URL',f'http://127.0.0.1:{server.server_port}/gallery.html'));page.wait_for_function('quineling.library.length===10 && translation.activeNode')
     # UI edits author recoverable source without executing a task.
     original=page.evaluate('Quinelings.canon(quineling.program)')
     page.locator('#motion-controls').evaluate('(e)=>e.open=true')

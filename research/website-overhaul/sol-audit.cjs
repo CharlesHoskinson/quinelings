@@ -1,0 +1,64 @@
+'use strict';
+// Independent, hand-calculated public-recipe cases. Run from any directory.
+const A=require('node:assert/strict'),L=require('../../qdl-v1-library.js'),V=require('../../qdl-v1.js');
+const compiled=new Map(L.programs.map(p=>[p.id,V.compile(p.intent)])),results=[];
+function ok(id,label,inputs,expected){const r=V.execute(compiled.get(id),inputs);A.equal(r.status,'completed',label);A.deepEqual(r.occurrences[0].outputs,expected,label);results.push({id,label,status:r.status,output:r.occurrences[0].outputs});}
+function bad(id,label,inputs,status,code){let r;try{r=V.execute(compiled.get(id),inputs);}catch(e){A.equal(status,'refused');A.equal(e.code,code,label);results.push({id,label,status,code});return;}A.equal(r.status,status,label);A.equal(r.occurrences[0].diagnostic.code,code,label);A.deepEqual(r.occurrences[0].effects,[]);A.deepEqual(r.occurrences[0].outputs,[]);results.push({id,label,status,code});}
+const yes=[true,true,true,true,true,true],g={checks:yes,observedAt:10,now:12,maxAge:2},proposal=(status,action,payload)=>({status,action,payload});
+ok('gather-readiness','six checks and inclusive age',g,[proposal('simulated','gather-proposal',3),true]);
+for(let i=0;i<6;i++){const checks=[...yes];checks[i]=false;ok('gather-readiness','check '+i+' independently vetoes',{...g,checks},[proposal('skipped','gather-proposal',3),false]);}
+ok('gather-readiness','widen freshness restores stale snapshot',{...g,now:13,maxAge:3},[proposal('simulated','gather-proposal',3),true]);
+bad('gather-readiness','wrong check count',{...g,checks:[true]},'refused','refinement');
+const inv=[{id:'ore',amount:7},{id:'wood',amount:8}],craft={inventory:inv,requested:4,freeCapacity:5};
+ok('craft-quote','space bound floor(5/2)=2',craft,[{requested:4,feasible:2,oreUsed:4,woodUsed:2},false]);
+ok('craft-quote','space increase makes ore bind at floor(7/2)=3',{...craft,freeCapacity:8},[{requested:4,feasible:3,oreUsed:6,woodUsed:3},false]);
+ok('craft-quote','ore increase fulfills four',{...craft,freeCapacity:8,inventory:[{id:'ore',amount:8},{id:'wood',amount:8}]},[{requested:4,feasible:4,oreUsed:8,woodUsed:4},true]);
+bad('craft-quote','duplicate material ID',{...craft,inventory:[...inv,inv[0]]},'refused','refinement');
+const rec=(id,claim,value=true,source=id)=>({id,source,claim,value,kind:'observation',observedAt:10,revision:2}),clock={now:12,maxAge:2,minRevision:2},records=[rec('a','haul'),rec('b','arrival')];
+ok('confirmed-checkpoints','two independent checkpoint claims',{records,clock},[{haul:'supported',arrival:'supported'},true]);
+ok('confirmed-checkpoints','arrival refuted',{records:[records[0],rec('b','arrival',false)],clock},[{haul:'supported',arrival:'refuted'},false]);
+ok('confirmed-checkpoints','revision filter suppresses both',{records,clock:{...clock,minRevision:3}},[{haul:'unknown',arrival:'unknown'},false]);
+bad('confirmed-checkpoints','duplicate evidence ID',{records:[records[0],records[0]],clock},'failed','duplicate-id');
+const a=rec('a','ready',true,'sensor'),b=rec('b','ready',true,'sensor'),z=rec('z','ready',false,'sensor');
+ok('evidence-ledger','one support',{records:[a],claim:'ready',clock},[{state:'supported',support:1,refute:0,sources:1,sourceConflicts:[],used:[a],skipped:[]}]);
+ok('evidence-ledger','repeated source does not inflate support',{records:[a,b],claim:'ready',clock},[{state:'supported',support:1,refute:0,sources:1,sourceConflicts:[],used:[a,b],skipped:[]}]);
+ok('evidence-ledger','same source contradiction',{records:[a,z],claim:'ready',clock},[{state:'conflict',support:1,refute:1,sources:1,sourceConflicts:['sensor'],used:[a,z],skipped:[]}]);
+ok('evidence-ledger','claim query changes classification',{records:[a],claim:'elsewhere',clock},[{state:'unknown',support:0,refute:0,sources:0,sourceConflicts:[],used:[],skipped:[{record:a,reason:'claim'}]}]);
+bad('evidence-ledger','duplicate record ID',{records:[a,a],claim:'ready',clock},'failed','duplicate-id');
+const streets={A:['C','B'],B:['D'],C:['D'],D:[]},route=(path)=>({found:true,path,distance:path.length-1});
+ok('route-preview','ordered shortest route',{streets,blocked:[],current:true},[route(['A','C','D']),proposal('simulated','walk-proposal',['A','C','D']),true]);
+ok('route-preview','blocked C selects B',{streets,blocked:['C'],current:true},[route(['A','B','D']),proposal('simulated','walk-proposal',['A','B','D']),true]);
+ok('route-preview','direct edge supersedes ordered longer branch',{streets:{...streets,A:['C','D','B']},blocked:[],current:true},[route(['A','D']),proposal('simulated','walk-proposal',['A','D']),true]);
+bad('route-preview','undeclared map field',{streets:{...streets,E:[]},blocked:[],current:true},'refused','type');
+// An undeclared neighbor is accepted as a dead end, not rejected as a broken map.
+ok('route-preview','dangling neighbor tolerated',{streets:{...streets,A:['E','B']},blocked:[],current:true},[route(['A','B','D']),proposal('simulated','walk-proposal',['A','B','D']),true]);
+const offers=[{id:'offer',price:3,expiry:10,available:5}],trade={offers,now:10,quantity:2,inventory:5,allowance:2};
+ok('trade-preview','sell quote two times three',trade,[{ready:true,quantity:2,predictedProceeds:6},true]);
+ok('trade-preview','price changed',{...trade,offers:[{...offers[0],price:4.5}]},[{ready:true,quantity:2,predictedProceeds:9},true]);
+ok('trade-preview','inventory veto',{...trade,inventory:1},[{ready:false,quantity:0,predictedProceeds:0},false]);
+ok('trade-preview','zero stock',{...trade,offers:[{...offers[0],available:0}]},[{ready:false,quantity:0,predictedProceeds:0},false]);
+bad('trade-preview','duplicate offer',{...trade,offers:[offers[0],offers[0]]},'refused','refinement');
+const foods=[{id:'a',edible:true,fresh:true,restoration:8},{id:'b',edible:true,fresh:true,restoration:8}],needs={foods,hunger:4,current:true};
+ok('needs-triage','ID tie break',needs,[proposal('simulated','eat-proposal','a'),true]);
+ok('needs-triage','restoration rank changed',{...needs,foods:[foods[0],{...foods[1],restoration:9}]},[proposal('simulated','eat-proposal','b'),true]);
+ok('needs-triage','best food stale',{...needs,foods:[{...foods[0],fresh:false},foods[1]]},[proposal('simulated','eat-proposal','b'),true]);
+ok('needs-triage','positive hunger magnitude has no effect',{...needs,hunger:100},[proposal('simulated','eat-proposal','a'),true]);
+bad('needs-triage','duplicate item ID',{...needs,foods:[foods[0],foods[0]]},'refused','refinement');
+const receipt=(id,attempt,status,units=0,sequence=1)=>({id,operation:'craft',attempt,sequence,status,units}),policy={operation:'craft',requested:3,maxAttempts:4};
+const result=(state,units,confirmed,failed,pending,unknown,attempts,mayRetry)=>[{state,confirmedUnits:units,confirmedAttempts:confirmed,failedAttempts:failed,pendingAttempts:pending,unknownAttempts:unknown,attempts,mayRetry}];
+ok('receipt-reconciliation','partial result retryable',{receipts:[receipt('a','1','confirmed',1)],policy},result('retryable',1,1,0,0,0,1,true));
+ok('receipt-reconciliation','unknown blocks',{receipts:[receipt('a','1','confirmed',1),receipt('b','2','unknown')],policy},result('unknown',1,1,0,0,1,2,false));
+ok('receipt-reconciliation','later confirmation resolves unknown',{receipts:[receipt('a','1','unknown'),receipt('b','1','confirmed',3,2)],policy},result('completed',3,1,0,0,0,1,false));
+bad('receipt-reconciliation','more attempts than budget',{receipts:[receipt('a','1','failed'),receipt('b','2','failed')],policy:{...policy,maxAttempts:1}},'failed','attempt-budget');
+bad('receipt-reconciliation','zero-unit confirmation',{receipts:[receipt('a','1','confirmed')],policy},'failed','receipt-units');
+ok('water-total','three liters measurements sum four',{readings:[1.5,2,.5]},[{liters:4,measurements:3}]);
+ok('water-total','replace one reading adds three',{readings:[1.5,5,.5]},[{liters:7,measurements:3}]);
+ok('water-total','append adds a measurement and liters',{readings:[1.5,2,.5,3]},[{liters:7,measurements:4}]);
+bad('water-total','overflow aggregate',{readings:[1e308,1e308]},'failed','nonfinite');
+const jobs=[{id:'a',depends:[],duration:3},{id:'b',depends:['a'],duration:2},{id:'c',depends:[],duration:4}];
+ok('work-schedule','parallel baseline',{jobs,deadline:5},[{order:['a','b','c'],jobs:[{id:'a',start:0,end:3},{id:'b',start:3,end:5},{id:'c',start:0,end:4}],makespan:5},true]);
+ok('work-schedule','duration changes downstream start and makespan',{jobs:[{...jobs[0],duration:4},jobs[1],jobs[2]],deadline:5},[{order:['a','b','c'],jobs:[{id:'a',start:0,end:4},{id:'b',start:4,end:6},{id:'c',start:0,end:4}],makespan:6},false]);
+bad('work-schedule','dangling dependency',{jobs:[{id:'a',depends:['missing'],duration:1}],deadline:5},'failed','refinement');
+bad('work-schedule','duplicate job ID',{jobs:[jobs[0],jobs[0]],deadline:5},'failed','refinement');
+const influence=L.programs.map(p=>{const nodes=[...p.intent.inputs.map(x=>({...x,inputs:[]})),...p.intent.steps],byId=new Map(nodes.map(n=>[n.id,n])),live=new Set();function walk(id){if(live.has(id))return;live.add(id);for(const x of byId.get(id).inputs)walk(x);}p.intent.outputs.forEach(walk);const dead=nodes.filter(n=>!live.has(n.id)).map(n=>n.id);A.deepEqual(dead,[],p.id);return {id:p.id,nodes:nodes.length,deadNodes:dead,runtimeInputs:p.intent.inputs.filter(x=>Object.hasOwn(x,'name')).map(x=>x.id)};});
+console.log(JSON.stringify({cases:results.length,results,influence},null,2));

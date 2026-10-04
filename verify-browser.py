@@ -6,7 +6,7 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self,*args): pass
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(QuietHandler,directory=str(ROOT)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
-url=f'http://127.0.0.1:{server.server_port}/'
+url=f'http://127.0.0.1:{server.server_port}/gallery.html'
 with sync_playwright() as p:
     options={'headless':True}
     executable=os.environ.get('PLAYWRIGHT_CHROMIUM_EXECUTABLE')

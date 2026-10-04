@@ -35,7 +35,7 @@ The quine check compares the constructor’s entire emitted canonical source wit
 
 A typed input refusal creates no after-record. The page retains the previous complete comparison, visibly marks it historical, and hides matching-run labels. It never mixes a newly computed baseline with an older after-record. The baseline attempt still accounts for one graph evaluation; the typed refusal enters the interpreter too, so that interaction adds two interpreter requests. Malformed editor JSON is rejected before either request. Replay returns the same retained record without evaluating again.
 
-Overflow and cyclic schedules produce failed records with diagnostics, no published outputs or effects, and only the trace nodes that finished. The pinned scheduler currently classifies its cycle diagnostic as `refinement`; its message identifies the cycle. That coarse diagnostic classification remains a documented limitation of the retained runtime.
+Overflow and cyclic schedules produce failed records with diagnostics, no published outputs or effects, and only the trace nodes that finished. The pinned scheduler currently classifies its cycle diagnostic as `refinement`; its message identifies the cycle. The raw classification remains part of the retained runtime; the website now distinguishes cycle and missing-dependency failures in its presentation without changing the original record.
 
 ## Scope and limits
 
@@ -54,3 +54,9 @@ Source labels are supplied data, not authenticated witnesses. Several freshness 
 - Grok 4.7 reviews: [graph semantics](grok-1.md), [novelty](grok-2.md), [runtime boundaries](grok-3.md), [visual explanations](grok-4.md).
 
 The review used four Sol 6.1 agents and four native Grok 4.7 agents at xhigh reasoning. Initial short-step Grok attempts were resumed to complete the reviews. Published reports omit private reasoning fields. Subsequent editorial passes use Inkwell’s local source at commit `f2e9c8eff7461d1790ed59ce07d6fbc9095b2907`; prose editing does not replace runtime checks.
+
+## Follow-through
+
+The [implementation checklist](implementation-checklist.md) maps the audit findings to changes and verification. All ten recipes now have result graphics and 52 prepared cases, including unchanged answers and contract boundaries. The page exposes named guard failures, chosen restoration, actual evidence filtering and attempt histories. A separately authored food rule rejects zero restoration. The body-only child experiment demonstrates unchanged calculation with changed appearance and exact child-genome recovery. Restored bindings permit replay, errors appear beside their controls, and a fresh-session control recovers from bounded storage limits.
+
+Aesthetic equivalence is a separate question. The [beauty council](../beauty-council/) compares the current homepage and archived gallery with the original reference. Functional correctness does not establish comparable beauty.

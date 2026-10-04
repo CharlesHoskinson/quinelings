@@ -15,3 +15,15 @@ export const order=['route-preview','receipt-reconciliation','water-total','conf
 export function baseline(recipe){return structuredClone(stories[recipe.id].baselineInputs??recipe.fixtures[stories[recipe.id].baseline??0].inputs);}
 export function changed(recipe){const story=stories[recipe.id],v=baseline(recipe);return story.transform?story.transform(v):story.fixture!==undefined?structuredClone(recipe.fixtures[story.fixture].inputs):{...v,...structuredClone(story.after)};}
 export function cappedWaterIntent(recipe){const intent=structuredClone(recipe.intent);intent.name='Water readings capped at five liters';intent.steps.splice(intent.steps.findIndex(n=>n.id==='summary'),0,{id:'cappedWater',op:'clamp',inputs:['total'],params:{min:0,max:5}});intent.steps.find(n=>n.id==='summary').inputs=['cappedWater','count'];intent.thought.tasks[0].nodes.push('cappedWater');intent.thought.tasks[0].text='Sum supplied readings and report a total capped at five liters, alongside their count.';intent.thought.plans[0].text=intent.thought.tasks[0].text;return intent;}
+
+/** Authored alternative, never a mutation of the retained needs-triage source. */
+export function positiveFoodIntent(recipe){
+ const intent=structuredClone(recipe.intent);intent.name='Food candidate with positive restoration';
+ const additions=[{id:'chosenRestoration',op:'get',inputs:['food'],params:{path:'value.restoration'}},{id:'restores',op:'compare',inputs:['chosenRestoration'],params:{operator:'gt',value:0}},{id:'usefulCandidate',op:'choose',inputs:['found','restores','no'],params:{}}];
+ intent.steps.splice(intent.steps.findIndex(n=>n.id==='ready'),0,...additions);
+ intent.steps.find(n=>n.id==='ready').inputs=intent.steps.find(n=>n.id==='ready').inputs.map(id=>id==='found'?'usefulCandidate':id);
+ intent.steps.push({id:'candidateReport',op:'report',inputs:['chosenId','chosenRestoration','restores','ready'],params:{labels:['candidate','restoration','positiveRestoration','ready']}});intent.outputs.push('candidateReport');
+ intent.thought.tasks[0].nodes.push(...additions.map(n=>n.id),'candidateReport');intent.thought.tasks[0].outputs.push('candidateReport');
+ const description='Rank fresh edible foods by restoration and item ID, require positive restoration plus positive hunger and a current snapshot for a simulated eating proposal, and report the chosen restoration.';
+ intent.thought.tasks[0].text=description;intent.thought.plans[0].text=description;return intent;
+}

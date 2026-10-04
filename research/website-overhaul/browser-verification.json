@@ -349,6 +349,350 @@
       }
     }
   },
+  "auditCases": [
+    {
+      "recipe": "route-preview",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "route-preview",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "route-preview",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "route-preview",
+      "preset": "stale",
+      "status": "completed"
+    },
+    {
+      "recipe": "route-preview",
+      "preset": "blocked",
+      "status": "completed"
+    },
+    {
+      "recipe": "receipt-reconciliation",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "receipt-reconciliation",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "receipt-reconciliation",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "receipt-reconciliation",
+      "preset": "failed-attempt",
+      "status": "completed"
+    },
+    {
+      "recipe": "receipt-reconciliation",
+      "preset": "latest",
+      "status": "completed"
+    },
+    {
+      "recipe": "water-total",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "water-total",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "water-total",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "water-total",
+      "preset": "decimal",
+      "status": "completed"
+    },
+    {
+      "recipe": "water-total",
+      "preset": "empty",
+      "status": "completed"
+    },
+    {
+      "recipe": "water-total",
+      "preset": "zeros",
+      "status": "completed"
+    },
+    {
+      "recipe": "confirmed-checkpoints",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "confirmed-checkpoints",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "confirmed-checkpoints",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "confirmed-checkpoints",
+      "preset": "testimony",
+      "status": "completed"
+    },
+    {
+      "recipe": "craft-quote",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "craft-quote",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "craft-quote",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "craft-quote",
+      "preset": "scarce",
+      "status": "completed"
+    },
+    {
+      "recipe": "craft-quote",
+      "preset": "full",
+      "status": "completed"
+    },
+    {
+      "recipe": "craft-quote",
+      "preset": "zero",
+      "status": "completed"
+    },
+    {
+      "recipe": "evidence-ledger",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "evidence-ledger",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "evidence-ledger",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "evidence-ledger",
+      "preset": "independent",
+      "status": "completed"
+    },
+    {
+      "recipe": "work-schedule",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "work-schedule",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "work-schedule",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "work-schedule",
+      "preset": "deadline",
+      "status": "completed"
+    },
+    {
+      "recipe": "work-schedule",
+      "preset": "cycle",
+      "status": "failed"
+    },
+    {
+      "recipe": "work-schedule",
+      "preset": "dangling",
+      "status": "failed"
+    },
+    {
+      "recipe": "trade-preview",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "trade-preview",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "trade-preview",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "trade-preview",
+      "preset": "price",
+      "status": "completed"
+    },
+    {
+      "recipe": "trade-preview",
+      "preset": "short-stock",
+      "status": "completed"
+    },
+    {
+      "recipe": "needs-triage",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "needs-triage",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "needs-triage",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "needs-triage",
+      "preset": "stale",
+      "status": "completed"
+    },
+    {
+      "recipe": "needs-triage",
+      "preset": "zero-food",
+      "status": "completed"
+    },
+    {
+      "recipe": "needs-triage",
+      "preset": "none",
+      "status": "completed"
+    },
+    {
+      "recipe": "gather-readiness",
+      "preset": "baseline",
+      "status": "completed"
+    },
+    {
+      "recipe": "gather-readiness",
+      "preset": "change",
+      "status": "completed"
+    },
+    {
+      "recipe": "gather-readiness",
+      "preset": "invariance",
+      "status": "completed"
+    },
+    {
+      "recipe": "gather-readiness",
+      "preset": "owner",
+      "status": "completed"
+    },
+    {
+      "recipe": "gather-readiness",
+      "preset": "future",
+      "status": "completed"
+    }
+  ],
+  "positiveFood": {
+    "originalSource": "ql_1eb41b9cae8ba12cc66a0b4ee235f8292a5faee0c7f4434468738c8cb8d96c10",
+    "positiveSource": "ql_b39cc4812242c8bae2058d316af4d6602f4357b68e25e1053f56f89574eda739",
+    "original": [
+      {
+        "status": "simulated",
+        "action": "eat-proposal",
+        "payload": "zero"
+      },
+      true
+    ],
+    "positive": [
+      {
+        "status": "skipped",
+        "action": "eat-proposal",
+        "payload": ""
+      },
+      false,
+      {
+        "candidate": "zero",
+        "restoration": 0,
+        "positiveRestoration": false,
+        "ready": false
+      }
+    ],
+    "emissionExact": [
+      true,
+      true
+    ],
+    "originalRetained": true
+  },
+  "bodyOnlyChild": {
+    "classification": "body-only",
+    "sourceChanged": true,
+    "taskPreserved": true,
+    "declarationPreserved": true,
+    "outputsEqual": true,
+    "effectsEqual": true,
+    "exactChildGenome": true,
+    "emissionExact": [
+      true,
+      true
+    ],
+    "bodyChanged": true,
+    "parentSource": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1",
+    "childSource": "ql_1296569c77471138e9987845bb443074a154f168af638c234ec903fbb5ec0b50",
+    "derivationId": "qd_60e4e3f101c48f5dc7a27eb9c2b10223ded59ceb04a6023ff200225b7f92e7fe",
+    "policy": "qdl-v1-collaboration-experimental-1",
+    "outputs": [
+      {
+        "liters": 7,
+        "measurements": 3
+      }
+    ],
+    "geometry": {
+      "sameTopology": true,
+      "correspondingSamples": false,
+      "sharedNodeAnchors": 4,
+      "anchorXyzRms": 0.021691918663619192,
+      "components": [
+        4,
+        4
+      ],
+      "ownershipBands": [
+        7,
+        7
+      ],
+      "reason": "Area-weighted sample plans differ; indexed points are not corresponding tissue. Shared operation anchors are compared at phase zero."
+    },
+    "sharedProjection": true
+  },
+  "boundaries": {
+    "oversized": "resource-limit",
+    "full": "resource-limit",
+    "artifactCount": 128,
+    "recordCount": 0,
+    "requests": 0,
+    "harmonicSamples": true,
+    "sampleRecoveryExact": true
+  },
+  "restoreInputsAllowsReplay": true,
+  "fullLedgerAllowsReplayAndReset": true,
   "passiveRecoveries": [
     {
       "encoding": "harmonics",

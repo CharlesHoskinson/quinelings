@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "currentKernelOutcomeOracles": [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10"
+  ],
+  "refinementRejections": [
+    "18",
+    "20"
+  ],
+  "compilerClassifierMeasured": false,
+  "bodyGeneratorMeasured": false
+}

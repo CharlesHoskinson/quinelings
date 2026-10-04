@@ -1,0 +1,631 @@
+{
+  "structuralFixtures": [
+    {
+      "name": "Reserve bearer",
+      "nodes": [
+        {
+          "id": "stock",
+          "op": "literal",
+          "inputs": []
+        },
+        {
+          "id": "request",
+          "op": "literal",
+          "inputs": []
+        },
+        {
+          "id": "available",
+          "op": "sum",
+          "inputs": [
+            "stock",
+            "request"
+          ]
+        },
+        {
+          "id": "bounded",
+          "op": "clamp",
+          "inputs": [
+            "available"
+          ]
+        },
+        {
+          "id": "ledger",
+          "op": "report",
+          "inputs": [
+            "bounded"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fork crown",
+      "nodes": [
+        {
+          "id": "source",
+          "op": "literal",
+          "inputs": []
+        },
+        {
+          "id": "east",
+          "op": "sum",
+          "inputs": [
+            "source"
+          ]
+        },
+        {
+          "id": "west",
+          "op": "mean",
+          "inputs": [
+            "source"
+          ]
+        },
+        {
+          "id": "north",
+          "op": "max",
+          "inputs": [
+            "source"
+          ]
+        },
+        {
+          "id": "ledger",
+          "op": "report",
+          "inputs": [
+            "east",
+            "west",
+            "north"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Confluence glider",
+      "nodes": [
+        {
+          "id": "first",
+          "op": "literal",
+          "inputs": []
+        },
+        {
+          "id": "second",
+          "op": "literal",
+          "inputs": []
+        },
+        {
+          "id": "third",
+          "op": "literal",
+          "inputs": []
+        },
+        {
+          "id": "agreement",
+          "op": "mean",
+          "inputs": [
+            "first",
+            "second",
+            "third"
+          ]
+        },
+        {
+          "id": "ledger",
+          "op": "report",
+          "inputs": [
+            "agreement"
+          ]
+        }
+      ]
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "Reserve bearer",
+      "motif": "serial",
+      "statistics": {
+        "depth": 3,
+        "forkExcess": 0,
+        "mergeExcess": 1
+      },
+      "components": [
+        {
+          "id": "trunk",
+          "kind": "spine",
+          "parent": null,
+          "owners": [
+            "request"
+          ],
+          "control": [
+            [
+              0,
+              -0.68
+            ],
+            [
+              0.026599999999999995,
+              -0.3
+            ],
+            [
+              -0.026599999999999995,
+              0.26
+            ],
+            [
+              0.03,
+              0.72
+            ]
+          ],
+          "width": 0.035,
+          "vertices": 4800
+        },
+        {
+          "id": "belly",
+          "kind": "chamber",
+          "parent": {
+            "component": "trunk",
+            "u": 0.45
+          },
+          "owners": [
+            "stock"
+          ],
+          "axes": [
+            0.2,
+            0.28
+          ],
+          "vertices": 4800
+        },
+        {
+          "id": "crown",
+          "kind": "chamber",
+          "parent": {
+            "component": "trunk",
+            "u": 0.08
+          },
+          "owners": [
+            "available"
+          ],
+          "axes": [
+            0.07,
+            0.1
+          ],
+          "vertices": 4800
+        },
+        {
+          "id": "tail0",
+          "kind": "spine",
+          "parent": {
+            "component": "trunk",
+            "u": 0.75
+          },
+          "owners": [
+            "bounded"
+          ],
+          "offset": [
+            -0.055,
+            0
+          ],
+          "control": [
+            [
+              0,
+              0
+            ],
+            [
+              -0.12,
+              0.12
+            ],
+            [
+              -0.15,
+              0.26
+            ],
+            [
+              -0.22,
+              0.37
+            ]
+          ],
+          "width": 0.012,
+          "vertices": 4800
+        },
+        {
+          "id": "tail1",
+          "kind": "spine",
+          "parent": {
+            "component": "trunk",
+            "u": 0.75
+          },
+          "owners": [
+            "ledger"
+          ],
+          "offset": [
+            0.055,
+            0
+          ],
+          "control": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0.12
+            ],
+            [
+              0.15,
+              0.26
+            ],
+            [
+              0.22,
+              0.37
+            ]
+          ],
+          "width": 0.012,
+          "vertices": 4800
+        }
+      ],
+      "operationAnchors": {
+        "request": {
+          "component": "trunk",
+          "u": 0.125
+        },
+        "stock": {
+          "component": "belly",
+          "u": 0.125
+        },
+        "available": {
+          "component": "crown",
+          "u": 0.375
+        },
+        "bounded": {
+          "component": "tail0",
+          "u": 0.625
+        },
+        "ledger": {
+          "component": "tail1",
+          "u": 0.875
+        }
+      },
+      "surfaceVertexBudget": 24000,
+      "exactSourceIdentity": "Not supplied: fixtures illustrate compiler topology only."
+    },
+    {
+      "name": "Fork crown",
+      "motif": "fork",
+      "statistics": {
+        "depth": 2,
+        "forkExcess": 2,
+        "mergeExcess": 2
+      },
+      "components": [
+        {
+          "id": "trunk",
+          "kind": "spine",
+          "parent": null,
+          "owners": [
+            "source"
+          ],
+          "control": [
+            [
+              0,
+              0.69
+            ],
+            [
+              0,
+              0.38
+            ],
+            [
+              0.0658,
+              0.03
+            ],
+            [
+              0,
+              -0.15
+            ]
+          ],
+          "width": 0.045,
+          "vertices": 3000
+        },
+        {
+          "id": "branch0",
+          "kind": "spine",
+          "parent": {
+            "component": "trunk",
+            "u": 0.6
+          },
+          "owners": [
+            "east"
+          ],
+          "control": [
+            [
+              0,
+              0
+            ],
+            [
+              -0.0528,
+              -0.1
+            ],
+            [
+              -0.33,
+              -0.32000000000000006
+            ],
+            [
+              -0.44,
+              -0.4
+            ]
+          ],
+          "width": 0.022,
+          "vertices": 3000
+        },
+        {
+          "id": "tip0",
+          "kind": "chamber",
+          "parent": {
+            "component": "branch0",
+            "u": 1
+          },
+          "owners": [
+            "source"
+          ],
+          "axes": [
+            0.075,
+            0.12
+          ],
+          "vertices": 3000
+        },
+        {
+          "id": "branch1",
+          "kind": "spine",
+          "parent": {
+            "component": "trunk",
+            "u": 0.6
+          },
+          "owners": [
+            "north"
+          ],
+          "control": [
+            [
+              0,
+              0
+            ],
+            [
+              0.0,
+              -0.1
+            ],
+            [
+              0.0,
+              -0.4800000000000001
+            ],
+            [
+              0.0,
+              -0.6000000000000001
+            ]
+          ],
+          "width": 0.022,
+          "vertices": 3000
+        },
+        {
+          "id": "tip1",
+          "kind": "chamber",
+          "parent": {
+            "component": "branch1",
+            "u": 1
+          },
+          "owners": [
+            "west"
+          ],
+          "axes": [
+            0.075,
+            0.12
+          ],
+          "vertices": 3000
+        },
+        {
+          "id": "branch2",
+          "kind": "spine",
+          "parent": {
+            "component": "trunk",
+            "u": 0.6
+          },
+          "owners": [
+            "source"
+          ],
+          "control": [
+            [
+              0,
+              0
+            ],
+            [
+              0.0528,
+              -0.1
+            ],
+            [
+              0.33,
+              -0.32000000000000006
+            ],
+            [
+              0.44,
+              -0.4
+            ]
+          ],
+          "width": 0.022,
+          "vertices": 3000
+        },
+        {
+          "id": "tip2",
+          "kind": "chamber",
+          "parent": {
+            "component": "branch2",
+            "u": 1
+          },
+          "owners": [
+            "ledger"
+          ],
+          "axes": [
+            0.075,
+            0.12
+          ],
+          "vertices": 3000
+        },
+        {
+          "id": "apron",
+          "kind": "fin",
+          "parent": {
+            "component": "trunk",
+            "u": 0.39
+          },
+          "owners": [
+            "source"
+          ],
+          "span": 0.26,
+          "width": 0.14,
+          "side": -1,
+          "vertices": 3000
+        }
+      ],
+      "operationAnchors": {
+        "source": {
+          "component": "trunk",
+          "u": 0.16666666666666666
+        },
+        "east": {
+          "component": "branch0",
+          "u": 0.5
+        },
+        "north": {
+          "component": "branch1",
+          "u": 0.5
+        },
+        "west": {
+          "component": "tip1",
+          "u": 0.5
+        },
+        "ledger": {
+          "component": "tip2",
+          "u": 0.8333333333333334
+        }
+      },
+      "surfaceVertexBudget": 24000,
+      "exactSourceIdentity": "Not supplied: fixtures illustrate compiler topology only."
+    },
+    {
+      "name": "Confluence glider",
+      "motif": "merge",
+      "statistics": {
+        "depth": 2,
+        "forkExcess": 0,
+        "mergeExcess": 2
+      },
+      "components": [
+        {
+          "id": "trunk",
+          "kind": "spine",
+          "parent": null,
+          "owners": [
+            "first"
+          ],
+          "control": [
+            [
+              0,
+              0.32
+            ],
+            [
+              0.02520000000000001,
+              0.1
+            ],
+            [
+              0.02520000000000001,
+              -0.2
+            ],
+            [
+              0,
+              -0.42
+            ]
+          ],
+          "width": 0.04,
+          "vertices": 4800
+        },
+        {
+          "id": "core",
+          "kind": "chamber",
+          "parent": {
+            "component": "trunk",
+            "u": 0.46
+          },
+          "owners": [
+            "second"
+          ],
+          "axes": [
+            0.14,
+            0.22
+          ],
+          "vertices": 4800
+        },
+        {
+          "id": "collar",
+          "kind": "loop",
+          "parent": {
+            "component": "trunk",
+            "u": 0.42
+          },
+          "owners": [
+            "third"
+          ],
+          "axes": [
+            0.29,
+            0.22
+          ],
+          "tube": 0.018,
+          "vertices": 4800
+        },
+        {
+          "id": "fin-1",
+          "kind": "fin",
+          "parent": {
+            "component": "trunk",
+            "u": 0.5
+          },
+          "owners": [
+            "agreement"
+          ],
+          "span": 0.45,
+          "width": 0.22,
+          "side": -1,
+          "hinge": 0.12,
+          "vertices": 4800
+        },
+        {
+          "id": "fin1",
+          "kind": "fin",
+          "parent": {
+            "component": "trunk",
+            "u": 0.5
+          },
+          "owners": [
+            "ledger"
+          ],
+          "span": 0.54,
+          "width": 0.22,
+          "side": 1,
+          "hinge": 0.12,
+          "vertices": 4800
+        }
+      ],
+      "operationAnchors": {
+        "first": {
+          "component": "trunk",
+          "u": 0.16666666666666666
+        },
+        "second": {
+          "component": "core",
+          "u": 0.16666666666666666
+        },
+        "third": {
+          "component": "collar",
+          "u": 0.16666666666666666
+        },
+        "agreement": {
+          "component": "fin-1",
+          "u": 0.5
+        },
+        "ledger": {
+          "component": "fin1",
+          "u": 0.8333333333333334
+        }
+      },
+      "surfaceVertexBudget": 24000,
+      "exactSourceIdentity": "Not supplied: fixtures illustrate compiler topology only."
+    }
+  ]
+}

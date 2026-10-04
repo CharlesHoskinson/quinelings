@@ -1,0 +1,128 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thought to lifeform — QDL design study</title><style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#080f14;color:#d9e9e5}*{box-sizing:border-box}body{margin:0}main{max-width:1080px;margin:auto;padding:52px 24px 80px}p{line-height:1.65;color:#a9bdba}h1{font-size:clamp(38px,6vw,72px);line-height:1.02;max-width:800px;margin:20px 0}h2{font-size:28px;margin-top:52px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#85bea9}a{color:#9fe0be}.agent{display:flex;align-items:center;gap:22px;margin:36px 0}.agent img{width:110px;image-rendering:pixelated}.bubble{border:1px solid #36514a;border-radius:20px;padding:20px;max-width:580px;color:#d7e8e1}.steps{display:flex;flex-wrap:wrap;gap:8px}.steps button{font:inherit;background:#0e1e23;color:#b4cdc7;border:1px solid #29423b;padding:12px 16px;border-radius:9px;cursor:pointer}.steps button[aria-selected=true]{border-color:#94d1aa;background:#162f28;color:#e1f4e5}.pane{min-height:150px;border-left:2px solid #558c74;padding:8px 22px;margin:24px 0}.pane h3{font-size:20px}.tag{color:#91a29f;font-size:13px}img.sheet{width:100%;height:auto;border:1px solid #203830;border-radius:12px}iframe{width:100%;height:760px;border:1px solid #29463c;border-radius:12px;background:#080f14}details{margin:20px 0}summary{cursor:pointer;color:#a5dcbe}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0c181d;border:1px solid #253b35;border-radius:10px;padding:20px;font-size:12px;line-height:1.55}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{padding:20px;border:1px solid #294239;border-radius:12px}.card h3{margin-top:0}.proof{display:flex;flex-wrap:wrap;gap:12px}.proof span{border:1px solid #345b48;border-radius:8px;padding:12px;color:#b9d9c6}@media(max-width:650px){main{padding:32px 16px}.agent img{width:65px}.grid{grid-template-columns:1fr}iframe{height:1100px}.bubble{padding:16px}}
+</style></head><body><main><div class="eyebrow">QUINELINGS / EXPERIMENTAL DESIGN STUDY</div><h1>Thought takes form.</h1><p>A useful program. A distinctive body. A gesture that belongs to it.</p><p class="tag">Ten specialist design reviews. These are proposed language extensions and isolated research prototypes; automatic free-text compilation and production anatomy integration remain to be built.</p><div class="agent"><img src="../assets/midnight/activity-character-armor.png" alt="Midnight.city agent"><div class="bubble">Exclude dormant rooftop planters, distribute 9 litres in request order, and report each grant and the conserved reserve.</div></div>
+<div class="steps" role="tablist" aria-label="Thought to lifeform"><button role="tab" aria-selected="true" data-stage="0">Thought</button><button role="tab" aria-selected="false" data-stage="1">Intent</button><button role="tab" aria-selected="false" data-stage="2">Program</button><button role="tab" aria-selected="false" data-stage="3">Anatomy</button><button role="tab" aria-selected="false" data-stage="4">Motion</button></div><section class="pane" role="tabpanel"><h3 id="stage-title"></h3><p id="stage-copy"></p></section>
+<div class="proof"><span>7 actual kernel operations</span><span>3 fresh quine generations</span><span>Wave + RGB recovery</span><span>Explicit node ownership</span></div><details><summary>Inspect the executable task graph</summary><pre>{
+  "version": 1,
+  "name": "Rooftop planter reserve steward",
+  "nodes": [
+    {
+      "id": "water",
+      "op": "literal",
+      "inputs": [],
+      "params": {
+        "value": 9
+      }
+    },
+    {
+      "id": "beds",
+      "op": "literal",
+      "inputs": [],
+      "params": {
+        "value": [
+          {
+            "id": "fern",
+            "amount": 4,
+            "active": true
+          },
+          {
+            "id": "moss",
+            "amount": 5,
+            "active": false
+          },
+          {
+            "id": "sage",
+            "amount": 7,
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "eligible",
+      "op": "filter",
+      "inputs": [
+        "beds"
+      ],
+      "params": {
+        "key": "active",
+        "operator": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "grants",
+      "op": "allocate",
+      "inputs": [
+        "water",
+        "eligible"
+      ],
+      "params": {}
+    },
+    {
+      "id": "reserve",
+      "op": "get",
+      "inputs": [
+        "grants"
+      ],
+      "params": {
+        "path": "remaining"
+      }
+    },
+    {
+      "id": "count",
+      "op": "length",
+      "inputs": [
+        "eligible"
+      ],
+      "params": {}
+    },
+    {
+      "id": "ledger",
+      "op": "report",
+      "inputs": [
+        "grants",
+        "reserve",
+        "count"
+      ],
+      "params": {
+        "labels": [
+          "allocation",
+          "reserve",
+          "eligibleBeds"
+        ]
+      }
+    }
+  ],
+  "outputs": [
+    "ledger"
+  ]
+}</pre></details><details><summary>Inspect the independently specified task result</summary><pre>[
+  {
+    "allocation": {
+      "grants": [
+        {
+          "id": "fern",
+          "requested": 4,
+          "granted": 4
+        },
+        {
+          "id": "sage",
+          "requested": 7,
+          "granted": 5
+        }
+      ],
+      "remaining": 0
+    },
+    "reserve": 0,
+    "eligibleBeds": 2
+  }
+]</pre></details>
+<h2>New bodies, assembled from anatomy.</h2><p>Spines, chambers, fins, loops, and explicit attachment sockets form new organisms. The skeletal tree is separate from the program’s dependency graph. Each operation retains a declared owner.</p><img class="sheet" src="thought-lifeform-03-contact-sheet.png" alt="Three schematic anatomy compiler outputs: reserve bearer, fork crown, confluence glider"><p class="tag">These three structural studies demonstrate composition. Their appearance is schematic; the production renderer does not yet accept this grammar.</p>
+<h2>One gesture, many connected tissues.</h2><p>Preparation, stroke, recovery, and rest replace uniform oscillation. The isolated preview demonstrates shared socket motion and deterministic phase seeking.</p><iframe title="Generated assembly motion research preview" src="thought-lifeform-06-preview.html"></iframe>
+<h2>A visual language for beautiful individuals.</h2><p>A dominant body, restrained luminous crests, clear negative space, and attached subordinate tissue. Program topology supplies meaningful traits; a bounded authored seed supplies variation.</p><img class="sheet" src="thought-lifeform-05-concepts.svg" alt="Six proposed new Quineling organism concepts"><p class="tag">Art direction concepts, not executed programs or recorded measurement colors.</p>
+<div class="grid"><section class="card"><h3>Mathematical contracts</h3><p>Closed smooth gesture scores, shared root transforms, regular geometric primitives, stable material coordinates, and explicit resource budgets.</p></section><section class="card"><h3>Meaning stays inspectable</h3><p>Thought clauses link to task operations and material owners. Unsupported and ambiguous requests retain visible obligations. Watching never dispatches an action.</p></section></div>
+<h2>Read the design</h2><p><a href="../docs/THOUGHT-TO-LIFEFORM.md">Integrated architecture and implementation sequence</a> · <a href="thought-lifeform-10-integration.md">QDL integration review</a> · <a href="thought-lifeform-09-evaluation.md">Evaluation and acceptance gates</a></p></main><script>
+const stages=[['A free-form goal','The thought is accepted as a goal to interpret. The runnable example uses a manually authored interpretation; this study does not call an English compiler.'],['An explicit task contract','Select active planters; allocate whole litres in request order, allowing partial grants; report grants, reserve, and eligible count. Units, ordering, and assumptions are explicit.'],['An executable seven-node program','Literal inputs feed filter, allocate, get, length, and report operations. Independent fixtures pass; the constructor produces the exact source across three fresh generations.'],['A generated anatomical expression','The anatomy prototype consumes the actual validated task graph and emits attached components with every operation owned. New body syntax is proposed, separate from existing family presets.'],['A bounded living view','A smooth four-stage score drives shared transforms and attached tissues. Motion phase and lighting remain presentation; recorded scalars are supplied only by actual task runs.']];
+function show(i){document.getElementById('stage-title').textContent=stages[i][0];document.getElementById('stage-copy').textContent=stages[i][1];document.querySelectorAll('[data-stage]').forEach(b=>b.setAttribute('aria-selected',String(Number(b.dataset.stage)===i)))}document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>show(Number(b.dataset.stage)));show(0);
+</script></body></html>

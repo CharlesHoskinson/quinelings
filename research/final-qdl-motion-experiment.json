@@ -1,0 +1,81 @@
+{
+  "passiveResponse": [
+    {
+      "damping": 0.7,
+      "frequencyRatio": 0.25,
+      "amplitude": 0.999298,
+      "phaseDelayRadians": 0.357309
+    },
+    {
+      "damping": 0.7,
+      "frequencyRatio": 0.5,
+      "amplitude": 0.97474,
+      "phaseDelayRadians": 0.750929
+    },
+    {
+      "damping": 0.7,
+      "frequencyRatio": 0.8,
+      "amplitude": 0.850026,
+      "phaseDelayRadians": 1.259798
+    },
+    {
+      "damping": 1,
+      "frequencyRatio": 0.25,
+      "amplitude": 0.941176,
+      "phaseDelayRadians": 0.489957
+    },
+    {
+      "damping": 1,
+      "frequencyRatio": 0.5,
+      "amplitude": 0.8,
+      "phaseDelayRadians": 0.927295
+    },
+    {
+      "damping": 1,
+      "frequencyRatio": 0.8,
+      "amplitude": 0.609756,
+      "phaseDelayRadians": 1.349482
+    },
+    {
+      "damping": 1.4,
+      "frequencyRatio": 0.25,
+      "amplitude": 0.854699,
+      "phaseDelayRadians": 0.641364
+    },
+    {
+      "damping": 1.4,
+      "frequencyRatio": 0.5,
+      "amplitude": 0.629629,
+      "phaseDelayRadians": 1.078987
+    },
+    {
+      "damping": 1.4,
+      "frequencyRatio": 0.8,
+      "amplitude": 0.440772,
+      "phaseDelayRadians": 1.411445
+    }
+  ],
+  "quintic": {
+    "positionEndpoints": [
+      0,
+      1
+    ],
+    "firstDerivativeEndpoints": [
+      0,
+      0
+    ],
+    "secondDerivativeEndpoints": [
+      0,
+      0
+    ],
+    "firstDerivativeNonnegative": "30 z\u00b2(1\u2212z)\u00b2"
+  },
+  "currentBreathAreaFactorRange": [
+    0.9055385138137416,
+    1.0862780491200215
+  ],
+  "recommendedIsochoricAreaFactorRange": [
+    1,
+    1
+  ]
+}

@@ -3,18 +3,18 @@ module websiteLab {
   type Key = {source: int, input: int}
   type Record = {key: Key, output: int, origin: str, serial: int}
   type State = {key: Key, record: Record, baseline: Record, present: bool, status: str,
-    executions: int, evaluatorRequests: int, phase: int, view: int, emitted: int, rebuilt: int}
+    executions: int, evaluatorRequests: int, phase: int, view: int, emitted: int, rebuilt: int, childSource: int, childTask: int}
   var s: State
   var before: State
   var event: str
   pure val empty = {key:{source:0,input:0},output:0,origin:"none",serial:0}
   pure val initial = {key:{source:0,input:0},record:empty,baseline:empty,present:false,status:"ready",
-    executions:0,evaluatorRequests:0,phase:0,view:0,emitted:-1,rebuilt:-1}
+    executions:0,evaluatorRequests:0,phase:0,view:0,emitted:-1,rebuilt:-1,childSource:-1,childTask:-1}
   pure def output(k: Key): int = k.source*10+k.input
   action init = all {s'=initial,before'=initial,event'="init"}
   pure def requestDelta(kind: str): int =
     if(Set("run","comparePreRefused").contains(kind))1
-    else if(Set("compare","compareRefused","variant").contains(kind))2
+    else if(Set("compare","compareRefused","variant","child").contains(kind))2
     else if(kind=="generations")3 else 0
   action commit(after: State, kind: str): bool = all {
     s'=after.with("evaluatorRequests",s.evaluatorRequests+requestDelta(kind)),before'=s,event'=kind}
@@ -52,19 +52,33 @@ module websiteLab {
     commit(s.with("executions",s.executions+3),"generations")}
   // Two separately authored artifacts execute without replacing the primary comparison.
   action sourceVariant = commit(s.with("executions",s.executions+2),"variant")
+  // Restoring exact retained bindings restores replay eligibility, without a run.
+  action restoreBindings = all {s.present,s.record.origin=="executed",
+    commit(s.with("key",s.record.key).with("status","current"),"restore")}
+  // Fresh local storage retains source/input identity and cumulative counters.
+  action resetSession = commit(s.with("record",empty).with("baseline",empty).with("present",false)
+    .with("status","ready").with("emitted",-1).with("rebuilt",-1),"reset")
+  // Abstract body-child relation: new source identity, base task preserved. Actual
+  // typed construction, lineage and RGB equality are checked in the runtime/browser.
+  action bodyChild = commit(s.with("childSource",s.key.source+1000).with("childTask",s.key.source)
+    .with("executions",s.executions+2),"child")
+  val childPreservesTask = event!="child" or
+    (s.childSource!=before.key.source and s.childTask==before.key.source and s.key==before.key)
+  val resetClearsHistory = event!="reset" or
+    (not(s.present) and s.record==empty and s.baseline==empty and s.key==before.key)
   action step = {
     nondet token=Set(0,1,2).oneOf()
     any {editInput(token),build(token),runTask,replay,refuse,animate,selectView,verify,reconstruct,importRecord,
-      compare,compareRefused,comparePreRefused,generations,sourceVariant}
+      compare,compareRefused,comparePreRefused,generations,sourceVariant,restoreBindings,resetSession,bodyChild}
   }
   val currentClaim = Set("current","replay").contains(s.status)
   val currentIsExecuted = not(currentClaim) or
     (s.present and s.record.key==s.key and s.record.origin=="executed")
   val onlyRunExecutes = s.executions==before.executions+
     (if(Set("run","compareRefused","comparePreRefused").contains(event))1
-     else if(Set("compare","variant").contains(event))2 else if(event=="generations")3 else 0)
+     else if(Set("compare","variant","child").contains(event))2 else if(event=="generations")3 else 0)
   val retained = not(Set("refuse","input","build","animate","view","verify","reconstruct","replay",
-    "compareRefused","comparePreRefused","generations","variant").contains(event)) or
+    "compareRefused","comparePreRefused","generations","variant","child","restore").contains(event)) or
     (s.record==before.record and s.present==before.present)
   val exactReplay = event!="replay" or (s.record==before.record and s.record.key==s.key)
   val refuseNeverCurrent = event!="refuse" or not(currentClaim)
@@ -80,7 +94,7 @@ module websiteLab {
   val evaluationsBoundedByRequests = s.executions<=s.evaluatorRequests
   val safety = currentIsExecuted and onlyRunExecutes and retained and exactReplay and refuseNeverCurrent
     and editedIdentity and importIsAsserted and sourceOnly and genotypeOnly and comparisonBaseline
-    and measuredRequests and evaluationsBoundedByRequests and refusalPairRetained
+    and measuredRequests and evaluationsBoundedByRequests and refusalPairRetained and childPreservesTask and resetClearsHistory
   run stale_then_refusalTest = init.then(runTask).then(editInput(1)).then(refuse)
     .expect(safety and s.record.key.input==0 and s.executions==1 and s.status=="refused")
   run exact_replayTest = init.then(runTask).then(replay).then(animate).then(selectView)
@@ -97,6 +111,12 @@ module websiteLab {
     .expect(safety and s.executions==2 and s.evaluatorRequests==2 and s.baseline.serial==1 and s.record.serial==2)
   run pre_interpreter_refusalTest = init.then(compare).then(editInput(1)).then(comparePreRefused)
     .expect(safety and s.executions==3 and s.evaluatorRequests==3)
+  run restored_bindings_replayTest = init.then(compare).then(editInput(1)).then(restoreBindings).then(replay)
+    .expect(safety and s.executions==2 and s.evaluatorRequests==2 and s.record.serial==2)
+  run clear_local_historyTest = init.then(compare).then(resetSession).then(compare)
+    .expect(safety and s.executions==4 and s.evaluatorRequests==4 and s.record.serial==4)
+  run body_child_is_separateTest = init.then(compare).then(bodyChild).then(replay)
+    .expect(safety and s.executions==4 and s.childTask==0 and s.childSource==1000 and s.record.serial==2)
   // Deliberate broken transitions establish that the checks can reject bugs.
   action badAnimation = commit(s.with("executions",s.executions+1),"animate")
   action badFreshness = commit(s.with("key",{source:1,input:1}),"input")

@@ -1,0 +1,11 @@
+{
+  "reviewer": "grok-3",
+  "requestedModel": "grok-4.7",
+  "exitCode": 0,
+  "reportChars": 8642,
+  "elapsedSeconds": 125,
+  "completed": true,
+  "resumed": true,
+  "stopReason": "end_turn",
+  "additionalSeconds": 133
+}

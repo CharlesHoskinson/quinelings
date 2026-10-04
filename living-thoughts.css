@@ -5,3 +5,5 @@
 .domain text.bar-label{fill:#11251d}.domain text.chart-note{font-size:11px}
 
 .result-story{border-left:3px solid #b9e4c6;padding:12px 16px;background:#192b30;line-height:1.65;color:var(--ink)}
+
+#audit-scenario{max-width:100%;width:100%;font-size:12px;margin:8px 0}#current-control{display:block;margin:12px 0}#current-control[hidden]{display:none}.failure{color:var(--red)}#offspring-output{max-height:440px}

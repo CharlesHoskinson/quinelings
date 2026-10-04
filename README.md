@@ -1,5 +1,7 @@
 # Quinelings
 
+**Living Thoughts**
+
 [Open the live website](https://charleshoskinson.github.io/quinelings/).
 
 Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and specifications to `gh-pages`. GitHub Pages deploys that branch automatically.

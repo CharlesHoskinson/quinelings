@@ -1,0 +1,453 @@
+{
+  "passed": true,
+  "browser": "153.0.8010.12",
+  "cases": [
+    {
+      "id": "route-preview",
+      "outputs": [
+        {
+          "found": true,
+          "path": [
+            "A",
+            "B",
+            "D"
+          ],
+          "distance": 2
+        },
+        {
+          "status": "simulated",
+          "action": "walk-proposal",
+          "payload": [
+            "A",
+            "B",
+            "D"
+          ]
+        },
+        true
+      ],
+      "changed": "4 / 9"
+    },
+    {
+      "id": "receipt-reconciliation",
+      "outputs": [
+        {
+          "state": "unknown",
+          "confirmedUnits": 1,
+          "confirmedAttempts": 1,
+          "failedAttempts": 0,
+          "pendingAttempts": 0,
+          "unknownAttempts": 1,
+          "attempts": 2,
+          "mayRetry": false
+        }
+      ],
+      "changed": "2 / 3"
+    },
+    {
+      "id": "water-total",
+      "outputs": [
+        {
+          "liters": 9,
+          "measurements": 3
+        }
+      ],
+      "changed": "3 / 4"
+    },
+    {
+      "id": "confirmed-checkpoints",
+      "outputs": [
+        {
+          "haul": "supported",
+          "arrival": "conflict"
+        },
+        false
+      ],
+      "changed": "7 / 13"
+    },
+    {
+      "id": "craft-quote",
+      "outputs": [
+        {
+          "requested": 4,
+          "feasible": 3,
+          "oreUsed": 6,
+          "woodUsed": 3
+        },
+        false
+      ],
+      "changed": "7 / 22"
+    },
+    {
+      "id": "evidence-ledger",
+      "outputs": [
+        {
+          "state": "conflict",
+          "support": 1,
+          "refute": 1,
+          "sources": 1,
+          "sourceConflicts": [
+            "sensor"
+          ],
+          "used": [
+            {
+              "claim": "ready",
+              "id": "a",
+              "kind": "observation",
+              "observedAt": 0,
+              "revision": 2,
+              "source": "sensor",
+              "value": true
+            },
+            {
+              "claim": "ready",
+              "id": "z",
+              "kind": "observation",
+              "observedAt": 0,
+              "revision": 2,
+              "source": "sensor",
+              "value": false
+            }
+          ],
+          "skipped": []
+        }
+      ],
+      "changed": "2 / 4"
+    },
+    {
+      "id": "work-schedule",
+      "outputs": [
+        {
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "jobs": [
+            {
+              "id": "a",
+              "start": 0,
+              "end": 4
+            },
+            {
+              "id": "b",
+              "start": 4,
+              "end": 6
+            },
+            {
+              "id": "c",
+              "start": 0,
+              "end": 4
+            }
+          ],
+          "makespan": 6
+        },
+        false
+      ],
+      "changed": "4 / 5"
+    },
+    {
+      "id": "trade-preview",
+      "outputs": [
+        {
+          "ready": false,
+          "quantity": 0,
+          "predictedProceeds": 0
+        },
+        false
+      ],
+      "changed": "10 / 28"
+    },
+    {
+      "id": "needs-triage",
+      "outputs": [
+        {
+          "status": "simulated",
+          "action": "eat-proposal",
+          "payload": "b"
+        },
+        true
+      ],
+      "changed": "5 / 14"
+    },
+    {
+      "id": "gather-readiness",
+      "outputs": [
+        {
+          "status": "skipped",
+          "action": "gather-proposal",
+          "payload": 3
+        },
+        false
+      ],
+      "changed": "6 / 14"
+    }
+  ],
+  "failedEvaluations": {
+    "overflow": {
+      "occurrence": 0,
+      "status": "failed",
+      "outputs": [],
+      "effects": [],
+      "trace": [
+        {
+          "nodeId": "readings",
+          "op": "input",
+          "inputs": [],
+          "value": [
+            1e+308,
+            1e+308
+          ]
+        }
+      ],
+      "diagnostic": {
+        "code": "nonfinite",
+        "path": "$",
+        "nodeId": "total",
+        "occurrence": 0,
+        "message": "Arithmetic overflow"
+      }
+    },
+    "cycle": {
+      "occurrence": 0,
+      "status": "failed",
+      "outputs": [],
+      "effects": [],
+      "trace": [
+        {
+          "nodeId": "jobs",
+          "op": "input",
+          "inputs": [],
+          "value": [
+            {
+              "depends": [
+                "b"
+              ],
+              "duration": 1,
+              "id": "a"
+            },
+            {
+              "depends": [
+                "a"
+              ],
+              "duration": 1,
+              "id": "b"
+            }
+          ]
+        },
+        {
+          "nodeId": "deadline",
+          "op": "input",
+          "inputs": [],
+          "value": 5
+        }
+      ],
+      "diagnostic": {
+        "code": "refinement",
+        "path": "$",
+        "nodeId": "schedule",
+        "occurrence": 0,
+        "message": "Schedule has dependency cycle"
+      }
+    }
+  },
+  "replayAddsNoEvaluation": true,
+  "refusalPreservesHistoricalRecord": true,
+  "staleAnnotationsHidden": true,
+  "motionDoesNotEvaluate": true,
+  "threeRecoveredGenerations": [
+    {
+      "recovery": "source",
+      "exactSource": true,
+      "emissionExact": true,
+      "exactCalculation": true,
+      "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1"
+    },
+    {
+      "recovery": "harmonics",
+      "exactSource": true,
+      "emissionExact": true,
+      "exactCalculation": true,
+      "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1"
+    },
+    {
+      "recovery": "colors",
+      "exactSource": true,
+      "emissionExact": true,
+      "exactCalculation": true,
+      "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1"
+    }
+  ],
+  "sourceVariant": {
+    "originalSource": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1",
+    "cappedSource": "ql_f90072bb6a82c6740965b274d1a452470898487a12857429f6f44a2d2e6d26dd",
+    "addedOperation": {
+      "id": "cappedWater",
+      "op": "clamp",
+      "inputs": [
+        "total"
+      ],
+      "params": {
+        "min": 0,
+        "max": 5
+      },
+      "type": {
+        "kind": "number",
+        "unit": "L"
+      }
+    },
+    "originalOutputs": [
+      {
+        "liters": 7,
+        "measurements": 3
+      }
+    ],
+    "cappedOutputs": [
+      {
+        "liters": 5,
+        "measurements": 3
+      }
+    ],
+    "sourceEmissionExact": [
+      true,
+      true
+    ],
+    "geometry": {
+      "sameTopology": true,
+      "correspondingSamples": false,
+      "sharedNodeAnchors": 4,
+      "anchorXyzRms": 0.039984231668047515,
+      "components": [
+        4,
+        4
+      ],
+      "ownershipBands": [
+        7,
+        8
+      ],
+      "reason": "Area-weighted sample plans differ; indexed points are not corresponding tissue. Shared operation anchors are compared at phase zero."
+    },
+    "view": {
+      "phase": 0,
+      "samples": 4000,
+      "sharedProjection": true,
+      "camera": {
+        "occupancy": 0.76,
+        "lean": -0.12,
+        "yaw": 0.3,
+        "pitch": 0.12,
+        "focus": 0.38
+      },
+      "bounds": {
+        "lo": [
+          -0.8216649594164251,
+          -0.44333024489776585
+        ],
+        "hi": [
+          0.8905355504753277,
+          0.7487529852549046
+        ]
+      }
+    }
+  },
+  "passiveRecoveries": [
+    {
+      "encoding": "harmonics",
+      "exactSource": true,
+      "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1",
+      "additionalEvaluationRequests": 0
+    },
+    {
+      "encoding": "colors",
+      "exactSource": true,
+      "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1",
+      "additionalEvaluationRequests": 0
+    }
+  ],
+  "retryPolicies": [
+    {
+      "preparedOutcomes": [
+        "retry",
+        "retry",
+        "ok"
+      ],
+      "baseline": {
+        "cap": 4,
+        "result": {
+          "status": "completed",
+          "attempts": 3,
+          "history": [
+            "retry",
+            "retry",
+            "ok"
+          ]
+        },
+        "source": "ql_99f09d9685a6fdbf5f437223cfc66b64babd9d121e8cec7b41e5896eed0feb6a"
+      },
+      "edited": {
+        "cap": 1,
+        "result": {
+          "status": "exhausted",
+          "attempts": 1,
+          "history": [
+            "retry"
+          ]
+        },
+        "source": "ql_2b5730199b5cce420106052e92499dd499a866f53179e6b69f9798a5500c6915"
+      },
+      "sourceChanged": true,
+      "effectsPublished": [
+        0,
+        0
+      ]
+    },
+    {
+      "preparedOutcomes": [
+        "retry",
+        "retry",
+        "ok"
+      ],
+      "baseline": {
+        "cap": 4,
+        "result": {
+          "status": "completed",
+          "attempts": 3,
+          "history": [
+            "retry",
+            "retry",
+            "ok"
+          ]
+        },
+        "source": "ql_99f09d9685a6fdbf5f437223cfc66b64babd9d121e8cec7b41e5896eed0feb6a"
+      },
+      "edited": {
+        "cap": 4,
+        "result": {
+          "status": "completed",
+          "attempts": 3,
+          "history": [
+            "retry",
+            "retry",
+            "ok"
+          ]
+        },
+        "source": "ql_99f09d9685a6fdbf5f437223cfc66b64babd9d121e8cec7b41e5896eed0feb6a"
+      },
+      "sourceChanged": false,
+      "effectsPublished": [
+        0,
+        0
+      ]
+    }
+  ],
+  "invalidRetryAddsNoEvaluation": true,
+  "malformedInputsAddNoEvaluation": true,
+  "refusalPreservesComparisonPair": true,
+  "repeatedInputsZeroChanges": true,
+  "downloadImportsPassively": true,
+  "mobile": {
+    "width": 320,
+    "reducedMotion": true,
+    "keyboardRun": true
+  },
+  "errors": []
+}

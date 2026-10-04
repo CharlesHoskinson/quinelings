@@ -1,0 +1,167 @@
+[
+  {
+    "file": "gallery.html",
+    "old": "This gallery preserves the original experimental programs. Scenario selection rewrites literals and creates new source. Pulsekeeper’s budget report is separate from its fixed four-attempt retry cap.",
+    "new": "This is the original experimental gallery. Choosing a scenario rewrites values inside the program and creates new source. The QDL 1 examples accept new inputs without rewriting their source. Pulsekeeper’s budget report is separate from its fixed four-attempt retry cap."
+  },
+  {
+    "file": "gallery.html",
+    "old": "Use the audited QDL 1 examples →",
+    "new": "Open the QDL 1 examples →"
+  },
+  {
+    "file": "gallery.html",
+    "old": "Finite graphs.<br>Exact source.<br>Infinite curiosity.",
+    "new": "Inspect the calculation.<br>Recover the source."
+  },
+  {
+    "file": "gallery.html",
+    "old": "One program. Three ways to understand it.",
+    "new": "Follow the task into its body."
+  },
+  {
+    "file": "gallery.html",
+    "old": "FROM MIDNIGHT.CITY TO A MATHEMATICAL BODY",
+    "new": "FROM A SUPPLIED TASK TO A MATHEMATICAL BODY"
+  },
+  {
+    "file": "gallery.html",
+    "old": "Follow an agent’s written task into an explicitly authored program, then its equations and animated body.",
+    "new": "Public Midnight.city artwork illustrates this authored task. Follow the graph’s local calculation into its equations and animated body."
+  },
+  {
+    "file": "gallery.html",
+    "old": "<strong>Change the inputs.</strong> Choose <code>healthy-lamp-guard-false</code> under Task scenario, then run again. The score becomes <code>0.125</code> and the repair is skipped.",
+    "new": "<strong>Build the healthy-lamp scenario.</strong> Choose <code>healthy-lamp-guard-false</code> under Task scenario. This writes different lamp readings into the source. Run that program to see a score of <code>0.125</code> and a skipped repair."
+  },
+  {
+    "file": "gallery.html",
+    "old": "Choose prepared inputs. Changing the scenario changes the values encoded in this program.",
+    "new": "Choose a prepared scenario. The selected values are written into a new program source. Pulsekeeper’s budget input changes the budget report; retry itself uses a fixed cap of four."
+  },
+  {
+    "file": "create.html",
+    "old": "The local compiler supports explicit data pipelines. Every clause must be understood before a program is built.",
+    "new": "The local compiler supports explicit data pipelines. Every clause must match supported syntax before a program is built."
+  },
+  {
+    "file": "create.html",
+    "old": "Free-text interpretation requires a separately configured service. Local supported syntax works without one. The service proposes a typed plan; this browser validates it.",
+    "new": "Local supported syntax works without a service. A separately configured service can propose a typed plan from other text. This browser validates the plan’s structure; review the interpretation to check that it expresses your intended task."
+  },
+  {
+    "file": "create.html",
+    "old": "Your words become explicit operations. Their structure becomes a body.",
+    "new": "Supported task syntax builds explicit operations. Inspect the interpretation to see what was built."
+  },
+  {
+    "file": "create.html",
+    "old": "A thought, taking shape",
+    "new": "The authored program’s body"
+  },
+  {
+    "file": "v1.html",
+    "old": "Give a thought<br>something to do.",
+    "new": "Build a task.<br>Supply its inputs."
+  },
+  {
+    "file": "v1.html",
+    "old": "The authored anatomy defines the shape; role pigments identify operations.",
+    "new": "The authored anatomy defines the shape. Colors group operations by role; selecting an operation identifies the tissue it owns."
+  },
+  {
+    "file": "v1.html",
+    "old": "A record, not a promise",
+    "new": "Inspect the recorded result"
+  },
+  {
+    "file": "v1.html",
+    "old": "No source verification requested.",
+    "new": "Verify checks exact constructor source emission without running the task."
+  },
+  {
+    "file": "ranch.html",
+    "old": "Source becomes structure.<br>Two thoughts become a family.",
+    "new": "Construct a child<br>under explicit program rules."
+  },
+  {
+    "file": "ranch.html",
+    "old": "A place to become.",
+    "new": "Explore the meadow."
+  },
+  {
+    "file": "ranch.html",
+    "old": "Every meeting holds<br>a new possibility.",
+    "new": "Meetings can propose<br>a pairing."
+  },
+  {
+    "file": "ranch.html",
+    "old": "Motion never runs a task. Courtship makes a proposal; admission creates a child.",
+    "new": "Gesture time animates bodies. Social time advances the local pairing policy. Neither runs a task."
+  },
+  {
+    "file": "ranch.html",
+    "old": "Composition connects a donor output to a recipient input of the same exact type. Mating selects a pure node slice. Merge keeps both tasks; body inheritance keeps one task and varies its anatomy.",
+    "new": "Compose connects a donor output to a recipient input of the same exact type. Mate replaces an eligible pure slice. Merge keeps both tasks; Body keeps the recipient’s task and varies its anatomy."
+  },
+  {
+    "file": "ranch.html",
+    "old": "A preview is a complete source candidate. Admission saves it without execution. A world proposal is required for a nursery birth.",
+    "new": "Preview gives you candidate source to inspect. Admission stores it without running a task. A world proposal is required for a nursery birth."
+  },
+  {
+    "file": "ranch-workshop.html",
+    "old": "Two programs.<br>A useful new lifeform.",
+    "new": "Connect their<br>calculations."
+  },
+  {
+    "file": "ranch-workshop.html",
+    "old": "A reservoir measures water. A waterkeeper allocates it. Inspect the typed seam, build their child, and supply new observations.",
+    "new": "A reservoir program totals supplied water readings. A waterkeeper allocates a water budget. Connect the total to the allocation input, then run the child with new readings."
+  },
+  {
+    "file": "ranch-workshop.html",
+    "old": "Measure the water.",
+    "new": "Total the readings."
+  },
+  {
+    "file": "ranch-workshop.html",
+    "old": "What survives?",
+    "new": "Inspect the connection."
+  },
+  {
+    "file": "README.md",
+    "old": "Quinelings are small executable programs with animated mathematical bodies. Their anatomy reflects program structure; finite harmonic bands and an exact RGB strand preserve the complete source. Each of the ten library programs runs a useful local task and constructs its own canonical source through quotation and ordinary constructors.",
+    "new": "Quinelings are authored local programs with mathematical bodies. The homepage runs reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data."
+  },
+  {
+    "file": "README.md",
+    "old": "The creatures use continuous luminous curves, family-specific anatomy, and a shared elapsed-time motion clock. Pause freezes both viewers; Clear focus or Escape returns to the portrait. Recorded execution markers keep their identity when you inspect another operation. Twelve domain reviews informing this design are summarized in `research/aesthetics-review.json`.",
+    "new": "The body gives each program a visual index: select an operation to inspect its connections and the tissue it owns. On the homepage, a recorded run adds value labels to that anatomy. Gesture playback changes the pose without running the task. Different programs can look alike; exact identity comes from source bytes."
+  },
+  {
+    "file": "README.md",
+    "old": "## View the collection",
+    "new": "## Explore the lab and original gallery"
+  },
+  {
+    "file": "README.md",
+    "old": "Open http://127.0.0.1:8048 . The Midnight.city walkthrough moves an agent’s declared thought bubble into the executable graph, then shows the exact QDL equations and linked animation. Select a program line to highlight its organ. Changing thought cycles changes the actual program; translating or replaying alone does not execute it.",
+    "new": "Open http://127.0.0.1:8048 . Choose a homepage example, load the suggested change, and run both input snapshots. Select a highlighted operation to inspect its values before and after. The source and body stay the same. The separate source experiment adds a water cap and compares the resulting programs."
+  },
+  {
+    "file": "README.md",
+    "old": "Select a specimen, choose a task fixture, run its task and quine, inspect the output, and reproduce a fresh generation. Recover the source from harmonic samples or exact RGB data, or download either genome.",
+    "new": "In the [original gallery](gallery.html), select a specimen and a task scenario, run its task, then reproduce a fresh generation. The scenario writes values into the program’s source. Changing task cycles also changes that source; walkthrough playback and trace replay do not execute it. Pause freezes both gallery viewers; Clear focus or Escape returns to the portrait. Recover the source from harmonic samples or exact RGB data, or download either genome."
+  },
+  {
+    "file": "README.md",
+    "old": "The new [workspace](https://charleshoskinson.github.io/quinelings/v1.html) shows ten reusable typed agent-task recipes. It links the public declaration, program nodes, source-owned body, supplied run inputs, outcomes and exact emitted constructor source. Runtime observations change results without changing source or body.",
+    "new": "The [QDL 1 workspace](https://charleshoskinson.github.io/quinelings/v1.html) opens the homepage’s ten reusable recipes for declaration editing and named inputs. It links the public declaration, program nodes, source-owned body, run records and exact emitted constructor source. Runtime observations can change results without changing source or body."
+  },
+  {
+    "file": "docs/THOUGHT-TO-LIFEFORM.md",
+    "old": "# Thought to lifeform: proposed experimental QDL update\n\n",
+    "new": "# Thought to lifeform: proposed experimental QDL update\n\nHistorical design proposal. For the implemented stable language, read [QDL 1](QDL-V1.md). Creation and Ranch policies retain their separately documented experimental status. The proposal below describes an earlier stage.\n\n"
+  }
+]

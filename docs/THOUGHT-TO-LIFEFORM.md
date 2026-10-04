@@ -1,5 +1,7 @@
 # Thought to lifeform: proposed experimental QDL update
 
+Historical design proposal. For the implemented stable language, read [QDL 1](QDL-V1.md). Creation and Ranch policies retain their separately documented experimental status. The proposal below describes an earlier stage.
+
 A Quineling should be a useful executable program with a distinctive, coherent mathematical body. The next QDL update should generate both new programs and new anatomy, rather than select a gallery specimen and recolor it. Beauty is a first-class acceptance criterion alongside meaning, reproducibility, and bounded execution.
 
 This is an integrated design proposal, supported by isolated working experiments. The production validator does not yet accept the proposed anatomy or gesture fields. QDL remains experimental; this work does not freeze version one.

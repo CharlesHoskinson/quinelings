@@ -120,6 +120,68 @@
         },
         "reducedMotion": {
           "const": "freeze"
+        },
+        "rhythm": {
+          "type": "object",
+          "description": "Optional source-authored bounded rhythm. Omission keeps the source expression unchanged and uses the renderer fallback.",
+          "required": [
+            "model",
+            "mode",
+            "rate",
+            "breath",
+            "wave",
+            "waveNumber",
+            "lag",
+            "asymmetry",
+            "overtone"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "model": {
+              "const": "coupled-harmonic"
+            },
+            "mode": {
+              "enum": [
+                "periodic",
+                "quasiperiodic"
+              ]
+            },
+            "rate": {
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 2
+            },
+            "breath": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.18
+            },
+            "wave": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.18
+            },
+            "waveNumber": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "lag": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "asymmetry": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.8
+            },
+            "overtone": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.35
+            }
+          }
         }
       }
     },

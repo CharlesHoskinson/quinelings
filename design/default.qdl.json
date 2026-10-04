@@ -20,7 +20,18 @@
   "motion": {
     "clock": "separate",
     "phaseRate": 0.038,
-    "reducedMotion": "freeze"
+    "reducedMotion": "freeze",
+    "rhythm": {
+      "model": "coupled-harmonic",
+      "mode": "periodic",
+      "rate": 1,
+      "breath": 0.06,
+      "wave": 0.055,
+      "waveNumber": 1.6,
+      "lag": 0.9,
+      "asymmetry": 0.28,
+      "overtone": 0.17
+    }
   },
   "ink": {
     "ghostAlpha": 0.09,

@@ -18,7 +18,7 @@ The language needs to be predictable enough for an agent to generate valid creat
 
 ## Syntax
 
-The following grammar fixes the top-level vocabulary; nested records have the exact fields illustrated in the complete default expression. JSON supplies string/number/array lexical rules.
+The following grammar fixes the top-level vocabulary; nested records have the exact fields illustrated in the complete default expression, except that `motion.rhythm` may be omitted by existing designs. JSON supplies string/number/array lexical rules.
 
 ```ebnf
 Design = '{', Marker, ',', Family, ',', Organ, ',', Filament, ',',
@@ -30,6 +30,8 @@ Organ.model = '"rosette"' ;
 Filament.model = '"pinned-sine"' ;
 Motion.clock = '"separate"' ;
 Motion.reducedMotion = '"freeze"' ;
+Motion.rhythm.model = '"coupled-harmonic"' ; (* optional rhythm record *)
+Motion.rhythm.mode = '"periodic"' | '"quasiperiodic"' ;
 Surface.model = '"folded-ribbon"' ;
 Light.model = '"density-crest"' ;
 ```
@@ -48,6 +50,11 @@ D.family ∈ Families
 0 ≤ a,b ≤ 0.45; a+b < 1
 0 ≤ bend ≤ 0.08; 0 ≤ frequencyGain ≤ 0.2; 0 ≤ ripple ≤ 0.3
 0 ≤ phaseRate ≤ 0.05
+if motion.rhythm is present, every rhythm field is required:
+  model = coupled-harmonic; mode ∈ {periodic, quasiperiodic}
+  0.25 ≤ rate ≤ 2; 0 ≤ breath,wave ≤ 0.18
+  0 ≤ waveNumber ≤ 4; 0 ≤ lag ≤ 2
+  0 ≤ asymmetry ≤ 0.8; 0 ≤ overtone ≤ 0.35
 0 ≤ ghostAlpha < secondaryAlpha < ridgeAlpha ≤ 1
 surface.model = folded-ribbon
 ribbons ∈ integers [8,36]; crests ∈ integers [3,6]; folds ∈ integers [2,9]
@@ -68,14 +75,73 @@ A program task graph must also satisfy the independent kernel judgment `validGra
 
 Compilation `compile(G,D)` copies G and attaches the full validated D as `graph.design` inside the quoted task. The constructor quine therefore reconstructs the design annotation too. A design edit changes canonical source identity but leaves task results unchanged when executable fields are unchanged.
 
+## Authored rhythms
+
+`motion.rhythm` declares a creature's movement in its canonical source. It is optional so previously encoded designs still validate and reproduce byte for byte. Validation never fills missing fields. An omitted record uses the renderer's fallback rhythm; this preserves source identity, not an archived rendering of the earlier renderer. New `create(family)` designs contain the complete record. Each family has a distinct preset; coral and bloom use quasiperiodic secondary movement.
+
+```json
+"rhythm": {
+  "model": "coupled-harmonic",
+  "mode": "periodic",
+  "rate": 1,
+  "breath": 0.06,
+  "wave": 0.055,
+  "waveNumber": 1.6,
+  "lag": 0.9,
+  "asymmetry": 0.28,
+  "overtone": 0.17
+}
+```
+
+| Control | Meaning |
+| --- | --- |
+| `rate` | Rhythm speed relative to the shared presentation phase |
+| `breath` | Coherent expansion/contraction amplitude |
+| `wave` | Tissue bending and secondary gesture amplitude |
+| `waveNumber` | Spatial wave count; rounded on closed backbones to preserve seams |
+| `lag` | Phase delay between leading tissue and trailing tissue |
+| `asymmetry` | Faster active stroke and slower recovery through a monotone phase warp |
+| `overtone` | Bounded weight of an additional harmonic |
+| `mode` | Integer temporal harmonics or an irrational secondary frequency |
+
+For presentation phase `t`, let `r` be the rhythm and define:
+
+```text
+φ = r.rate · t
+θ = φ + r.asymmetry · sinφ
+pulse = sinθ
+χ = 3φ                         when mode = periodic
+χ = √2 φ                       when mode = quasiperiodic
+secondary = (sin(2θ − r.lag) + r.overtone·sinχ)/(1+r.overtone)
+```
+
+The phase warp never reverses: `dθ/dφ = 1 + asymmetry·cosφ ≥ 0.2`. Its nonuniform speed gives a stroke and recovery without piecewise discontinuities. Both `pulse` and `secondary` stay in `[−1,1]`. A shared lateral scale `S = 1 + breath·pulse` lies in `[0.82,1.18]`; longitudinal scale `1/√S` opposes the expansion. This suggests compliant tissue; it is not a claim of a complete volume-preserving or biomechanical simulation.
+
+A traveling component at longitudinal position `u` and ribbon angle `a` is:
+
+```text
+w = waveNumber                  on open backbones
+w = round(waveNumber)           on closed backbones
+T = (sin(θ−2πwu−lag(1−cos a))
+     + overtone·sin(2θ−2πwu−lag−a))/(1+overtone)
+```
+
+Again `|T| ≤ 1`. Family formulas multiply the wave by bounded tissue envelopes: coral bends increasingly toward its tips, jelly and comet threads trail their head, moth wings share a stroke, and a logarithmic nautilus expands along its shell. The seed uses golden-angle strand placement, while the torus carries a `(1,3)` toroidal winding. These are explicit presentation formulas, not new interpreter operations.
+
+All periodic temporal terms use integer harmonics of the raw or shared warped phase, so the nominal loop in input phase is `2π/rate`. In quasiperiodic mode the additional `√2` frequency generally prevents a common finite period when its weight and displacement are nonzero. It remains deterministic and bounded; zero amplitudes can remove the nonperiodic contribution. No accumulated velocity, random walk, numerical integrator, or hidden oscillator state is needed. The same source and phase reproduce the same frame.
+
+`phaseRate` still controls the clock and can be zero; `rhythm.rate` controls the geometry's response to that clock. In seconds, a periodic cycle lasts `2π/(24·phaseRate·rhythm.rate)` when both rates are positive. Pause and reduced motion freeze the input phase before any of these formulas are evaluated. None of the rhythm controls dispatches effects or advances program execution.
+
+The gallery’s **Shape the motion** controls expose the mode, breathing, traveling wave, and follow-through (`lag`). Committing a control change encodes the edited rhythm in the creature’s source and both genomes. **Reset species motion** restores its authored family preset. These edits change source identity while preserving task semantics.
+
 ## Mapping equations
 
-For operation node n, let f be its stable opcode frequency, degree the sum of incoming/outgoing counts, and v a bounded literal-magnitude summary. Define:
+For operation node n, let `t` be the raw presentation phase, `φ = motionState(t).phase` its shared warped phase, and `α` the organ outline angle. The anchor consumes raw `t` and applies the rhythm internally. Let f be its stable opcode frequency, degree the sum of incoming/outgoing counts, and v a bounded literal-magnitude summary. Define:
 
 ```text
 R = min(0.16, baseRadius + degreeGain·degree + literalGain·v)
-r(θ,φ) = R(1 + a cos(fθ) + b cos((outdegree+1)θ + φ))
-Organ = anchor(n,φ) + r(θ,φ)(cosθ,sinθ)
+r(α,φ) = R(1 + a cos(fα) + b cos((outdegree+1)α + φ))
+Organ = anchor(n,t) + r(α,φ)(cosα,sinα)
 ```
 
 In real arithmetic, `r ≥ R(1−a−b) > 0`, so this radial organ does not collapse. This is the mathematical design argument; numerical sampling and the bounded integer abstraction are checked separately.
@@ -93,29 +159,38 @@ In real arithmetic, `C(0)=A` and `C(1)=B`. Implementation checks allow floating-
 
 The visual contract is a coherent silhouette, sparse luminous crests, translucent recesses, and one asymmetric focal region. The family supplies a longitudinal centerline; a shared two-parameter folded membrane supplies its material. Operation organs and dependency curves use anchors in the same projection. Graph depth chooses spine position, stable same-depth lanes separate peers, and branches increase membrane ribbon count. Semantic anatomy becomes stronger during inspection; it does not replace the membrane's resting silhouette.
 
-For membrane coordinates `u ∈ [0,1]`, `v ∈ [−1,1]`, ribbon index `k`, phase `φ`, and `N` ribbons, the actual implementation is:
+For membrane coordinates `u ∈ [0,1]`, `v ∈ [−1,1]`, ribbon index `k`, and `N` ribbons, the implementation uses the raw presentation phase `t` for the family spine and the shared warped phase `φ = motionState(t).phase` for the membrane. Define `closed` for moth, torus, and bloom. The following choices keep their position, thickness, tangent, and lighting continuous across the longitudinal seam:
 
 ```text
 N = min(36, ribbons + min(6, graphBranches))
 a = 2πk/N
-C = project(strandPoint(family,u,k,N,φ,graph))
+C = project(strandPoint(family,u,k,N,t,graph))
 n = unit normal to the finite-difference tangent of C (ε = 0.003)
-ψ = φ − phaseLag·u + 0.13 sin(a)
-F = exp(−((u−focus)/0.3)²)
-E = max(0.025,sin(πu))^taper
+    (longitudinal samples wrap on closed backbones; clamp on open ones)
+g = sin(2πu) when closed; u otherwise
+h = 1 when closed; sin(πu) otherwise
+ψ = φ − (phaseLag + rhythm.lag)·g + 0.13 sin(a)
+F = exp(−2sin²(π(u−focus))) when closed; exp(−((u−focus)/0.3)²) otherwise
+E = (0.75+0.25cos(2π(u−focus)))^taper when closed
+    max(0.025,sin(πu))^taper otherwise
 W = spread·E·(0.55+0.75F)·(1+asymmetry·sin(a+0.6))
     ·(1+0.055(sinψ+0.35sin(2ψ+0.7)))
-θ = 0.35a + twist·2π(u−0.5) + 0.62sinψ + 0.32sin(2ψ+0.4a+πv)
+β = 0.35a + twist·(sin(2πu) when closed; 2π(u−0.5) otherwise)
+    + 0.48sinψ + 0.24sin(2ψ+0.4a+πv) + 0.18rhythm.overtone·secondary
 m = min(9,folds+floor(graphDepth/5))
-L = vW cosθ + 0.10W sin(2πmu−ψ+a)sin(πu)
-z = 0.45depth·sin(2πu−0.45φ) + vW sinθ
-    + 0.14depth·sin(πmu−ψ+a)E
-Praw = (Cx + nxL + 0.07asymmetry·sin(πu)F, Cy + nyL, z)
+L = vW cosβ + 0.10W sin(2πmu−ψ+a)h
+δ = 4Cx for jelly; 2πu otherwise
+Ez = 0 for jelly rim (k=0); sin(πu) for other jelly ribbons; E otherwise
+z = 0.45depth·sin(δ−φ) + vW sinβ
+    + 0.14depth·sin(2πmu−ψ+a)Ez
+Praw = (Cx + nxL + 0.07asymmetry·hF, Cy + nyL, z)
 ```
+
+The jelly gives ribbon `k=0` an explicit lip: before the shared living pose, `x = 0.43(2u−1)(1−2·breath·pulse)` and `y = −0.06`. Bell layers arc above it; trailing threads begin at that same lip height. Their shared depth field depends on projected centerline `Cx`, while the additional depth ripple vanishes on the rim and at thread roots. This keeps the bell and appendages visually attached through the stroke.
 
 `pose` rotates this surface by yaw and pitch, then shears its projected x coordinate by `lean·y`. The same transform applies to organ anchors. It projects depth into spatial overlap rather than introducing a second decorative particle cloud.
 
-Material opacity depends on transverse projected compression. Let `θv = 0.32π cos(2ψ+0.4a+πv)`, `Lv = W(cosθ−v sinθ·θv)`, and `zv = W(sinθ+v cosθ·θv)`. Apply the same pose transform to the derivative `(nxLv,nyLv,zv)` and call its screen components `Jx,Jy`:
+Material opacity depends on transverse projected compression. Let `βv = 0.24π cos(2ψ+0.4a+πv)`, `Lv = W(cosβ−v sinβ·βv)`, and `zv = W(sinβ+v cosβ·βv)`. Apply the same pose transform to the derivative `(nxLv,nyLv,zv)` and call its screen components `Jx,Jy`:
 
 ```text
 compression = clamp(1 − hypot(Jx,Jy)/max(0.01,1.4W),0,1)
@@ -126,9 +201,9 @@ zDepth = clamp(0.5 + projectedDepth/(2(depth+spread)),0,1)
 
 This is a bounded density-inspired material, not a physical light-transport simulation. Because all factors lie in `[0,1]`, point opacity stays between `recessAlpha` and `crestAlpha`. The screen derivative measures narrowing transverse to a ribbon; it is not a full surface Jacobian. Distinct folds therefore gain brightness without making every boundary equally luminous.
 
-`surfaceFrame` samples four transverse columns and a bounded longitudinal grid with stable offsets; thumbnails cap the point budget at 4,200. It draws `crests` continuous interior tracks from the same surface. Their transverse coordinate is `v = 0.92cos(0.23φ−phaseLag·u+a/2)`, with 301 samples per track. These are designed material tracks, not numerically traced compression maxima. Points and tracks share the membrane's position and compression-derived opacity. The per-frame point budget does not include these separately bounded crest vertices or graph inspection paths.
+`surfaceFrame` samples four transverse columns and a bounded longitudinal grid with stable offsets; thumbnails cap the point budget at 4,200. It draws `crests` continuous interior tracks from the same surface. Their transverse coordinate is `v = 0.92cos(φ−phaseLag·g+a/2)`, with 301 samples per track. These are designed material tracks, not numerically traced compression maxima. Points and tracks share the membrane's position and compression-derived opacity. The per-frame point budget does not include these separately bounded crest vertices or graph inspection paths.
 
-`portraitFrame` estimates a fixed envelope over several phases and includes organ radii. `occupancy` determines how much of the canvas that envelope occupies. It avoids scale pumping during animation, but remains a sampled framing estimate rather than an analytic bound over every phase. There is no separate QDL framing record.
+`portraitFrame` estimates a fixed envelope over sixteen samples of the primary rhythm cycle, includes organ radii, and adds padding based on rhythm amplitudes. This padding is a practical allowance for unsampled extrema and secondary phases, not a proved analytic bound. `occupancy` determines how much of the canvas that envelope occupies. It avoids scale pumping during animation, but remains a sampled framing estimate rather than an analytic bound over every phase. There is no separate QDL framing record.
 
 ## Dynamic model
 
@@ -136,7 +211,7 @@ The morphology renderer separates the folded membrane, exact graph-derived anato
 
 One elapsed-time presentation clock drives both viewers. `phaseRate` retains its nominal 24-frame-per-second interpretation: `Δphase = phaseRate × 24 × Δseconds`. Elapsed increments are capped at 100 ms and tab visibility changes reset the timestamp, avoiding a jump on resume. Pause and dynamic reduced-motion preferences freeze the shared phase. Neither phase advancement nor selection executes a task or changes source. Invisible canvases skip redraws; frozen views redraw when inspection changes.
 
-Replay markers refer to the recorded trace node and travel along its incoming dependencies. Selecting another organ changes inspection without changing that recorded identity. The present family motions are bounded harmonic presentation formulas; they are not strange-attractor simulations. `verify-morphology.cjs` checks purity, endpoint attachment, loop closure, and clock-rate independence. `verify-motion.py` checks the browser's shared pause, reduced motion, hit testing, and trace attribution.
+Replay markers refer to the recorded trace node and travel along its incoming dependencies. Selecting another organ changes inspection without changing that recorded identity. Family motion uses the authored bounded harmonic or quasiperiodic formulas above; no strange-attractor simulation is claimed. `verify-morphology.cjs` checks purity, endpoint attachment, loop closure, and clock-rate independence. `verify-motion.py` checks the browser's shared pause, reduced motion, hit testing, and trace attribution.
 
 The Quint state includes source identity, display phase/pause, execution and repeat counters, effects, emitted identity, child identity, and resource budgets. Transitions are `render`, `replay`, `pause`, guarded `execute`, identity-checked `admit`, and `reject`.
 
@@ -152,7 +227,7 @@ operation colors preserve opcode identity
 filament endpoints preserve declared incidence
 ```
 
-The model uses a finite graph and source tokens. The profile includes integer ribbon/fold/crest/sample controls and milliscale samples of every bounded numeric organ, filament, motion, ink, membrane, material, and composition control. Model tags and the neutral color syntax are fixed assumptions rather than independently explored string domains. Changed family, spread, and material candidates are rejected by full profile equality. Negative controls mutate effects during replay and mutate family, material, or composition during rendering; each must violate safety.
+The model uses a finite graph and source tokens. The profile includes integer ribbon/fold/crest/sample controls and milliscale samples of every bounded numeric organ, filament, motion, ink, membrane, material, and composition control. Model tags and the neutral color syntax are fixed assumptions rather than independently explored string domains. The profile also includes rhythm mode/presence and milliscale samples of every rhythm number. Mode zero represents omission; bounded numeric placeholders are dormant in that abstraction. Changed family, spread, material, and rhythm candidates are rejected by full profile equality. Negative controls mutate effects during replay and mutate family, material, composition, or rhythm during rendering; each must violate safety. Integer lower bounds encode the noncollapsing breathing scale, monotone phase warp, and positive harmonic normalization denominator, assuming trigonometric values lie in `[−1,1]`. They do not prove the floating-point renderer.
 
 Numeric codec recovery is represented by an explicit identity abstraction; it is not proved by that abstraction. The model is not a verified refinement of every renderer/kernel instruction. Source-byte/color/sample checks and all library fixtures exercise the actual JavaScript implementation.
 

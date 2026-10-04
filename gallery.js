@@ -3,7 +3,7 @@
 (() => {
 const Q=globalThis.Quinelings,D=globalThis.QDL,M=globalThis.Morphology,$=id=>document.getElementById(id),TAU=Math.PI*2;
 const canvas=$('creature'),ctx=canvas.getContext('2d');
-let library=[],current=null,program,shape,genome,result,generation=0,phase=0,selected=null,traceIndex=0,tracePulse=null,traceNode=null,viewSeconds=0;
+let library=[],current=null,program,shape,genome,result,designDraft,generation=0,phase=0,selected=null,traceIndex=0,tracePulse=null,traceNode=null,viewSeconds=0;
 const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
 let moving=!motionPreference.matches,dirty=true,viewRevision=0,canvasVisible=true;
 $('pause').textContent=moving?'Pause motion':'Resume motion';
@@ -12,9 +12,31 @@ function color(op){return Q.instructionColor(op);}
 function fail(error){$('receipt').textContent=error.message;$('status').textContent='REJECTED';console.error(error);}
 function guard(fn){return (...args)=>{try{return fn(...args);}catch(e){fail(e);}};}
 function literalGraph(){const fixture=current.fixtures[Number($('fixture').value)]||{overrides:{}};const graph=JSON.parse(JSON.stringify(current.graph));for(const node of graph.nodes)if(node.op==='literal'&&Object.hasOwn(fixture.overrides||{},node.id))node.params.value=fixture.overrides[node.id];return graph;}
-function install(ast,reset=true){dirty=true;viewRevision++;program=ast;tracePulse=null;traceNode=null;shape=Q.describe(ast);genome=Q.encode(ast);result=null;selected=null;traceIndex=0;if(reset)generation=0;$('generation').textContent=`GENERATION ${generation}`;$('source').value=Q.canon(ast);$('metrics').textContent=`${shape.nodes.length} ORGANS / ${shape.links.length} FILAMENTS`;$('band').max=genome.bands.length-1;$('band').value=0;$('status').textContent='READY TO EXECUTE';$('task-output').textContent='Run the selected task to inspect its output.';$('trace').textContent='Each colored organ corresponds to a graph operation.';$('organ-info').textContent='Select a colored organ to inspect its operation.';$('proof').textContent=`${new TextEncoder().encode(Q.canon(ast)).length} canonical source bytes\n${genome.bands.length} harmonic bands\n32 integer coefficients per band`;legend();drawWave();window.dispatchEvent(new CustomEvent('quineling:changed'));}
-function select(item){current=item;$('identity').textContent=item.name;$('description').textContent=item.description;$('specimen-id').textContent=`SPECIMEN ${String(library.indexOf(item)+1).padStart(2,'0')} / ${item.id.toUpperCase()}`;$('family-label').textContent=`${item.skin.family.toUpperCase()} / GRAPH PROJECTION`;$('fixture').replaceChildren();item.fixtures.forEach((fixture,i)=>{const option=document.createElement('option');option.value=i;option.textContent=fixture.name;$('fixture').append(option);});$('repeats').value=1;$('repeats-label').textContent='1';rebuild();for(const card of document.querySelectorAll('.creature-card')){const active=card.dataset.id===item.id;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));}}
-function rebuild(){if(!current)return;install(Q.makeTaskProgram(literalGraph(),Number($('repeats').value),D.create(current.skin.family)));$('repeats-label').textContent=$('repeats').value;$('receipt').textContent='Selected inputs are encoded in the source. All effects are local simulations.';}
+function install(ast,reset=true){dirty=true;viewRevision++;program=ast;tracePulse=null;traceNode=null;shape=Q.describe(ast);designDraft=JSON.parse(JSON.stringify(shape.design));syncRhythm();genome=Q.encode(ast);result=null;selected=null;traceIndex=0;if(reset)generation=0;$('generation').textContent=`GENERATION ${generation}`;$('source').value=Q.canon(ast);$('metrics').textContent=`${shape.nodes.length} ORGANS / ${shape.links.length} FILAMENTS`;$('band').max=genome.bands.length-1;$('band').value=0;$('status').textContent='READY TO EXECUTE';$('task-output').textContent='Run the selected task to inspect its output.';$('trace').textContent='Each colored organ corresponds to a graph operation.';$('organ-info').textContent='Select a colored organ to inspect its operation.';$('proof').textContent=`${new TextEncoder().encode(Q.canon(ast)).length} canonical source bytes\n${genome.bands.length} harmonic bands\n32 integer coefficients per band`;legend();drawWave();window.dispatchEvent(new CustomEvent('quineling:changed'));}
+function select(item){current=item;designDraft=D.create(item.skin.family);$('identity').textContent=item.name;$('description').textContent=item.description;$('specimen-id').textContent=`SPECIMEN ${String(library.indexOf(item)+1).padStart(2,'0')} / ${item.id.toUpperCase()}`;$('family-label').textContent=`${item.skin.family.toUpperCase()} / GRAPH PROJECTION`;$('fixture').replaceChildren();item.fixtures.forEach((fixture,i)=>{const option=document.createElement('option');option.value=i;option.textContent=fixture.name;$('fixture').append(option);});$('repeats').value=1;$('repeats-label').textContent='1';rebuild();for(const card of document.querySelectorAll('.creature-card')){const active=card.dataset.id===item.id;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));}}
+function rebuild(){if(!current)return;install(Q.makeTaskProgram(literalGraph(),Number($('repeats').value),designDraft));$('repeats-label').textContent=$('repeats').value;$('receipt').textContent='Selected inputs are encoded in the source. All effects are local simulations.';}
+const gestures={filament:'A breathing spine sends a wave through its folds.',jelly:'The bell contracts while the trailing tissue follows.',moth:'Paired wings open with a delayed ripple toward their edges.',coral:'The branches bend more strongly toward their tips.',ribbon:'A traveling wave folds and unfolds the long membrane.',nautilus:'A coiled body expands around its fixed spiral.',seed:'A quiet pulse stretches the body as its width contracts.',torus:'Waves circulate around a continuous closed ring.',comet:'Motion gathers at the head and travels into the tail.',bloom:'Petals open around a breathing center.'};
+function syncRhythm(){
+ const r=shape.design.motion.rhythm;
+ $('motion-controls').hidden=!r;if(!r)return;
+ $('rhythm-mode').value=r.mode;
+ for(const key of ['breath','wave','lag']){$('rhythm-'+key).value=r[key];$('rhythm-'+key+'-value').value=r[key].toFixed(2);}
+ $('rhythm-description').textContent=gestures[shape.design.family];
+ $('rhythm-math').textContent=r.mode==='periodic'?'A shared cycle repeats; delayed harmonics give the body follow-through.':'A second frequency at √2 times the base rate slowly changes the pattern.';
+}
+function editRhythm(){
+ const design=JSON.parse(JSON.stringify(shape.design));
+ design.motion.rhythm.mode=$('rhythm-mode').value;
+ for(const key of ['breath','wave','lag'])design.motion.rhythm[key]=Number($('rhythm-'+key).value);
+ D.validate(design);designDraft=design;rebuild();
+ $('receipt').textContent='Motion design is encoded in the source and both genomes. Run to check this variant’s task and reproduction.';
+}
+for(const key of ['breath','wave','lag']){
+ $('rhythm-'+key).oninput=()=>{$('rhythm-'+key+'-value').value=Number($('rhythm-'+key).value).toFixed(2);};
+ $('rhythm-'+key).onchange=guard(editRhythm);
+}
+$('rhythm-mode').onchange=guard(editRhythm);
+$('rhythm-reset').onclick=guard(()=>{designDraft=JSON.parse(JSON.stringify(shape.design));designDraft.motion=D.create(current.skin.family).motion;rebuild();});
 function run(){result=Q.execute(Q.decode(genome));const source=Q.canon(program),same=result.emitted.length===1&&result.emitted[0]===source;if(!same)throw Error('Quine source identity failed');const tasks=result.tasks||[];const output=tasks[0]?.output;const fixture=current.fixtures[Number($('fixture').value)];const matches=Q.canon(output)===Q.canon(fixture.expected);$('task-output').textContent=pretty(output);$('receipt').textContent=`${tasks.length} task cycle${tasks.length===1?'':'s'} completed. Fixture ${matches?'matched':'MISMATCHED'}. Exact canonical source reproduced.`;$('status').textContent=matches?'TASK + QUINE VERIFIED':'FIXTURE MISMATCH';$('proof').textContent=`Emitted source = canonical program: EXACT\nFixture output: ${matches?'MATCH':'MISMATCH'}\nRuntime steps: ${result.steps}\nSource reconstructed by the constructor quine`;traceIndex=0;step();return result;}
 function step(){if(!result)return;const rows=result.tasks?.flatMap(task=>task.trace)||result.trace||[];if(!rows.length)return;const row=rows[traceIndex%rows.length];selected=row.edge||row.id||row.node||null;$('trace').textContent=`Step ${traceIndex%rows.length+1} / ${rows.length}\n${pretty(row)}`;traceIndex++;traceNode=selected;tracePulse=viewSeconds;organInfo(shape.nodes.find(n=>n.id===selected));}
 function reproduce(){const parent=run(),source=parent.emitted[0],child=JSON.parse(source),fresh=Q.execute(child);if(fresh.emitted.length!==1||fresh.emitted[0]!==source)throw Error('Fresh generation did not reproduce its source');if(Q.canon(fresh.tasks.map(t=>t.output))!==Q.canon(parent.tasks.map(t=>t.output)))throw Error('Fresh generation task outputs changed');generation++;install(child,false);result=fresh;$('task-output').textContent=pretty(fresh.tasks[0]?.output);$('status').textContent='FRESH GENERATION VERIFIED';$('receipt').textContent=`Generation ${generation} was constructed from emitted source and executed again. Source and task outputs match.`;$('proof').textContent='Parent output = child source: EXACT\nFresh child emitted source: EXACT\nFresh child task outputs: EXACT';}
@@ -24,6 +46,7 @@ function legend(){const ops=[...new Set(shape.nodes.map(n=>n.op))];$('color-lege
 // Branches/depth/ports alter the body; opcode frequencies and literal magnitude alter organs.
 function render(context,w,h,s,family,t,thumb=false,externalLabel=false){
  context.clearRect(0,0,w,h);const design=s.design||D.create(family),ink=design.ink;family=design.family;
+ const motionPhase=M.motionState(s,t).phase;
  const frame=M.portraitFrame(s),scale=Math.min(w*design.composition.occupancy/frame.width,h*design.composition.occupancy/frame.height)/Math.max(1,M.framingExtent(s)*.85),cx=w/2-frame.cx*scale,cy=h/2-frame.cy*scale;
  const semantic=thumb||$('semantic-color').checked,labels=!thumb&&$('topology').checked;
  const nodes=s.nodes,nodeMap=new Map(nodes.map(n=>[n.id,n])),positions=new Map(nodes.map(n=>[n.id,Q.nodePosition(n,t,s)]));
@@ -43,7 +66,7 @@ function render(context,w,h,s,family,t,thumb=false,externalLabel=false){
  for(const ridge of material.ridges){for(let i=0;i<ridge.line.length-1;i+=5){const segment=ridge.line.slice(i,i+6),p=ridge.line[i],alpha=Math.min(.98,.14+p.alpha*3);path(segment,ink.neutral,alpha,thumb?.75:1.2,false);}}
  for(const link of s.links){
   const source=nodeMap.get(link.from),A=positions.get(link.from),B=positions.get(link.to),dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1,f=1+link.port+source.frequency;
-  const edgeAt=u=>{const bend=D.filamentBend(design,f,u,t);return {x:A.x+dx*u-dy/len*bend,y:A.y+dy*u+dx/len*bend};};
+  const edgeAt=u=>{const bend=D.filamentBend(design,f,u,motionPhase);return {x:A.x+dx*u-dy/len*bend,y:A.y+dy*u+dx/len*bend};};
   const active=!thumb&&(link.from===selected||link.to===selected),points=[],samples=thumb?35:Math.max(90,Math.ceil(f*6));
   for(let i=0;i<=samples;i++)points.push(edgeAt(i/samples));
   path(points,semantic?color(source.op):ink.neutral,active?ink.ridgeAlpha:(labels?ink.secondaryAlpha:ink.ghostAlpha*.15),active?1.05:.55,active);
@@ -53,7 +76,7 @@ function render(context,w,h,s,family,t,thumb=false,externalLabel=false){
  }
  for(const n of nodes){
   const p=positions.get(n.id),active=!thumb&&n.id===selected,near=!thumb&&relevant.has(n.id),samples=thumb?Math.max(60,n.frequency*5):Math.max(110,n.frequency*9),points=[];
-  for(let i=0;i<samples;i++){const a=TAU*i/samples,r=D.organRadius(design,n,a,t);points.push({x:p.x+r*Math.cos(a),y:p.y+r*Math.sin(a)});}
+  for(let i=0;i<samples;i++){const a=TAU*i/samples,r=D.organRadius(design,n,a,motionPhase);points.push({x:p.x+r*Math.cos(a),y:p.y+r*Math.sin(a)});}
   path(points,semantic?color(n.op):ink.neutral,active?ink.ridgeAlpha:(labels?ink.secondaryAlpha:near?ink.secondaryAlpha*.65:ink.ghostAlpha*.17),active?1.25:.65,active,true);
   point(p,ink.neutral,active?.95:.015,active?3:1.5);
   if(active){context.globalAlpha=.5;context.strokeStyle=ink.neutral;context.lineWidth=.6;context.beginPath();context.arc(cx+p.x*scale,cy+p.y*scale,4.5,0,TAU);context.stroke();}

@@ -1,26 +1,6 @@
 {
-  "status": "brainstorm_wave_1",
-  "activeThreads": [
-    {
-      "workstream": "semantics",
-      "threadId": "01a105fe-bc03-7f00-9a69-e3c5cc46a119",
-      "status": "started"
-    },
-    {
-      "workstream": "genetics",
-      "threadId": "01a105fe-b7bb-7b21-8e29-5acdc62769d4",
-      "status": "started"
-    },
-    {
-      "workstream": "social",
-      "threadId": "01a105fe-b9df-7292-a81e-9378291e5159",
-      "status": "started"
-    }
-  ],
+  "status": "brainstorm_wave_2",
   "queuedWorkstreams": [
-    "biology",
-    "visual",
-    "experience",
     "api",
     "formal",
     "robustness",
@@ -30,5 +10,42 @@
     "grok": 3,
     "gemini": 3,
     "gpt": 3
-  }
+  },
+  "completedThreads": [
+    {
+      "workstream": "semantics",
+      "threadId": "01a105fe-bc03-7f00-9a69-e3c5cc46a119",
+      "status": "completed",
+      "report": "brainstorm-semantics.md"
+    },
+    {
+      "workstream": "genetics",
+      "threadId": "01a105fe-b7bb-7b21-8e29-5acdc62769d4",
+      "status": "completed",
+      "report": "brainstorm-genetics.md"
+    },
+    {
+      "workstream": "social",
+      "threadId": "01a105fe-b9df-7292-a81e-9378291e5159",
+      "status": "completed",
+      "report": "brainstorm-social.md"
+    }
+  ],
+  "activeThreads": [
+    {
+      "workstream": "biology",
+      "threadId": "01a10601-e17b-79f1-9d30-7e71fbf4183f",
+      "status": "started"
+    },
+    {
+      "workstream": "visual",
+      "threadId": "01a10602-15ec-7330-aea7-f509b061ed8f",
+      "status": "started"
+    },
+    {
+      "workstream": "experience",
+      "threadId": "01a10602-426c-7613-9f39-6d530c0ebe17",
+      "status": "started"
+    }
+  ]
 }

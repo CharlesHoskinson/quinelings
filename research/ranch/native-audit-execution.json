@@ -1,0 +1,26 @@
+[
+  {
+    "provider": "Grok",
+    "model": "grok-4.7",
+    "specialist": 1,
+    "focus": "semantics",
+    "candidateSha256": "d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416",
+    "status": "started"
+  },
+  {
+    "provider": "Grok",
+    "model": "grok-4.7",
+    "specialist": 2,
+    "focus": "world",
+    "candidateSha256": "d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416",
+    "status": "started"
+  },
+  {
+    "provider": "Grok",
+    "model": "grok-4.7",
+    "specialist": 3,
+    "focus": "experience",
+    "candidateSha256": "d1349b92a65a2dad8f6562d6ee336b86c5d17a9007ba9a3dad5d95d5fcbd5416",
+    "status": "started"
+  }
+]

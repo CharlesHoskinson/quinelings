@@ -30,7 +30,7 @@ if(resultStatus==='clarify') {
 **Exact File/Line:** `packages/agent-sdk/src/mcp.ts`, line 81 and `docs/sdk-mcp-guide.md`, line 99
 **Concrete failing scenario:** A developer consults `docs/sdk-mcp-guide.md` to recover an artifact. Following the guide, they send the documented JSON-RPC payload:
 `{"name":"quineling_recover","arguments":{"recovery":{"source":"<artifact.source>"}}}`
-The request fails immediately with an MCP protocol schema error. The `mcp.ts` schema enforces `z.strictObject` and expects `source`, `harmonics`, or `colors` directly at the root of `arguments` rather than wrapped inside a `recovery` object. 
+The request fails immediately with an MCP protocol schema error. The `mcp.ts` schema enforces `z.strictObject` and expects `source`, `harmonics`, or `colors` directly at the root of `arguments` rather than wrapped inside a `recovery` object.
 **Recommended fix:** Update the `quineling_recover` tool registration in `mcp.ts` to expect a wrapped `recovery` object, aligning it with both the guide and the A2A implementation (`request.recovery`):
 ```typescript
 { recovery: z.strictObject({

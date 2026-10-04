@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "browser": "153.0.8010.12",
+  "candidateSources": 10,
+  "independentFixtures": 44,
+  "freshPassiveGenomeRecoveries": 20,
+  "legacySources": 12,
+  "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+  "scope": "Actual Chromium source/hash/codec/runtime conformance; no pixel stability or physical GPU speed claim"
+}

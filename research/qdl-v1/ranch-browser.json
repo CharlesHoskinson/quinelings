@@ -1,0 +1,482 @@
+{
+  "generatedAt": "2026-10-04T15:08:20.884Z",
+  "status": "passed",
+  "checks": {
+    "initial": {
+      "parents": 2,
+      "records": 0,
+      "evaluations": 0,
+      "compatible": "compatible",
+      "frames": [
+        {
+          "nodeIds": [
+            "readings",
+            "total"
+          ],
+          "ownerSet": [
+            0,
+            1
+          ],
+          "ownersValid": true,
+          "pointCount": 4000,
+          "phase": 0,
+          "reuse": true
+        },
+        {
+          "nodeIds": [
+            "available",
+            "requested",
+            "allocation"
+          ],
+          "ownerSet": [
+            0,
+            1,
+            2
+          ],
+          "ownersValid": true,
+          "pointCount": 4000,
+          "phase": 0,
+          "reuse": true
+        }
+      ]
+    },
+    "passiveConstruction": {
+      "artifactCount": 3,
+      "records": 0,
+      "evaluations": 0,
+      "childId": "ql_e2f599cfae3f263fb4db9b28b3ad5eb5d2eeb9ea878d9edf0578e69d7918124c",
+      "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"canonical\":\"qdl-json-1\",\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.182589,0.284986,0.120033],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[0.2,-0.05185226783156395],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.393103,\"parent\":{\"angle\":-1.0276102018659004,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.419942045584321,\"v\":0}},\"radii\":[0.043222,0.016701]},{\"bend\":[-0.1563,-0.009629024602472782],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.424909,\"parent\":{\"angle\":1.2090410734014585,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.5206219531269745,\"v\":0.5}},\"radii\":[0.039106,0.018483]},{\"bend\":[0.2,0.02783594958484173],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.248187,\"parent\":{\"angle\":-2.6639861116185783,\"component\":\"trunk\",\"hinge\":0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.035759,0.018514]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"p0n0\",\"u\":[0,0.25]},{\"component\":\"trunk\",\"node\":\"p0n1\",\"u\":[0.25,0.5]},{\"component\":\"trunk\",\"node\":\"p1n1\",\"u\":[0.5,0.75]},{\"component\":\"trunk\",\"node\":\"p1n2\",\"u\":[0.75,1]},{\"component\":\"branch-0\",\"node\":\"p0n1\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"p1n1\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"p0n0\",\"u\":[0,1]}],\"seed\":2493542225},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.8911},\"composition\":{\"focus\":0.38,\"lean\":-0.12,\"occupancy\":0.76,\"pitch\":0.12,\"yaw\":0.3},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"heredity\":{\"model\":\"bounded-traits-experimental\",\"nonce\":17,\"parents\":[\"9d1cb3b5eca2ba850505337671678bf927cd6d293077ccaea5a880d2d484d17c\",\"0dc30e9475c807d6515fb1a7b185fe8d0079c4da0cadfc892fc114e1e190ee5d\"],\"seedDigest\":\"94a06f510a0869bbacab7fa89e47e05ed7a3d992006e42c173f5e8700f54fd26\",\"traits\":{\"curvature\":948,\"elongation\":-510,\"gestureGain\":439,\"pigmentGain\":411,\"spread\":291,\"tempo\":330}},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.6939,\"ticks\":[180,180,420,220]},\"phaseRate\":0.04031,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"format\":\"qdl-program\",\"name\":\"Reservoir × Waterkeeper\",\"registry\":\"qdl-kernels-1\",\"registryDigest\":\"43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3\",\"repeats\":1,\"task\":{\"format\":\"qdl-task\",\"nodes\":[{\"id\":\"p0n0\",\"inputs\":[],\"op\":\"input\",\"params\":{\"name\":\"p0_readings\"},\"type\":{\"element\":{\"kind\":\"number\",\"min\":0,\"unit\":\"L\"},\"kind\":\"array\"}},{\"id\":\"p0n1\",\"inputs\":[\"p0n0\"],\"op\":\"sum\",\"params\":{},\"type\":{\"kind\":\"number\",\"min\":0,\"unit\":\"L\"}},{\"id\":\"p1n1\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":12},\"type\":{\"kind\":\"number\",\"min\":0,\"unit\":\"L\"}},{\"id\":\"p1n2\",\"inputs\":[\"p0n1\",\"p1n1\"],\"op\":\"budget\",\"params\":{},\"type\":{\"fields\":{\"allocated\":{\"kind\":\"number\",\"unit\":\"L\"},\"remaining\":{\"kind\":\"number\",\"unit\":\"L\"}},\"kind\":\"record\"}}],\"outputs\":[\"p1n2\"],\"version\":1},\"thought\":{\"decisions\":[],\"evidence\":[],\"goals\":[],\"observations\":[],\"plans\":[],\"tasks\":[{\"id\":\"child_task\",\"nodes\":[\"p0n0\",\"p0n1\",\"p1n1\",\"p1n2\"],\"outputs\":[\"p1n2\"],\"text\":\"Sum these supplied litre readings, then allocate at most twelve litres.\"}]},\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"canonical\":\"qdl-json-1\",\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.182589,0.284986,0.120033],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[0.2,-0.05185226783156395],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.393103,\"parent\":{\"angle\":-1.0276102018659004,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.419942045584321,\"v\":0}},\"radii\":[0.043222,0.016701]},{\"bend\":[-0.1563,-0.009629024602472782],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.424909,\"parent\":{\"angle\":1.2090410734014585,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.5206219531269745,\"v\":0.5}},\"radii\":[0.039106,0.018483]},{\"bend\":[0.2,0.02783594958484173],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.248187,\"parent\":{\"angle\":-2.6639861116185783,\"component\":\"trunk\",\"hinge\":0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.035759,0.018514]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"p0n0\",\"u\":[0,0.25]},{\"component\":\"trunk\",\"node\":\"p0n1\",\"u\":[0.25,0.5]},{\"component\":\"trunk\",\"node\":\"p1n1\",\"u\":[0.5,0.75]},{\"component\":\"trunk\",\"node\":\"p1n2\",\"u\":[0.75,1]},{\"component\":\"branch-0\",\"node\":\"p0n1\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"p1n1\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"p0n0\",\"u\":[0,1]}],\"seed\":2493542225},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.8911},\"composition\":{\"focus\":0.38,\"lean\":-0.12,\"occupancy\":0.76,\"pitch\":0.12,\"yaw\":0.3},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"heredity\":{\"model\":\"bounded-traits-experimental\",\"nonce\":17,\"parents\":[\"9d1cb3b5eca2ba850505337671678bf927cd6d293077ccaea5a880d2d484d17c\",\"0dc30e9475c807d6515fb1a7b185fe8d0079c4da0cadfc892fc114e1e190ee5d\"],\"seedDigest\":\"94a06f510a0869bbacab7fa89e47e05ed7a3d992006e42c173f5e8700f54fd26\",\"traits\":{\"curvature\":948,\"elongation\":-510,\"gestureGain\":439,\"pigmentGain\":411,\"spread\":291,\"tempo\":330}},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.6939,\"ticks\":[180,180,420,220]},\"phaseRate\":0.04031,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"format\":\"qdl-program\",\"name\":\"Reservoir × Waterkeeper\",\"registry\":\"qdl-kernels-1\",\"registryDigest\":\"43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3\",\"repeats\":1,\"task\":{\"format\":\"qdl-task\",\"nodes\":[{\"id\":\"p0n0\",\"inputs\":[],\"op\":\"input\",\"params\":{\"name\":\"p0_readings\"},\"type\":{\"element\":{\"kind\":\"number\",\"min\":0,\"unit\":\"L\"},\"kind\":\"array\"}},{\"id\":\"p0n1\",\"inputs\":[\"p0n0\"],\"op\":\"sum\",\"params\":{},\"type\":{\"kind\":\"number\",\"min\":0,\"unit\":\"L\"}},{\"id\":\"p1n1\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":12},\"type\":{\"kind\":\"number\",\"min\":0,\"unit\":\"L\"}},{\"id\":\"p1n2\",\"inputs\":[\"p0n1\",\"p1n1\"],\"op\":\"budget\",\"params\":{},\"type\":{\"fields\":{\"allocated\":{\"kind\":\"number\",\"unit\":\"L\"},\"remaining\":{\"kind\":\"number\",\"unit\":\"L\"}},\"kind\":\"record\"}}],\"outputs\":[\"p1n2\"],\"version\":1},\"thought\":{\"decisions\":[],\"evidence\":[],\"goals\":[],\"observations\":[],\"plans\":[],\"tasks\":[{\"id\":\"child_task\",\"nodes\":[\"p0n0\",\"p0n1\",\"p1n1\",\"p1n2\"],\"outputs\":[\"p1n2\"],\"text\":\"Sum these supplied litre readings, then allocate at most twelve litres.\"}]},\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+      "classification": "causal-integration"
+    },
+    "composition": {
+      "scarce": {
+        "outputs": [
+          {
+            "allocated": 9,
+            "remaining": 0
+          }
+        ],
+        "sourceHash": "ql_e2f599cfae3f263fb4db9b28b3ad5eb5d2eeb9ea878d9edf0578e69d7918124c",
+        "inputHash": "qi_8d260c7cc03f563185f893d2c282b1081d41f7d5b56b91cd97eec122fd95242e"
+      },
+      "ample": {
+        "outputs": [
+          {
+            "allocated": 12,
+            "remaining": 8
+          }
+        ],
+        "sourceHash": "ql_e2f599cfae3f263fb4db9b28b3ad5eb5d2eeb9ea878d9edf0578e69d7918124c",
+        "inputHash": "qi_0fc479989ed36f64f431be9603f799443fb9f027fbb05f3d499d5e334da64361"
+      },
+      "sourceInvariant": true,
+      "replay": {
+        "id": "run_dd466b9e-9574-47aa-b759-1dbad77add75",
+        "evaluations": 2,
+        "records": 2
+      },
+      "reproduction": {
+        "parent": "run_dd466b9e-9574-47aa-b759-1dbad77add75",
+        "id": "run_8459a9ab-25e6-4ce7-a68e-95afb44bdec3",
+        "outputs": [
+          {
+            "allocated": 12,
+            "remaining": 8
+          }
+        ],
+        "exact": true,
+        "evaluations": 3
+      }
+    },
+    "otherRecipes": [
+      {
+        "kind": "merge",
+        "sourceHash": "ql_bcaf2cc282a03de654dce5e1d456c3a9aaa6dd5bf4d93cf4d09c8a4ac49437e0",
+        "classification": "parallel-report",
+        "outputs": [
+          {
+            "a0": 9,
+            "b0": {
+              "allocated": 9,
+              "remaining": 0
+            }
+          }
+        ],
+        "codecs": {
+          "exact": true,
+          "evaluations": 0
+        }
+      },
+      {
+        "kind": "mate",
+        "sourceHash": "ql_d615afb79915f9cb3fae2492ccc6fbd73ecce31648b0b27aee224ba31d31a9b1",
+        "classification": "causal-integration",
+        "outputs": [
+          {
+            "allocated": 9,
+            "remaining": 0
+          }
+        ],
+        "codecs": {
+          "exact": true,
+          "evaluations": 0
+        }
+      },
+      {
+        "kind": "body",
+        "sourceHash": "ql_ab1b21d3a8e018e249660f75502c15a2290addbfdad3f4fbd188bfbbf6457dd3",
+        "classification": "body-only",
+        "outputs": [
+          9
+        ],
+        "codecs": {
+          "exact": true,
+          "evaluations": 0
+        }
+      }
+    ],
+    "rendering": {
+      "rows": [
+        {
+          "sourceHash": "ql_9d1cb3b5eca2ba850505337671678bf927cd6d293077ccaea5a880d2d484d17c",
+          "pointCount": 4000,
+          "ownersValid": true,
+          "everyNodeReserved": true,
+          "sourceColorsPainted": true,
+          "phase": 0,
+          "reuse": true
+        },
+        {
+          "sourceHash": "ql_0dc30e9475c807d6515fb1a7b185fe8d0079c4da0cadfc892fc114e1e190ee5d",
+          "pointCount": 4000,
+          "ownersValid": true,
+          "everyNodeReserved": true,
+          "sourceColorsPainted": true,
+          "phase": 0,
+          "reuse": true
+        },
+        {
+          "sourceHash": "ql_ab1b21d3a8e018e249660f75502c15a2290addbfdad3f4fbd188bfbbf6457dd3",
+          "pointCount": 4000,
+          "ownersValid": true,
+          "everyNodeReserved": true,
+          "sourceColorsPainted": true,
+          "phase": 0,
+          "reuse": true
+        }
+      ],
+      "allSourceOwned": true,
+      "maxPoints": 4000
+    },
+    "mobile": {
+      "requestedViewport": 320,
+      "width": 320,
+      "scroll": 320,
+      "evaluations": 0,
+      "records": 0,
+      "admitted": true,
+      "canvasWidths": [
+        262,
+        262,
+        262
+      ],
+      "phaseZero": true,
+      "nav": [
+        {
+          "text": "The meadow",
+          "href": "ranch.html",
+          "right": 304,
+          "left": 244.625
+        },
+        {
+          "text": "Thought workspace",
+          "href": "v1.html",
+          "right": 272.46875,
+          "left": 181.59375
+        },
+        {
+          "text": "SDK",
+          "href": "sdk.html",
+          "right": 304,
+          "left": 285.46875
+        }
+      ]
+    }
+  },
+  "navigation": [
+    {
+      "width": 320,
+      "scroll": 320,
+      "links": [
+        {
+          "text": "✳ QUINELINGS",
+          "href": "http://127.0.0.1:41181/",
+          "relative": "./",
+          "left": 18,
+          "right": 183.453125,
+          "width": 165.453125,
+          "height": 33,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Create a Quineling ↗",
+          "href": "http://127.0.0.1:41181/create.html",
+          "relative": "create.html",
+          "left": 18,
+          "right": 147.03125,
+          "width": 129.03125,
+          "height": 18,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Experimental ranch ↗",
+          "href": "http://127.0.0.1:41181/ranch.html",
+          "relative": "ranch.html",
+          "left": 169.09375,
+          "right": 302,
+          "width": 132.90625,
+          "height": 18,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Agent SDK ↗",
+          "href": "http://127.0.0.1:41181/sdk.html",
+          "relative": "sdk.html",
+          "left": 18,
+          "right": 99.5625,
+          "width": 81.5625,
+          "height": 18,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Living Thoughts workspace ↗",
+          "href": "http://127.0.0.1:41181/v1.html",
+          "relative": "v1.html",
+          "left": 18,
+          "right": 199.6875,
+          "width": 181.6875,
+          "height": 18,
+          "visible": true,
+          "httpStatus": 200
+        }
+      ],
+      "overflow": [],
+      "file": "index.html"
+    },
+    {
+      "width": 320,
+      "scroll": 320,
+      "links": [
+        {
+          "text": "✳ QUINELINGS",
+          "href": "http://127.0.0.1:41181/index.html",
+          "relative": "index.html",
+          "left": 20,
+          "right": 132.109375,
+          "width": 112.109375,
+          "height": 17,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Experimental ranch ↗",
+          "href": "http://127.0.0.1:41181/ranch.html",
+          "relative": "ranch.html",
+          "left": 152.625,
+          "right": 300,
+          "width": 147.375,
+          "height": 24,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Agent SDK ↗",
+          "href": "http://127.0.0.1:41181/sdk.html",
+          "relative": "sdk.html",
+          "left": 20,
+          "right": 105.8125,
+          "width": 85.8125,
+          "height": 24,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Explore the collection ↗",
+          "href": "http://127.0.0.1:41181/index.html#collection",
+          "relative": "index.html#collection",
+          "left": 136.625,
+          "right": 300,
+          "width": 163.375,
+          "height": 24,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Living Thoughts workspace ↗",
+          "href": "http://127.0.0.1:41181/v1.html",
+          "relative": "v1.html",
+          "left": 20,
+          "right": 153.875,
+          "width": 133.875,
+          "height": 16,
+          "visible": true,
+          "httpStatus": 200
+        }
+      ],
+      "overflow": [],
+      "file": "create.html"
+    },
+    {
+      "width": 320,
+      "scroll": 320,
+      "links": [
+        {
+          "text": "✳ QUINELINGS",
+          "href": "http://127.0.0.1:41181/",
+          "relative": "./",
+          "left": 18,
+          "right": 131.765625,
+          "width": 113.765625,
+          "height": 19.796875,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Create",
+          "href": "http://127.0.0.1:41181/create.html",
+          "relative": "create.html",
+          "left": 18,
+          "right": 49.125,
+          "width": 31.125,
+          "height": 16.5,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Agent SDK",
+          "href": "http://127.0.0.1:41181/sdk.html",
+          "relative": "sdk.html",
+          "left": 65.125,
+          "right": 113.671875,
+          "width": 48.546875,
+          "height": 16.5,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "The ranch",
+          "href": "http://127.0.0.1:41181/ranch.html",
+          "relative": "ranch.html",
+          "left": 129.671875,
+          "right": 175.734375,
+          "width": 46.0625,
+          "height": 16.5,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Living Thoughts workspace ↗",
+          "href": "http://127.0.0.1:41181/v1.html",
+          "relative": "v1.html",
+          "left": 18,
+          "right": 178.65625,
+          "width": 160.65625,
+          "height": 19.796875,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Typed collaboration ↗",
+          "href": "http://127.0.0.1:41181/ranch-workshop.html",
+          "relative": "ranch-workshop.html",
+          "left": 18,
+          "right": 139.125,
+          "width": 121.125,
+          "height": 19.796875,
+          "visible": true,
+          "httpStatus": 200
+        }
+      ],
+      "overflow": [],
+      "file": "ranch.html"
+    },
+    {
+      "width": 320,
+      "scroll": 320,
+      "links": [
+        {
+          "text": "✳ QUINELINGS",
+          "href": "http://127.0.0.1:41181/",
+          "relative": "./",
+          "left": 18,
+          "right": 158.234375,
+          "width": 140.234375,
+          "height": 18,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Create a lifeform",
+          "href": "http://127.0.0.1:41181/create.html",
+          "relative": "create.html",
+          "left": 198.515625,
+          "right": 302,
+          "width": 103.484375,
+          "height": 16,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Experimental ranch",
+          "href": "http://127.0.0.1:41181/ranch.html",
+          "relative": "ranch.html",
+          "left": 18,
+          "right": 138.625,
+          "width": 120.625,
+          "height": 16,
+          "visible": true,
+          "httpStatus": 200
+        },
+        {
+          "text": "Source & tests ↗",
+          "href": "https://github.com/CharlesHoskinson/quinelings/tree/main/packages/agent-sdk",
+          "relative": "https://github.com/CharlesHoskinson/quinelings/tree/main/packages/agent-sdk",
+          "left": 198.65625,
+          "right": 302,
+          "width": 103.34375,
+          "height": 18,
+          "visible": true
+        },
+        {
+          "text": "Living Thoughts workspace ↗",
+          "href": "http://127.0.0.1:41181/v1.html",
+          "relative": "v1.html",
+          "left": 18,
+          "right": 199.6875,
+          "width": 181.6875,
+          "height": 18,
+          "visible": true,
+          "httpStatus": 200
+        }
+      ],
+      "overflow": [],
+      "file": "sdk.html"
+    }
+  ],
+  "screenshots": [
+    "/tmp/qdl-v1-ranch-workshop-desktop.png",
+    "/tmp/qdl-v1-ranch-workshop-mobile.png"
+  ],
+  "pageErrors": [],
+  "limitations": [
+    "Actual Chromium functional tests use SwiftShader; no physical GPU performance claim.",
+    "Supplied water observations and construction fixtures are synthetic; no live City or social admission action.",
+    "Source parent hashes remain ancestry assertions; passive rebuild evidence does not establish historical authorship."
+  ],
+  "browser": "153.0.8010.12",
+  "problems": []
+}

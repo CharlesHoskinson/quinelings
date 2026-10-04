@@ -1,0 +1,968 @@
+{
+  "format": "qdl-v1-evaluation-spec",
+  "version": 1,
+  "status": "independent acceptance projections; stable recipes unimplemented",
+  "synthetic": true,
+  "oracle": "hand-derived expectations; never generated from production outputs",
+  "domainCases": [
+    {
+      "id": "gather-ready",
+      "taskClass": "gather",
+      "input": {
+        "facts": {
+          "node": "ore-1",
+          "observedAt": 90,
+          "revision": 4,
+          "available": true,
+          "reserved": false,
+          "reachable": true,
+          "capacity": true,
+          "ownerAllowed": true
+        },
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "ready": true,
+        "simulatedReceipts": 1
+      }
+    },
+    {
+      "id": "gather-reserved",
+      "taskClass": "gather",
+      "input": {
+        "facts": {
+          "node": "ore-1",
+          "observedAt": 90,
+          "revision": 4,
+          "available": true,
+          "reserved": true,
+          "reachable": true,
+          "capacity": true,
+          "ownerAllowed": true
+        },
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "ready": false,
+        "simulatedReceipts": 0
+      }
+    },
+    {
+      "id": "gather-stale",
+      "taskClass": "gather",
+      "input": {
+        "facts": {
+          "node": "ore-1",
+          "observedAt": 89,
+          "revision": 4,
+          "available": true,
+          "reserved": false,
+          "reachable": true,
+          "capacity": true,
+          "ownerAllowed": true
+        },
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "ready": false,
+        "simulatedReceipts": 0
+      }
+    },
+    {
+      "id": "craft-capacity",
+      "taskClass": "craft",
+      "input": {
+        "requested": 4,
+        "materials": [
+          {
+            "id": "ore",
+            "available": 7,
+            "perBatch": 2
+          },
+          {
+            "id": "wood",
+            "available": 8,
+            "perBatch": 1
+          }
+        ],
+        "freeCapacity": 5,
+        "netPerBatch": 2
+      },
+      "expectedProjection": {
+        "feasible": 2,
+        "predictedConsumption": {
+          "ore": 4,
+          "wood": 2
+        },
+        "confirmed": 0
+      }
+    },
+    {
+      "id": "craft-missing",
+      "taskClass": "craft",
+      "input": {
+        "requested": 4,
+        "materials": [
+          {
+            "id": "ore",
+            "available": null,
+            "perBatch": 2
+          },
+          {
+            "id": "wood",
+            "available": 8,
+            "perBatch": 1
+          }
+        ],
+        "freeCapacity": 5,
+        "netPerBatch": 2
+      },
+      "expectedProjection": {
+        "feasible": 0,
+        "predictedConsumption": {
+          "ore": 0,
+          "wood": 0
+        },
+        "confirmed": 0
+      }
+    },
+    {
+      "id": "craft-zero-ingredient",
+      "taskClass": "craft",
+      "input": {
+        "requested": 4,
+        "materials": [
+          {
+            "id": "ore",
+            "available": 7,
+            "perBatch": 0
+          }
+        ],
+        "freeCapacity": 5,
+        "netPerBatch": 2
+      },
+      "expectedProjection": {
+        "error": "invalid-recipe"
+      }
+    },
+    {
+      "id": "mission-confirmed",
+      "taskClass": "mission",
+      "input": {
+        "planSaysDone": true,
+        "claim": "done",
+        "allowedKinds": [
+          "observation"
+        ],
+        "records": [
+          {
+            "id": "a",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 4
+          }
+        ],
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "complete": true
+      }
+    },
+    {
+      "id": "mission-testimony",
+      "taskClass": "mission",
+      "input": {
+        "planSaysDone": true,
+        "claim": "done",
+        "allowedKinds": [
+          "observation"
+        ],
+        "records": [
+          {
+            "id": "a",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "testimony",
+            "observedAt": 90,
+            "revision": 4
+          }
+        ],
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "complete": false
+      }
+    },
+    {
+      "id": "mission-stale",
+      "taskClass": "mission",
+      "input": {
+        "planSaysDone": true,
+        "claim": "done",
+        "allowedKinds": [
+          "observation"
+        ],
+        "records": [
+          {
+            "id": "a",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 89,
+            "revision": 4
+          }
+        ],
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "complete": false
+      }
+    },
+    {
+      "id": "evidence-duplicate",
+      "taskClass": "evidence",
+      "input": {
+        "claim": "done",
+        "allowedKinds": [
+          "observation",
+          "testimony"
+        ],
+        "records": [
+          {
+            "id": "1",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 4
+          },
+          {
+            "id": "2",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 4
+          }
+        ],
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "state": "supported",
+        "support": 1,
+        "refute": 0,
+        "sources": 1
+      }
+    },
+    {
+      "id": "evidence-source-conflict",
+      "taskClass": "evidence",
+      "input": {
+        "claim": "done",
+        "allowedKinds": [
+          "observation",
+          "testimony"
+        ],
+        "records": [
+          {
+            "id": "1",
+            "source": "a",
+            "claim": "done",
+            "value": true,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 4
+          },
+          {
+            "id": "2",
+            "source": "a",
+            "claim": "done",
+            "value": false,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 4
+          }
+        ],
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "state": "conflict",
+        "support": 1,
+        "refute": 1,
+        "sources": 1
+      }
+    },
+    {
+      "id": "evidence-unknown",
+      "taskClass": "evidence",
+      "input": {
+        "claim": "done",
+        "allowedKinds": [
+          "observation",
+          "testimony"
+        ],
+        "records": [
+          {
+            "id": "1",
+            "source": "a",
+            "claim": "done",
+            "value": null,
+            "kind": "observation",
+            "observedAt": 90,
+            "revision": 4
+          }
+        ],
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "state": "unknown",
+        "support": 0,
+        "refute": 0,
+        "sources": 0
+      }
+    },
+    {
+      "id": "route-tie",
+      "taskClass": "route",
+      "input": {
+        "adjacency": {
+          "A": [
+            "C",
+            "B"
+          ],
+          "C": [
+            "D"
+          ],
+          "B": [
+            "D"
+          ],
+          "D": []
+        },
+        "blocked": [],
+        "start": "A",
+        "goal": "D",
+        "observedAt": 90,
+        "revision": 4,
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "found": true,
+        "path": [
+          "A",
+          "C",
+          "D"
+        ],
+        "distance": 2
+      }
+    },
+    {
+      "id": "route-blocked",
+      "taskClass": "route",
+      "input": {
+        "adjacency": {
+          "A": [
+            "C",
+            "B"
+          ],
+          "C": [
+            "D"
+          ],
+          "B": [
+            "D"
+          ],
+          "D": []
+        },
+        "blocked": [
+          "B",
+          "C"
+        ],
+        "start": "A",
+        "goal": "D",
+        "observedAt": 90,
+        "revision": 4,
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "found": false,
+        "path": [],
+        "distance": null
+      }
+    },
+    {
+      "id": "route-stale",
+      "taskClass": "route",
+      "input": {
+        "adjacency": {
+          "A": [
+            "C",
+            "B"
+          ],
+          "C": [
+            "D"
+          ],
+          "B": [
+            "D"
+          ],
+          "D": []
+        },
+        "blocked": [],
+        "start": "A",
+        "goal": "D",
+        "observedAt": 89,
+        "revision": 4,
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "error": "stale-observation"
+      }
+    },
+    {
+      "id": "trade-preview",
+      "taskClass": "trade",
+      "input": {
+        "facts": {
+          "inventory": 5,
+          "quantity": 2,
+          "price": 3,
+          "allowance": 2,
+          "offerPresent": true,
+          "expiresAt": 101,
+          "observedAt": 90,
+          "revision": 4
+        },
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "ready": true,
+        "predictedQuantity": 2,
+        "predictedProceeds": 6,
+        "settled": false
+      }
+    },
+    {
+      "id": "trade-expired",
+      "taskClass": "trade",
+      "input": {
+        "facts": {
+          "inventory": 5,
+          "quantity": 2,
+          "price": 3,
+          "allowance": 2,
+          "offerPresent": true,
+          "expiresAt": 99,
+          "observedAt": 90,
+          "revision": 4
+        },
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "ready": false,
+        "predictedQuantity": 0,
+        "predictedProceeds": 0,
+        "settled": false
+      }
+    },
+    {
+      "id": "trade-allowance",
+      "taskClass": "trade",
+      "input": {
+        "facts": {
+          "inventory": 5,
+          "quantity": 2,
+          "price": 3,
+          "allowance": 1,
+          "offerPresent": true,
+          "expiresAt": 101,
+          "observedAt": 90,
+          "revision": 4
+        },
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "ready": false,
+        "predictedQuantity": 0,
+        "predictedProceeds": 0,
+        "settled": false
+      }
+    },
+    {
+      "id": "needs-tie",
+      "taskClass": "needs",
+      "input": {
+        "hunger": 1,
+        "awake": true,
+        "foods": [
+          {
+            "id": "b",
+            "restoration": 8,
+            "edible": true
+          },
+          {
+            "id": "a",
+            "restoration": 8,
+            "edible": true
+          },
+          {
+            "id": "c",
+            "restoration": 5,
+            "edible": true
+          }
+        ],
+        "observedAt": 90,
+        "revision": 4,
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "selected": "a",
+        "simulatedReceipts": 1
+      }
+    },
+    {
+      "id": "needs-satisfied",
+      "taskClass": "needs",
+      "input": {
+        "hunger": 0,
+        "awake": true,
+        "foods": [
+          {
+            "id": "b",
+            "restoration": 8,
+            "edible": true
+          },
+          {
+            "id": "a",
+            "restoration": 8,
+            "edible": true
+          },
+          {
+            "id": "c",
+            "restoration": 5,
+            "edible": true
+          }
+        ],
+        "observedAt": 90,
+        "revision": 4,
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "selected": null,
+        "simulatedReceipts": 0
+      }
+    },
+    {
+      "id": "needs-no-food",
+      "taskClass": "needs",
+      "input": {
+        "hunger": 1,
+        "awake": true,
+        "foods": [],
+        "observedAt": 90,
+        "revision": 4,
+        "freshness": {
+          "now": 100,
+          "maxAge": 10,
+          "minRevision": 4
+        }
+      },
+      "expectedProjection": {
+        "selected": null,
+        "simulatedReceipts": 0
+      }
+    },
+    {
+      "id": "outcome-partial",
+      "taskClass": "outcome",
+      "input": {
+        "operation": "craft",
+        "policy": {
+          "requested": 4,
+          "maxAttempts": 4
+        },
+        "receipts": [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r2",
+            "operation": "craft",
+            "attempt": "a2",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r3",
+            "operation": "craft",
+            "attempt": "a3",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 1
+          },
+          {
+            "id": "r4",
+            "operation": "craft",
+            "attempt": "a4",
+            "sequence": 1,
+            "status": "failed",
+            "units": 0
+          }
+        ]
+      },
+      "expectedProjection": {
+        "state": "exhausted",
+        "confirmedUnits": 3,
+        "confirmedAttempts": 3,
+        "failedAttempts": 1,
+        "pendingAttempts": 0,
+        "unknownAttempts": 0,
+        "attempts": 4,
+        "mayRetry": false
+      }
+    },
+    {
+      "id": "outcome-pending",
+      "taskClass": "outcome",
+      "input": {
+        "operation": "craft",
+        "policy": {
+          "requested": 1,
+          "maxAttempts": 3
+        },
+        "receipts": [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "pending",
+            "units": 0
+          }
+        ]
+      },
+      "expectedProjection": {
+        "state": "pending",
+        "confirmedUnits": 0,
+        "confirmedAttempts": 0,
+        "failedAttempts": 0,
+        "pendingAttempts": 1,
+        "unknownAttempts": 0,
+        "attempts": 1,
+        "mayRetry": false
+      }
+    },
+    {
+      "id": "outcome-unknown",
+      "taskClass": "outcome",
+      "input": {
+        "operation": "craft",
+        "policy": {
+          "requested": 4,
+          "maxAttempts": 4
+        },
+        "receipts": [
+          {
+            "id": "r1",
+            "operation": "craft",
+            "attempt": "a1",
+            "sequence": 1,
+            "status": "confirmed",
+            "units": 3
+          },
+          {
+            "id": "r2",
+            "operation": "craft",
+            "attempt": "a2",
+            "sequence": 1,
+            "status": "unknown",
+            "units": 0
+          }
+        ]
+      },
+      "expectedProjection": {
+        "state": "unknown",
+        "confirmedUnits": 3,
+        "confirmedAttempts": 1,
+        "failedAttempts": 0,
+        "pendingAttempts": 0,
+        "unknownAttempts": 1,
+        "attempts": 2,
+        "mayRetry": false
+      }
+    }
+  ],
+  "legacyKernelCases": [
+    {
+      "id": "budget-partial",
+      "op": "budget",
+      "inputs": [
+        5,
+        8
+      ],
+      "params": {},
+      "expected": {
+        "allocated": 5,
+        "remaining": 0
+      }
+    },
+    {
+      "id": "bfs-order",
+      "op": "bfs",
+      "inputs": [
+        {
+          "A": [
+            "C",
+            "B"
+          ],
+          "C": [
+            "D"
+          ],
+          "B": [
+            "D"
+          ],
+          "D": []
+        },
+        []
+      ],
+      "params": {
+        "start": "A",
+        "goal": "D"
+      },
+      "expected": {
+        "found": true,
+        "path": [
+          "A",
+          "C",
+          "D"
+        ],
+        "distance": 2
+      }
+    },
+    {
+      "id": "consensus-duplicate-tie",
+      "op": "consensus",
+      "inputs": [
+        [
+          {
+            "source": "a",
+            "choice": "x"
+          },
+          {
+            "source": "a",
+            "choice": "y"
+          },
+          {
+            "source": "b",
+            "choice": "y"
+          }
+        ]
+      ],
+      "params": {
+        "required": 2
+      },
+      "expected": {
+        "choice": "x",
+        "support": 1,
+        "accepted": false,
+        "uniqueSources": 2
+      }
+    },
+    {
+      "id": "allocation-partial",
+      "op": "allocate",
+      "inputs": [
+        5,
+        [
+          {
+            "id": "a",
+            "amount": 4
+          },
+          {
+            "id": "b",
+            "amount": 3
+          }
+        ]
+      ],
+      "params": {},
+      "expected": {
+        "grants": [
+          {
+            "id": "a",
+            "requested": 4,
+            "granted": 4
+          },
+          {
+            "id": "b",
+            "requested": 3,
+            "granted": 1
+          }
+        ],
+        "remaining": 0
+      }
+    },
+    {
+      "id": "schedule-parallel",
+      "op": "schedule",
+      "inputs": [
+        [
+          {
+            "id": "a",
+            "depends": [],
+            "duration": 2
+          },
+          {
+            "id": "b",
+            "depends": [],
+            "duration": 3
+          },
+          {
+            "id": "c",
+            "depends": [
+              "a",
+              "b"
+            ],
+            "duration": 1
+          }
+        ]
+      ],
+      "params": {},
+      "expected": {
+        "order": [
+          "a",
+          "b",
+          "c"
+        ],
+        "jobs": [
+          {
+            "id": "a",
+            "start": 0,
+            "end": 2
+          },
+          {
+            "id": "b",
+            "start": 0,
+            "end": 3
+          },
+          {
+            "id": "c",
+            "start": 3,
+            "end": 4
+          }
+        ],
+        "makespan": 4
+      }
+    },
+    {
+      "id": "retry-unknown",
+      "op": "retry",
+      "inputs": [
+        [
+          "retry",
+          "unknown",
+          "ok"
+        ]
+      ],
+      "params": {
+        "maxAttempts": 3
+      },
+      "expected": {
+        "status": "uncertain",
+        "attempts": 2,
+        "history": [
+          "retry",
+          "unknown"
+        ]
+      }
+    }
+  ],
+  "projectionRules": {
+    "freshness": "observedAt <= now and now-observedAt <= maxAge and revision >= minRevision; all boundaries inclusive",
+    "gather": "ready iff fresh and available and not reserved and reachable and capacity and ownerAllowed; simulatedReceipts is ready ? 1 : 0 for explicitly allowed local simulation",
+    "craft": "error invalid-recipe for perBatch <= 0; otherwise feasible=min(requested,floor(each available/perBatch),floor(freeCapacity/netPerBatch)); absent availability means 0; consumption=feasible*perBatch, confirmed=0",
+    "mission": "exact done claim assessed under evidenceFresh policy, complete iff state supported; planSaysDone is not evidence",
+    "evidence": "evidenceFresh distinct-source/claim counting as defined in stdlib.md, not legacy first-report evidence; null is unknown",
+    "route": "stale snapshot produces stale-observation projection; otherwise ordered BFS under legacy contract",
+    "trade": "ready iff fresh and offerPresent and now <= expiresAt and quantity <= inventory and quantity <= allowance; ready predicts quantity*price, otherwise zeros; settled=false always",
+    "needs": "when fresh, awake and hunger > 0 choose edible food with greatest restoration then ascending ID; otherwise null; selected nonnull produces one explicitly allowed simulated receipt",
+    "outcome": "reconcile receipt semantics in stdlib.md, with exact full reducer output"
+  }
+}

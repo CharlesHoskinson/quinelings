@@ -1,0 +1,144 @@
+{
+  "format": "qdl-v1-ranch-research-fixtures",
+  "version": 1,
+  "status": "independent expected examples; proposed v1 behavior, not executable release sources or measured results",
+  "scope": "Synthetic supplied observations and local simulations only",
+  "constructionDefaults": {
+    "parents": "two distinct admitted sources under identical profile, registry digest and canonicalization",
+    "style": {"mutation": "none"},
+    "nonce": 42,
+    "origin": {"kind": "manual"},
+    "repeats": 1,
+    "declaration": "complete explicitly authored childThought with valid node/port references and task coverage"
+  },
+  "cases": [
+    {
+      "id": "reservoir-waterkeeper",
+      "recipe": {"kind": "compose", "donorOutput": "mean", "recipientInput": "available"},
+      "parent0": {
+        "inputs": {"readings": "nonempty array of finite nonnegative number(L)"},
+        "computation": "mean(readings)",
+        "output": "mean: nonnegative number(L)"
+      },
+      "parent1": {
+        "inputs": {"available": "nonnegative number(L)", "desired": "nonnegative number(L)"},
+        "computation": "budget(available,desired)",
+        "output": "budget"
+      },
+      "expectedChildInputs": ["p0_readings", "p1_desired"],
+      "expectedChildNodes": 4,
+      "invocations": [
+        {"inputs": {"p0_readings": [10,20,30], "p1_desired": 12}, "expectedOutputs": [{"allocated":12,"remaining":8}]},
+        {"inputs": {"p0_readings": [2,4,6], "p1_desired": 12}, "expectedOutputs": [{"allocated":4,"remaining":0}]}
+      ],
+      "expectedRelations": ["different input digests", "equal complete source", "equal source ID", "equal harmonic genome", "equal RGB genome", "donor mean feeds original recipient budget", "removed recipient available is no longer bindable"],
+      "negatives": [
+        {"change":"omit p0_readings", "expectedCode":"missing-input", "stage":"invocation admission"},
+        {"change":"bind removed p1_available", "expected":"extra binding refusal", "stage":"invocation admission"},
+        {"change":"donor output number(mL)", "expectedCode":"unit-type", "stage":"construction"},
+        {"change":"p0_readings contains -1", "expectedCode":"refinement", "stage":"invocation admission"}
+      ]
+    },
+    {
+      "id":"filtered-weighted-estimate",
+      "recipe":{"kind":"mate","donorNode":"filtered","replaceNode":"values"},
+      "parent0":{"inputs":{"raw":"array of number(L)"},"computation":"filter(raw,gt,12)","output":"filtered: array of number(L)"},
+      "parent1":{"inputs":{"values":"array of number(L)","weights":"array of nonnegative number(one)"},"computation":"weightedMean(values,weights)","output":"weighted"},
+      "invocations":[
+        {"inputs":{"p0_raw":[12,24,36,48],"p1_weights":[1,2,1]},"expectedOutputs":[36]},
+        {"inputs":{"p0_raw":[12,24],"p1_weights":[1,2,1]},"expected":"structured length mismatch failure at recipient weightedMean; no successful output or published effects"},
+        {"inputs":{"p0_raw":[1,2],"p1_weights":[]},"expected":"structured empty-input failure at recipient weightedMean; no successful output or published effects"}
+      ],
+      "expected":"static structural compatibility cannot certify dynamically equal lengths"
+    },
+    {
+      "id":"outcome-checkpoint",
+      "recipe":{"kind":"compose","donorOutput":"reconciled","recipientInput":"outcome"},
+      "parent0":{"inputs":{"receipts":"typed complete receipt array"},"constants":{"operation":"craft","requested":4,"maxAttempts":4},"computation":"reconcile(operation,receipts,policy)","output":"reconciled: complete closed reconcile result"},
+      "parent1":{"inputs":{"outcome":"same complete closed reconcile result"},"computation":"report(get(outcome,confirmedUnits),compare(get(outcome,state),eq,completed))","output":"report fields confirmedUnits and complete"},
+      "invocations":[
+        {
+          "inputs":{"p0_receipts":[
+            {"id":"r1","operation":"craft","attempt":"a1","sequence":1,"status":"confirmed","units":1},
+            {"id":"r2","operation":"craft","attempt":"a2","sequence":1,"status":"confirmed","units":1},
+            {"id":"r3","operation":"craft","attempt":"a3","sequence":1,"status":"confirmed","units":1},
+            {"id":"r4","operation":"craft","attempt":"a4","sequence":1,"status":"failed","units":0}
+          ]},
+          "expectedDonor":{"state":"exhausted","confirmedUnits":3,"confirmedAttempts":3,"failedAttempts":1,"pendingAttempts":0,"unknownAttempts":0,"attempts":4,"mayRetry":false},
+          "expectedOutputs":[{"confirmedUnits":3,"complete":false}]
+        },
+        {
+          "inputs":{"p0_receipts":[
+            {"id":"r1","operation":"craft","attempt":"a1","sequence":1,"status":"confirmed","units":3},
+            {"id":"r2","operation":"craft","attempt":"a2","sequence":1,"status":"unknown","units":0}
+          ]},
+          "expectedDonor":{"state":"unknown","confirmedUnits":3,"confirmedAttempts":1,"failedAttempts":0,"pendingAttempts":0,"unknownAttempts":1,"attempts":2,"mayRetry":false},
+          "expectedOutputs":[{"confirmedUnits":3,"complete":false}]
+        },
+        {
+          "inputs":{"p0_receipts":[
+            {"id":"r1","operation":"craft","attempt":"a1","sequence":1,"status":"confirmed","units":4}
+          ]},
+          "expectedDonor":{"state":"completed","confirmedUnits":4,"confirmedAttempts":1,"failedAttempts":0,"pendingAttempts":0,"unknownAttempts":0,"attempts":1,"mayRetry":false},
+          "expectedOutputs":[{"confirmedUnits":4,"complete":true}]
+        }
+      ],
+      "expected":"complete is interpretation of supplied receipts under policy; neither construction nor run performs craft or authenticates receipt provenance"
+    },
+    {
+      "id":"route-schedule-parallel-report",
+      "recipe":{"kind":"merge"},
+      "parent0":{"inputs":{"roads":"closed adjacency record","blocked":"array(string)"},"constants":{"start":"A","goal":"D"},"computation":"bfs(roads,blocked)","output":"route"},
+      "parent1":{"inputs":{"jobs":"typed job array with nonnegative duration(s)"},"computation":"schedule(jobs)","output":"schedule"},
+      "inputs":{"p0_roads":{"A":["C","B"],"B":["D"],"C":["D"],"D":[]},"p0_blocked":[],"p1_jobs":[{"id":"fill","depends":[],"duration":2},{"id":"water","depends":["fill"],"duration":3}]},
+      "expectedOutputs":[{"a0":{"found":true,"path":["A","C","D"],"distance":2},"b0":{"order":["fill","water"],"jobs":[{"id":"fill","start":0,"end":2},{"id":"water","start":2,"end":5}],"makespan":5}}],
+      "expected":"parallel report; no reservation, walking, resource contention model or causal integration claim"
+    },
+    {
+      "id":"protected-guard-shared-input",
+      "recipient":"boolean port flag feeds original action guard and payload computation",
+      "change":"replace flag with equally typed pure donor boolean",
+      "expectedCode":"protected-guard",
+      "expected":"refused even though payload donation alone would be allowed"
+    },
+    {
+      "id":"donor-port-closure",
+      "donor":"selected pure output depends transitively on runtime input observation",
+      "expected":"observation port carried into child with renamed declaration and explicit binding requirement; no cached parent value",
+      "negative":"child missing that port declaration refuses before candidate identity"
+    },
+    {
+      "id":"declaration-reference",
+      "change":"child goal completion references removed recipient node",
+      "expectedCode":"reference",
+      "expected":"construction refuses; no fabricated remapped success claim"
+    },
+    {
+      "id":"nursery-boundary",
+      "birthTick":100,
+      "atTick299":{"nursery":true,"enabled":false,"newRunRecords":0},
+      "atTick300":{"nursery":false,"enabled":false,"newRunRecords":0},
+      "expected":"same position; two parents remain present; explicit participation required after maturation"
+    },
+    {
+      "id":"admission-versus-run",
+      "steps":["reciprocal meeting","proposal","compatibility","preview","admit","inspect","advance to maturity"],
+      "expectedNewRunRecords":0,
+      "expected":"one admitted child and one atomic admission receipt only after admit; no effect dispatch"
+    },
+    {
+      "id":"withdrawal-and-replay",
+      "beforeAdmission":"parent withdraws then reenables after proposal",
+      "expected":"old epoch/proposal cannot admit; state unchanged on refusal",
+      "afterSuccessfulAdmission":"same request key and identical payload replayed after proposal consumption",
+      "expectedReplay":"original receipt; zero additional child, charges, derivation or world revision"
+    },
+    {
+      "id":"history-evidence-boundaries",
+      "freshSourceRecovery":{"authoredDeclaration":"retained","sourceParentHashes":"asserted","admissionHistory":"absent","runHistory":"absent"},
+      "reconstructedDerivation":{"evidenceOrigin":"replayed-construction","historicalBirth":"not established"},
+      "untrustedImportedReceipt":{"evidenceOrigin":"imported-assertion","externalAuthority":"none"},
+      "trustedHostCheckpoint":{"admissionReceipt":"retained","sourceAndInputBoundRuns":"retained","requestReplay":"original acknowledgement","hostCapabilities":"not serialized","clocks":"paused"}
+    }
+  ]
+}

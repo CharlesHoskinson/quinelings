@@ -1,0 +1,411 @@
+{
+  "generatedAt": "2026-10-04T13:22:30.355Z",
+  "scope": "Node CPU inspection of shipped browser bundle; no browser, raster, task execution, world actions, GPU completion or performance measurement",
+  "runtime": "v26.10.0",
+  "bundleSHA256": "02241b7fa65ea1398b04ce368618dae464bbd090f04f04910e4492f9235c8a39",
+  "phases": 12,
+  "referenceBudget": 4000,
+  "method": "Recreate ten founders with exact ranch seeds. Compare Float32 rest-layout positions transformed by CPU pose matrices against Anatomy.frame at the same phase and budget; compare owner IDs. Sum rest weights and typed-array byte lengths at three tiers.",
+  "rows": [
+    {
+      "name": "Reservoir",
+      "seed": 170,
+      "sourceHash": "01a853605c6a339041c4c818152f13775adbf7da7b90430f25a4fc3a0da2f88c",
+      "nodes": 2,
+      "components": 3,
+      "gesture": "hover",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 5.8386797618936725e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 2,
+          "weightSum": 1.0000000143190846,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 2,
+          "weightSum": 1.0000000174622983,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 2,
+          "weightSum": 1.0000000003201421,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Waterkeeper",
+      "seed": 8089,
+      "sourceHash": "767f900ccc3fa0e5641fd51c6d11290e6cbd915f0d0e884d3adc87b0ead71e31",
+      "nodes": 3,
+      "components": 4,
+      "gesture": "gather",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 6.070820890435868e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 3,
+          "weightSum": 0.999999989871867,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 3,
+          "weightSum": 1.0000000036670826,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 3,
+          "weightSum": 1.0000000058644218,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Gatherer",
+      "seed": 16008,
+      "sourceHash": "8b12c6c9bf54beb22197b9250751efe2a5f3d9cc7fad2129d6eb5424945914da",
+      "nodes": 4,
+      "components": 5,
+      "gesture": "glide",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 5.944050662787248e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 4,
+          "weightSum": 1.0000000168802217,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 4,
+          "weightSum": 1.0000000221189111,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 4,
+          "weightSum": 1.0000000089930836,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Signal",
+      "seed": 23927,
+      "sourceHash": "724815f89ce572aa4e550ddd68975387efc54887e7bfa749cfaa2413d9277c66",
+      "nodes": 4,
+      "components": 5,
+      "gesture": "glide",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 5.711951722719988e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 4,
+          "weightSum": 1.0000000089057721,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 4,
+          "weightSum": 0.9999999978754204,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 4,
+          "weightSum": 0.9999999778665369,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Sieve",
+      "seed": 31846,
+      "sourceHash": "6777a3b5983b5a879fcb52ec8f48a93a3445381497f6fa135e7d1ceb523c6c6d",
+      "nodes": 3,
+      "components": 3,
+      "gesture": "glide",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 5.859994400836399e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 3,
+          "weightSum": 0.9999999883002602,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 3,
+          "weightSum": 1.0000000185100362,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 3,
+          "weightSum": 0.9999999944120646,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Estimator",
+      "seed": 39765,
+      "sourceHash": "118db74d373914f53d6bc8840773e7033b01402821d8e5654dffcc0e9fa732d8",
+      "nodes": 3,
+      "components": 4,
+      "gesture": "gather",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 4.248725082867111e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 3,
+          "weightSum": 1.0000000011059456,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 3,
+          "weightSum": 1.00000000858563,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 3,
+          "weightSum": 0.9999999854480848,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Pathfinder",
+      "seed": 47684,
+      "sourceHash": "8c2d384c29a607027388244ce089a60d74df71fa94e87f491599cebfa379dbc6",
+      "nodes": 6,
+      "components": 5,
+      "gesture": "gather",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 5.559368010388255e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 6,
+          "weightSum": 0.9999999948777258,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 6,
+          "weightSum": 1.00000001132139,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 6,
+          "weightSum": 0.9999999794672476,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Planner",
+      "seed": 55603,
+      "sourceHash": "c0edc43e9ee6c442cee58c02821f8edc01037fbb0b4930a2dc41b08df9064e52",
+      "nodes": 2,
+      "components": 3,
+      "gesture": "hover",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 3.588610431037864e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 2,
+          "weightSum": 1.0000000193249434,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 2,
+          "weightSum": 1.0000000081199687,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 2,
+          "weightSum": 0.9999999916035449,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Council",
+      "seed": 63522,
+      "sourceHash": "13b18e4eaebcfd83c573059e734a1e51abaf81a97fbf8512e358fe00a88e4dd7",
+      "nodes": 2,
+      "components": 3,
+      "gesture": "hover",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 5.867156460670486e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 2,
+          "weightSum": 0.9999999814899638,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 2,
+          "weightSum": 1.0000000199652277,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 2,
+          "weightSum": 1.000000022992026,
+          "restTypedBytes": 132000
+        }
+      ]
+    },
+    {
+      "name": "Witness",
+      "seed": 71441,
+      "sourceHash": "74e724b097fdd9a5e433912361b0e202865bf7a86f000b002d4880ec216b7c97",
+      "nodes": 2,
+      "components": 3,
+      "gesture": "hover",
+      "componentKinds": [
+        "chamber",
+        "spine",
+        "spine"
+      ],
+      "maxLocalFloat32TransformError": 3.69910930775319e-8,
+      "ownerMismatch": 0,
+      "sourceUnchanged": true,
+      "budgets": [
+        {
+          "budget": 1000,
+          "owners": 2,
+          "weightSum": 0.9999999807914719,
+          "restTypedBytes": 33000
+        },
+        {
+          "budget": 2000,
+          "owners": 2,
+          "weightSum": 1.0000000163563527,
+          "restTypedBytes": 66000
+        },
+        {
+          "budget": 4000,
+          "owners": 2,
+          "weightSum": 0.9999999972351361,
+          "restTypedBytes": 132000
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "maxTransformError": 6.070820890435868e-8,
+    "ownerMismatch": 0,
+    "allSourcesUnchanged": true
+  },
+  "acceptanceFixtures": [
+    {
+      "name": "fixed-owner-lens",
+      "states": [
+        "not-evaluated",
+        "valid",
+        "underflow",
+        "overflow",
+        "invalid",
+        "stale"
+      ],
+      "expected": "Owner IDs and canonical source stay fixed; matching recorded values only; DOM value and status agree with pigment."
+    },
+    {
+      "name": "mobile-selection",
+      "viewport": [
+        320,
+        760
+      ],
+      "expected": "No horizontal overflow; DOM targets >=44 CSS px proposed goal; selected node has outline and text; canonical still available."
+    },
+    {
+      "name": "resource-lifecycle",
+      "cycles": 100,
+      "expected": "Cache and GPU byte caps hold after tier churn, source selection, resize and context recovery; no task execution."
+    }
+  ]
+}

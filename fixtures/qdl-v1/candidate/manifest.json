@@ -1,0 +1,18 @@
+{
+  "status": "candidate",
+  "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+  "canonical": "qdl-json-1",
+  "oracle": "Hand-authored fixture expectations from stdlib workstream; source and codec hashes lock this candidate implementation only.",
+  "cases": [
+    "gather-readiness",
+    "craft-quote",
+    "confirmed-checkpoints",
+    "evidence-ledger",
+    "route-preview",
+    "trade-preview",
+    "needs-triage",
+    "receipt-reconciliation",
+    "water-total",
+    "work-schedule"
+  ]
+}

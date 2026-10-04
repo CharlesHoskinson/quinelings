@@ -19,17 +19,39 @@
   },
   "motion": {
     "clock": "separate",
-    "phaseRate": 0.018,
+    "phaseRate": 0.038,
     "reducedMotion": "freeze"
   },
   "ink": {
     "ghostAlpha": 0.09,
     "secondaryAlpha": 0.42,
-    "ridgeAlpha": 0.72,
-    "neutral": "#d1e6dd"
+    "ridgeAlpha": 0.88,
+    "neutral": "#f0f1eb"
   },
-  "framing": {
-    "scale": 0.43,
-    "padding": 0.12
+  "surface": {
+    "model": "folded-ribbon",
+    "ribbons": 28,
+    "crests": 4,
+    "spread": 0.16,
+    "folds": 7,
+    "taper": 0.65,
+    "asymmetry": 0.25,
+    "depth": 0.28,
+    "twist": 1.9,
+    "phaseLag": 1.4,
+    "samples": 24000
+  },
+  "light": {
+    "model": "density-crest",
+    "recessAlpha": 0.045,
+    "crestAlpha": 0.58,
+    "depthContrast": 0.65
+  },
+  "composition": {
+    "occupancy": 0.76,
+    "lean": -0.12,
+    "yaw": 0.3,
+    "pitch": 0.12,
+    "focus": 0.38
   }
 }

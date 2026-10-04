@@ -4,7 +4,11 @@ module design {
   type Profile = {
     family: int, a: int, b: int, baseRadius: int, degreeGain: int, literalGain: int,
     bend: int, frequencyGain: int, ripple: int, motionRate: int,
-    ghost: int, secondary: int, ridge: int, scale: int, padding: int
+    ghost: int, secondary: int, ridge: int,
+    ribbons: int, crests: int, spread: int, folds: int, taper: int, asymmetry: int,
+    surfaceDepth: int, twist: int, phaseLag: int, samples: int,
+    recess: int, crest: int, depthContrast: int,
+    occupancy: int, lean: int, yaw: int, pitch: int, focus: int
   }
   type State = {
     source: int, origin: int, phase: int, paused: bool, repeats: int,
@@ -46,7 +50,16 @@ module design {
     and p.bend >= 0 and p.bend <= 80 and p.frequencyGain >= 0 and p.frequencyGain <= 200
     and p.ripple >= 0 and p.ripple <= 300 and p.motionRate >= 0 and p.motionRate <= 50
     and p.ghost >= 0 and p.ghost < p.secondary and p.secondary < p.ridge and p.ridge <= 1000
-    and p.scale >= 250 and p.scale <= 470 and p.padding >= 80 and p.padding <= 250
+    and p.ribbons >= 8 and p.ribbons <= 36 and p.crests >= 3 and p.crests <= 6
+    and p.spread >= 20 and p.spread <= 240 and p.folds >= 2 and p.folds <= 9
+    and p.taper >= 400 and p.taper <= 2500 and p.asymmetry >= 0 and p.asymmetry <= 350
+    and p.surfaceDepth >= 0 and p.surfaceDepth <= 350 and p.twist >= 0 and p.twist <= 3000
+    and p.phaseLag >= 0 and p.phaseLag <= 2000 and p.samples >= 4000 and p.samples <= 24000
+    and p.recess >= 15 and p.recess <= 120 and p.crest >= 160 and p.crest <= 650
+    and p.recess < p.crest and p.depthContrast >= 0 and p.depthContrast <= 800
+    and p.occupancy >= 600 and p.occupancy <= 840 and p.focus >= 150 and p.focus <= 800
+    and p.lean >= -500 and p.lean <= 500 and p.yaw >= -500 and p.yaw <= 500
+    and p.pitch >= -500 and p.pitch <= 500
 
   action init = {
     nondet source = sources.oneOf()
@@ -64,12 +77,29 @@ module design {
     nondet ghost = 0.to(998).oneOf()
     nondet secondary = (ghost + 1).to(999).oneOf()
     nondet ridge = (secondary + 1).to(1000).oneOf()
-    nondet scale = 250.to(470).oneOf()
-    nondet padding = 80.to(250).oneOf()
+    nondet ribbons = (8).to(36).oneOf()
+    nondet crests = (3).to(6).oneOf()
+    nondet spread = (20).to(240).oneOf()
+    nondet folds = (2).to(9).oneOf()
+    nondet taper = (400).to(2500).oneOf()
+    nondet asymmetry = (0).to(350).oneOf()
+    nondet surfaceDepth = (0).to(350).oneOf()
+    nondet twist = (0).to(3000).oneOf()
+    nondet phaseLag = (0).to(2000).oneOf()
+    nondet samples = (4000).to(24000).oneOf()
+    nondet recess = (15).to(120).oneOf()
+    nondet crest = (160).to(650).oneOf()
+    nondet depthContrast = (0).to(800).oneOf()
+    nondet occupancy = (600).to(840).oneOf()
+    nondet lean = (-500).to(500).oneOf()
+    nondet yaw = (-500).to(500).oneOf()
+    nondet pitch = (-500).to(500).oneOf()
+    nondet focus = (150).to(800).oneOf()
     val profile = {family: family, a: a, b: b, baseRadius: baseRadius,
       degreeGain: degreeGain, literalGain: literalGain, bend: bend,
       frequencyGain: frequencyGain, ripple: ripple, motionRate: motionRate,
-      ghost: ghost, secondary: secondary, ridge: ridge, scale: scale, padding: padding}
+      ghost: ghost, secondary: secondary, ridge: ridge,
+      ribbons: ribbons, crests: crests, spread: spread, folds: folds, taper: taper, asymmetry: asymmetry, surfaceDepth: surfaceDepth, twist: twist, phaseLag: phaseLag, samples: samples, recess: recess, crest: crest, depthContrast: depthContrast, occupancy: occupancy, lean: lean, yaw: yaw, pitch: pitch, focus: focus}
     s' = {source: source, origin: source, phase: 0, paused: false, repeats: repeats,
       executions: 0, effects: 0, emitted: 0, children: 0, energy: 10,
       last: "init", priorEffects: 0, priorExecutions: 0, priorChildren: 0,
@@ -114,8 +144,11 @@ module design {
     nondet guard = Set(false, true).oneOf()
     nondet allowed = Set(false, true).oneOf()
     nondet candidate = sources.oneOf()
-    nondet sameProfile = Set(false, true).oneOf()
-    val profile = if (sameProfile) s.profile else s.profile.with("family", (s.profile.family + 1) % 10)
+    nondet mutation = Set(0, 1, 2, 3).oneOf()
+    val profile = if (mutation == 0) s.profile
+      else if (mutation == 1) s.profile.with("family", (s.profile.family + 1) % 10)
+      else if (mutation == 2) s.profile.with("crest", if (s.profile.crest == 650) 649 else s.profile.crest + 1)
+      else s.profile.with("spread", if (s.profile.spread == 240) 239 else s.profile.spread + 1)
     any {render, replay, togglePause, execute(guard, allowed), admit(candidate, profile), rejectChild(candidate, profile)}
   }
 
@@ -185,6 +218,13 @@ module design {
     .then(rejectChild(s.source, s.profile.with("family", (s.profile.family + 1) % 10)))
     .expect(safety and s.children == 0)
 
+  run rejectChangedMaterialTest = init.then(execute(true, true))
+    .then(rejectChild(s.source, s.profile.with("crest", if (s.profile.crest == 650) 649 else s.profile.crest + 1)))
+    .expect(safety and s.children == 0 and s.effects == 1)
+  run rejectChangedMembraneTest = init.then(execute(false, false))
+    .then(rejectChild(s.source, s.profile.with("spread", if (s.profile.spread == 240) 239 else s.profile.spread + 1)))
+    .expect(safety and s.children == 0)
+
   // Deliberate mutation, excluded from normal step. Its test must detect failure.
   action unsafeReplay = s' = snapshot("replay").with("effects", s.effects + 1)
   action unsafeStep = any {step, unsafeReplay}
@@ -194,4 +234,12 @@ module design {
     .with("profile", s.profile.with("family", (s.profile.family + 1) % 10))
   run detectsUnsafeProfileRenderTest = init.then(unsafeProfileRender)
     .expect(not(safety) and not(sourceIdentity))
+  action unsafeMaterialRender = s' = snapshot("render")
+    .with("profile", s.profile.with("crest", if (s.profile.crest == 650) 649 else s.profile.crest + 1))
+  run detectsUnsafeMaterialRenderTest = init.then(unsafeMaterialRender)
+    .expect(not(safety) and not(sourceIdentity) and viewSeparation)
+  action unsafeCompositionRender = s' = snapshot("render")
+    .with("profile", s.profile.with("occupancy", if (s.profile.occupancy == 840) 839 else s.profile.occupancy + 1))
+  run detectsUnsafeCompositionRenderTest = init.then(unsafeCompositionRender)
+    .expect(not(safety) and not(sourceIdentity) and viewSeparation)
 }

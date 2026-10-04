@@ -1,0 +1,34 @@
+{
+  "status": "brainstorm_wave_1",
+  "activeThreads": [
+    {
+      "workstream": "semantics",
+      "threadId": "01a105fe-bc03-7f00-9a69-e3c5cc46a119",
+      "status": "started"
+    },
+    {
+      "workstream": "genetics",
+      "threadId": "01a105fe-b7bb-7b21-8e29-5acdc62769d4",
+      "status": "started"
+    },
+    {
+      "workstream": "social",
+      "threadId": "01a105fe-b9df-7292-a81e-9378291e5159",
+      "status": "started"
+    }
+  ],
+  "queuedWorkstreams": [
+    "biology",
+    "visual",
+    "experience",
+    "api",
+    "formal",
+    "robustness",
+    "examples"
+  ],
+  "auditAfterConvergence": {
+    "grok": 3,
+    "gemini": 3,
+    "gpt": 3
+  }
+}

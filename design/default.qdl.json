@@ -13,8 +13,8 @@
   },
   "filament": {
     "model": "pinned-sine",
-    "bend": 0.06,
-    "frequencyGain": 0.2,
+    "bend": 0.04,
+    "frequencyGain": 0.07,
     "ripple": 0.16
   },
   "motion": {

@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
 const FAMILIES=['filament','jelly','moth','coral','ribbon','nautilus','seed','torus','comet','bloom'];
-const DEFAULT={qdl:1,family:'filament',organ:{model:'rosette',baseRadius:.03,degreeGain:.004,literalGain:.001,amplitudes:[.2,.13]},filament:{model:'pinned-sine',bend:.06,frequencyGain:.2,ripple:.16},motion:{clock:'separate',phaseRate:.018,reducedMotion:'freeze'},ink:{ghostAlpha:.09,secondaryAlpha:.42,ridgeAlpha:.72,neutral:'#d1e6dd'},framing:{scale:.43,padding:.12}};
+const DEFAULT={qdl:1,family:'filament',organ:{model:'rosette',baseRadius:.03,degreeGain:.004,literalGain:.001,amplitudes:[.2,.13]},filament:{model:'pinned-sine',bend:.04,frequencyGain:.07,ripple:.16},motion:{clock:'separate',phaseRate:.018,reducedMotion:'freeze'},ink:{ghostAlpha:.09,secondaryAlpha:.42,ridgeAlpha:.72,neutral:'#d1e6dd'},framing:{scale:.43,padding:.12}};
 const clone=x=>JSON.parse(JSON.stringify(x));
 function check(ok,message){if(!ok)throw Error('QDL: '+message);}
 function fields(obj,names){check(obj&&typeof obj==='object'&&!Array.isArray(obj),'expected record');check(Object.keys(obj).length===names.length&&names.every(k=>Object.hasOwn(obj,k)),'unknown or missing fields');}

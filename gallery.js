@@ -1,85 +1,102 @@
 /* The body is a bounded projection; only the independently encoded genome preserves source. */
 'use strict';
 (() => {
-const Q=globalThis.Quinelings,D=globalThis.QDL,$=id=>document.getElementById(id),TAU=Math.PI*2;
+const Q=globalThis.Quinelings,D=globalThis.QDL,M=globalThis.Morphology,$=id=>document.getElementById(id),TAU=Math.PI*2;
 const canvas=$('creature'),ctx=canvas.getContext('2d');
-let library=[],current=null,program,shape,genome,result,generation=0,phase=0,selected=null,traceIndex=0,tracePulse=0;
-let moving=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+let library=[],current=null,program,shape,genome,result,generation=0,phase=0,selected=null,traceIndex=0,tracePulse=null,traceNode=null,viewSeconds=0;
+const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+let moving=!motionPreference.matches,dirty=true,viewRevision=0,canvasVisible=true;
 $('pause').textContent=moving?'Pause motion':'Resume motion';
 const pretty=value=>JSON.stringify(value,null,2);
 function color(op){return Q.instructionColor(op);}
 function fail(error){$('receipt').textContent=error.message;$('status').textContent='REJECTED';console.error(error);}
 function guard(fn){return (...args)=>{try{return fn(...args);}catch(e){fail(e);}};}
 function literalGraph(){const fixture=current.fixtures[Number($('fixture').value)]||{overrides:{}};const graph=JSON.parse(JSON.stringify(current.graph));for(const node of graph.nodes)if(node.op==='literal'&&Object.hasOwn(fixture.overrides||{},node.id))node.params.value=fixture.overrides[node.id];return graph;}
-function install(ast,reset=true){program=ast;shape=Q.describe(ast);genome=Q.encode(ast);result=null;selected=null;traceIndex=0;if(reset)generation=0;$('generation').textContent=`GENERATION ${generation}`;$('source').value=Q.canon(ast);$('metrics').textContent=`${shape.nodes.length} ORGANS / ${shape.links.length} FILAMENTS`;$('band').max=genome.bands.length-1;$('band').value=0;$('status').textContent='READY TO EXECUTE';$('task-output').textContent='Run the selected task to inspect its output.';$('trace').textContent='Each colored organ corresponds to a graph operation.';$('organ-info').textContent='Select a colored organ to inspect its operation.';$('proof').textContent=`${new TextEncoder().encode(Q.canon(ast)).length} canonical source bytes\n${genome.bands.length} harmonic bands\n32 integer coefficients per band`;legend();drawWave();window.dispatchEvent(new CustomEvent('quineling:changed'));}
+function install(ast,reset=true){dirty=true;viewRevision++;program=ast;tracePulse=null;traceNode=null;shape=Q.describe(ast);genome=Q.encode(ast);result=null;selected=null;traceIndex=0;if(reset)generation=0;$('generation').textContent=`GENERATION ${generation}`;$('source').value=Q.canon(ast);$('metrics').textContent=`${shape.nodes.length} ORGANS / ${shape.links.length} FILAMENTS`;$('band').max=genome.bands.length-1;$('band').value=0;$('status').textContent='READY TO EXECUTE';$('task-output').textContent='Run the selected task to inspect its output.';$('trace').textContent='Each colored organ corresponds to a graph operation.';$('organ-info').textContent='Select a colored organ to inspect its operation.';$('proof').textContent=`${new TextEncoder().encode(Q.canon(ast)).length} canonical source bytes\n${genome.bands.length} harmonic bands\n32 integer coefficients per band`;legend();drawWave();window.dispatchEvent(new CustomEvent('quineling:changed'));}
 function select(item){current=item;$('identity').textContent=item.name;$('description').textContent=item.description;$('specimen-id').textContent=`SPECIMEN ${String(library.indexOf(item)+1).padStart(2,'0')} / ${item.id.toUpperCase()}`;$('family-label').textContent=`${item.skin.family.toUpperCase()} / GRAPH PROJECTION`;$('fixture').replaceChildren();item.fixtures.forEach((fixture,i)=>{const option=document.createElement('option');option.value=i;option.textContent=fixture.name;$('fixture').append(option);});$('repeats').value=1;$('repeats-label').textContent='1';rebuild();for(const card of document.querySelectorAll('.creature-card')){const active=card.dataset.id===item.id;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));}}
 function rebuild(){if(!current)return;install(Q.makeTaskProgram(literalGraph(),Number($('repeats').value),D.create(current.skin.family)));$('repeats-label').textContent=$('repeats').value;$('receipt').textContent='Selected inputs are encoded in the source. All effects are local simulations.';}
 function run(){result=Q.execute(Q.decode(genome));const source=Q.canon(program),same=result.emitted.length===1&&result.emitted[0]===source;if(!same)throw Error('Quine source identity failed');const tasks=result.tasks||[];const output=tasks[0]?.output;const fixture=current.fixtures[Number($('fixture').value)];const matches=Q.canon(output)===Q.canon(fixture.expected);$('task-output').textContent=pretty(output);$('receipt').textContent=`${tasks.length} task cycle${tasks.length===1?'':'s'} completed. Fixture ${matches?'matched':'MISMATCHED'}. Exact canonical source reproduced.`;$('status').textContent=matches?'TASK + QUINE VERIFIED':'FIXTURE MISMATCH';$('proof').textContent=`Emitted source = canonical program: EXACT\nFixture output: ${matches?'MATCH':'MISMATCH'}\nRuntime steps: ${result.steps}\nSource reconstructed by the constructor quine`;traceIndex=0;step();return result;}
-function step(){if(!result)return;const rows=result.tasks?.flatMap(task=>task.trace)||result.trace||[];if(!rows.length)return;const row=rows[traceIndex%rows.length];selected=row.edge||row.id||row.node||null;$('trace').textContent=`Step ${traceIndex%rows.length+1} / ${rows.length}\n${pretty(row)}`;traceIndex++;tracePulse=Date.now();organInfo(shape.nodes.find(n=>n.id===selected));}
+function step(){if(!result)return;const rows=result.tasks?.flatMap(task=>task.trace)||result.trace||[];if(!rows.length)return;const row=rows[traceIndex%rows.length];selected=row.edge||row.id||row.node||null;$('trace').textContent=`Step ${traceIndex%rows.length+1} / ${rows.length}\n${pretty(row)}`;traceIndex++;traceNode=selected;tracePulse=viewSeconds;organInfo(shape.nodes.find(n=>n.id===selected));}
 function reproduce(){const parent=run(),source=parent.emitted[0],child=JSON.parse(source),fresh=Q.execute(child);if(fresh.emitted.length!==1||fresh.emitted[0]!==source)throw Error('Fresh generation did not reproduce its source');if(Q.canon(fresh.tasks.map(t=>t.output))!==Q.canon(parent.tasks.map(t=>t.output)))throw Error('Fresh generation task outputs changed');generation++;install(child,false);result=fresh;$('task-output').textContent=pretty(fresh.tasks[0]?.output);$('status').textContent='FRESH GENERATION VERIFIED';$('receipt').textContent=`Generation ${generation} was constructed from emitted source and executed again. Source and task outputs match.`;$('proof').textContent='Parent output = child source: EXACT\nFresh child emitted source: EXACT\nFresh child task outputs: EXACT';}
 function recover(mode){const restored=mode==='rgb'?Q.decodeColors(Q.encodeColors(program)):Q.decode(Q.fromSamples(Q.samples(genome)));if(Q.canon(restored)!==Q.canon(program))throw Error('Recovered source changed');const check=Q.execute(restored);if(check.emitted[0]!==Q.canon(restored))throw Error('Recovered program failed source reproduction');$('proof').textContent=mode==='rgb'?'Exact RGB byte strand → source: EXACT\nRedundant byte palette + checksum: VERIFIED\nRecovered source execution: QUINE VERIFIED':`${genome.bands.length*65} numerical samples\nCosine coefficients + checksum: VERIFIED\nRecovered source: EXACT\nRecovered source execution: QUINE VERIFIED`;$('receipt').textContent=`Complete source recovered from ${mode==='rgb'?'exact RGB data':'all harmonic samples'} and successfully executed.`;}
 function legend(){const ops=[...new Set(shape.nodes.map(n=>n.op))];$('color-legend').replaceChildren();for(const op of ops){const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('i');dot.className='legend-dot';dot.style.background=color(op);span.append(dot,document.createTextNode(op));$('color-legend').append(span);}}
 // Golden-angle sampling gives a repeatable, continuously moving point cloud.
 // Branches/depth/ports alter the body; opcode frequencies and literal magnitude alter organs.
-function bodyPoint(family,u,a,t,s){const b=s.branches||0,d=s.maxDepth||1,q=s.quoteDepth||1;const ripple=1+.08*Math.sin((b+2)*a+t)+.035*Math.cos((d+1)*TAU*u-t);let x,y;
- switch(family){
- case 'jelly':{const r=.59*Math.sqrt(u),z=Math.cos(r*2.4);x=r*Math.cos(a);y=-.2-.42*z+.08*Math.sin(a*5+t);if(u>.76){const v=(u-.76)/.24;x=.4*Math.cos(a)+.06*Math.sin(v*13+t+a);y=-.06+v*.88;}break;}
- case 'moth':{const r=Math.sqrt(u)*(.2+.55*Math.abs(Math.sin(a)));x=r*Math.sin(a)*(.84+.16*Math.cos(t));y=.55*r*Math.cos(a)+.12*Math.sin(a*4+t)*u;break;}
- case 'coral':{const arm=Math.floor(u*(5+Math.min(b,5))),v=u*(5+Math.min(b,5))%1,angle=-Math.PI+.25+arm*Math.PI/(4+Math.min(b,5));x=.66*v*Math.cos(angle)+.055*Math.sin(v*20+arm+t);y=.45+.85*v*Math.sin(angle);break;}
- case 'ribbon':{const v=(u-.5)*1.7;x=.47*Math.sin(v*(3+d*.2)+t*.5)+.11*Math.cos(a);y=v+.12*Math.sin(a);break;}
- case 'nautilus':{const angle=u*TAU*(2+q*.15)+t*.12,r=.07+.55*u;x=r*Math.cos(angle)+.055*Math.cos(a);y=r*Math.sin(angle)+.055*Math.sin(a);break;}
- case 'seed':{const v=2*u-1,r=.36*Math.sqrt(1-v*v)*(1+.18*v);x=r*Math.cos(a);y=.73*v+.06*Math.sin(a);break;}
- case 'torus':{const r=.44+.15*Math.cos(TAU*u);x=r*Math.cos(a);y=.66*r*Math.sin(a)+.17*Math.sin(TAU*u);break;}
- case 'comet':{const v=u,r=.35*Math.exp(-3*v);x=-.45+v*1.1+r*Math.cos(a);y=-.28+v*.7+r*Math.sin(a)+.05*Math.sin(v*18+t);break;}
- case 'bloom':{const petals=5+Math.min(b,4),r=Math.sqrt(u)*(.34+.25*Math.cos(petals*a));x=r*Math.cos(a);y=r*Math.sin(a);break;}
- default:{const v=2*u-1,r=.2*Math.sqrt(1-v*v)*(1+.28*Math.sin((d+2)*u*TAU+t));x=.13*Math.sin(v*4+t*.4)+r*Math.cos(a);y=.82*v+.07*Math.sin(a);}
- }const sway=.025*Math.sin(t+u*3)*(family==='coral'?2:1);return {x:x*ripple+sway,y:y*ripple};}
-function transform(p,family){if(family==='moth')return {x:p.y*.72,y:p.x*.8};if(family==='torus'||family==='bloom')return {x:p.x*1.05,y:p.y*.63};if(family==='comet')return {x:p.x*.7+p.y*.48,y:p.y*.7};return {x:p.x*.82,y:p.y*.83};}
-// Continuous family ridges carry the silhouette; dust supplies quieter depth.
-function strandPoint(family,u,k,total,t,s){
- const v=2*u-1,a=TAU*k/total,depth=s.maxDepth||1,branch=s.branches||0;
- const breath=.025*Math.sin(t+u*3+a),fold=.04*Math.sin((depth+2)*u*TAU-t+a);
- let x,y;
- switch(family){
- case 'jelly':
-  if(k<total/2){const angle=Math.PI*u,r=.44+.012*k;x=r*Math.cos(angle);y=-.08-.48*Math.sin(angle)+breath;}
-  else{x=.37*Math.cos(a)+.045*Math.sin(9*u-t+a);y=-.06+.85*u;}
-  break;
- case 'moth':{const side=k%2?1:-1,f=Math.floor(k/2)/(total/2),angle=Math.PI*u;x=side*(.07+(.46+.16*f)*Math.sin(angle))*(.87+.13*Math.cos(t));y=-.36+.75*u+.15*Math.sin(2*angle+a)+breath;break;}
- case 'coral':{const angle=-Math.PI+.3+(k/(total-1))*(Math.PI-.6);const reach=.65+.1*Math.sin(k*2+branch);x=reach*u*Math.cos(angle)+.035*Math.sin(u*6+t+a);y=.48+reach*u*Math.sin(angle)-.16*u*u;break;}
- case 'ribbon':x=.35*Math.sin(v*(3+depth*.1)+t*.5)+.12*Math.cos(a+v*3)+fold;y=.82*v+.06*Math.sin(a+v*5);break;
- case 'nautilus':{const angle=u*TAU*(2+.12*s.quoteDepth)+t*.12,r=.04+.53*u+.022*Math.cos(a);x=r*Math.cos(angle)+breath;y=r*Math.sin(angle)+.02*Math.sin(a);break;}
- case 'seed':{const r=.34*Math.sqrt(Math.max(0,1-v*v));x=r*Math.cos(a+v*.4)+breath;y=.72*v+.025*Math.sin(a);if(k<3&&u>.75){x+=(u-.75)*.22*Math.sin(a);y-=.08*Math.sin((u-.75)*Math.PI*2);}break;}
- case 'torus':{const angle=TAU*u,r=.43+.08*Math.cos(a+angle*2+t*.2);x=r*Math.cos(angle);y=.68*r*Math.sin(angle)+.09*Math.sin(a+angle*2+t*.2);break;}
- case 'comet':{const taper=(1-u)**2;x=-.46+1.08*u+.1*taper*Math.cos(a);y=-.24+.6*u+.24*taper*Math.sin(a)+.045*Math.sin(8*u-t+a)*u;break;}
- case 'bloom':{const angle=TAU*u,petals=5+Math.min(branch,4),r=(.18+.018*k)*(1+.38*Math.cos(petals*angle+t*.15));x=r*Math.cos(angle)+.035*Math.cos(t);y=r*Math.sin(angle)+breath;break;}
- default:{const envelope=Math.sqrt(Math.max(0,1-v*v));x=.13*Math.sin(4*v+t*.4)+(.11+.07*Math.sin(a))*envelope*Math.cos(a+v*(2+depth*.12)+.22*Math.sin(t-v))+fold*.4;y=.82*v+.035*envelope*Math.sin(a+v*4);}
+function render(context,w,h,s,family,t,thumb=false,externalLabel=false){
+ context.clearRect(0,0,w,h);const design=s.design||D.create(family),ink=design.ink;family=design.family;
+ const scale=Math.min(w,h)*Math.min(design.framing.scale,.5-design.framing.padding)/M.framingExtent(s),cx=w/2,cy=h/2;
+ const semantic=thumb||$('semantic-color').checked,labels=!thumb&&$('topology').checked;
+ const nodes=s.nodes,nodeMap=new Map(nodes.map(n=>[n.id,n])),positions=new Map(nodes.map(n=>[n.id,Q.nodePosition(n,t,s)]));
+ const relevant=new Set(selected?[selected,...s.links.filter(e=>e.from===selected||e.to===selected).flatMap(e=>[e.from,e.to])]:[]);
+ function point(p,c,alpha,size=1){context.fillStyle=c;context.globalAlpha=alpha;context.fillRect(cx+p.x*scale-size/2,cy+p.y*scale-size/2,size,size);}
+ function path(points,c,alpha,width=.8,halo=false,closed=false){
+  if(!points.length)return;context.beginPath();for(let i=0;i<points.length;i++){const p=points[i];i?context.lineTo(cx+p.x*scale,cy+p.y*scale):context.moveTo(cx+p.x*scale,cy+p.y*scale);}if(closed)context.closePath();
+  context.strokeStyle=c;context.lineJoin='round';context.lineCap='round';
+  if(halo){context.globalAlpha=alpha*.1;context.lineWidth=width+4;context.stroke();context.globalAlpha=alpha*.16;context.lineWidth=width+1.8;context.stroke();}
+  context.globalAlpha=alpha;context.lineWidth=width;context.stroke();
  }
- return {x,y};
-}
-function render(context,w,h,s,family,t,thumb=false){context.clearRect(0,0,w,h);const design=s.design||D.create(family),ink=design.ink;family=design.family;const scale=Math.min(w,h)*Math.min(design.framing.scale,.5-design.framing.padding),cx=w/2,cy=h/2;const semantic=thumb||$('semantic-color').checked;const nodes=s.nodes;const positions=new Map(nodes.map(n=>[n.id,transform(Q.nodePosition(n,t,s),family)]));function point(p,c,alpha,size=1){context.fillStyle=c;context.globalAlpha=alpha;context.fillRect(cx+p.x*scale,cy+p.y*scale,size,size);}const count=thumb?1100:5600;for(let i=0;i<count;i++){const u=(i+.5)/count,a=i*2.399963229728653+t*.09,n=nodes[Math.min(nodes.length-1,Math.floor(u*nodes.length))];const ridge=Math.abs(Math.sin(a+(n.frequency||1)*u*3))<.13;point(bodyPoint(family,u,a,t,s),semantic&&ridge&&i%4===0?color(n.op):ink.neutral,ridge?ink.secondaryAlpha:(thumb?ink.ghostAlpha*1.55:ink.ghostAlpha),thumb?1:1.15);}
- const strands=s.strandCount,samples=thumb?140:300;
- for(let k=0;k<strands;k++)for(let i=0;i<samples;i++){
-  const u=i/(samples-1),p=strandPoint(family,u,k,strands,t,s);
-  const n=nodes[k%nodes.length],core=k%4===0;
-  point(p,semantic&&k%7===0?color(n.op):ink.neutral,core?ink.ridgeAlpha:ink.secondaryAlpha,thumb?1.35:1.45);
-  if(!thumb&&i%2===0)point({x:p.x+.007*Math.sin(k+t+u*8),y:p.y+.005*Math.cos(k+u*9)},'#a7c6ba',.12,1);
+ // Stable dust identities and smooth ridge opacity avoid threshold flicker.
+ const count=thumb?650:2300;
+ for(let i=0;i<count;i++){
+  const u=(i+.5)/count,a=i*2.399963229728653+t*.045,n=nodes[Math.min(nodes.length-1,Math.floor(u*nodes.length))];
+  const d=Math.abs(Math.sin(a+n.frequency*u*3)),x=Math.max(0,Math.min(1,(d-.04)/.2)),ridge=1-x*x*(3-2*x);
+  const alpha=(ink.ghostAlpha*.7+ink.secondaryAlpha*.23*ridge)*(selected&&!thumb?.8:1);
+  point(M.project(M.bodyPoint(family,u,a,t,s),family),semantic&&i%13===0?color(n.op):ink.neutral,alpha,thumb?.9:1.1);
  }
- for(const link of s.links){const n=nodes.find(n=>n.id===link.from),active=link.from===selected||link.to===selected;const samples=thumb?24:110;for(let i=0;i<samples;i++)point(transform(Q.edgePoint(link,i/(samples-1),t,s),family),semantic?color(n.op):'#d5e4df',active?.9:(!thumb&&$('topology').checked?.42:.065),thumb?1:1.2);}
- for(const n of nodes){const p=positions.get(n.id);for(let i=0;i<(thumb?45:160);i++){const a=TAU*i/(thumb?45:160),rad=D.organRadius(design,n,a,t)*(!thumb&&$('topology').checked||n.id===selected?1:.7);point({x:p.x+rad*Math.cos(a),y:p.y+rad*Math.sin(a)},semantic?color(n.op):'#d5e4df',n.id===selected?.98:(!thumb&&$('topology').checked?.72:.12),thumb?1:1.2);}if(!thumb&&$('topology').checked){context.globalAlpha=.9;context.fillStyle='#dbe9e3';context.font='11px monospace';context.fillText(n.id,cx+p.x*scale+10,cy+p.y*scale-8);}}
- if(!thumb&&moving&&selected&&Date.now()-tracePulse<1200){const travel=(Date.now()-tracePulse)/1200;for(const link of s.links.filter(e=>e.from===selected||e.to===selected)){const p=transform(Q.edgePoint(link,travel,t,s),family);point(p,semantic?color(nodes.find(n=>n.id===link.from).op):'#d5e4df',.95,3);}}
+ const strands=s.strandCount,samples=thumb?100:210;
+ for(let k=0;k<strands;k++){
+  const points=[];for(let i=0;i<samples;i++)points.push(M.project(M.strandPoint(family,i/(samples-1),k,strands,t,s),family));
+  const primary=k%5===0,depth=.72+.28*Math.cos(TAU*k/strands+t*.15),alpha=(primary?ink.ridgeAlpha:ink.secondaryAlpha*.85)*depth;
+  path(points,semantic&&k%7===0?color(nodes[k%nodes.length].op):ink.neutral,alpha,primary?(thumb?.8:1.05):.55,primary);
+ }
+ // The moth's longitudinal spine ties its paired closed wings together.
+ if(family==='moth'){const points=[];for(let i=0;i<=80;i++)points.push(M.project({x:0,y:-.42+.84*i/80},family));path(points,ink.neutral,ink.ridgeAlpha,.85,true);}
+ for(const link of s.links){
+  const source=nodeMap.get(link.from),A=positions.get(link.from),B=positions.get(link.to),dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1,f=1+link.port+source.frequency;
+  const edgeAt=u=>{const bend=D.filamentBend(design,f,u,t);return {x:A.x+dx*u-dy/len*bend,y:A.y+dy*u+dx/len*bend};};
+  const active=!thumb&&(link.from===selected||link.to===selected),points=[],samples=thumb?35:Math.max(90,Math.ceil(f*6));
+  for(let i=0;i<=samples;i++)points.push(edgeAt(i/samples));
+  path(points,semantic?color(source.op):ink.neutral,active?.88:(labels?.38:thumb?.16:.13),active?1.05:.55,active);
+  if(active){const p=edgeAt(.84),q=edgeAt(.82),angle=Math.atan2(p.y-q.y,p.x-q.x),size=4/scale;path([{x:p.x-size*Math.cos(angle-.45),y:p.y-size*Math.sin(angle-.45)},p,{x:p.x-size*Math.cos(angle+.45),y:p.y-size*Math.sin(angle+.45)}],ink.neutral,.7,.7);}
+  // An execution marker follows only recorded incoming dependencies.
+  if(!thumb&&link.to===traceNode&&tracePulse!==null&&viewSeconds-tracePulse<1.2){const u=Math.min(1,(viewSeconds-tracePulse)/1.2);point(edgeAt(u),semantic?color(source.op):ink.neutral,1,3);}
+ }
+ for(const n of nodes){
+  const p=positions.get(n.id),active=!thumb&&n.id===selected,near=!thumb&&relevant.has(n.id),samples=thumb?Math.max(60,n.frequency*5):Math.max(110,n.frequency*9),points=[];
+  for(let i=0;i<samples;i++){const a=TAU*i/samples,r=D.organRadius(design,n,a,t);points.push({x:p.x+r*Math.cos(a),y:p.y+r*Math.sin(a)});}
+  path(points,semantic?color(n.op):ink.neutral,active?1:(labels?.6:near?.5:thumb?.42:.3),active?1.25:.65,active,true);
+  point(p,ink.neutral,active?.95:.3,active?3:1.5);
+  if(active){context.globalAlpha=.5;context.strokeStyle=ink.neutral;context.lineWidth=.6;context.beginPath();context.arc(cx+p.x*scale,cy+p.y*scale,4.5,0,TAU);context.stroke();}
+  if(!thumb&&(labels||active&&!externalLabel)){context.globalAlpha=.95;context.font='11px monospace';const x=cx+p.x*scale+11,y=cy+p.y*scale-9;context.lineWidth=3;context.strokeStyle='#090f15';context.strokeText(n.id,x,y);context.fillStyle='#dbe9e3';context.fillText(n.id,x,y);}
+ }
  context.globalAlpha=1;
- if(!thumb){context.strokeStyle='#24342e';context.lineWidth=1;for(let ring=0;ring<s.repeats-1;ring++){context.beginPath();context.ellipse(cx,cy,scale*(.68+ring*.023),scale*(.83+ring*.014),0,0,TAU);context.stroke();}}
- return {positions,scale,cx,cy};}
+ if(!thumb){context.strokeStyle='#304b40';context.lineWidth=.65;for(let ring=0;ring<s.repeats-1;ring++){context.beginPath();context.ellipse(cx,cy,scale*(.68+ring*.023),scale*(.83+ring*.014),0,0,TAU);context.stroke();}}
+ return {positions,scale,cx,cy};
+}
 let projected;
-function organInfo(n){if(!n)return;$('organ-info').textContent=`${n.id} / ${n.op} · ${n.indegree} input ports · ${n.outdegree} output links · depth ${n.level} · harmonic ${n.frequency}`;window.dispatchEvent(new CustomEvent('quineling:focus',{detail:{id:n.id}}));}
-canvas.onclick=e=>{if(!projected)return;const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;let nearest,distance=Infinity;for(const n of shape.nodes){const p=projected.positions.get(n.id),d=Math.hypot(x-projected.cx-p.x*projected.scale,y-projected.cy-p.y*projected.scale);if(d<distance){distance=d;nearest=n;}}if(distance<45){selected=nearest.id;organInfo(nearest);}};
+function clearFocus(){selected=null;dirty=true;viewRevision++;$('organ-info').textContent='Portrait view. Select a program line or organ to inspect its operation.';window.dispatchEvent(new CustomEvent('quineling:blur'));}
+$('clear-focus').onclick=clearFocus;window.addEventListener('keydown',e=>{if(e.key==='Escape')clearFocus();});
+function organInfo(n){if(!n)return;dirty=true;viewRevision++;$('organ-info').textContent=`${n.id} / ${n.op} · ${n.indegree} input ports · ${n.outdegree} output links · depth ${n.level} · harmonic ${n.frequency}`;window.dispatchEvent(new CustomEvent('quineling:focus',{detail:{id:n.id}}));}
+canvas.onclick=e=>{if(!projected)return;const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;let nearest,distance=Infinity;for(const n of shape.nodes){const p=projected.positions.get(n.id),d=Math.hypot(x-projected.cx-p.x*projected.scale,y-projected.cy-p.y*projected.scale);if(d<distance){distance=d;nearest=n;}}if(distance<24*canvas.width/r.width){selected=nearest.id;organInfo(nearest);}};
 function drawWave(){const index=Number($('band').value),coeff=genome.bands[index],wave=$('wave'),c=wave.getContext('2d');$('band-label').textContent=`${index+1} / ${genome.bands.length}`;c.clearRect(0,0,wave.width,wave.height);c.strokeStyle='#253a34';c.beginPath();c.moveTo(0,110);c.lineTo(960,110);c.stroke();const values=Array.from({length:960},(_,i)=>Q.wave(coeff,TAU*i/959)),max=Math.max(1,...values.map(Math.abs));c.strokeStyle='#b6edcc';c.lineWidth=1.5;c.beginPath();values.forEach((v,i)=>{const y=110-v/max*94;i?c.lineTo(i,y):c.moveTo(i,y);});c.stroke();const chroma=$('chroma'),cc=chroma.getContext('2d'),pixels=Q.encodeColors(program).pixels[index];pixels.forEach((rgb,i)=>{cc.fillStyle=rgb?`rgb(${rgb.join(',')})`:'#080d12';cc.fillRect(i*30,0,30,40);});}
 function save(suffix,value){const url=URL.createObjectURL(new Blob([typeof value==='string'?value:pretty(value)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`${current.id}-generation-${generation}-${suffix}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-$('run').onclick=guard(run);$('birth').onclick=guard(reproduce);$('step').onclick=guard(step);$('fixture').onchange=guard(rebuild);$('repeats').oninput=guard(rebuild);$('band').oninput=guard(drawWave);$('recover').onclick=guard(()=>recover('harmonic'));$('recover-color').onclick=guard(()=>recover('rgb'));$('download').onclick=guard(()=>save('harmonics',genome));$('download-color').onclick=guard(()=>save('rgb',Q.encodeColors(program)));$('download-source').onclick=guard(()=>save('source',Q.canon(program)));$('pause').onclick=()=>{moving=!moving;$('pause').textContent=moving?'Pause motion':'Resume motion';};
+$('run').onclick=guard(run);$('birth').onclick=guard(reproduce);$('step').onclick=guard(step);$('fixture').onchange=guard(rebuild);$('repeats').oninput=guard(rebuild);$('band').oninput=guard(drawWave);$('recover').onclick=guard(()=>recover('harmonic'));$('recover-color').onclick=guard(()=>recover('rgb'));$('download').onclick=guard(()=>save('harmonics',genome));$('download-color').onclick=guard(()=>save('rgb',Q.encodeColors(program)));$('download-source').onclick=guard(()=>save('source',Q.canon(program)));function motionChanged(){dirty=true;viewRevision++;$('pause').textContent=moving?'Pause motion':'Resume motion';window.dispatchEvent(new CustomEvent('quineling:motion'));}
+function toggleMotion(){moving=!moving;motionChanged();}
+$('pause').onclick=toggleMotion;
+motionPreference.addEventListener('change',e=>{moving=!e.matches;motionChanged();});
+for(const id of ['semantic-color','topology'])$(id).addEventListener('change',()=>{dirty=true;viewRevision++;});
+if('IntersectionObserver' in window)new IntersectionObserver(entries=>{canvasVisible=entries[0].isIntersecting;dirty=true;},{rootMargin:'80px'}).observe(canvas);
 async function fetchJSON(path){const response=await fetch(path);if(!response.ok)throw Error(`Could not load ${path} (${response.status})`);return response.json();}
 async function start(){try{if(!Q?.makeTaskProgram||!D?.create)throw Error('The task runtime is not available yet.');const ids=await fetchJSON('programs/manifest.json');library=await Promise.all(ids.map(id=>fetchJSON(`programs/${id}.json`)));for(const [i,item] of library.entries()){const ast=Q.makeTaskProgram(item.graph,1,D.create(item.skin.family)),s=Q.describe(ast),card=document.createElement('button');card.className='creature-card';card.dataset.id=item.id;card.setAttribute('aria-label',`Select ${item.name}, ${item.skin.family} family`);card.setAttribute('aria-pressed','false');const thumb=document.createElement('canvas');thumb.width=360;thumb.height=220;thumb.setAttribute('aria-hidden','true');const index=document.createElement('span');index.className='card-index';index.textContent=String(i+1).padStart(2,'0');const info=document.createElement('div');info.className='card-info';const name=document.createElement('strong');name.textContent=item.name;const meta=document.createElement('span');meta.textContent=item.skin.family;const count=document.createElement('span');count.textContent=`${item.graph.nodes.length} nodes`;meta.append(count);info.append(name,meta);card.append(index,thumb,info);card.onclick=guard(()=>select(item));$('library').append(card);render(thumb.getContext('2d'),360,220,s,item.skin.family,0,true);}$('library-count').textContent=`${library.length} EXECUTABLE SPECIMENS`;select(library[0]);}catch(e){fail(e);$('library-count').textContent='LIBRARY UNAVAILABLE';}}
-let previous=0;function animate(now){if(shape&&now-previous>1000/24){if(moving)phase+=shape.design.motion.phaseRate;projected=render(ctx,canvas.width,canvas.height,shape,current.skin.family,phase);previous=now;}requestAnimationFrame(animate);}requestAnimationFrame(animate);
-window.quineling={Q,run,reproduce,recover,select,focusNode(id){const n=shape.nodes.find(n=>n.id===id);if(!n)throw Error('Unknown organ');selected=id;organInfo(n);},renderOn(target,t){return render(target.getContext('2d'),target.width,target.height,shape,current.skin.family,t);},get selected(){return selected;},get current(){return current;},get library(){return library;},get program(){return program;},get genome(){return genome;},get shape(){return shape;},get generation(){return generation;},get result(){return result;}};
+let previous=0,clockTime=null;
+document.addEventListener('visibilitychange',()=>{clockTime=null;dirty=true;});
+function animate(now){
+ const dt=clockTime===null?0:(now-clockTime)/1000;clockTime=now;
+ if(shape&&!document.hidden){phase=M.advancePhase(phase,shape.design.motion.phaseRate,dt,moving);if(moving)viewSeconds+=Math.max(0,Math.min(.1,dt));
+  if((canvasVisible||!projected)&&(dirty||moving&&now-previous>=1000/30)){projected=render(ctx,canvas.width,canvas.height,shape,current.skin.family,phase);previous=now;dirty=false;}
+ }
+ requestAnimationFrame(animate);
+}requestAnimationFrame(animate);
+window.quineling={Q,clearFocus,toggleMotion,run,reproduce,recover,select,focusNode(id){const n=shape.nodes.find(n=>n.id===id);if(!n)throw Error('Unknown organ');selected=id;organInfo(n);},renderOn(target,t){return render(target.getContext('2d'),target.width,target.height,shape,current.skin.family,t,false,target.id==='translation-form');},get phase(){return phase;},get viewSeconds(){return viewSeconds;},get traceNode(){return traceNode;},get moving(){return moving;},get viewRevision(){return viewRevision;},get selected(){return selected;},get current(){return current;},get library(){return library;},get program(){return program;},get genome(){return genome;},get shape(){return shape;},get generation(){return generation;},get result(){return result;}};
 start();
 })();

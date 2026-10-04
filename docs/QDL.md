@@ -76,6 +76,14 @@ In real arithmetic, `C(0)=A` and `C(1)=B`. Implementation checks allow floating-
 
 ## Dynamic model
 
+The morphology renderer separates three layers: graph-derived organs and dependencies, an authored family silhouette, and temporary emphasis from a recorded execution trace. `morphology.js` projects family surfaces, ribs, and operation anchors into the same coordinates. Graph depth chooses a location on the family spine; stable same-depth lanes separate peer operations. Dependency curves use these actual anchors at both endpoints. Moth, torus, and bloom ribs are closed curves.
+
+Continuous Canvas paths supply sharp structural cores and restrained halos; sparse dust uses smooth opacity rather than an on/off threshold. The organ radius remains the exact QDL radial equation at rest and during selection. Default filament bend and frequency gain are now `0.04` and `0.07`; these values are source-embedded design parameters. A conservative frame extent accommodates valid high-bend profiles.
+
+One elapsed-time presentation clock drives both viewers. `phaseRate` retains its nominal 24-frame-per-second interpretation: `Δphase = phaseRate × 24 × Δseconds`. Elapsed increments are capped at 100 ms and tab visibility changes reset the timestamp, avoiding a jump on resume. Pause and dynamic reduced-motion preferences freeze the shared phase. Neither phase advancement nor selection executes a task or changes source. Invisible canvases skip redraws; frozen views redraw when inspection changes.
+
+Replay markers refer to the recorded trace node and travel along its incoming dependencies. Selecting another organ changes inspection without changing that recorded identity. The present family motions are bounded harmonic presentation formulas; they are not strange-attractor simulations. `verify-morphology.cjs` checks purity, endpoint attachment, loop closure, and clock-rate independence. `verify-motion.py` checks the browser's shared pause, reduced motion, hit testing, and trace attribution.
+
 The Quint state includes source identity, display phase/pause, execution and repeat counters, effects, emitted identity, child identity, and resource budgets. Transitions are `render`, `replay`, `pause`, guarded `execute`, identity-checked `admit`, and `reject`.
 
 Safety requires:

@@ -3,6 +3,7 @@
 const O=typeof module!=='undefined'?require('./orbit.js'):root.Orbit;
 const K=typeof module!=='undefined'?require('./kernels.js'):root.QuinelingKernels;
 const Design=typeof module!=='undefined'?require('./qdl.js'):root.QDL;
+const Morph=typeof module!=='undefined'?require('./morphology.js'):root.Morphology;
 const clone=O.clone,canon=O.canon,TAU=2*Math.PI;
 const OPS=['Observe','Box','Permit','Apply','Score','Authorize','Execute','Quote','Decode','Report',...Object.keys(K.ARITY)];
 function hslHex(h,s,l){const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,'0');};return '#'+f(0)+f(8)+f(4);}
@@ -103,7 +104,7 @@ function describe(program){
  const branches=top.reduce((s,n)=>s+Math.max(0,n.outdegree-1),0);
  return {graph,nodes,links,repeats,quoteDepth,branches,strandCount:Math.min(22,12+Math.floor(branches/2)),maxDepth:max,design};
 }
-function nodePosition(n,t,shape){if(n.parent){const p=nodePosition(shape.nodes.find(x=>x.id===n.parent),t,shape);return {x:p.x+.015*Math.sin(t+n.frequency),y:p.y+.016*Math.cos(t+n.frequency)};}const y=(n.u-.5)*1.65;return {x:.11*Math.sin(TAU*n.u+.3*Math.sin(t))+n.side*(.75+.09*Math.sin(t+n.frequency)),y:y+.028*Math.sin(t+n.frequency)};}
+function nodePosition(n,t,shape){if(n.parent){const p=nodePosition(shape.nodes.find(x=>x.id===n.parent),t,shape);return {x:p.x+.015*Math.sin(t+n.frequency),y:p.y+.016*Math.cos(t+n.frequency)};}return Morph.anchor(n,t,shape);}
 function edgePoint(link,s,t,shape){const a=nodePosition(shape.nodes.find(n=>n.id===link.from),t,shape),b=nodePosition(shape.nodes.find(n=>n.id===link.to),t,shape);const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;const f=1+link.port+shape.nodes.find(n=>n.id===link.from).frequency;const bend=Design.filamentBend(shape.design||Design.DEFAULT,f,s,t);return {x:a.x+dx*s-dy/len*bend,y:a.y+dy*s+dx/len*bend};}
 const api={canon,makeProgram,makeTaskProgram,runTask:K.run,validateTask:K.validate,execute,encode,decode,encodeColors,decodeColors,instructionColor,instructionFromColor,wave,samples,fromSamples,describe,nodePosition,edgePoint,OPS,COLORS,TAU};if(typeof module!=='undefined')module.exports=api;root.Quinelings=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

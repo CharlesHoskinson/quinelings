@@ -126,7 +126,7 @@
     }
   ],
   "brandingIntegration": {
-    "status": "copy-integrated; final publication pending",
+    "status": "integrated and published; live desktop/mobile paths verified",
     "surfaces": [
       "index.html",
       "create.html",
@@ -179,9 +179,9 @@
   ],
   "scopeSummary": "Ten technical reports and five branding reports complete. Stable QDL v1 has not been implemented or accepted. Result-budget fix is underway.",
   "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
-  "updatedAt": "2026-10-04T15:03:34.219360+00:00",
+  "updatedAt": "2026-10-04T15:16:37.877611+00:00",
   "delivery": {
-    "status": "integrated; package and publication verification pending",
+    "status": "candidate implemented, integrated, published and live verified; stable freeze pending",
     "language": "v1 candidate",
     "stableRelease": false,
     "newSurfaces": [
@@ -199,6 +199,9 @@
       "recipeFixtures": 44,
       "legacyGoldens": 12,
       "actualChromium": true
-    }
+    },
+    "implementationCommit": "d657d77",
+    "pagesCommit": "02bf88024242c47e7411ac81b29a9b2dee5bc585",
+    "publication": "publication.json"
   }
 }

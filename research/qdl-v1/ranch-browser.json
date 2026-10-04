@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T14:59:49.509Z",
+  "generatedAt": "2026-10-04T15:08:20.884Z",
   "status": "passed",
   "checks": {
     "initial": {
@@ -71,13 +71,13 @@
       },
       "sourceInvariant": true,
       "replay": {
-        "id": "run_3230e3f0-6f12-48a0-89c4-597039e269b0",
+        "id": "run_dd466b9e-9574-47aa-b759-1dbad77add75",
         "evaluations": 2,
         "records": 2
       },
       "reproduction": {
-        "parent": "run_3230e3f0-6f12-48a0-89c4-597039e269b0",
-        "id": "run_61f593f3-e1d8-4ba9-a202-8f2970e3a9e5",
+        "parent": "run_dd466b9e-9574-47aa-b759-1dbad77add75",
+        "id": "run_8459a9ab-25e6-4ce7-a68e-95afb44bdec3",
         "outputs": [
           {
             "allocated": 12,
@@ -210,7 +210,7 @@
       "links": [
         {
           "text": "✳ QUINELINGS",
-          "href": "http://127.0.0.1:34845/",
+          "href": "http://127.0.0.1:41181/",
           "relative": "./",
           "left": 18,
           "right": 183.453125,
@@ -221,7 +221,7 @@
         },
         {
           "text": "Create a Quineling ↗",
-          "href": "http://127.0.0.1:34845/create.html",
+          "href": "http://127.0.0.1:41181/create.html",
           "relative": "create.html",
           "left": 18,
           "right": 147.03125,
@@ -232,7 +232,7 @@
         },
         {
           "text": "Experimental ranch ↗",
-          "href": "http://127.0.0.1:34845/ranch.html",
+          "href": "http://127.0.0.1:41181/ranch.html",
           "relative": "ranch.html",
           "left": 169.09375,
           "right": 302,
@@ -243,7 +243,7 @@
         },
         {
           "text": "Agent SDK ↗",
-          "href": "http://127.0.0.1:34845/sdk.html",
+          "href": "http://127.0.0.1:41181/sdk.html",
           "relative": "sdk.html",
           "left": 18,
           "right": 99.5625,
@@ -254,7 +254,7 @@
         },
         {
           "text": "Living Thoughts workspace ↗",
-          "href": "http://127.0.0.1:34845/v1.html",
+          "href": "http://127.0.0.1:41181/v1.html",
           "relative": "v1.html",
           "left": 18,
           "right": 199.6875,
@@ -273,7 +273,7 @@
       "links": [
         {
           "text": "✳ QUINELINGS",
-          "href": "http://127.0.0.1:34845/index.html",
+          "href": "http://127.0.0.1:41181/index.html",
           "relative": "index.html",
           "left": 20,
           "right": 132.109375,
@@ -284,7 +284,7 @@
         },
         {
           "text": "Experimental ranch ↗",
-          "href": "http://127.0.0.1:34845/ranch.html",
+          "href": "http://127.0.0.1:41181/ranch.html",
           "relative": "ranch.html",
           "left": 152.625,
           "right": 300,
@@ -295,7 +295,7 @@
         },
         {
           "text": "Agent SDK ↗",
-          "href": "http://127.0.0.1:34845/sdk.html",
+          "href": "http://127.0.0.1:41181/sdk.html",
           "relative": "sdk.html",
           "left": 20,
           "right": 105.8125,
@@ -306,7 +306,7 @@
         },
         {
           "text": "Explore the collection ↗",
-          "href": "http://127.0.0.1:34845/index.html#collection",
+          "href": "http://127.0.0.1:41181/index.html#collection",
           "relative": "index.html#collection",
           "left": 136.625,
           "right": 300,
@@ -317,7 +317,7 @@
         },
         {
           "text": "Living Thoughts workspace ↗",
-          "href": "http://127.0.0.1:34845/v1.html",
+          "href": "http://127.0.0.1:41181/v1.html",
           "relative": "v1.html",
           "left": 20,
           "right": 153.875,
@@ -336,7 +336,7 @@
       "links": [
         {
           "text": "✳ QUINELINGS",
-          "href": "http://127.0.0.1:34845/",
+          "href": "http://127.0.0.1:41181/",
           "relative": "./",
           "left": 18,
           "right": 131.765625,
@@ -347,7 +347,7 @@
         },
         {
           "text": "Create",
-          "href": "http://127.0.0.1:34845/create.html",
+          "href": "http://127.0.0.1:41181/create.html",
           "relative": "create.html",
           "left": 18,
           "right": 49.125,
@@ -358,7 +358,7 @@
         },
         {
           "text": "Agent SDK",
-          "href": "http://127.0.0.1:34845/sdk.html",
+          "href": "http://127.0.0.1:41181/sdk.html",
           "relative": "sdk.html",
           "left": 65.125,
           "right": 113.671875,
@@ -369,7 +369,7 @@
         },
         {
           "text": "The ranch",
-          "href": "http://127.0.0.1:34845/ranch.html",
+          "href": "http://127.0.0.1:41181/ranch.html",
           "relative": "ranch.html",
           "left": 129.671875,
           "right": 175.734375,
@@ -380,7 +380,7 @@
         },
         {
           "text": "Living Thoughts workspace ↗",
-          "href": "http://127.0.0.1:34845/v1.html",
+          "href": "http://127.0.0.1:41181/v1.html",
           "relative": "v1.html",
           "left": 18,
           "right": 178.65625,
@@ -391,7 +391,7 @@
         },
         {
           "text": "Typed collaboration ↗",
-          "href": "http://127.0.0.1:34845/ranch-workshop.html",
+          "href": "http://127.0.0.1:41181/ranch-workshop.html",
           "relative": "ranch-workshop.html",
           "left": 18,
           "right": 139.125,
@@ -410,7 +410,7 @@
       "links": [
         {
           "text": "✳ QUINELINGS",
-          "href": "http://127.0.0.1:34845/",
+          "href": "http://127.0.0.1:41181/",
           "relative": "./",
           "left": 18,
           "right": 158.234375,
@@ -421,7 +421,7 @@
         },
         {
           "text": "Create a lifeform",
-          "href": "http://127.0.0.1:34845/create.html",
+          "href": "http://127.0.0.1:41181/create.html",
           "relative": "create.html",
           "left": 198.515625,
           "right": 302,
@@ -432,7 +432,7 @@
         },
         {
           "text": "Experimental ranch",
-          "href": "http://127.0.0.1:34845/ranch.html",
+          "href": "http://127.0.0.1:41181/ranch.html",
           "relative": "ranch.html",
           "left": 18,
           "right": 138.625,
@@ -453,7 +453,7 @@
         },
         {
           "text": "Living Thoughts workspace ↗",
-          "href": "http://127.0.0.1:34845/v1.html",
+          "href": "http://127.0.0.1:41181/v1.html",
           "relative": "v1.html",
           "left": 18,
           "right": 199.6875,

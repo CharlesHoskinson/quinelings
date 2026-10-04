@@ -1,0 +1,87 @@
+{
+  "status": "published-and-live-verified",
+  "checkedAt": "2026-10-04T15:16:37.877611+00:00",
+  "mainImplementationCommit": "d657d77",
+  "pagesCommit": "02bf88024242c47e7411ac81b29a9b2dee5bc585",
+  "site": "https://charleshoskinson.github.io/quinelings/",
+  "http": [
+    {
+      "path": "v1.html",
+      "status": 200,
+      "bytes": 6780,
+      "sha256": "6e043b18b9716b09439ba81a67baa5bbc3189ca39fef24bf0c08de2df6df4824",
+      "matchesLocal": true
+    },
+    {
+      "path": "ranch-workshop.html",
+      "status": 200,
+      "bytes": 5236,
+      "sha256": "bd66ce102a4d8486281f186d023a5e7ff34f77cfd85ed10f1f701017def44eda",
+      "matchesLocal": true
+    },
+    {
+      "path": "assets/ranch/quinelings-runtime.js",
+      "status": 200,
+      "bytes": 1188306,
+      "sha256": "b234504d9f22421352d062df9e0585d56d619ff615d5729cdb8834273a1c3699",
+      "matchesLocal": true
+    },
+    {
+      "path": "qdl-v1-registry.js",
+      "status": 200,
+      "bytes": 5396,
+      "sha256": "a9cf03d16f13d64e5781382ddba0cc59cd896b0ceebfea8fe19d020527d6984f",
+      "matchesLocal": true
+    },
+    {
+      "path": "docs/sdk-v1.html",
+      "status": 200,
+      "bytes": 21228,
+      "sha256": "7cc967efa0541b7ee30a176a18cf5ec55eeca05c41c90f36ead4846332b9c307",
+      "matchesLocal": true
+    },
+    {
+      "path": "docs/qdl-v1.html",
+      "status": 200,
+      "bytes": 30333,
+      "sha256": "9979f7ec0eb26448174c8133ae25bcb30f79b885d315a699bf02d4e10a315764",
+      "matchesLocal": true
+    },
+    {
+      "path": "assets/sdk/quinelings-agent-sdk-0.0.0-experimental.tgz",
+      "status": 200,
+      "bytes": 321220,
+      "sha256": "26736a20abbc47119633864600bc67d030e6f94c21ab79333609e112819a0a82",
+      "matchesLocal": true
+    }
+  ],
+  "browser": {
+    "status": "passed",
+    "browser": "153.0.8010.12",
+    "workspace": {
+      "recipes": 10,
+      "startupRecords": 0,
+      "registryDigest": "43c66b7022fb73e3ffb2cb53cf4ad2181106a55ed95480bc83e9e656da5e6cf3",
+      "sourceMatchesGolden": true,
+      "outputs": [
+        {
+          "liters": 9,
+          "measurements": 3
+        }
+      ],
+      "emittedExact": true
+    },
+    "workshop": {
+      "outputs": [
+        {
+          "allocated": 12,
+          "remaining": 8
+        }
+      ],
+      "emittedExact": true,
+      "records": 1
+    },
+    "errors": []
+  },
+  "scope": "Published v1 candidate; stable release freeze remains pending; no npm publication"
+}

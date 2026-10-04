@@ -1,5 +1,5 @@
 {
-  "status": "passed-local-acceptance;publication-pending",
+  "status": "passed-local-and-live-acceptance",
   "languageStatus": "v1 candidate",
   "tagline": "Living Thoughts",
   "technicalSpecialists": 10,
@@ -66,5 +66,7 @@
     "final-semantics-audit.md",
     "formal-runtime-correspondence.md",
     "ranch-implementation.md"
-  ]
+  ],
+  "publication": "publication.json",
+  "finalReleaseFreeze": "pending; profile remains candidate"
 }

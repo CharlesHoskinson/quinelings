@@ -1,9 +1,6 @@
 {
-  "status": "brainstorm_wave_2",
+  "status": "brainstorm_wave_3",
   "queuedWorkstreams": [
-    "api",
-    "formal",
-    "robustness",
     "examples"
   ],
   "auditAfterConvergence": {
@@ -29,22 +26,40 @@
       "threadId": "01a105fe-b9df-7292-a81e-9378291e5159",
       "status": "completed",
       "report": "brainstorm-social.md"
-    }
-  ],
-  "activeThreads": [
+    },
     {
       "workstream": "biology",
       "threadId": "01a10601-e17b-79f1-9d30-7e71fbf4183f",
-      "status": "started"
+      "status": "completed",
+      "report": "brainstorm-biology.md"
     },
     {
       "workstream": "visual",
       "threadId": "01a10602-15ec-7330-aea7-f509b061ed8f",
-      "status": "started"
+      "status": "completed",
+      "report": "brainstorm-visual.md"
     },
     {
       "workstream": "experience",
       "threadId": "01a10602-426c-7613-9f39-6d530c0ebe17",
+      "status": "completed",
+      "report": "brainstorm-experience.md"
+    }
+  ],
+  "activeThreads": [
+    {
+      "workstream": "api",
+      "threadId": "01a10605-2550-7842-bad8-931a78de7fe5",
+      "status": "started"
+    },
+    {
+      "workstream": "formal",
+      "threadId": "01a10605-5cba-7a92-ab1b-6f05a836a8f8",
+      "status": "started"
+    },
+    {
+      "workstream": "robustness",
+      "threadId": "01a10605-86ee-79f0-9abf-d441fb275a41",
       "status": "started"
     }
   ]

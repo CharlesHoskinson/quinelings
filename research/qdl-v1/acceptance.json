@@ -1,6 +1,6 @@
 {
   "status": "passed-local-release-acceptance",
-  "languageStatus": "QDL 1; reviewed frozen profile",
+  "languageStatus": "stable QDL 1",
   "tagline": "Living Thoughts",
   "technicalSpecialists": 10,
   "brandingSpecialists": 5,
@@ -71,7 +71,7 @@
     "release-api-gates.md"
   ],
   "publication": "publication.json",
-  "finalReleaseFreeze": "reviewed pin unchanged; artifact retention/publication in progress",
+  "finalReleaseFreeze": "complete; matching source/interpreter, SDK1.0.0, registry and goldens retained with SHA-256",
   "sdkVersion": "1.0.0",
   "snapshotRoundtrip": {
     "records": 256,
@@ -79,5 +79,8 @@
     "passiveImport": true,
     "structuralBounds": "symmetric row/aggregate validation; not a global request traversal ceiling"
   },
-  "archiveBytes": 324495
+  "archiveBytes": 324495,
+  "release": "qdl-v1.0.0",
+  "releaseManifest": "../../releases/qdl-v1.0.0/manifest.json",
+  "stableScope": "bounded deterministic local single-owner simulation-only profile; legacy/default and ranch policies experimental"
 }

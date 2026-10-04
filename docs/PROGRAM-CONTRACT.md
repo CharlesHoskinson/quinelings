@@ -52,3 +52,7 @@ Global Quinelings loaded after orbit.js, kernels.js, core.js.
 - Q.canon, Q.encode,Q.decode, Q.samples,Q.fromSamples,Q.encodeColors,Q.decodeColors as current core.js.
 
 programs/manifest.json will be a JSON array of 10 IDs. Fetch programs/<id>.json. Website owns index.html, style.css, gallery.js only; root owns all shared runtime files. Save feedback/questions in research/website.md.
+
+## Chromamapping profiles
+
+`skin.chroma` may contain a complete validated QDL chroma record. `QDL.forProgram(item)` builds the family design and copies this override before compilation. `Q.makeTaskProgram` validates every scalar binding against graph node IDs; execution revalidates embedded designs before running tasks. The library's Lanternkeeper profile binds `faultScore` to the fixed domain `[0,1]` and reference threshold `0.625`. Pigment and lens configuration live in source; recorded task-cycle values and view selection do not. See [QDL](QDL.md) for the closed syntax and state semantics.

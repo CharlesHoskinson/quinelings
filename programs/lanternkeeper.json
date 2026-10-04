@@ -207,7 +207,29 @@
   },
   "skin": {
     "family": "filament",
-    "accent": "#f4bc69"
+    "accent": "#f4bc69",
+    "chroma": {
+      "model": "material-territories",
+      "palette": "roles-1",
+      "strength": 0.85,
+      "lens": {
+        "kind": "scalar",
+        "id": "fault-score",
+        "label": "Fault score",
+        "unit": "",
+        "domain": [
+          0,
+          1
+        ],
+        "threshold": 0.625,
+        "bindings": [
+          {
+            "node": "faultScore",
+            "path": []
+          }
+        ]
+      }
+    }
   },
   "fixtures": [
     {

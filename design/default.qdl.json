@@ -64,5 +64,10 @@
     "yaw": 0.3,
     "pitch": 0.12,
     "focus": 0.38
+  },
+  "chroma": {
+    "model": "material-territories",
+    "palette": "roles-1",
+    "strength": 0.85
   }
 }

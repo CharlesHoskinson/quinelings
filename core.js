@@ -22,7 +22,7 @@ function makeProgram(confidence=.82,allowed=true,threshold=.7,repeats=1,reflecti
 }
 function makeTaskProgram(graph,repeats=1,design=Design.create()){
  K.validate(graph);if(!Number.isInteger(repeats)||repeats<1||repeats>8)throw Error('Repeat count must be 1–8');
- Design.validate(design);graph=clone(graph);graph.design=clone(design);
+ Design.validateBindings(design,graph);graph=clone(graph);graph.design=clone(design);
  const constructor=['emit',['makeApply',['makeRun',['makeQuote',['var','x']]],['makeQuote',['var','x']]]];
  const body=['lambda','x',['seq',['repeat',repeats,['task',['quote',clone(graph)]]],constructor]];
  return ['apply',['run',['quote',body]],['quote',clone(body)]];
@@ -45,7 +45,7 @@ function execute(program){
    case 'seq':ev(a[0],env);return ev(a[1],env);
    case 'repeat':{if(!Number.isInteger(a[0])||a[0]<1||a[0]>8)throw Error('Repeat budget exceeded');let v;for(let i=0;i<a[0];i++){trace.push({kind:'loop',op:'repeat',iteration:i+1,total:a[0]});v=ev(a[1],env);}return v;}
    case 'plan':{const graph=ev(a[0],env),m=new O.Machine(graph);m.run();plans.push({graph:clone(graph),report:m.output(),effects:m.effects,trace:m.trace});trace.push(...m.trace.map(e=>({kind:'graph',...e})));return m.output();}
-   case 'task':{const graph=ev(a[0],env);if(graph?.design)Design.validate(graph.design);const record=K.run(graph);tasks.push(record);trace.push(...record.trace.map(e=>({kind:'graph',...e})));return record.output;}
+   case 'task':{const graph=ev(a[0],env);if(graph?.design)Design.validateBindings(graph.design,graph);const record=K.run(graph);tasks.push(record);trace.push(...record.trace.map(e=>({kind:'graph',...e})));return record.output;}
    case 'emit':{const v=ev(a[0],env);if(!Array.isArray(v))throw Error('Emit expects a program');emitted.push(canon(v));return v;}
    case 'makeQuote':return ['quote',clone(ev(a[0],env))];
    case 'makeRun':return ['run',clone(ev(a[0],env))];
@@ -100,7 +100,7 @@ function describe(program){
  function depth(id,path=new Set()){if(depths.has(id))return depths.get(id);if(path.has(id))throw Error('Unbounded cycle');const next=new Set(path).add(id),inputs=links.filter(e=>e.to===id);const d=inputs.length?1+Math.max(...inputs.map(e=>depth(e.from,next))):0;depths.set(id,d);return d;}
  top.forEach(n=>depth(n.id));const max=Math.max(...depths.values(),1);
  nodes.forEach((n,i)=>{n.outdegree=links.filter(e=>e.from===n.id).length;n.indegree=links.filter(e=>e.to===n.id).length;n.frequency=OPS.indexOf(n.op)+1;n.level=n.parent?depths.get(n.parent)||0:depths.get(n.id);n.u=(n.level+.5)/(max+1);n.side=((i%2)*2-1)*(n.op==='Permit'?.62:n.op==='Box'?.42:.24);});
- const design=isTask?(graph.design||Design.create()):Design.create();Design.validate(design);
+ const design=isTask?(graph.design||Design.create()):Design.create();Design.validateBindings(design,graph);
  const branches=top.reduce((s,n)=>s+Math.max(0,n.outdegree-1),0);
  return {graph,nodes,links,repeats,quoteDepth,branches,strandCount:Math.min(22,12+Math.floor(branches/2)),maxDepth:max,design};
 }

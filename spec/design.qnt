@@ -6,6 +6,8 @@ module design {
     bend: int, frequencyGain: int, ripple: int, motionRate: int,
     rhythmMode: int, rhythmRate: int, breath: int, wave: int, waveNumber: int,
     lag: int, rhythmAsymmetry: int, overtone: int,
+    chromaMode: int, chromaStrength: int, lensToken: int, lensLower: int, lensUpper: int,
+    hasThreshold: bool, lensThreshold: int, bindingNode: int, bindingPath: int,
     ghost: int, secondary: int, ridge: int,
     ribbons: int, crests: int, spread: int, folds: int, taper: int, asymmetry: int,
     surfaceDepth: int, twist: int, phaseLag: int, samples: int,
@@ -17,6 +19,8 @@ module design {
     executions: int, effects: int, emitted: int, children: int, energy: int,
     last: str, priorEffects: int, priorExecutions: int, priorChildren: int,
     childSource: int, guard: bool, allowed: bool,
+    valueView: bool, scalarVisible: bool, traceSource: int, traceProfile: Profile,
+    traceSuccess: bool, traceNumeric: bool,
     profile: Profile, originProfile: Profile, emittedProfile: Profile, childProfile: Profile
   }
   var s: State
@@ -58,6 +62,14 @@ module design {
     and p.waveNumber >= 0 and p.waveNumber <= 4000 and p.lag >= 0 and p.lag <= 2000
     and p.rhythmAsymmetry >= 0 and p.rhythmAsymmetry <= 800
     and p.overtone >= 0 and p.overtone <= 350
+    // Chroma mode 0 is omission, 1 role territories, 2 a scalar lens.
+    // Lens strings/binding paths are identity tokens; numeric domains use finite samples.
+    and p.chromaMode >= 0 and p.chromaMode <= 2
+    and p.chromaStrength >= 0 and p.chromaStrength <= 1000
+    and p.lensToken >= 0 and p.lensToken <= 3
+    and p.lensLower < p.lensUpper
+    and (not(p.hasThreshold) or (p.lensLower <= p.lensThreshold and p.lensThreshold <= p.lensUpper))
+    and nodes.contains(p.bindingNode) and p.bindingPath >= 0 and p.bindingPath <= 3
     and p.ghost >= 0 and p.ghost < p.secondary and p.secondary < p.ridge and p.ridge <= 1000
     and p.ribbons >= 8 and p.ribbons <= 36 and p.crests >= 3 and p.crests <= 6
     and p.spread >= 20 and p.spread <= 240 and p.folds >= 2 and p.folds <= 9
@@ -91,6 +103,15 @@ module design {
     nondet lag = 0.to(2000).oneOf()
     nondet rhythmAsymmetry = 0.to(800).oneOf()
     nondet overtone = 0.to(350).oneOf()
+    nondet chromaMode = 0.to(2).oneOf()
+    nondet chromaStrength = 0.to(1000).oneOf()
+    nondet lensToken = 0.to(3).oneOf()
+    nondet lensLower = (-2).to(1).oneOf()
+    nondet lensUpper = (lensLower + 1).to(3).oneOf()
+    nondet hasThreshold = Set(false, true).oneOf()
+    nondet lensThreshold = lensLower.to(lensUpper).oneOf()
+    nondet bindingNode = nodes.oneOf()
+    nondet bindingPath = 0.to(3).oneOf()
     nondet ghost = 0.to(998).oneOf()
     nondet secondary = (ghost + 1).to(999).oneOf()
     nondet ridge = (secondary + 1).to(1000).oneOf()
@@ -117,12 +138,17 @@ module design {
       frequencyGain: frequencyGain, ripple: ripple, motionRate: motionRate,
       rhythmMode: rhythmMode, rhythmRate: rhythmRate, breath: breath, wave: wave,
       waveNumber: waveNumber, lag: lag, rhythmAsymmetry: rhythmAsymmetry, overtone: overtone,
+      chromaMode: chromaMode, chromaStrength: chromaStrength, lensToken: lensToken,
+      lensLower: lensLower, lensUpper: lensUpper, hasThreshold: hasThreshold,
+      lensThreshold: lensThreshold, bindingNode: bindingNode, bindingPath: bindingPath,
       ghost: ghost, secondary: secondary, ridge: ridge,
       ribbons: ribbons, crests: crests, spread: spread, folds: folds, taper: taper, asymmetry: asymmetry, surfaceDepth: surfaceDepth, twist: twist, phaseLag: phaseLag, samples: samples, recess: recess, crest: crest, depthContrast: depthContrast, occupancy: occupancy, lean: lean, yaw: yaw, pitch: pitch, focus: focus}
     s' = {source: source, origin: source, phase: 0, paused: false, repeats: repeats,
       executions: 0, effects: 0, emitted: 0, children: 0, energy: 10,
       last: "init", priorEffects: 0, priorExecutions: 0, priorChildren: 0,
       childSource: 0, guard: false, allowed: false,
+      valueView: false, scalarVisible: false, traceSource: 0, traceProfile: profile,
+      traceSuccess: false, traceNumeric: false,
       profile: profile, originProfile: profile, emittedProfile: profile, childProfile: profile}
   }
   def snapshot(kind: str): State = s
@@ -135,6 +161,22 @@ module design {
     .with("phase", if (s.paused or s.profile.motionRate == 0) s.phase else (s.phase + 1) % 4)
   action replay = s' = snapshot("replay")
   action togglePause = s' = snapshot("pause").with("paused", not(s.paused))
+  // Abstract cache input: identity and success/numeric provenance are supplied as data.
+  // This does not prove JavaScript trace authenticity or output-path evaluation.
+  pure def freshScalar(source: int, profile: Profile, traceSource: int, traceProfile: Profile,
+      success: bool, numeric: bool, valueView: bool): bool =
+    valueView and profile.chromaMode == 2 and source == traceSource and profile == traceProfile
+      and success and numeric
+  action selectValueView(showValue: bool): bool = s' = snapshot("lens")
+    .with("valueView", showValue)
+    .with("scalarVisible", freshScalar(s.source, s.profile, s.traceSource, s.traceProfile,
+      s.traceSuccess, s.traceNumeric, showValue))
+  action cacheTrace(source: int, profile: Profile, success: bool, numeric: bool): bool =
+    s' = snapshot("trace")
+      .with("traceSource", source).with("traceProfile", profile)
+      .with("traceSuccess", success).with("traceNumeric", numeric)
+      .with("scalarVisible", freshScalar(s.source, s.profile, source, profile,
+        success, numeric, s.valueView))
   action execute(guard: bool, allowed: bool): bool = all {
     s.executions < s.repeats,
     s.energy > 0,
@@ -145,6 +187,10 @@ module design {
       .with("emitted", decodeToken(encodeToken(s.source, s.profile)))
       .with("emittedProfile", encodeToken(s.source, s.profile).design)
       .with("energy", s.energy - 1)
+      .with("traceSource", s.source).with("traceProfile", s.profile)
+      .with("traceSuccess", true).with("traceNumeric", true)
+      .with("scalarVisible", freshScalar(s.source, s.profile, s.source, s.profile,
+        true, true, s.valueView))
   }
   def canAdmit(candidate: int, profile: Profile): bool =
     s.emitted == s.source and s.emittedProfile == s.profile
@@ -163,13 +209,16 @@ module design {
     nondet guard = Set(false, true).oneOf()
     nondet allowed = Set(false, true).oneOf()
     nondet candidate = sources.oneOf()
-    nondet mutation = Set(0, 1, 2, 3, 4).oneOf()
+    nondet mutation = Set(0, 1, 2, 3, 4, 5, 6).oneOf()
     val profile = if (mutation == 0) s.profile
       else if (mutation == 1) s.profile.with("family", (s.profile.family + 1) % 10)
       else if (mutation == 2) s.profile.with("crest", if (s.profile.crest == 650) 649 else s.profile.crest + 1)
       else if (mutation == 3) s.profile.with("spread", if (s.profile.spread == 240) 239 else s.profile.spread + 1)
-      else s.profile.with("breath", if (s.profile.breath == 180) 179 else s.profile.breath + 1)
-    any {render, replay, togglePause, execute(guard, allowed), admit(candidate, profile), rejectChild(candidate, profile)}
+      else if (mutation == 4) s.profile.with("breath", if (s.profile.breath == 180) 179 else s.profile.breath + 1)
+      else if (mutation == 5) s.profile.with("chromaStrength", if (s.profile.chromaStrength == 1000) 999 else s.profile.chromaStrength + 1)
+      else s.profile.with("lensToken", (s.profile.lensToken + 1) % 4)
+    any {render, replay, togglePause, execute(guard, allowed), admit(candidate, profile),
+      rejectChild(candidate, profile), selectValueView(allowed), cacheTrace(candidate, profile, guard, allowed)}
   }
 
   val bounded = sources.contains(s.source) and phases.contains(s.phase)
@@ -193,7 +242,7 @@ module design {
     and 1000 + s.profile.overtone >= 1000
   val guardedEffects = if (s.last == "execute")
     s.effects == s.priorEffects + (if (s.guard and s.allowed) 1 else 0) else true
-  val viewSeparation = if (Set("render", "replay", "pause", "reject").contains(s.last))
+  val viewSeparation = if (Set("render", "replay", "pause", "reject", "lens", "trace").contains(s.last))
     s.effects == s.priorEffects and s.executions == s.priorExecutions and s.children == s.priorChildren
     else true
   val onlyExecutionEffects = if (s.last != "execute") s.effects == s.priorEffects else true
@@ -213,11 +262,13 @@ module design {
   val acyclic = links.forall(e => depth(e._1) < depth(e._2))
   val codecAssumption = sources.forall(source => decodeToken(encodeToken(source, s.profile)) == source
     and encodeToken(source, s.profile).design == s.profile)
+  val traceFreshness = s.scalarVisible == freshScalar(s.source, s.profile,
+    s.traceSource, s.traceProfile, s.traceSuccess, s.traceNumeric, s.valueView)
   val safety = bounded and conserved and sourceIdentity and admissionIdentity
     and viewSeparation and onlyExecutionEffects and onlyAdmissionChildren and guardedEffects
     and paletteIdentity and metadataStable and programBound and roleDictionary
     and geometryBound and endpointsPinned and acyclic and codecAssumption
-    and profileBounds and radialLowerBound and rhythmLowerBounds
+    and profileBounds and radialLowerBound and rhythmLowerBounds and traceFreshness
 
   val hasEffect = s.effects > 0
   val hasChild = s.children > 0
@@ -256,6 +307,36 @@ module design {
   action unsafeRhythmRender = s' = snapshot("render")
     .with("profile", s.profile.with("rhythmAsymmetry", if (s.profile.rhythmAsymmetry == 800) 799 else s.profile.rhythmAsymmetry + 1))
   run detectsUnsafeRhythmRenderTest = init.then(unsafeRhythmRender)
+    .expect(not(safety) and not(sourceIdentity) and viewSeparation)
+
+  run rejectChangedChromaTest = init.then(execute(false, false))
+    .then(rejectChild(s.source, s.profile.with("chromaStrength", if (s.profile.chromaStrength == 1000) 999 else s.profile.chromaStrength + 1)))
+    .expect(safety and s.children == 0)
+  run rejectChangedLensTest = init.then(execute(false, false))
+    .then(rejectChild(s.source, s.profile.with("lensToken", (s.profile.lensToken + 1) % 4)))
+    .expect(safety and s.children == 0)
+  run staleSourceTraceHiddenTest = init.then(selectValueView(true))
+    .then(cacheTrace(if (s.source == 1) 2 else 1, s.profile, true, true))
+    .expect(safety and not(s.scalarVisible) and s.executions == 0)
+  run changedDesignTraceHiddenTest = init.then(selectValueView(true))
+    .then(cacheTrace(s.source, s.profile.with("lensToken", (s.profile.lensToken + 1) % 4), true, true))
+    .expect(safety and not(s.scalarVisible))
+  run nonnumericTraceHiddenTest = init.then(selectValueView(true))
+    .then(cacheTrace(s.source, s.profile, true, false))
+    .expect(safety and not(s.scalarVisible))
+  run failedTraceHiddenTest = init.then(selectValueView(true))
+    .then(cacheTrace(s.source, s.profile, false, true))
+    .expect(safety and not(s.scalarVisible))
+  run freshTraceViewTest = init.then(selectValueView(true))
+    .then(cacheTrace(s.source, s.profile, true, true)).then(render).then(replay)
+    .expect(safety and s.scalarVisible == (s.profile.chromaMode == 2) and s.executions == 0)
+  action unsafeStaleDisplay = s' = snapshot("render")
+    .with("traceSource", 0).with("scalarVisible", true)
+  run detectsUnsafeStaleDisplayTest = init.then(unsafeStaleDisplay)
+    .expect(not(safety) and not(traceFreshness) and viewSeparation and sourceIdentity)
+  action unsafeChromaRender = s' = snapshot("render")
+    .with("profile", s.profile.with("lensToken", (s.profile.lensToken + 1) % 4))
+  run detectsUnsafeChromaRenderTest = init.then(unsafeChromaRender)
     .expect(not(safety) and not(sourceIdentity) and viewSeparation)
 
   // Deliberate mutation, excluded from normal step. Its test must detect failure.

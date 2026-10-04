@@ -1,5 +1,6 @@
 -- Generated from qdl.js and the ten library families. Run npm run lean:fixtures.
 import QDL.Design
+import QDL.ChromaSyntax
 import QDL.RhythmDefaults
 
 namespace QDL.Fixtures
@@ -14,10 +15,11 @@ def runtimeDefault : Design := {
   surface := { ribbons := 28, crests := 4, spread := (016 / 100), folds := 7, taper := (065 / 100), asymmetry := (025 / 100), depth := (028 / 100), twist := (19 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (038 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem runtimeDefault_valid : runtimeDefault.Valid := by
-  norm_num [runtimeDefault, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [runtimeDefault, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def runtimeFallback : Design := {
   formatMarker := 1
@@ -29,6 +31,7 @@ def runtimeFallback : Design := {
   surface := { ribbons := 28, crests := 4, spread := (016 / 100), folds := 7, taper := (065 / 100), asymmetry := (025 / 100), depth := (028 / 100), twist := (19 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (038 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem fallback_matches_runtime : runtimeFallback.motion.rhythm = some RhythmDefaults.fallback := by
@@ -44,10 +47,12 @@ def lanternkeeper : Design := {
   surface := { ribbons := 28, crests := 4, spread := (016 / 100), folds := 7, taper := (065 / 100), asymmetry := (025 / 100), depth := (028 / 100), twist := (19 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (038 / 100) }
+  chroma := some { strength := (085 / 100), lens := some { id := "fault-score", label := "Fault score", unit := "", lower := (0), upper := (1), threshold := some (0625 / 1000), bindings := [{ node := "faultScore", path := [] }] } }
 }
 
 theorem lanternkeeper_valid : lanternkeeper.Valid := by
-  norm_num [lanternkeeper, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [lanternkeeper, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
+  decide
 
 def wayfinder : Design := {
   formatMarker := 1
@@ -59,10 +64,11 @@ def wayfinder : Design := {
   surface := { ribbons := 24, crests := 4, spread := (014 / 100), folds := 6, taper := (16 / 10), asymmetry := (025 / 100), depth := (025 / 100), twist := (16 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-016 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (025 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem wayfinder_valid : wayfinder.Valid := by
-  norm_num [wayfinder, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [wayfinder, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def swarmwarden : Design := {
   formatMarker := 1
@@ -74,10 +80,11 @@ def swarmwarden : Design := {
   surface := { ribbons := 20, crests := 4, spread := (012 / 100), folds := 4, taper := (07 / 10), asymmetry := (025 / 100), depth := (024 / 100), twist := (13 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (002 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (055 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem swarmwarden_valid : swarmwarden.Valid := by
-  norm_num [swarmwarden, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [swarmwarden, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def echoweaver : Design := {
   formatMarker := 1
@@ -89,10 +96,11 @@ def echoweaver : Design := {
   surface := { ribbons := 28, crests := 4, spread := (012 / 100), folds := 5, taper := (14 / 10), asymmetry := (025 / 100), depth := (03 / 10), twist := (16 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (008 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (028 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem echoweaver_valid : echoweaver.Valid := by
-  norm_num [echoweaver, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [echoweaver, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def raincatcher : Design := {
   formatMarker := 1
@@ -104,10 +112,11 @@ def raincatcher : Design := {
   surface := { ribbons := 28, crests := 4, spread := (019 / 100), folds := 6, taper := (055 / 100), asymmetry := (025 / 100), depth := (03 / 10), twist := (21 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-017 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (045 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem raincatcher_valid : raincatcher.Valid := by
-  norm_num [raincatcher, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [raincatcher, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def tidemender : Design := {
   formatMarker := 1
@@ -119,10 +128,11 @@ def tidemender : Design := {
   surface := { ribbons := 28, crests := 4, spread := (01 / 10), folds := 6, taper := (085 / 100), asymmetry := (025 / 100), depth := (024 / 100), twist := (15 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (036 / 100), pitch := (012 / 100), focus := (045 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem tidemender_valid : tidemender.Valid := by
-  norm_num [tidemender, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [tidemender, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def memorybloom : Design := {
   formatMarker := 1
@@ -134,10 +144,11 @@ def memorybloom : Design := {
   surface := { ribbons := 24, crests := 4, spread := (012 / 100), folds := 5, taper := (09 / 10), asymmetry := (025 / 100), depth := (023 / 100), twist := (14 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (008 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (055 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem memorybloom_valid : memorybloom.Valid := by
-  norm_num [memorybloom, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [memorybloom, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def pulsekeeper : Design := {
   formatMarker := 1
@@ -149,10 +160,11 @@ def pulsekeeper : Design := {
   surface := { ribbons := 24, crests := 4, spread := (012 / 100), folds := 5, taper := (08 / 10), asymmetry := (025 / 100), depth := (028 / 100), twist := (17 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (009 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (05 / 10) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem pulsekeeper_valid : pulsekeeper.Valid := by
-  norm_num [pulsekeeper, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [pulsekeeper, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def threadsorter : Design := {
   formatMarker := 1
@@ -164,10 +176,11 @@ def threadsorter : Design := {
   surface := { ribbons := 28, crests := 4, spread := (017 / 100), folds := 5, taper := (08 / 10), asymmetry := (025 / 100), depth := (025 / 100), twist := (18 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (-022 / 100), pitch := (012 / 100), focus := (045 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem threadsorter_valid : threadsorter.Valid := by
-  norm_num [threadsorter, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [threadsorter, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 def seedbank : Design := {
   formatMarker := 1
@@ -179,20 +192,40 @@ def seedbank : Design := {
   surface := { ribbons := 24, crests := 4, spread := (013 / 100), folds := 6, taper := (08 / 10), asymmetry := (025 / 100), depth := (025 / 100), twist := (18 / 10), phaseLag := (14 / 10), samples := 24000 }
   light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
   composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (042 / 100) }
+  chroma := some { strength := (085 / 100) }
 }
 
 theorem seedbank_valid : seedbank.Valid := by
-  norm_num [seedbank, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [seedbank, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
+
+theorem lanternkeeper_bindings_in_graph : (match lanternkeeper.chroma with | none => True | some c => c.BindingsInGraph ["faultSignals", "signalWeights", "inspectionEvidence", "repairPermitted", "falseGuard", "lampId", "repairOperation", "faultScore", "maintenanceNeeded", "corroboration", "evidenceState", "faultSupported", "evidenceGuard", "repairGuard", "repairPayload", "repairReceipt", "decision" ]) := by
+  simp [lanternkeeper, Chroma.BindingsInGraph, ScalarLens.BindingsInGraph]
+
+def legacyWithoutOptionalViews : Design := {
+  formatMarker := 1
+  family := .filament
+  organ := { baseRadius := (003 / 100), degreeGain := (0004 / 1000), literalGain := (0001 / 1000), amplitude₀ := (02 / 10), amplitude₁ := (013 / 100) }
+  filament := { bend := (004 / 100), frequencyGain := (007 / 100), ripple := (016 / 100) }
+  motion := { phaseRate := (0038 / 1000), rhythm := none }
+  ink := { ghostAlpha := (009 / 100), secondaryAlpha := (042 / 100), ridgeAlpha := (088 / 100), neutral := { red := 240, green := 241, blue := 235 } }
+  surface := { ribbons := 28, crests := 4, spread := (016 / 100), folds := 7, taper := (065 / 100), asymmetry := (025 / 100), depth := (028 / 100), twist := (19 / 10), phaseLag := (14 / 10), samples := 24000 }
+  light := { recessAlpha := (0045 / 1000), crestAlpha := (058 / 100), depthContrast := (065 / 100) }
+  composition := { occupancy := (076 / 100), lean := (-012 / 100), yaw := (03 / 10), pitch := (012 / 100), focus := (038 / 100) }
+  chroma := none
+}
+
+theorem legacyWithoutOptionalViews_valid : legacyWithoutOptionalViews.Valid := by
+  norm_num [legacyWithoutOptionalViews, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 theorem default_matches_runtime : runtimeDefault = defaultDesign := by
   rfl
 
 example : validateDesign { defaultDesign with surface := { defaultDesign.surface with samples := 24001 } } = false := by
   apply (validateDesign_reject_iff _).mpr
-  norm_num [defaultDesign, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [defaultDesign, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 example : validateDesign { defaultDesign with composition := { defaultDesign.composition with occupancy := 1 } } = false := by
   apply (validateDesign_reject_iff _).mpr
-  norm_num [defaultDesign, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Bounded]
+  norm_num [defaultDesign, Design.Valid, Organ.Valid, Filament.Valid, Motion.Valid, Ink.Valid, Surface.Valid, Light.Valid, Composition.Valid, Rhythm.Valid, Chroma.Valid, ScalarLens.Valid, LensBinding.Valid, LensPathSegment.Valid, Bounded]
 
 end QDL.Fixtures

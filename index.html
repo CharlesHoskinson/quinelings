@@ -42,6 +42,16 @@
 <section id="collection" class="library-section" aria-label="Creature library"><div class="section-label"><h2>The collection</h2><span id="library-count">Loading specimens…</span></div><div id="library" class="library"></div></section>
 <section class="workspace" aria-label="Selected creature">
 <div class="specimen"><div class="canvas-top"><span class="pill" id="status">LOADING</span><span id="metrics"></span></div><canvas id="creature" width="1000" height="1000" aria-label="Animated program topology"></canvas><div class="canvas-caption"><span id="family-label">EXECUTABLE SPECIMEN</span><span id="generation">GENERATION 0</span></div><div class="canvas-controls"><label><input type="checkbox" id="semantic-color" checked> Operation colors</label><label><input type="checkbox" id="topology"> Node labels</label><button id="clear-focus">Clear focus</button><button id="pause">Pause motion</button></div><div id="organ-info">Select a colored organ to inspect its operation.</div>
+<section class="chroma-controls" id="chroma-controls" aria-label="Chromamapping">
+<div class="section-label"><h3>Chromamapping</h3><span>COLOR CARRIES MEANING</span></div>
+<label for="chroma-view">Color view</label><select id="chroma-view"><option value="roles">Program roles</option><option value="scalar" id="chroma-scalar-option">Recorded value</option><option value="neutral">Pearl study</option></select>
+<div id="chroma-role-legend" class="chroma-role-legend"></div>
+<div id="chroma-lens" hidden><p id="chroma-lens-description" class="control-help"></p>
+<label for="chroma-cycle">Recorded task cycle</label><select id="chroma-cycle"></select>
+<div class="chroma-scale"><div id="chroma-scale-bar"><span id="chroma-threshold"></span></div><div class="chroma-scale-labels"><span id="chroma-min"></span><span id="chroma-max"></span></div></div>
+<p id="chroma-threshold-label" class="control-help"></p><p id="chroma-value" role="status" aria-live="polite"></p>
+<p class="control-help">Color summarizes the selected recorded value. Its exact value and state appear above. Run the task to obtain a new record.</p></div>
+</section>
 <details class="motion-controls" id="motion-controls"><summary>Shape the motion</summary>
 <p id="rhythm-description" class="control-help"></p>
 <label for="rhythm-mode">Rhythm</label><select id="rhythm-mode"><option value="periodic">Repeating cycle</option><option value="quasiperiodic">Evolving harmonics</option></select>
@@ -63,4 +73,4 @@
 <details><summary>How does the source reproduce?</summary><p>The program quotes its task and a smaller constructor body as data. Running the constructor rebuilds the complete expression and emits it. Reproduce parses that output and runs a fresh instance. The generation counter records verified copies with matching source and results.</p><p><a href="docs/MAPPING.md">Read the constructor and encoding specification →</a></p></details>
 </section>
 <footer><span class="wordmark">✳ QUINELINGS</span><p>Body formulas are projections of finite program graphs. Recovery uses numerical samples or exact RGB data, not screenshots. Effects are local simulations. <a href="docs/DESIGN-LANGUAGE.md">Design language</a> · <a href="docs/QDL.md">QDL</a> · <a href="docs/LEAN-FORMALIZATION.md">Lean proofs</a> · <a href="spec/design.qnt">Quint model</a>.</p><span>BUILT FROM STRUCTURE</span></footer>
-</main><script src="orbit.js"></script><script src="kernels.js"></script><script src="qdl.js"></script><script src="morphology.js"></script><script src="core.js"></script><script src="gallery.js"></script><script src="translation.js"></script></body></html>
+</main><script src="orbit.js"></script><script src="kernels.js"></script><script src="qdl.js"></script><script src="chroma.js"></script><script src="morphology.js"></script><script src="core.js"></script><script src="gallery.js"></script><script src="translation.js"></script></body></html>

@@ -99,3 +99,12 @@ Stable QDL 1 uses explicit public declarations, not private model reasoning. Mem
 The homepage lab has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution.
 
 Generate five new task/body combinations with `node scripts/generate-quinelings.cjs`. Open `nursery.html` to view and run them, or open an individual artifact in the creation workspace. Use `--seed 2599264831` to reproduce the current batch; omitting the seed samples a new batch and replaces `programs/generated/`.
+
+
+## Website
+
+[Start here](https://charleshoskinson.github.io/quinelings/) introduces Quinelings through a water calculation. [Explore](https://charleshoskinson.github.io/quinelings/nursery.html) shows five mathematical constructions. The [field guide](https://charleshoskinson.github.io/quinelings/field-guide.html) explains controls, program-to-body mapping, units, mathematical parameters, and retained designs. Every example input has contextual help.
+
+The website separates task execution from drawing: changing animation position, highlighting a step, or sampling geometry creates no task run. Input changes keep QDL 1 source intact; editing instructions or body design creates different source. Body colors identify operation roles or an explicitly selected recorded-value scale. Exact RGB genome data encodes the source separately.
+
+Presentation follows [Impeccable](https://github.com/pbakaus/impeccable), with a shared layout and self-hosted, openly licensed typography. Renderer and sampler caches reuse geometric work without reducing source-owned sample counts or contour detail. The frozen language and SDK release remain unchanged.

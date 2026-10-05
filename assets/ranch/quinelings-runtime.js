@@ -5850,27 +5850,57 @@ var require_lifeform_families = __commonJS({
         const r = JSON.parse(JSON.stringify(record2)), nodes = graph.nodes;
         return { record: r, nodes, territories: r.territories.map((p) => ({ ...p, owner: nodes.findIndex((n) => n.id === p.node) })), familyAdapter: true, chartCount: r.mechanism === "phyllotaxis-fan" ? r.strands * r.geometry.whorls : r.strands };
       }
+      const basisCaches = /* @__PURE__ */ new WeakMap(), componentCaches = /* @__PURE__ */ new WeakMap();
       function owner2(body, k, u) {
-        return body.territories.find((p) => p.component === k % body.record.strands && u >= p.u[0] && (u < p.u[1] || u === 1 && p.u[1] === 1)).owner;
+        let components = componentCaches.get(body);
+        if (!components) {
+          components = Array.from({ length: body.record.strands }, () => []);
+          for (const p of body.territories) components[p.component].push(p);
+          componentCaches.set(body, components);
+        }
+        return components[k % body.record.strands].find((p) => u >= p.u[0] && (u < p.u[1] || u === 1 && p.u[1] === 1)).owner;
+      }
+      function basis(body, k, u, phase) {
+        let cache = basisCaches.get(body);
+        if (!cache || !Object.is(cache.phase, phase)) {
+          cache = { phase, charts: [] };
+          basisCaches.set(body, cache);
+        }
+        let chart = cache.charts[k];
+        if (!chart) cache.charts[k] = chart = /* @__PURE__ */ new Map();
+        if (chart.has(u)) return chart.get(u);
+        const r = body.record, g = r.geometry, p = phase % TAU, n = body.chartCount || r.strands, f = k / n, env = Math.sin(Math.PI * u), offset = g.offset + TAU * f, b = { env };
+        if (r.mechanism === "logarithmic-mantle") {
+          const theta = TAU * (0.12 + g.curl * u) + offset * 0.45 + 0.18 * Math.sin(p - 5 * u + offset), radius = 0.1 * Math.exp(g.growth * theta) * (1 + 0.12 * Math.sin(offset + g.lobes * u)), collar = Math.exp(-(((u - 0.32 - 0.1 * Math.sin(offset)) / 0.1) ** 2)) + Math.exp(-(((u - 0.7 - 0.06 * Math.cos(offset)) / 0.12) ** 2));
+          Object.assign(b, { radius, collar, width: 0.19 * env ** 0.8 * g.spread * (0.55 + 1.3 * collar), rollTail: 0.6 * Math.sin(g.frequency * u - p + offset), cos: Math.cos(theta), sin: Math.sin(theta), dx: 0.1 * Math.sin(2 * u + p) * env, dy: 0.09 * Math.cos(3 * u - p + offset) * env, dz: 0.025 * Math.sin(theta + p) });
+        } else if (r.mechanism === "toroidal-weave") {
+          const theta = TAU * u;
+          Object.assign(b, { major: 0.3 + 0.12 * g.spread + 0.09 * Math.sin(offset) + 0.07 * Math.sin(g.lobes * theta + offset + p) + g.asymmetry * 0.12 * Math.sin(theta), minor: (0.04 + 0.05 * g.curl + 0.025 * Math.sin(g.frequency * theta - p + offset)) * (0.8 + 0.3 * Math.sin(offset) ** 2), angleHead: offset + (g.twist + 0.5 * g.curl) * theta, angleTail: 0.35 * Math.sin(p - 2 * theta), cos: Math.cos(theta), sin: Math.sin(theta), dx: 0.045 * Math.sin(p + theta), yScale: 0.5 + 0.4 * g.curl + 0.12 * Math.cos(offset), dy: 0.1 * Math.sin(2 * theta - p + offset) });
+        } else {
+          const angle = k * Math.PI * (3 - Math.sqrt(5)) + g.offset + 0.19 * Math.sin(p + offset - 3 * u) + (1 - f) * 1.5 * u;
+          Object.assign(b, { length: (0.12 + 0.58 * ((k + 1) / n) ** 0.8) * g.spread, width: (0.025 + 0.13 * (1 - f)) * Math.sin(Math.PI * u) ** 0.8, rollTail: 0.65 * Math.sin(g.frequency * u - p + offset), bend: 0.13 * Math.sin(Math.PI * u) * Math.sin(offset + p - 2 * u), cos: Math.cos(angle), sin: Math.sin(angle), dz: 0.045 * env * Math.sin(offset - p) });
+        }
+        chart.set(u, b);
+        return b;
       }
       function point(body, k, u, v, phase, skipOwner = false) {
-        const r = body.record, g = r.geometry, p = phase % TAU, n = body.chartCount || r.strands, f = k / n, env = Math.sin(Math.PI * u), edge = Math.max(0, Math.sin(Math.PI * (v + 1) / 2)), offset = g.offset + TAU * f;
+        const r = body.record, g = r.geometry, b = basis(body, k, u, phase), env = b.env, edge = Math.max(0, Math.sin(Math.PI * (v + 1) / 2));
         let x, y, z2;
         if (r.mechanism === "logarithmic-mantle") {
-          const theta = TAU * (0.12 + g.curl * u) + offset * 0.45 + 0.18 * Math.sin(p - 5 * u + offset), radius = 0.1 * Math.exp(g.growth * theta) * (1 + 0.12 * Math.sin(offset + g.lobes * u)), collar = Math.exp(-(((u - 0.32 - 0.1 * Math.sin(offset)) / 0.1) ** 2)) + Math.exp(-(((u - 0.7 - 0.06 * Math.cos(offset)) / 0.12) ** 2)), width = 0.19 * env ** 0.8 * g.spread * (0.55 + 1.3 * collar), roll = Math.PI * (v + 1) * (1 + 0.7 * collar) + 0.6 * Math.sin(g.frequency * u - p + offset), rr = radius + width * Math.cos(roll);
-          x = rr * Math.cos(theta) + 0.1 * Math.sin(2 * u + p) * env;
-          y = rr * Math.sin(theta) * 1.15 + 0.09 * Math.cos(3 * u - p + offset) * env;
-          z2 = width * Math.sin(roll) + 0.025 * Math.sin(theta + p);
+          const roll = Math.PI * (v + 1) * (1 + 0.7 * b.collar) + b.rollTail, rr = b.radius + b.width * Math.cos(roll);
+          x = rr * b.cos + b.dx;
+          y = rr * b.sin * 1.15 + b.dy;
+          z2 = b.width * Math.sin(roll) + b.dz;
         } else if (r.mechanism === "toroidal-weave") {
-          const theta = TAU * u, major = 0.3 + 0.12 * g.spread + 0.09 * Math.sin(offset) + 0.07 * Math.sin(g.lobes * theta + offset + p) + g.asymmetry * 0.12 * Math.sin(theta), minor = (0.04 + 0.05 * g.curl + 0.025 * Math.sin(g.frequency * theta - p + offset)) * (0.8 + 0.3 * Math.sin(offset) ** 2), angle = offset + (g.twist + 0.5 * g.curl) * theta + 0.7 * v + 0.35 * Math.sin(p - 2 * theta), rr = major + minor * Math.cos(angle);
-          x = rr * Math.cos(theta) + 0.045 * Math.sin(p + theta);
-          y = rr * Math.sin(theta) * (0.5 + 0.4 * g.curl + 0.12 * Math.cos(offset)) + 0.1 * Math.sin(2 * theta - p + offset);
-          z2 = minor * Math.sin(angle);
+          const angle = b.angleHead + 0.7 * v + b.angleTail, rr = b.major + b.minor * Math.cos(angle);
+          x = rr * b.cos + b.dx;
+          y = rr * b.sin * b.yScale + b.dy;
+          z2 = b.minor * Math.sin(angle);
         } else {
-          const angle = k * Math.PI * (3 - Math.sqrt(5)) + g.offset + 0.19 * Math.sin(p + offset - 3 * u) + (1 - f) * 1.5 * u, length = (0.12 + 0.58 * ((k + 1) / n) ** 0.8) * g.spread, width = (0.025 + 0.13 * (1 - f)) * Math.sin(Math.PI * u) ** 0.8, roll = Math.PI * g.curl * v + 0.65 * Math.sin(g.frequency * u - p + offset), radius = 0.01 + length * u + width * 0.5 * Math.sin(roll), side = width * (0.55 * v + 0.6 * Math.cos(roll)), bend = 0.13 * Math.sin(Math.PI * u) * Math.sin(offset + p - 2 * u);
-          x = radius * Math.cos(angle) + (side + bend) * Math.sin(angle);
-          y = radius * Math.sin(angle) - (side + bend) * Math.cos(angle);
-          z2 = width * Math.cos(roll) + 0.045 * env * Math.sin(offset - p);
+          const roll = Math.PI * g.curl * v + b.rollTail, radius = 0.01 + b.length * u + b.width * 0.5 * Math.sin(roll), side = b.width * (0.55 * v + 0.6 * Math.cos(roll));
+          x = radius * b.cos + (side + b.bend) * b.sin;
+          y = radius * b.sin - (side + b.bend) * b.cos;
+          z2 = b.width * Math.cos(roll) + b.dz;
         }
         const alpha = (0.012 + 0.075 * env) * env ** 0.5 * (0.3 + 0.7 * edge) * (1 - 0.55 * Math.abs(v));
         return { x, y, z: z2, alpha, owner: skipOwner ? -1 : owner2(body, k, u) };
@@ -5944,12 +5974,14 @@ var require_lifeform_families = __commonJS({
       function portraitFrame(body) {
         if (body.bounds) return body.bounds;
         const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
-        for (let k = 0; k < (body.chartCount || body.record.strands); k++) for (let j = 0; j <= 80; j++) for (let h = 0; h < 32; h++) for (const v of [-1, -0.5, 0, 0.5, 1]) {
-          const q = point(body, k, j / 80, v, TAU * h / 32);
-          [q.x, q.y, q.z].forEach((x, d) => {
-            lo[d] = Math.min(lo[d], x);
-            hi[d] = Math.max(hi[d], x);
-          });
+        for (let h = 0; h < 32; h++) for (let k = 0; k < (body.chartCount || body.record.strands); k++) for (let j = 0; j <= 80; j++) for (const v of [-1, -0.5, 0, 0.5, 1]) {
+          const q = point(body, k, j / 80, v, TAU * h / 32, true);
+          lo[0] = Math.min(lo[0], q.x);
+          hi[0] = Math.max(hi[0], q.x);
+          lo[1] = Math.min(lo[1], q.y);
+          hi[1] = Math.max(hi[1], q.y);
+          lo[2] = Math.min(lo[2], q.z);
+          hi[2] = Math.max(hi[2], q.z);
         }
         const pad = 0.15;
         return body.bounds = { cx: (lo[0] + hi[0]) / 2, cy: (lo[1] + hi[1]) / 2, cz: (lo[2] + hi[2]) / 2, width: hi[0] - lo[0] + 2 * pad, height: hi[1] - lo[1] + 2 * pad, depth: hi[2] - lo[2] + 2 * pad };

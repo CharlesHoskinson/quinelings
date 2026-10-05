@@ -15,7 +15,7 @@ const root=__dirname,server=http.createServer((request,response)=>{const pathnam
   const artifact=JSON.parse(fs.readFileSync(path.join(root,'programs/generated',item.id+'.json'),'utf8'));sources.add(artifact.source);authoredBodies.add(JSON.stringify(artifact.design.woven||artifact.design.anatomy));
   const card=page.locator(`[data-specimen="${item.id}"]`);await card.getByRole('button',{name:'Run task',exact:true}).click();
   assert.deepEqual(await page.evaluate(id=>quinelingNursery.specimens.find(s=>s.artifact.id===id).record.tasks[0].output,item.id),artifact.fixtures[0].expected);
-  await card.getByRole('button',{name:'Make a copy',exact:true}).click();assert.match(await card.locator('.copy-status').textContent(),/Fresh copy ran with matching source and result/);
+  await card.getByRole('button',{name:'Copy and run',exact:true}).click();assert.match(await card.locator('.copy-status').textContent(),/Fresh copy ran with matching source and result/);
   await card.locator('details').evaluate(e=>e.open=true);await card.locator('.operations button').last().click();assert.ok((await card.locator('.inspection').textContent()).includes('Inputs:'));assert.match(await card.locator('.inspection').textContent(),/Recorded value:/);
   assert.equal(await card.locator('a[download]').getAttribute('href'),'programs/generated/'+item.id+'.json');
   const genome=await page.evaluate(id=>{const s=quinelingNursery.specimens.find(s=>s.artifact.id===id);return [Quinelings.canon(Quinelings.decode(Quinelings.encode(s.artifact.program))),Quinelings.canon(Quinelings.decodeColors(Quinelings.encodeColors(s.artifact.program)))];},item.id);assert.deepEqual(genome,[artifact.source,artifact.source]);

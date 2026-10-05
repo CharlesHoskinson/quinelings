@@ -23,7 +23,7 @@
     "formal:v1": "quint typecheck spec/v1-session.qnt && quint test spec/v1-session.qnt --max-samples=100 --backend=typescript && quint run spec/v1-session.qnt --invariant=safety --max-samples=1000 --max-steps=80 --seed=20261004 --backend=typescript --verbosity=1 && node verify-v1-model.cjs",
     "test:browser:v1": "node verify-v1-conformance-browser.cjs && node verify-v1-browser.cjs && node verify-ranch-render-cache.cjs && node verify-v1-ranch-browser.cjs",
     "formal:website": "quint typecheck spec/website-lab.qnt && quint test spec/website-lab.qnt --max-samples=100 --backend=typescript && quint run spec/website-lab.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
-    "test:browser:website": "npm run test:website:insights && node verify-living-thoughts.cjs",
+    "test:browser:website": "npm run test:website:insights && node verify-living-thoughts.cjs && node tests/website-beginners.cjs",
     "test:website:insights": "node tests/website-insights.cjs",
     "test:browser:nursery": "node verify-nursery.cjs",
     "formal:visual": "quint typecheck spec/visual-capsule.qnt && quint test spec/visual-capsule.qnt --max-samples=50 --backend=typescript && quint run spec/visual-capsule.qnt --invariant=safety --max-samples=300 --max-steps=40 --seed=20261004 --backend=typescript --verbosity=1",

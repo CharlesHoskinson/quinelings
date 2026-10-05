@@ -144,6 +144,6 @@ A new operation requires a closed signature, units, deterministic tie/empty/erro
 
 ## Try the recipes
 
-The [task examples](../index.html#lab) let you edit inputs, compare results and inspect each operation. Try closing an unused road or adding unused inventory: the inputs change, but the answer may stay the same.
+The [task examples](../laboratory.html#lab) let you edit inputs, compare results and inspect each operation. Try closing an unused road or adding unused inventory: the inputs change, but the answer may stay the same.
 
-The [source editor examples](../index.html#source-experiment) add a five-liter limit, set a retry cap and require food to restore a positive amount. Each rule creates a new source. The [child example](../index.html#offspring-experiment) keeps the water calculation while inheriting a different body through `V1Ranch.preview` and `admit`.
+The [source editor examples](../laboratory.html#source-experiment) add a five-liter limit, set a retry cap and require food to restore a positive amount. Each rule creates a new source. The [child example](../laboratory.html#offspring-experiment) keeps the water calculation while inheriting a different body through `V1Ranch.preview` and `admit`.

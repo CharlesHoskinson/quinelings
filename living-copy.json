@@ -15,7 +15,7 @@
   "genomeIntro": "Genome is our name for an encoded copy of the source: either numerical wave coefficients or exact red, green and blue channel values. Restoring the data recovers the source. A screenshot cannot do this.",
   "generationIntro": "Recover and run three generations builds successive copies and calculates each with the same inputs. It checks their source and results against the original. Recovery alone does not restore run history.",
   "conceptTitle": "Write the steps.",
-  "conceptBody": "QDL, the Quineling Description Language, records the task as named steps and their connections. Types describe which values each step accepts, such as numbers measured in liters. The interpreter runs a step once its input values are ready.",
+  "conceptBody": "QDL, the Quineling Design Language, records the task as named steps and their connections. Types describe which values each step accepts, such as numbers measured in liters. The interpreter runs a step once its input values are ready.",
   "thoughtBody": "Task descriptions explain the intention. Explicit operations determine the calculation. The creation tool recognizes a limited recipe syntax; ordinary English alone does not define a runnable program.",
   "noveltyTitle": "Give the steps a body.",
   "noveltyBody": "The body builder reads the program\u2019s structure and chooses a mathematical construction. Source-declared regions connect the visible form to its operations. Selecting a step highlights its region; connection lines show where its values came from.",

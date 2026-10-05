@@ -1,6 +1,6 @@
 {
   "toolchain": "leanprover/lean4:v4.34.1",
-  "theorems": 239,
+  "theorems": 245,
   "numericDomainsMatched": 42,
   "heredityDomainsMatched": 14,
   "proofPlaceholders": 0,

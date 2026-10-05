@@ -6,7 +6,7 @@
 
 Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and product documentation to `gh-pages`. GitHub Pages deploys that branch automatically. Publication first requires current private visual acceptance evidence; passing functional tests cannot supply it.
 
-Quinelings are authored local programs with mathematical bodies. The homepage teaches one water calculation through prediction, execution, step inspection and an input change. The [laboratory](laboratory.html) runs ten reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data.
+Quinelings are authored local programs with mathematical bodies. The homepage introduces agent tasks as mathematical creatures and demonstrates a route planner reacting to a bridge closure, reproducing its complete task/body source and running a fresh copy. An optional water lesson provides a smaller worked calculation. The [laboratory](laboratory.html) runs ten reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data.
 
 The body gives each program a visual index: select an operation to inspect its connections and the tissue it owns. On the homepage, a recorded run adds value labels to that anatomy. Gesture playback changes the pose without running the task. Different programs can look alike; exact identity comes from source bytes.
 
@@ -31,7 +31,7 @@ No application dependencies or build step are required. From this repository:
 python3 -m http.server 8048 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:8048 . Start with the homepage water lesson: predict the total, run, inspect the adding step, then change the readings and run again. The instructions and body stay the same. For input comparisons, source edits, retries, offspring and reconstruction, open the [laboratory](laboratory.html).
+Open http://127.0.0.1:8048 . Start with the homepage route example: find a route, close the bridge, inspect the changed route and reconstruct an independently runnable copy. The smaller water lesson is optional. The instructions and body stay the same. For input comparisons, source edits, retries, offspring and reconstruction, open the [laboratory](laboratory.html).
 
 In the [original gallery](gallery.html), select a specimen and a task scenario, run its task, then reproduce a fresh generation. The scenario writes values into the program’s source. Changing task cycles also changes that source; walkthrough playback and trace replay do not execute it. Pause freezes both gallery viewers; Clear focus or Escape returns to the portrait. Recover the source from harmonic samples or exact RGB data, or download either genome.
 

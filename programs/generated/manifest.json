@@ -1,0 +1,32 @@
+[
+  {
+    "id": "tideglass",
+    "name": "Tideglass",
+    "description": "Balances five water readings, giving each its supplied weight.",
+    "thought": "weighted mean [32,35,41,52,70] weights [3,2,3,4,2] L"
+  },
+  {
+    "id": "emberfold",
+    "name": "Emberfold",
+    "description": "Squares six signal values and adds them into an energy score.",
+    "thought": "[1,5,8,9,3,1] | square | sum | report energy"
+  },
+  {
+    "id": "mosswell",
+    "name": "Mosswell",
+    "description": "Shares a limited water supply among three plants in request order.",
+    "thought": "allocate 15 L to [{\"id\":\"fern\",\"amount\":9},{\"id\":\"moss\",\"amount\":4},{\"id\":\"sage\",\"amount\":8}]"
+  },
+  {
+    "id": "threadwing",
+    "name": "Threadwing",
+    "description": "Finds a route around closed street C and proposes a walk.",
+    "thought": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"] | simulate \"walk-route\""
+  },
+  {
+    "id": "hourbloom",
+    "name": "Hourbloom",
+    "description": "Schedules four jobs, letting independent work overlap before the final step.",
+    "thought": "schedule [{\"id\":\"prepare\",\"depends\":[],\"duration\":5},{\"id\":\"weave\",\"depends\":[\"prepare\"],\"duration\":4},{\"id\":\"gather\",\"depends\":[],\"duration\":2},{\"id\":\"finish\",\"depends\":[\"weave\",\"gather\"],\"duration\":3}] s"
+  }
+]

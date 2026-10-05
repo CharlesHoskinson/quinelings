@@ -1,0 +1,945 @@
+{
+  "format": "quineling-artifact",
+  "id": "hourbloom",
+  "name": "Hourbloom",
+  "description": "Schedules four jobs, letting independent work overlap before the final step.",
+  "thought": "schedule [{\"id\":\"prepare\",\"depends\":[],\"duration\":5},{\"id\":\"weave\",\"depends\":[\"prepare\"],\"duration\":4},{\"id\":\"gather\",\"depends\":[],\"duration\":2},{\"id\":\"finish\",\"depends\":[\"weave\",\"gather\"],\"duration\":3}] s",
+  "program": [
+    "apply",
+    [
+      "run",
+      [
+        "quote",
+        [
+          "lambda",
+          "x",
+          [
+            "seq",
+            [
+              "repeat",
+              1,
+              [
+                "task",
+                [
+                  "quote",
+                  {
+                    "version": 1,
+                    "name": "Hourbloom",
+                    "nodes": [
+                      {
+                        "id": "jobs",
+                        "op": "literal",
+                        "inputs": [],
+                        "params": {
+                          "value": [
+                            {
+                              "id": "prepare",
+                              "depends": [],
+                              "duration": 5
+                            },
+                            {
+                              "id": "weave",
+                              "depends": [
+                                "prepare"
+                              ],
+                              "duration": 4
+                            },
+                            {
+                              "id": "gather",
+                              "depends": [],
+                              "duration": 2
+                            },
+                            {
+                              "id": "finish",
+                              "depends": [
+                                "weave",
+                                "gather"
+                              ],
+                              "duration": 3
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "step1",
+                        "op": "schedule",
+                        "inputs": [
+                          "jobs"
+                        ],
+                        "params": {}
+                      }
+                    ],
+                    "outputs": [
+                      "step1"
+                    ],
+                    "design": {
+                      "qdl": 1,
+                      "family": "filament",
+                      "organ": {
+                        "model": "rosette",
+                        "baseRadius": 0.03,
+                        "degreeGain": 0.004,
+                        "literalGain": 0.001,
+                        "amplitudes": [
+                          0.2,
+                          0.13
+                        ]
+                      },
+                      "filament": {
+                        "model": "pinned-sine",
+                        "bend": 0.04,
+                        "frequencyGain": 0.07,
+                        "ripple": 0.16
+                      },
+                      "motion": {
+                        "clock": "separate",
+                        "phaseRate": 0.038,
+                        "reducedMotion": "freeze",
+                        "rhythm": {
+                          "model": "coupled-harmonic",
+                          "mode": "periodic",
+                          "rate": 1,
+                          "breath": 0.06,
+                          "wave": 0.055,
+                          "waveNumber": 1.6,
+                          "lag": 0.9,
+                          "asymmetry": 0.28,
+                          "overtone": 0.17
+                        },
+                        "gesture": {
+                          "kind": "hover",
+                          "strength": 0.5800000000000001,
+                          "ticks": [
+                            180,
+                            170,
+                            450,
+                            200
+                          ]
+                        }
+                      },
+                      "ink": {
+                        "ghostAlpha": 0.09,
+                        "secondaryAlpha": 0.42,
+                        "ridgeAlpha": 0.88,
+                        "neutral": "#f0f1eb"
+                      },
+                      "surface": {
+                        "model": "folded-ribbon",
+                        "ribbons": 28,
+                        "crests": 4,
+                        "spread": 0.16,
+                        "folds": 7,
+                        "taper": 0.65,
+                        "asymmetry": 0.25,
+                        "depth": 0.28,
+                        "twist": 1.9,
+                        "phaseLag": 1.4,
+                        "samples": 24000
+                      },
+                      "light": {
+                        "model": "density-crest",
+                        "recessAlpha": 0.045,
+                        "crestAlpha": 0.58,
+                        "depthContrast": 0.65
+                      },
+                      "composition": {
+                        "occupancy": 0.76,
+                        "lean": -0.035,
+                        "yaw": 0.25,
+                        "pitch": 0.08,
+                        "focus": 0.38
+                      },
+                      "chroma": {
+                        "model": "material-territories",
+                        "palette": "roles-1",
+                        "strength": 0.88
+                      },
+                      "anatomy": {
+                        "model": "assembly",
+                        "compiler": "qdl-assembly-experimental",
+                        "seed": 694900239,
+                        "components": [
+                          {
+                            "id": "trunk",
+                            "kind": "chamber",
+                            "axes": [
+                              0.20172129543405024,
+                              0.1908071206114255,
+                              0.10984303253982215
+                            ],
+                            "parent": null
+                          },
+                          {
+                            "id": "continuation",
+                            "kind": "spine",
+                            "length": 0.217,
+                            "radii": [
+                              0.038,
+                              0.017589185243239627
+                            ],
+                            "bend": [
+                              0.18,
+                              -0.0653222742676735
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 1,
+                                "v": 0.25
+                              },
+                              "angle": -0.22308301062323152,
+                              "hinge": 0.04
+                            }
+                          },
+                          {
+                            "id": "tail",
+                            "kind": "spine",
+                            "length": 0.24457477107876913,
+                            "radii": [
+                              0.03031644242466427,
+                              0.0158171753520146
+                            ],
+                            "bend": [
+                              0.19,
+                              -0.05274581212550402
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0,
+                                "v": 0.25
+                              },
+                              "angle": -2.847988691087812,
+                              "hinge": 0.035
+                            }
+                          }
+                        ],
+                        "owners": [
+                          {
+                            "node": "jobs",
+                            "component": "trunk",
+                            "u": [
+                              0,
+                              0.5
+                            ]
+                          },
+                          {
+                            "node": "step1",
+                            "component": "trunk",
+                            "u": [
+                              0.5,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "step1",
+                            "component": "continuation",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "jobs",
+                            "component": "tail",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              ]
+            ],
+            [
+              "emit",
+              [
+                "makeApply",
+                [
+                  "makeRun",
+                  [
+                    "makeQuote",
+                    [
+                      "var",
+                      "x"
+                    ]
+                  ]
+                ],
+                [
+                  "makeQuote",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "quote",
+      [
+        "lambda",
+        "x",
+        [
+          "seq",
+          [
+            "repeat",
+            1,
+            [
+              "task",
+              [
+                "quote",
+                {
+                  "version": 1,
+                  "name": "Hourbloom",
+                  "nodes": [
+                    {
+                      "id": "jobs",
+                      "op": "literal",
+                      "inputs": [],
+                      "params": {
+                        "value": [
+                          {
+                            "id": "prepare",
+                            "depends": [],
+                            "duration": 5
+                          },
+                          {
+                            "id": "weave",
+                            "depends": [
+                              "prepare"
+                            ],
+                            "duration": 4
+                          },
+                          {
+                            "id": "gather",
+                            "depends": [],
+                            "duration": 2
+                          },
+                          {
+                            "id": "finish",
+                            "depends": [
+                              "weave",
+                              "gather"
+                            ],
+                            "duration": 3
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "step1",
+                      "op": "schedule",
+                      "inputs": [
+                        "jobs"
+                      ],
+                      "params": {}
+                    }
+                  ],
+                  "outputs": [
+                    "step1"
+                  ],
+                  "design": {
+                    "qdl": 1,
+                    "family": "filament",
+                    "organ": {
+                      "model": "rosette",
+                      "baseRadius": 0.03,
+                      "degreeGain": 0.004,
+                      "literalGain": 0.001,
+                      "amplitudes": [
+                        0.2,
+                        0.13
+                      ]
+                    },
+                    "filament": {
+                      "model": "pinned-sine",
+                      "bend": 0.04,
+                      "frequencyGain": 0.07,
+                      "ripple": 0.16
+                    },
+                    "motion": {
+                      "clock": "separate",
+                      "phaseRate": 0.038,
+                      "reducedMotion": "freeze",
+                      "rhythm": {
+                        "model": "coupled-harmonic",
+                        "mode": "periodic",
+                        "rate": 1,
+                        "breath": 0.06,
+                        "wave": 0.055,
+                        "waveNumber": 1.6,
+                        "lag": 0.9,
+                        "asymmetry": 0.28,
+                        "overtone": 0.17
+                      },
+                      "gesture": {
+                        "kind": "hover",
+                        "strength": 0.5800000000000001,
+                        "ticks": [
+                          180,
+                          170,
+                          450,
+                          200
+                        ]
+                      }
+                    },
+                    "ink": {
+                      "ghostAlpha": 0.09,
+                      "secondaryAlpha": 0.42,
+                      "ridgeAlpha": 0.88,
+                      "neutral": "#f0f1eb"
+                    },
+                    "surface": {
+                      "model": "folded-ribbon",
+                      "ribbons": 28,
+                      "crests": 4,
+                      "spread": 0.16,
+                      "folds": 7,
+                      "taper": 0.65,
+                      "asymmetry": 0.25,
+                      "depth": 0.28,
+                      "twist": 1.9,
+                      "phaseLag": 1.4,
+                      "samples": 24000
+                    },
+                    "light": {
+                      "model": "density-crest",
+                      "recessAlpha": 0.045,
+                      "crestAlpha": 0.58,
+                      "depthContrast": 0.65
+                    },
+                    "composition": {
+                      "occupancy": 0.76,
+                      "lean": -0.035,
+                      "yaw": 0.25,
+                      "pitch": 0.08,
+                      "focus": 0.38
+                    },
+                    "chroma": {
+                      "model": "material-territories",
+                      "palette": "roles-1",
+                      "strength": 0.88
+                    },
+                    "anatomy": {
+                      "model": "assembly",
+                      "compiler": "qdl-assembly-experimental",
+                      "seed": 694900239,
+                      "components": [
+                        {
+                          "id": "trunk",
+                          "kind": "chamber",
+                          "axes": [
+                            0.20172129543405024,
+                            0.1908071206114255,
+                            0.10984303253982215
+                          ],
+                          "parent": null
+                        },
+                        {
+                          "id": "continuation",
+                          "kind": "spine",
+                          "length": 0.217,
+                          "radii": [
+                            0.038,
+                            0.017589185243239627
+                          ],
+                          "bend": [
+                            0.18,
+                            -0.0653222742676735
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 1,
+                              "v": 0.25
+                            },
+                            "angle": -0.22308301062323152,
+                            "hinge": 0.04
+                          }
+                        },
+                        {
+                          "id": "tail",
+                          "kind": "spine",
+                          "length": 0.24457477107876913,
+                          "radii": [
+                            0.03031644242466427,
+                            0.0158171753520146
+                          ],
+                          "bend": [
+                            0.19,
+                            -0.05274581212550402
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0,
+                              "v": 0.25
+                            },
+                            "angle": -2.847988691087812,
+                            "hinge": 0.035
+                          }
+                        }
+                      ],
+                      "owners": [
+                        {
+                          "node": "jobs",
+                          "component": "trunk",
+                          "u": [
+                            0,
+                            0.5
+                          ]
+                        },
+                        {
+                          "node": "step1",
+                          "component": "trunk",
+                          "u": [
+                            0.5,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "step1",
+                          "component": "continuation",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "jobs",
+                          "component": "tail",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            ]
+          ],
+          [
+            "emit",
+            [
+              "makeApply",
+              [
+                "makeRun",
+                [
+                  "makeQuote",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ],
+              [
+                "makeQuote",
+                [
+                  "var",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.20172129543405024,0.1908071206114255,0.10984303253982215],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[0.18,-0.0653222742676735],\"id\":\"continuation\",\"kind\":\"spine\",\"length\":0.217,\"parent\":{\"angle\":-0.22308301062323152,\"component\":\"trunk\",\"hinge\":0.04,\"socket\":{\"u\":1,\"v\":0.25}},\"radii\":[0.038,0.017589185243239627]},{\"bend\":[0.19,-0.05274581212550402],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.24457477107876913,\"parent\":{\"angle\":-2.847988691087812,\"component\":\"trunk\",\"hinge\":0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.03031644242466427,0.0158171753520146]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"jobs\",\"u\":[0,0.5]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.5,1]},{\"component\":\"continuation\",\"node\":\"step1\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"jobs\",\"u\":[0,1]}],\"seed\":694900239},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"hover\",\"strength\":0.5800000000000001,\"ticks\":[180,170,450,200]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.20172129543405024,0.1908071206114255,0.10984303253982215],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[0.18,-0.0653222742676735],\"id\":\"continuation\",\"kind\":\"spine\",\"length\":0.217,\"parent\":{\"angle\":-0.22308301062323152,\"component\":\"trunk\",\"hinge\":0.04,\"socket\":{\"u\":1,\"v\":0.25}},\"radii\":[0.038,0.017589185243239627]},{\"bend\":[0.19,-0.05274581212550402],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.24457477107876913,\"parent\":{\"angle\":-2.847988691087812,\"component\":\"trunk\",\"hinge\":0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.03031644242466427,0.0158171753520146]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"jobs\",\"u\":[0,0.5]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.5,1]},{\"component\":\"continuation\",\"node\":\"step1\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"jobs\",\"u\":[0,1]}],\"seed\":694900239},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"hover\",\"strength\":0.5800000000000001,\"ticks\":[180,170,450,200]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "graph": {
+    "version": 1,
+    "name": "Hourbloom",
+    "nodes": [
+      {
+        "id": "jobs",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            {
+              "id": "prepare",
+              "depends": [],
+              "duration": 5
+            },
+            {
+              "id": "weave",
+              "depends": [
+                "prepare"
+              ],
+              "duration": 4
+            },
+            {
+              "id": "gather",
+              "depends": [],
+              "duration": 2
+            },
+            {
+              "id": "finish",
+              "depends": [
+                "weave",
+                "gather"
+              ],
+              "duration": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "step1",
+        "op": "schedule",
+        "inputs": [
+          "jobs"
+        ],
+        "params": {}
+      }
+    ],
+    "outputs": [
+      "step1"
+    ]
+  },
+  "design": {
+    "qdl": 1,
+    "family": "filament",
+    "organ": {
+      "model": "rosette",
+      "baseRadius": 0.03,
+      "degreeGain": 0.004,
+      "literalGain": 0.001,
+      "amplitudes": [
+        0.2,
+        0.13
+      ]
+    },
+    "filament": {
+      "model": "pinned-sine",
+      "bend": 0.04,
+      "frequencyGain": 0.07,
+      "ripple": 0.16
+    },
+    "motion": {
+      "clock": "separate",
+      "phaseRate": 0.038,
+      "reducedMotion": "freeze",
+      "rhythm": {
+        "model": "coupled-harmonic",
+        "mode": "periodic",
+        "rate": 1,
+        "breath": 0.06,
+        "wave": 0.055,
+        "waveNumber": 1.6,
+        "lag": 0.9,
+        "asymmetry": 0.28,
+        "overtone": 0.17
+      },
+      "gesture": {
+        "kind": "hover",
+        "strength": 0.5800000000000001,
+        "ticks": [
+          180,
+          170,
+          450,
+          200
+        ]
+      }
+    },
+    "ink": {
+      "ghostAlpha": 0.09,
+      "secondaryAlpha": 0.42,
+      "ridgeAlpha": 0.88,
+      "neutral": "#f0f1eb"
+    },
+    "surface": {
+      "model": "folded-ribbon",
+      "ribbons": 28,
+      "crests": 4,
+      "spread": 0.16,
+      "folds": 7,
+      "taper": 0.65,
+      "asymmetry": 0.25,
+      "depth": 0.28,
+      "twist": 1.9,
+      "phaseLag": 1.4,
+      "samples": 24000
+    },
+    "light": {
+      "model": "density-crest",
+      "recessAlpha": 0.045,
+      "crestAlpha": 0.58,
+      "depthContrast": 0.65
+    },
+    "composition": {
+      "occupancy": 0.76,
+      "lean": -0.035,
+      "yaw": 0.25,
+      "pitch": 0.08,
+      "focus": 0.38
+    },
+    "chroma": {
+      "model": "material-territories",
+      "palette": "roles-1",
+      "strength": 0.88
+    },
+    "anatomy": {
+      "model": "assembly",
+      "compiler": "qdl-assembly-experimental",
+      "seed": 694900239,
+      "components": [
+        {
+          "id": "trunk",
+          "kind": "chamber",
+          "axes": [
+            0.20172129543405024,
+            0.1908071206114255,
+            0.10984303253982215
+          ],
+          "parent": null
+        },
+        {
+          "id": "continuation",
+          "kind": "spine",
+          "length": 0.217,
+          "radii": [
+            0.038,
+            0.017589185243239627
+          ],
+          "bend": [
+            0.18,
+            -0.0653222742676735
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 1,
+              "v": 0.25
+            },
+            "angle": -0.22308301062323152,
+            "hinge": 0.04
+          }
+        },
+        {
+          "id": "tail",
+          "kind": "spine",
+          "length": 0.24457477107876913,
+          "radii": [
+            0.03031644242466427,
+            0.0158171753520146
+          ],
+          "bend": [
+            0.19,
+            -0.05274581212550402
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0,
+              "v": 0.25
+            },
+            "angle": -2.847988691087812,
+            "hinge": 0.035
+          }
+        }
+      ],
+      "owners": [
+        {
+          "node": "jobs",
+          "component": "trunk",
+          "u": [
+            0,
+            0.5
+          ]
+        },
+        {
+          "node": "step1",
+          "component": "trunk",
+          "u": [
+            0.5,
+            1
+          ]
+        },
+        {
+          "node": "step1",
+          "component": "continuation",
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "jobs",
+          "component": "tail",
+          "u": [
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  },
+  "contract": {
+    "format": "quineling-contract",
+    "registry": "quineling-kernels-experimental",
+    "types": {
+      "jobs": {
+        "kind": "array",
+        "element": {
+          "kind": "record",
+          "fields": {
+            "id": {
+              "kind": "string"
+            },
+            "depends": {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "duration": {
+              "kind": "number",
+              "unit": "s"
+            }
+          }
+        }
+      },
+      "step1": {
+        "kind": "record",
+        "fields": {
+          "order": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          },
+          "jobs": {
+            "kind": "array",
+            "element": {
+              "kind": "record",
+              "fields": {
+                "id": {
+                  "kind": "string"
+                },
+                "start": {
+                  "kind": "number",
+                  "unit": "s"
+                },
+                "end": {
+                  "kind": "number",
+                  "unit": "s"
+                }
+              }
+            }
+          },
+          "makespan": {
+            "kind": "number",
+            "unit": "s"
+          }
+        }
+      }
+    },
+    "assumptions": [],
+    "effectMode": "pure",
+    "sourceBytes": 3007,
+    "provenance": "companion document; types and thought are not embedded in the quine"
+  },
+  "sourceMap": [
+    {
+      "nodeId": "jobs",
+      "clause": "schedule [{\"id\":\"prepare\",\"depends\":[],\"duration\":5},{\"id\":\"weave\",\"depends\":[\"prepare\"],\"duration\":4},{\"id\":\"gather\",\"depends\":[],\"duration\":2},{\"id\":\"finish\",\"depends\":[\"weave\",\"gather\"],\"duration\":3}] s"
+    },
+    {
+      "nodeId": "step1",
+      "clause": "schedule [{\"id\":\"prepare\",\"depends\":[],\"duration\":5},{\"id\":\"weave\",\"depends\":[\"prepare\"],\"duration\":4},{\"id\":\"gather\",\"depends\":[],\"duration\":2},{\"id\":\"finish\",\"depends\":[\"weave\",\"gather\"],\"duration\":3}] s"
+    }
+  ],
+  "candidate": null,
+  "interpretation": {
+    "summary": "Schedules four jobs, letting independent work overlap before the final step.",
+    "assumptions": []
+  },
+  "generation": {
+    "batchSeed": 2599264831,
+    "bodySeed": 694900239
+  },
+  "fixtures": [
+    {
+      "label": "generated inputs",
+      "overrides": {},
+      "expected": [
+        {
+          "order": [
+            "prepare",
+            "weave",
+            "gather",
+            "finish"
+          ],
+          "jobs": [
+            {
+              "id": "prepare",
+              "start": 0,
+              "end": 5
+            },
+            {
+              "id": "weave",
+              "start": 5,
+              "end": 9
+            },
+            {
+              "id": "gather",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "id": "finish",
+              "start": 9,
+              "end": 12
+            }
+          ],
+          "makespan": 12
+        }
+      ]
+    },
+    {
+      "label": "no jobs",
+      "overrides": {
+        "jobs": []
+      },
+      "expected": [
+        {
+          "order": [],
+          "jobs": [],
+          "makespan": 0
+        }
+      ]
+    },
+    {
+      "label": "cyclic jobs",
+      "overrides": {
+        "jobs": [
+          {
+            "id": "a",
+            "depends": [
+              "b"
+            ],
+            "duration": 1
+          },
+          {
+            "id": "b",
+            "depends": [
+              "a"
+            ],
+            "duration": 1
+          }
+        ]
+      },
+      "fails": true
+    }
+  ]
+}

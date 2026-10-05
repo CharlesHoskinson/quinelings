@@ -6,7 +6,7 @@
 
 Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and product documentation to `gh-pages`. GitHub Pages deploys that branch automatically. Publication first requires current private visual acceptance evidence; passing functional tests cannot supply it.
 
-Quinelings are authored local programs with mathematical bodies. The homepage runs reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data.
+Quinelings are authored local programs with mathematical bodies. The homepage teaches one water calculation through prediction, execution, step inspection and an input change. The [laboratory](laboratory.html) runs ten reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data.
 
 The body gives each program a visual index: select an operation to inspect its connections and the tissue it owns. On the homepage, a recorded run adds value labels to that anatomy. Gesture playback changes the pose without running the task. Different programs can look alike; exact identity comes from source bytes.
 
@@ -31,7 +31,7 @@ No application dependencies or build step are required. From this repository:
 python3 -m http.server 8048 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:8048 . Choose a homepage example, load the suggested change, and run both input snapshots. Select a highlighted operation to inspect its values before and after. The source and body stay the same. The separate source experiment adds a water cap and compares the resulting programs.
+Open http://127.0.0.1:8048 . Start with the homepage water lesson: predict the total, run, inspect the adding step, then change the readings and run again. The instructions and body stay the same. For input comparisons, source edits, retries, offspring and reconstruction, open the [laboratory](laboratory.html).
 
 In the [original gallery](gallery.html), select a specimen and a task scenario, run its task, then reproduce a fresh generation. The scenario writes values into the program’s source. Changing task cycles also changes that source; walkthrough playback and trace replay do not execute it. Pause freezes both gallery viewers; Clear focus or Escape returns to the portrait. Recover the source from harmonic samples or exact RGB data, or download either genome.
 
@@ -90,13 +90,13 @@ The agent artwork was retrieved from public Midnight.city assets with Scrapling.
 
 ## Stable QDL 1 · reusable Living Thoughts
 
-The [QDL 1 workspace](https://charleshoskinson.github.io/quinelings/v1.html) opens the homepage’s ten reusable recipes for declaration editing and named inputs. It links the public declaration, program nodes, source-owned body, run records and exact emitted constructor source. Runtime observations can change results without changing source or body.
+The [QDL 1 workspace](https://charleshoskinson.github.io/quinelings/v1.html) opens the laboratory’s ten reusable recipes for declaration editing and named inputs. It links the public declaration, program nodes, source-owned body, run records and exact emitted constructor source. Runtime observations can change results without changing source or body.
 
 The [stable QDL 1 contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBRARY.md), and [SDK 1.0.0 guide](docs/SDK-V1.md) document the stable local profile, typed inputs and supported boundaries. Legacy artifacts keep their identities and behavior; [explicit passive migration](qdl-v1-migrate.js) requires supplied declarations, types and chosen ports. Every effect remains a local simulation.
 
 Stable QDL 1 uses explicit public declarations, not private model reasoning. Memory sessions and simulated receipts provide no durable hosting or live City authority. The release is identified as `qdl-v1.0.0`; npm publication is separate from the downloadable package.
 
-The homepage lab has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution.
+The laboratory has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution.
 
 Generate five new task/body combinations with `node scripts/generate-quinelings.cjs`. Open `nursery.html` to view and run them, or open an individual artifact in the creation workspace. Use `--seed 2599264831` to reproduce the current batch; omitting the seed samples a new batch and replaces `programs/generated/`.
 

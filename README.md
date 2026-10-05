@@ -97,3 +97,5 @@ The [stable QDL 1 contract](docs/QDL-V1.md), [standard library](docs/QDL-V1-LIBR
 Stable QDL 1 uses explicit public declarations, not private model reasoning. Memory sessions and simulated receipts provide no durable hosting or live City authority. The release is identified as `qdl-v1.0.0`; npm publication is separate from the downloadable package.
 
 The homepage lab has its own checks: `npm run formal:website` explores source/input identity, atomic comparison retention and request counters; `npm run test:browser:website` checks actual outputs, trace changes, failed evaluations, passive recovery, replay, source edits and accessible mobile controls. Set `PLAYWRIGHT_MODULE` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE` if Playwright or an existing browser are installed outside normal Node resolution.
+
+Generate five new task/body combinations with `node scripts/generate-quinelings.cjs`. Open `nursery.html` to view and run them, or open an individual artifact in the creation workspace. Use `--seed 2599264831` to reproduce the current batch; omitting the seed samples a new batch and replaces `programs/generated/`.

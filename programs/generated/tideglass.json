@@ -1,0 +1,1022 @@
+{
+  "format": "quineling-artifact",
+  "id": "tideglass",
+  "name": "Tideglass",
+  "description": "Balances five water readings, giving each its supplied weight.",
+  "thought": "weighted mean [32,35,41,52,70] weights [3,2,3,4,2] L",
+  "program": [
+    "apply",
+    [
+      "run",
+      [
+        "quote",
+        [
+          "lambda",
+          "x",
+          [
+            "seq",
+            [
+              "repeat",
+              1,
+              [
+                "task",
+                [
+                  "quote",
+                  {
+                    "version": 1,
+                    "name": "Tideglass",
+                    "nodes": [
+                      {
+                        "id": "values",
+                        "op": "literal",
+                        "inputs": [],
+                        "params": {
+                          "value": [
+                            32,
+                            35,
+                            41,
+                            52,
+                            70
+                          ]
+                        }
+                      },
+                      {
+                        "id": "weights",
+                        "op": "literal",
+                        "inputs": [],
+                        "params": {
+                          "value": [
+                            3,
+                            2,
+                            3,
+                            4,
+                            2
+                          ]
+                        }
+                      },
+                      {
+                        "id": "step1",
+                        "op": "weightedMean",
+                        "inputs": [
+                          "values",
+                          "weights"
+                        ],
+                        "params": {}
+                      }
+                    ],
+                    "outputs": [
+                      "step1"
+                    ],
+                    "design": {
+                      "qdl": 1,
+                      "family": "filament",
+                      "organ": {
+                        "model": "rosette",
+                        "baseRadius": 0.03,
+                        "degreeGain": 0.004,
+                        "literalGain": 0.001,
+                        "amplitudes": [
+                          0.2,
+                          0.13
+                        ]
+                      },
+                      "filament": {
+                        "model": "pinned-sine",
+                        "bend": 0.04,
+                        "frequencyGain": 0.07,
+                        "ripple": 0.16
+                      },
+                      "motion": {
+                        "clock": "separate",
+                        "phaseRate": 0.038,
+                        "reducedMotion": "freeze",
+                        "rhythm": {
+                          "model": "coupled-harmonic",
+                          "mode": "periodic",
+                          "rate": 1,
+                          "breath": 0.06,
+                          "wave": 0.055,
+                          "waveNumber": 1.6,
+                          "lag": 0.9,
+                          "asymmetry": 0.28,
+                          "overtone": 0.17
+                        },
+                        "gesture": {
+                          "kind": "gather",
+                          "strength": 0.6200000000000001,
+                          "ticks": [
+                            180,
+                            180,
+                            420,
+                            220
+                          ]
+                        }
+                      },
+                      "ink": {
+                        "ghostAlpha": 0.09,
+                        "secondaryAlpha": 0.42,
+                        "ridgeAlpha": 0.88,
+                        "neutral": "#f0f1eb"
+                      },
+                      "surface": {
+                        "model": "folded-ribbon",
+                        "ribbons": 28,
+                        "crests": 4,
+                        "spread": 0.16,
+                        "folds": 7,
+                        "taper": 0.65,
+                        "asymmetry": 0.25,
+                        "depth": 0.28,
+                        "twist": 1.9,
+                        "phaseLag": 1.4,
+                        "samples": 24000
+                      },
+                      "light": {
+                        "model": "density-crest",
+                        "recessAlpha": 0.045,
+                        "crestAlpha": 0.58,
+                        "depthContrast": 0.65
+                      },
+                      "composition": {
+                        "occupancy": 0.76,
+                        "lean": -0.035,
+                        "yaw": 0.25,
+                        "pitch": 0.08,
+                        "focus": 0.38
+                      },
+                      "chroma": {
+                        "model": "material-territories",
+                        "palette": "roles-1",
+                        "strength": 0.88,
+                        "lens": {
+                          "kind": "scalar",
+                          "id": "output",
+                          "label": "Recorded water reading",
+                          "unit": "L",
+                          "domain": [
+                            0,
+                            100
+                          ],
+                          "bindings": [
+                            {
+                              "node": "step1",
+                              "path": []
+                            }
+                          ]
+                        }
+                      },
+                      "anatomy": {
+                        "model": "assembly",
+                        "compiler": "qdl-assembly-experimental",
+                        "seed": 4181907800,
+                        "components": [
+                          {
+                            "id": "trunk",
+                            "kind": "chamber",
+                            "axes": [
+                              0.18977883164817466,
+                              0.25227393604721876,
+                              0.11504419816867448
+                            ],
+                            "parent": null
+                          },
+                          {
+                            "id": "branch-0",
+                            "kind": "spine",
+                            "length": 0.4126804292071611,
+                            "radii": [
+                              0.041999999999999996,
+                              0.016565157651901245
+                            ],
+                            "bend": [
+                              -0.18,
+                              0.06659919138997793
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0.39079095595050606,
+                                "v": 0.5
+                              },
+                              "angle": 1.0423526341328397,
+                              "hinge": 0.065
+                            }
+                          },
+                          {
+                            "id": "branch-1",
+                            "kind": "spine",
+                            "length": 0.4828165073469281,
+                            "radii": [
+                              0.038,
+                              0.016225077333161607
+                            ],
+                            "bend": [
+                              0.18,
+                              -0.05033681370317936
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0.5713072295021266,
+                                "v": 0
+                              },
+                              "angle": -1.2653814493748359,
+                              "hinge": -0.065
+                            }
+                          },
+                          {
+                            "id": "tail",
+                            "kind": "spine",
+                            "length": 0.24920566068030894,
+                            "radii": [
+                              0.03191068900353275,
+                              0.017246072370093315
+                            ],
+                            "bend": [
+                              -0.19,
+                              0.04373511973768473
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0,
+                                "v": 0.25
+                              },
+                              "angle": 2.8323539775796234,
+                              "hinge": -0.035
+                            }
+                          }
+                        ],
+                        "owners": [
+                          {
+                            "node": "values",
+                            "component": "trunk",
+                            "u": [
+                              0,
+                              0.3333333333333333
+                            ]
+                          },
+                          {
+                            "node": "weights",
+                            "component": "trunk",
+                            "u": [
+                              0.3333333333333333,
+                              0.6666666666666666
+                            ]
+                          },
+                          {
+                            "node": "step1",
+                            "component": "trunk",
+                            "u": [
+                              0.6666666666666666,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "values",
+                            "component": "branch-0",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "weights",
+                            "component": "branch-1",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "values",
+                            "component": "tail",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              ]
+            ],
+            [
+              "emit",
+              [
+                "makeApply",
+                [
+                  "makeRun",
+                  [
+                    "makeQuote",
+                    [
+                      "var",
+                      "x"
+                    ]
+                  ]
+                ],
+                [
+                  "makeQuote",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "quote",
+      [
+        "lambda",
+        "x",
+        [
+          "seq",
+          [
+            "repeat",
+            1,
+            [
+              "task",
+              [
+                "quote",
+                {
+                  "version": 1,
+                  "name": "Tideglass",
+                  "nodes": [
+                    {
+                      "id": "values",
+                      "op": "literal",
+                      "inputs": [],
+                      "params": {
+                        "value": [
+                          32,
+                          35,
+                          41,
+                          52,
+                          70
+                        ]
+                      }
+                    },
+                    {
+                      "id": "weights",
+                      "op": "literal",
+                      "inputs": [],
+                      "params": {
+                        "value": [
+                          3,
+                          2,
+                          3,
+                          4,
+                          2
+                        ]
+                      }
+                    },
+                    {
+                      "id": "step1",
+                      "op": "weightedMean",
+                      "inputs": [
+                        "values",
+                        "weights"
+                      ],
+                      "params": {}
+                    }
+                  ],
+                  "outputs": [
+                    "step1"
+                  ],
+                  "design": {
+                    "qdl": 1,
+                    "family": "filament",
+                    "organ": {
+                      "model": "rosette",
+                      "baseRadius": 0.03,
+                      "degreeGain": 0.004,
+                      "literalGain": 0.001,
+                      "amplitudes": [
+                        0.2,
+                        0.13
+                      ]
+                    },
+                    "filament": {
+                      "model": "pinned-sine",
+                      "bend": 0.04,
+                      "frequencyGain": 0.07,
+                      "ripple": 0.16
+                    },
+                    "motion": {
+                      "clock": "separate",
+                      "phaseRate": 0.038,
+                      "reducedMotion": "freeze",
+                      "rhythm": {
+                        "model": "coupled-harmonic",
+                        "mode": "periodic",
+                        "rate": 1,
+                        "breath": 0.06,
+                        "wave": 0.055,
+                        "waveNumber": 1.6,
+                        "lag": 0.9,
+                        "asymmetry": 0.28,
+                        "overtone": 0.17
+                      },
+                      "gesture": {
+                        "kind": "gather",
+                        "strength": 0.6200000000000001,
+                        "ticks": [
+                          180,
+                          180,
+                          420,
+                          220
+                        ]
+                      }
+                    },
+                    "ink": {
+                      "ghostAlpha": 0.09,
+                      "secondaryAlpha": 0.42,
+                      "ridgeAlpha": 0.88,
+                      "neutral": "#f0f1eb"
+                    },
+                    "surface": {
+                      "model": "folded-ribbon",
+                      "ribbons": 28,
+                      "crests": 4,
+                      "spread": 0.16,
+                      "folds": 7,
+                      "taper": 0.65,
+                      "asymmetry": 0.25,
+                      "depth": 0.28,
+                      "twist": 1.9,
+                      "phaseLag": 1.4,
+                      "samples": 24000
+                    },
+                    "light": {
+                      "model": "density-crest",
+                      "recessAlpha": 0.045,
+                      "crestAlpha": 0.58,
+                      "depthContrast": 0.65
+                    },
+                    "composition": {
+                      "occupancy": 0.76,
+                      "lean": -0.035,
+                      "yaw": 0.25,
+                      "pitch": 0.08,
+                      "focus": 0.38
+                    },
+                    "chroma": {
+                      "model": "material-territories",
+                      "palette": "roles-1",
+                      "strength": 0.88,
+                      "lens": {
+                        "kind": "scalar",
+                        "id": "output",
+                        "label": "Recorded water reading",
+                        "unit": "L",
+                        "domain": [
+                          0,
+                          100
+                        ],
+                        "bindings": [
+                          {
+                            "node": "step1",
+                            "path": []
+                          }
+                        ]
+                      }
+                    },
+                    "anatomy": {
+                      "model": "assembly",
+                      "compiler": "qdl-assembly-experimental",
+                      "seed": 4181907800,
+                      "components": [
+                        {
+                          "id": "trunk",
+                          "kind": "chamber",
+                          "axes": [
+                            0.18977883164817466,
+                            0.25227393604721876,
+                            0.11504419816867448
+                          ],
+                          "parent": null
+                        },
+                        {
+                          "id": "branch-0",
+                          "kind": "spine",
+                          "length": 0.4126804292071611,
+                          "radii": [
+                            0.041999999999999996,
+                            0.016565157651901245
+                          ],
+                          "bend": [
+                            -0.18,
+                            0.06659919138997793
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0.39079095595050606,
+                              "v": 0.5
+                            },
+                            "angle": 1.0423526341328397,
+                            "hinge": 0.065
+                          }
+                        },
+                        {
+                          "id": "branch-1",
+                          "kind": "spine",
+                          "length": 0.4828165073469281,
+                          "radii": [
+                            0.038,
+                            0.016225077333161607
+                          ],
+                          "bend": [
+                            0.18,
+                            -0.05033681370317936
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0.5713072295021266,
+                              "v": 0
+                            },
+                            "angle": -1.2653814493748359,
+                            "hinge": -0.065
+                          }
+                        },
+                        {
+                          "id": "tail",
+                          "kind": "spine",
+                          "length": 0.24920566068030894,
+                          "radii": [
+                            0.03191068900353275,
+                            0.017246072370093315
+                          ],
+                          "bend": [
+                            -0.19,
+                            0.04373511973768473
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0,
+                              "v": 0.25
+                            },
+                            "angle": 2.8323539775796234,
+                            "hinge": -0.035
+                          }
+                        }
+                      ],
+                      "owners": [
+                        {
+                          "node": "values",
+                          "component": "trunk",
+                          "u": [
+                            0,
+                            0.3333333333333333
+                          ]
+                        },
+                        {
+                          "node": "weights",
+                          "component": "trunk",
+                          "u": [
+                            0.3333333333333333,
+                            0.6666666666666666
+                          ]
+                        },
+                        {
+                          "node": "step1",
+                          "component": "trunk",
+                          "u": [
+                            0.6666666666666666,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "values",
+                          "component": "branch-0",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "weights",
+                          "component": "branch-1",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "values",
+                          "component": "tail",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            ]
+          ],
+          [
+            "emit",
+            [
+              "makeApply",
+              [
+                "makeRun",
+                [
+                  "makeQuote",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ],
+              [
+                "makeQuote",
+                [
+                  "var",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.18977883164817466,0.25227393604721876,0.11504419816867448],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,0.06659919138997793],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4126804292071611,\"parent\":{\"angle\":1.0423526341328397,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.39079095595050606,\"v\":0.5}},\"radii\":[0.041999999999999996,0.016565157651901245]},{\"bend\":[0.18,-0.05033681370317936],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.4828165073469281,\"parent\":{\"angle\":-1.2653814493748359,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5713072295021266,\"v\":0}},\"radii\":[0.038,0.016225077333161607]},{\"bend\":[-0.19,0.04373511973768473],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.24920566068030894,\"parent\":{\"angle\":2.8323539775796234,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.03191068900353275,0.017246072370093315]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"values\",\"u\":[0,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"weights\",\"u\":[0.3333333333333333,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.6666666666666666,1]},{\"component\":\"branch-0\",\"node\":\"values\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"weights\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"values\",\"u\":[0,1]}],\"seed\":4181907800},\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.6200000000000001,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.18977883164817466,0.25227393604721876,0.11504419816867448],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,0.06659919138997793],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4126804292071611,\"parent\":{\"angle\":1.0423526341328397,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.39079095595050606,\"v\":0.5}},\"radii\":[0.041999999999999996,0.016565157651901245]},{\"bend\":[0.18,-0.05033681370317936],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.4828165073469281,\"parent\":{\"angle\":-1.2653814493748359,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5713072295021266,\"v\":0}},\"radii\":[0.038,0.016225077333161607]},{\"bend\":[-0.19,0.04373511973768473],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.24920566068030894,\"parent\":{\"angle\":2.8323539775796234,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.03191068900353275,0.017246072370093315]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"values\",\"u\":[0,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"weights\",\"u\":[0.3333333333333333,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.6666666666666666,1]},{\"component\":\"branch-0\",\"node\":\"values\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"weights\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"values\",\"u\":[0,1]}],\"seed\":4181907800},\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.6200000000000001,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "graph": {
+    "version": 1,
+    "name": "Tideglass",
+    "nodes": [
+      {
+        "id": "values",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            32,
+            35,
+            41,
+            52,
+            70
+          ]
+        }
+      },
+      {
+        "id": "weights",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            3,
+            2,
+            3,
+            4,
+            2
+          ]
+        }
+      },
+      {
+        "id": "step1",
+        "op": "weightedMean",
+        "inputs": [
+          "values",
+          "weights"
+        ],
+        "params": {}
+      }
+    ],
+    "outputs": [
+      "step1"
+    ]
+  },
+  "design": {
+    "qdl": 1,
+    "family": "filament",
+    "organ": {
+      "model": "rosette",
+      "baseRadius": 0.03,
+      "degreeGain": 0.004,
+      "literalGain": 0.001,
+      "amplitudes": [
+        0.2,
+        0.13
+      ]
+    },
+    "filament": {
+      "model": "pinned-sine",
+      "bend": 0.04,
+      "frequencyGain": 0.07,
+      "ripple": 0.16
+    },
+    "motion": {
+      "clock": "separate",
+      "phaseRate": 0.038,
+      "reducedMotion": "freeze",
+      "rhythm": {
+        "model": "coupled-harmonic",
+        "mode": "periodic",
+        "rate": 1,
+        "breath": 0.06,
+        "wave": 0.055,
+        "waveNumber": 1.6,
+        "lag": 0.9,
+        "asymmetry": 0.28,
+        "overtone": 0.17
+      },
+      "gesture": {
+        "kind": "gather",
+        "strength": 0.6200000000000001,
+        "ticks": [
+          180,
+          180,
+          420,
+          220
+        ]
+      }
+    },
+    "ink": {
+      "ghostAlpha": 0.09,
+      "secondaryAlpha": 0.42,
+      "ridgeAlpha": 0.88,
+      "neutral": "#f0f1eb"
+    },
+    "surface": {
+      "model": "folded-ribbon",
+      "ribbons": 28,
+      "crests": 4,
+      "spread": 0.16,
+      "folds": 7,
+      "taper": 0.65,
+      "asymmetry": 0.25,
+      "depth": 0.28,
+      "twist": 1.9,
+      "phaseLag": 1.4,
+      "samples": 24000
+    },
+    "light": {
+      "model": "density-crest",
+      "recessAlpha": 0.045,
+      "crestAlpha": 0.58,
+      "depthContrast": 0.65
+    },
+    "composition": {
+      "occupancy": 0.76,
+      "lean": -0.035,
+      "yaw": 0.25,
+      "pitch": 0.08,
+      "focus": 0.38
+    },
+    "chroma": {
+      "model": "material-territories",
+      "palette": "roles-1",
+      "strength": 0.88,
+      "lens": {
+        "kind": "scalar",
+        "id": "output",
+        "label": "Recorded water reading",
+        "unit": "L",
+        "domain": [
+          0,
+          100
+        ],
+        "bindings": [
+          {
+            "node": "step1",
+            "path": []
+          }
+        ]
+      }
+    },
+    "anatomy": {
+      "model": "assembly",
+      "compiler": "qdl-assembly-experimental",
+      "seed": 4181907800,
+      "components": [
+        {
+          "id": "trunk",
+          "kind": "chamber",
+          "axes": [
+            0.18977883164817466,
+            0.25227393604721876,
+            0.11504419816867448
+          ],
+          "parent": null
+        },
+        {
+          "id": "branch-0",
+          "kind": "spine",
+          "length": 0.4126804292071611,
+          "radii": [
+            0.041999999999999996,
+            0.016565157651901245
+          ],
+          "bend": [
+            -0.18,
+            0.06659919138997793
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0.39079095595050606,
+              "v": 0.5
+            },
+            "angle": 1.0423526341328397,
+            "hinge": 0.065
+          }
+        },
+        {
+          "id": "branch-1",
+          "kind": "spine",
+          "length": 0.4828165073469281,
+          "radii": [
+            0.038,
+            0.016225077333161607
+          ],
+          "bend": [
+            0.18,
+            -0.05033681370317936
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0.5713072295021266,
+              "v": 0
+            },
+            "angle": -1.2653814493748359,
+            "hinge": -0.065
+          }
+        },
+        {
+          "id": "tail",
+          "kind": "spine",
+          "length": 0.24920566068030894,
+          "radii": [
+            0.03191068900353275,
+            0.017246072370093315
+          ],
+          "bend": [
+            -0.19,
+            0.04373511973768473
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0,
+              "v": 0.25
+            },
+            "angle": 2.8323539775796234,
+            "hinge": -0.035
+          }
+        }
+      ],
+      "owners": [
+        {
+          "node": "values",
+          "component": "trunk",
+          "u": [
+            0,
+            0.3333333333333333
+          ]
+        },
+        {
+          "node": "weights",
+          "component": "trunk",
+          "u": [
+            0.3333333333333333,
+            0.6666666666666666
+          ]
+        },
+        {
+          "node": "step1",
+          "component": "trunk",
+          "u": [
+            0.6666666666666666,
+            1
+          ]
+        },
+        {
+          "node": "values",
+          "component": "branch-0",
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "weights",
+          "component": "branch-1",
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "values",
+          "component": "tail",
+          "u": [
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  },
+  "contract": {
+    "format": "quineling-contract",
+    "registry": "quineling-kernels-experimental",
+    "types": {
+      "values": {
+        "kind": "array",
+        "element": {
+          "kind": "number",
+          "unit": "L"
+        }
+      },
+      "weights": {
+        "kind": "array",
+        "element": {
+          "kind": "number",
+          "unit": "one"
+        }
+      },
+      "step1": {
+        "kind": "number",
+        "unit": "L"
+      }
+    },
+    "assumptions": [],
+    "effectMode": "pure",
+    "sourceBytes": 2837,
+    "provenance": "companion document; types and thought are not embedded in the quine"
+  },
+  "sourceMap": [
+    {
+      "nodeId": "values",
+      "clause": "weighted mean [32,35,41,52,70] weights [3,2,3,4,2] L"
+    },
+    {
+      "nodeId": "weights",
+      "clause": "weighted mean [32,35,41,52,70] weights [3,2,3,4,2] L"
+    },
+    {
+      "nodeId": "step1",
+      "clause": "weighted mean [32,35,41,52,70] weights [3,2,3,4,2] L"
+    }
+  ],
+  "candidate": null,
+  "interpretation": {
+    "summary": "Balances five water readings, giving each its supplied weight.",
+    "assumptions": []
+  },
+  "generation": {
+    "batchSeed": 2599264831,
+    "bodySeed": 4181907800
+  },
+  "fixtures": [
+    {
+      "label": "generated inputs",
+      "overrides": {},
+      "expected": [
+        45.5
+      ]
+    },
+    {
+      "label": "equal readings",
+      "overrides": {
+        "values": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "expected": [
+        1
+      ]
+    },
+    {
+      "label": "zero weight",
+      "overrides": {
+        "weights": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "fails": true
+    }
+  ]
+}

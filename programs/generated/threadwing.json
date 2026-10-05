@@ -1,0 +1,1340 @@
+{
+  "format": "quineling-artifact",
+  "id": "threadwing",
+  "name": "Threadwing",
+  "description": "Finds a route around closed street C and proposes a walk.",
+  "thought": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"] | simulate \"walk-route\"",
+  "program": [
+    "apply",
+    [
+      "run",
+      [
+        "quote",
+        [
+          "lambda",
+          "x",
+          [
+            "seq",
+            [
+              "repeat",
+              1,
+              [
+                "task",
+                [
+                  "quote",
+                  {
+                    "version": 1,
+                    "name": "Threadwing",
+                    "nodes": [
+                      {
+                        "id": "streets",
+                        "op": "literal",
+                        "inputs": [],
+                        "params": {
+                          "value": {
+                            "A": [
+                              "B",
+                              "C"
+                            ],
+                            "B": [
+                              "D"
+                            ],
+                            "C": [
+                              "D"
+                            ],
+                            "D": []
+                          }
+                        }
+                      },
+                      {
+                        "id": "blocked",
+                        "op": "literal",
+                        "inputs": [],
+                        "params": {
+                          "value": [
+                            "C"
+                          ]
+                        }
+                      },
+                      {
+                        "id": "step1",
+                        "op": "bfs",
+                        "inputs": [
+                          "streets",
+                          "blocked"
+                        ],
+                        "params": {
+                          "start": "A",
+                          "goal": "D"
+                        }
+                      },
+                      {
+                        "id": "step2",
+                        "op": "get",
+                        "inputs": [
+                          "step1"
+                        ],
+                        "params": {
+                          "path": "found"
+                        }
+                      },
+                      {
+                        "id": "step3",
+                        "op": "get",
+                        "inputs": [
+                          "step1"
+                        ],
+                        "params": {
+                          "path": "path"
+                        }
+                      },
+                      {
+                        "id": "step4",
+                        "op": "action",
+                        "inputs": [
+                          "step2",
+                          "step3"
+                        ],
+                        "params": {
+                          "allowed": true,
+                          "action": "walk-route"
+                        }
+                      }
+                    ],
+                    "outputs": [
+                      "step4"
+                    ],
+                    "design": {
+                      "qdl": 1,
+                      "family": "filament",
+                      "organ": {
+                        "model": "rosette",
+                        "baseRadius": 0.03,
+                        "degreeGain": 0.004,
+                        "literalGain": 0.001,
+                        "amplitudes": [
+                          0.2,
+                          0.13
+                        ]
+                      },
+                      "filament": {
+                        "model": "pinned-sine",
+                        "bend": 0.04,
+                        "frequencyGain": 0.07,
+                        "ripple": 0.16
+                      },
+                      "motion": {
+                        "clock": "separate",
+                        "phaseRate": 0.038,
+                        "reducedMotion": "freeze",
+                        "rhythm": {
+                          "model": "coupled-harmonic",
+                          "mode": "periodic",
+                          "rate": 1,
+                          "breath": 0.06,
+                          "wave": 0.055,
+                          "waveNumber": 1.6,
+                          "lag": 0.9,
+                          "asymmetry": 0.28,
+                          "overtone": 0.17
+                        },
+                        "gesture": {
+                          "kind": "gather",
+                          "strength": 0.67,
+                          "ticks": [
+                            180,
+                            180,
+                            420,
+                            220
+                          ]
+                        }
+                      },
+                      "ink": {
+                        "ghostAlpha": 0.09,
+                        "secondaryAlpha": 0.42,
+                        "ridgeAlpha": 0.88,
+                        "neutral": "#f0f1eb"
+                      },
+                      "surface": {
+                        "model": "folded-ribbon",
+                        "ribbons": 28,
+                        "crests": 4,
+                        "spread": 0.16,
+                        "folds": 7,
+                        "taper": 0.65,
+                        "asymmetry": 0.25,
+                        "depth": 0.28,
+                        "twist": 1.9,
+                        "phaseLag": 1.4,
+                        "samples": 24000
+                      },
+                      "light": {
+                        "model": "density-crest",
+                        "recessAlpha": 0.045,
+                        "crestAlpha": 0.58,
+                        "depthContrast": 0.65
+                      },
+                      "composition": {
+                        "occupancy": 0.76,
+                        "lean": -0.035,
+                        "yaw": 0.25,
+                        "pitch": 0.08,
+                        "focus": 0.38
+                      },
+                      "chroma": {
+                        "model": "material-territories",
+                        "palette": "roles-1",
+                        "strength": 0.88
+                      },
+                      "anatomy": {
+                        "model": "assembly",
+                        "compiler": "qdl-assembly-experimental",
+                        "seed": 1477331921,
+                        "components": [
+                          {
+                            "id": "trunk",
+                            "kind": "chamber",
+                            "axes": [
+                              0.34,
+                              0.22863330791937192,
+                              0.10199616091651842
+                            ],
+                            "parent": null
+                          },
+                          {
+                            "id": "branch-0",
+                            "kind": "spine",
+                            "length": 0.4424599538631737,
+                            "radii": [
+                              0.041999999999999996,
+                              0.01681101136165671
+                            ],
+                            "bend": [
+                              -0.18,
+                              0.047731496244668964
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0.39522747971117494,
+                                "v": 0.5
+                              },
+                              "angle": 0.8365102109615691,
+                              "hinge": 0.065
+                            }
+                          },
+                          {
+                            "id": "branch-1",
+                            "kind": "spine",
+                            "length": 0.49222868600673975,
+                            "radii": [
+                              0.038,
+                              0.016726356552913785
+                            ],
+                            "bend": [
+                              0.18,
+                              0.04530361261218786
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0.5749590749712661,
+                                "v": 0
+                              },
+                              "angle": -1.1958453128533437,
+                              "hinge": -0.065
+                            }
+                          },
+                          {
+                            "id": "tail",
+                            "kind": "spine",
+                            "length": 0.3296673479455058,
+                            "radii": [
+                              0.029140780012123287,
+                              0.017324763756478206
+                            ],
+                            "bend": [
+                              -0.19,
+                              -0.07466902382671833
+                            ],
+                            "parent": {
+                              "component": "trunk",
+                              "socket": {
+                                "u": 0,
+                                "v": 0.25
+                              },
+                              "angle": 2.933885444141924,
+                              "hinge": -0.035
+                            }
+                          },
+                          {
+                            "id": "wake",
+                            "kind": "spine",
+                            "length": 0.215,
+                            "radii": [
+                              0.023,
+                              0.017641607012366875
+                            ],
+                            "bend": [
+                              0.19,
+                              0.05975807428359985
+                            ],
+                            "parent": {
+                              "component": "tail",
+                              "socket": {
+                                "u": 0.72,
+                                "v": 0.5
+                              },
+                              "angle": -0.75,
+                              "hinge": 0.035
+                            }
+                          }
+                        ],
+                        "owners": [
+                          {
+                            "node": "streets",
+                            "component": "trunk",
+                            "u": [
+                              0,
+                              0.16666666666666666
+                            ]
+                          },
+                          {
+                            "node": "blocked",
+                            "component": "trunk",
+                            "u": [
+                              0.16666666666666666,
+                              0.3333333333333333
+                            ]
+                          },
+                          {
+                            "node": "step1",
+                            "component": "trunk",
+                            "u": [
+                              0.3333333333333333,
+                              0.5
+                            ]
+                          },
+                          {
+                            "node": "step2",
+                            "component": "trunk",
+                            "u": [
+                              0.5,
+                              0.6666666666666666
+                            ]
+                          },
+                          {
+                            "node": "step3",
+                            "component": "trunk",
+                            "u": [
+                              0.6666666666666666,
+                              0.8333333333333334
+                            ]
+                          },
+                          {
+                            "node": "step4",
+                            "component": "trunk",
+                            "u": [
+                              0.8333333333333334,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "step2",
+                            "component": "branch-0",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "step3",
+                            "component": "branch-1",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "streets",
+                            "component": "tail",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "node": "step4",
+                            "component": "wake",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              ]
+            ],
+            [
+              "emit",
+              [
+                "makeApply",
+                [
+                  "makeRun",
+                  [
+                    "makeQuote",
+                    [
+                      "var",
+                      "x"
+                    ]
+                  ]
+                ],
+                [
+                  "makeQuote",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "quote",
+      [
+        "lambda",
+        "x",
+        [
+          "seq",
+          [
+            "repeat",
+            1,
+            [
+              "task",
+              [
+                "quote",
+                {
+                  "version": 1,
+                  "name": "Threadwing",
+                  "nodes": [
+                    {
+                      "id": "streets",
+                      "op": "literal",
+                      "inputs": [],
+                      "params": {
+                        "value": {
+                          "A": [
+                            "B",
+                            "C"
+                          ],
+                          "B": [
+                            "D"
+                          ],
+                          "C": [
+                            "D"
+                          ],
+                          "D": []
+                        }
+                      }
+                    },
+                    {
+                      "id": "blocked",
+                      "op": "literal",
+                      "inputs": [],
+                      "params": {
+                        "value": [
+                          "C"
+                        ]
+                      }
+                    },
+                    {
+                      "id": "step1",
+                      "op": "bfs",
+                      "inputs": [
+                        "streets",
+                        "blocked"
+                      ],
+                      "params": {
+                        "start": "A",
+                        "goal": "D"
+                      }
+                    },
+                    {
+                      "id": "step2",
+                      "op": "get",
+                      "inputs": [
+                        "step1"
+                      ],
+                      "params": {
+                        "path": "found"
+                      }
+                    },
+                    {
+                      "id": "step3",
+                      "op": "get",
+                      "inputs": [
+                        "step1"
+                      ],
+                      "params": {
+                        "path": "path"
+                      }
+                    },
+                    {
+                      "id": "step4",
+                      "op": "action",
+                      "inputs": [
+                        "step2",
+                        "step3"
+                      ],
+                      "params": {
+                        "allowed": true,
+                        "action": "walk-route"
+                      }
+                    }
+                  ],
+                  "outputs": [
+                    "step4"
+                  ],
+                  "design": {
+                    "qdl": 1,
+                    "family": "filament",
+                    "organ": {
+                      "model": "rosette",
+                      "baseRadius": 0.03,
+                      "degreeGain": 0.004,
+                      "literalGain": 0.001,
+                      "amplitudes": [
+                        0.2,
+                        0.13
+                      ]
+                    },
+                    "filament": {
+                      "model": "pinned-sine",
+                      "bend": 0.04,
+                      "frequencyGain": 0.07,
+                      "ripple": 0.16
+                    },
+                    "motion": {
+                      "clock": "separate",
+                      "phaseRate": 0.038,
+                      "reducedMotion": "freeze",
+                      "rhythm": {
+                        "model": "coupled-harmonic",
+                        "mode": "periodic",
+                        "rate": 1,
+                        "breath": 0.06,
+                        "wave": 0.055,
+                        "waveNumber": 1.6,
+                        "lag": 0.9,
+                        "asymmetry": 0.28,
+                        "overtone": 0.17
+                      },
+                      "gesture": {
+                        "kind": "gather",
+                        "strength": 0.67,
+                        "ticks": [
+                          180,
+                          180,
+                          420,
+                          220
+                        ]
+                      }
+                    },
+                    "ink": {
+                      "ghostAlpha": 0.09,
+                      "secondaryAlpha": 0.42,
+                      "ridgeAlpha": 0.88,
+                      "neutral": "#f0f1eb"
+                    },
+                    "surface": {
+                      "model": "folded-ribbon",
+                      "ribbons": 28,
+                      "crests": 4,
+                      "spread": 0.16,
+                      "folds": 7,
+                      "taper": 0.65,
+                      "asymmetry": 0.25,
+                      "depth": 0.28,
+                      "twist": 1.9,
+                      "phaseLag": 1.4,
+                      "samples": 24000
+                    },
+                    "light": {
+                      "model": "density-crest",
+                      "recessAlpha": 0.045,
+                      "crestAlpha": 0.58,
+                      "depthContrast": 0.65
+                    },
+                    "composition": {
+                      "occupancy": 0.76,
+                      "lean": -0.035,
+                      "yaw": 0.25,
+                      "pitch": 0.08,
+                      "focus": 0.38
+                    },
+                    "chroma": {
+                      "model": "material-territories",
+                      "palette": "roles-1",
+                      "strength": 0.88
+                    },
+                    "anatomy": {
+                      "model": "assembly",
+                      "compiler": "qdl-assembly-experimental",
+                      "seed": 1477331921,
+                      "components": [
+                        {
+                          "id": "trunk",
+                          "kind": "chamber",
+                          "axes": [
+                            0.34,
+                            0.22863330791937192,
+                            0.10199616091651842
+                          ],
+                          "parent": null
+                        },
+                        {
+                          "id": "branch-0",
+                          "kind": "spine",
+                          "length": 0.4424599538631737,
+                          "radii": [
+                            0.041999999999999996,
+                            0.01681101136165671
+                          ],
+                          "bend": [
+                            -0.18,
+                            0.047731496244668964
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0.39522747971117494,
+                              "v": 0.5
+                            },
+                            "angle": 0.8365102109615691,
+                            "hinge": 0.065
+                          }
+                        },
+                        {
+                          "id": "branch-1",
+                          "kind": "spine",
+                          "length": 0.49222868600673975,
+                          "radii": [
+                            0.038,
+                            0.016726356552913785
+                          ],
+                          "bend": [
+                            0.18,
+                            0.04530361261218786
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0.5749590749712661,
+                              "v": 0
+                            },
+                            "angle": -1.1958453128533437,
+                            "hinge": -0.065
+                          }
+                        },
+                        {
+                          "id": "tail",
+                          "kind": "spine",
+                          "length": 0.3296673479455058,
+                          "radii": [
+                            0.029140780012123287,
+                            0.017324763756478206
+                          ],
+                          "bend": [
+                            -0.19,
+                            -0.07466902382671833
+                          ],
+                          "parent": {
+                            "component": "trunk",
+                            "socket": {
+                              "u": 0,
+                              "v": 0.25
+                            },
+                            "angle": 2.933885444141924,
+                            "hinge": -0.035
+                          }
+                        },
+                        {
+                          "id": "wake",
+                          "kind": "spine",
+                          "length": 0.215,
+                          "radii": [
+                            0.023,
+                            0.017641607012366875
+                          ],
+                          "bend": [
+                            0.19,
+                            0.05975807428359985
+                          ],
+                          "parent": {
+                            "component": "tail",
+                            "socket": {
+                              "u": 0.72,
+                              "v": 0.5
+                            },
+                            "angle": -0.75,
+                            "hinge": 0.035
+                          }
+                        }
+                      ],
+                      "owners": [
+                        {
+                          "node": "streets",
+                          "component": "trunk",
+                          "u": [
+                            0,
+                            0.16666666666666666
+                          ]
+                        },
+                        {
+                          "node": "blocked",
+                          "component": "trunk",
+                          "u": [
+                            0.16666666666666666,
+                            0.3333333333333333
+                          ]
+                        },
+                        {
+                          "node": "step1",
+                          "component": "trunk",
+                          "u": [
+                            0.3333333333333333,
+                            0.5
+                          ]
+                        },
+                        {
+                          "node": "step2",
+                          "component": "trunk",
+                          "u": [
+                            0.5,
+                            0.6666666666666666
+                          ]
+                        },
+                        {
+                          "node": "step3",
+                          "component": "trunk",
+                          "u": [
+                            0.6666666666666666,
+                            0.8333333333333334
+                          ]
+                        },
+                        {
+                          "node": "step4",
+                          "component": "trunk",
+                          "u": [
+                            0.8333333333333334,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "step2",
+                          "component": "branch-0",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "step3",
+                          "component": "branch-1",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "streets",
+                          "component": "tail",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "node": "step4",
+                          "component": "wake",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            ]
+          ],
+          [
+            "emit",
+            [
+              "makeApply",
+              [
+                "makeRun",
+                [
+                  "makeQuote",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ],
+              [
+                "makeQuote",
+                [
+                  "var",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.34,0.22863330791937192,0.10199616091651842],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,0.047731496244668964],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4424599538631737,\"parent\":{\"angle\":0.8365102109615691,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.39522747971117494,\"v\":0.5}},\"radii\":[0.041999999999999996,0.01681101136165671]},{\"bend\":[0.18,0.04530361261218786],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.49222868600673975,\"parent\":{\"angle\":-1.1958453128533437,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5749590749712661,\"v\":0}},\"radii\":[0.038,0.016726356552913785]},{\"bend\":[-0.19,-0.07466902382671833],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.3296673479455058,\"parent\":{\"angle\":2.933885444141924,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.029140780012123287,0.017324763756478206]},{\"bend\":[0.19,0.05975807428359985],\"id\":\"wake\",\"kind\":\"spine\",\"length\":0.215,\"parent\":{\"angle\":-0.75,\"component\":\"tail\",\"hinge\":0.035,\"socket\":{\"u\":0.72,\"v\":0.5}},\"radii\":[0.023,0.017641607012366875]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"streets\",\"u\":[0,0.16666666666666666]},{\"component\":\"trunk\",\"node\":\"blocked\",\"u\":[0.16666666666666666,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.3333333333333333,0.5]},{\"component\":\"trunk\",\"node\":\"step2\",\"u\":[0.5,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step3\",\"u\":[0.6666666666666666,0.8333333333333334]},{\"component\":\"trunk\",\"node\":\"step4\",\"u\":[0.8333333333333334,1]},{\"component\":\"branch-0\",\"node\":\"step2\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"streets\",\"u\":[0,1]},{\"component\":\"wake\",\"node\":\"step4\",\"u\":[0,1]}],\"seed\":1477331921},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.67,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.34,0.22863330791937192,0.10199616091651842],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,0.047731496244668964],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4424599538631737,\"parent\":{\"angle\":0.8365102109615691,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.39522747971117494,\"v\":0.5}},\"radii\":[0.041999999999999996,0.01681101136165671]},{\"bend\":[0.18,0.04530361261218786],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.49222868600673975,\"parent\":{\"angle\":-1.1958453128533437,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5749590749712661,\"v\":0}},\"radii\":[0.038,0.016726356552913785]},{\"bend\":[-0.19,-0.07466902382671833],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.3296673479455058,\"parent\":{\"angle\":2.933885444141924,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.029140780012123287,0.017324763756478206]},{\"bend\":[0.19,0.05975807428359985],\"id\":\"wake\",\"kind\":\"spine\",\"length\":0.215,\"parent\":{\"angle\":-0.75,\"component\":\"tail\",\"hinge\":0.035,\"socket\":{\"u\":0.72,\"v\":0.5}},\"radii\":[0.023,0.017641607012366875]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"streets\",\"u\":[0,0.16666666666666666]},{\"component\":\"trunk\",\"node\":\"blocked\",\"u\":[0.16666666666666666,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.3333333333333333,0.5]},{\"component\":\"trunk\",\"node\":\"step2\",\"u\":[0.5,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step3\",\"u\":[0.6666666666666666,0.8333333333333334]},{\"component\":\"trunk\",\"node\":\"step4\",\"u\":[0.8333333333333334,1]},{\"component\":\"branch-0\",\"node\":\"step2\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"streets\",\"u\":[0,1]},{\"component\":\"wake\",\"node\":\"step4\",\"u\":[0,1]}],\"seed\":1477331921},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.67,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "graph": {
+    "version": 1,
+    "name": "Threadwing",
+    "nodes": [
+      {
+        "id": "streets",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": {
+            "A": [
+              "B",
+              "C"
+            ],
+            "B": [
+              "D"
+            ],
+            "C": [
+              "D"
+            ],
+            "D": []
+          }
+        }
+      },
+      {
+        "id": "blocked",
+        "op": "literal",
+        "inputs": [],
+        "params": {
+          "value": [
+            "C"
+          ]
+        }
+      },
+      {
+        "id": "step1",
+        "op": "bfs",
+        "inputs": [
+          "streets",
+          "blocked"
+        ],
+        "params": {
+          "start": "A",
+          "goal": "D"
+        }
+      },
+      {
+        "id": "step2",
+        "op": "get",
+        "inputs": [
+          "step1"
+        ],
+        "params": {
+          "path": "found"
+        }
+      },
+      {
+        "id": "step3",
+        "op": "get",
+        "inputs": [
+          "step1"
+        ],
+        "params": {
+          "path": "path"
+        }
+      },
+      {
+        "id": "step4",
+        "op": "action",
+        "inputs": [
+          "step2",
+          "step3"
+        ],
+        "params": {
+          "allowed": true,
+          "action": "walk-route"
+        }
+      }
+    ],
+    "outputs": [
+      "step4"
+    ]
+  },
+  "design": {
+    "qdl": 1,
+    "family": "filament",
+    "organ": {
+      "model": "rosette",
+      "baseRadius": 0.03,
+      "degreeGain": 0.004,
+      "literalGain": 0.001,
+      "amplitudes": [
+        0.2,
+        0.13
+      ]
+    },
+    "filament": {
+      "model": "pinned-sine",
+      "bend": 0.04,
+      "frequencyGain": 0.07,
+      "ripple": 0.16
+    },
+    "motion": {
+      "clock": "separate",
+      "phaseRate": 0.038,
+      "reducedMotion": "freeze",
+      "rhythm": {
+        "model": "coupled-harmonic",
+        "mode": "periodic",
+        "rate": 1,
+        "breath": 0.06,
+        "wave": 0.055,
+        "waveNumber": 1.6,
+        "lag": 0.9,
+        "asymmetry": 0.28,
+        "overtone": 0.17
+      },
+      "gesture": {
+        "kind": "gather",
+        "strength": 0.67,
+        "ticks": [
+          180,
+          180,
+          420,
+          220
+        ]
+      }
+    },
+    "ink": {
+      "ghostAlpha": 0.09,
+      "secondaryAlpha": 0.42,
+      "ridgeAlpha": 0.88,
+      "neutral": "#f0f1eb"
+    },
+    "surface": {
+      "model": "folded-ribbon",
+      "ribbons": 28,
+      "crests": 4,
+      "spread": 0.16,
+      "folds": 7,
+      "taper": 0.65,
+      "asymmetry": 0.25,
+      "depth": 0.28,
+      "twist": 1.9,
+      "phaseLag": 1.4,
+      "samples": 24000
+    },
+    "light": {
+      "model": "density-crest",
+      "recessAlpha": 0.045,
+      "crestAlpha": 0.58,
+      "depthContrast": 0.65
+    },
+    "composition": {
+      "occupancy": 0.76,
+      "lean": -0.035,
+      "yaw": 0.25,
+      "pitch": 0.08,
+      "focus": 0.38
+    },
+    "chroma": {
+      "model": "material-territories",
+      "palette": "roles-1",
+      "strength": 0.88
+    },
+    "anatomy": {
+      "model": "assembly",
+      "compiler": "qdl-assembly-experimental",
+      "seed": 1477331921,
+      "components": [
+        {
+          "id": "trunk",
+          "kind": "chamber",
+          "axes": [
+            0.34,
+            0.22863330791937192,
+            0.10199616091651842
+          ],
+          "parent": null
+        },
+        {
+          "id": "branch-0",
+          "kind": "spine",
+          "length": 0.4424599538631737,
+          "radii": [
+            0.041999999999999996,
+            0.01681101136165671
+          ],
+          "bend": [
+            -0.18,
+            0.047731496244668964
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0.39522747971117494,
+              "v": 0.5
+            },
+            "angle": 0.8365102109615691,
+            "hinge": 0.065
+          }
+        },
+        {
+          "id": "branch-1",
+          "kind": "spine",
+          "length": 0.49222868600673975,
+          "radii": [
+            0.038,
+            0.016726356552913785
+          ],
+          "bend": [
+            0.18,
+            0.04530361261218786
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0.5749590749712661,
+              "v": 0
+            },
+            "angle": -1.1958453128533437,
+            "hinge": -0.065
+          }
+        },
+        {
+          "id": "tail",
+          "kind": "spine",
+          "length": 0.3296673479455058,
+          "radii": [
+            0.029140780012123287,
+            0.017324763756478206
+          ],
+          "bend": [
+            -0.19,
+            -0.07466902382671833
+          ],
+          "parent": {
+            "component": "trunk",
+            "socket": {
+              "u": 0,
+              "v": 0.25
+            },
+            "angle": 2.933885444141924,
+            "hinge": -0.035
+          }
+        },
+        {
+          "id": "wake",
+          "kind": "spine",
+          "length": 0.215,
+          "radii": [
+            0.023,
+            0.017641607012366875
+          ],
+          "bend": [
+            0.19,
+            0.05975807428359985
+          ],
+          "parent": {
+            "component": "tail",
+            "socket": {
+              "u": 0.72,
+              "v": 0.5
+            },
+            "angle": -0.75,
+            "hinge": 0.035
+          }
+        }
+      ],
+      "owners": [
+        {
+          "node": "streets",
+          "component": "trunk",
+          "u": [
+            0,
+            0.16666666666666666
+          ]
+        },
+        {
+          "node": "blocked",
+          "component": "trunk",
+          "u": [
+            0.16666666666666666,
+            0.3333333333333333
+          ]
+        },
+        {
+          "node": "step1",
+          "component": "trunk",
+          "u": [
+            0.3333333333333333,
+            0.5
+          ]
+        },
+        {
+          "node": "step2",
+          "component": "trunk",
+          "u": [
+            0.5,
+            0.6666666666666666
+          ]
+        },
+        {
+          "node": "step3",
+          "component": "trunk",
+          "u": [
+            0.6666666666666666,
+            0.8333333333333334
+          ]
+        },
+        {
+          "node": "step4",
+          "component": "trunk",
+          "u": [
+            0.8333333333333334,
+            1
+          ]
+        },
+        {
+          "node": "step2",
+          "component": "branch-0",
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step3",
+          "component": "branch-1",
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "streets",
+          "component": "tail",
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step4",
+          "component": "wake",
+          "u": [
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  },
+  "contract": {
+    "format": "quineling-contract",
+    "registry": "quineling-kernels-experimental",
+    "types": {
+      "streets": {
+        "kind": "record",
+        "fields": {
+          "A": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          },
+          "B": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          },
+          "C": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          },
+          "D": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          }
+        }
+      },
+      "blocked": {
+        "kind": "array",
+        "element": {
+          "kind": "string"
+        }
+      },
+      "step1": {
+        "kind": "record",
+        "fields": {
+          "found": {
+            "kind": "boolean"
+          },
+          "path": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          },
+          "distance": {
+            "kind": "optional",
+            "element": {
+              "kind": "number",
+              "unit": "edge"
+            }
+          }
+        }
+      },
+      "step2": {
+        "kind": "boolean"
+      },
+      "step3": {
+        "kind": "array",
+        "element": {
+          "kind": "string"
+        }
+      },
+      "step4": {
+        "kind": "record",
+        "fields": {
+          "status": {
+            "kind": "string"
+          },
+          "action": {
+            "kind": "string"
+          },
+          "payload": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          }
+        }
+      }
+    },
+    "assumptions": [
+      "The action is a local simulation, guarded by route.found; it grants no external authority."
+    ],
+    "effectMode": "simulation",
+    "sourceBytes": 3399,
+    "provenance": "companion document; types and thought are not embedded in the quine"
+  },
+  "sourceMap": [
+    {
+      "nodeId": "streets",
+      "clause": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"]"
+    },
+    {
+      "nodeId": "blocked",
+      "clause": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"]"
+    },
+    {
+      "nodeId": "step1",
+      "clause": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"]"
+    },
+    {
+      "nodeId": "step2",
+      "clause": "simulate \"walk-route\""
+    },
+    {
+      "nodeId": "step3",
+      "clause": "simulate \"walk-route\""
+    },
+    {
+      "nodeId": "step4",
+      "clause": "simulate \"walk-route\""
+    }
+  ],
+  "candidate": null,
+  "interpretation": {
+    "summary": "Finds a route around closed street C and proposes a walk.",
+    "assumptions": [
+      "The action is a local simulation, guarded by route.found; it grants no external authority."
+    ]
+  },
+  "generation": {
+    "batchSeed": 2599264831,
+    "bodySeed": 1477331921
+  },
+  "fixtures": [
+    {
+      "label": "generated inputs",
+      "overrides": {},
+      "expected": [
+        {
+          "status": "simulated",
+          "action": "walk-route",
+          "payload": [
+            "A",
+            "B",
+            "D"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "both routes closed",
+      "overrides": {
+        "blocked": [
+          "B",
+          "C"
+        ]
+      },
+      "expected": [
+        {
+          "status": "skipped",
+          "action": "walk-route",
+          "payload": []
+        }
+      ]
+    },
+    {
+      "label": "all streets open",
+      "overrides": {
+        "blocked": []
+      },
+      "expected": [
+        {
+          "status": "simulated",
+          "action": "walk-route",
+          "payload": [
+            "A",
+            "B",
+            "D"
+          ]
+        }
+      ]
+    }
+  ]
+}

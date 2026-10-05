@@ -23,357 +23,217 @@
                 [
                   "quote",
                   {
-                    "version": 1,
-                    "name": "Threadwing",
-                    "nodes": [
-                      {
-                        "id": "streets",
-                        "op": "literal",
-                        "inputs": [],
-                        "params": {
-                          "value": {
-                            "A": [
-                              "B",
-                              "C"
-                            ],
-                            "B": [
-                              "D"
-                            ],
-                            "C": [
-                              "D"
-                            ],
-                            "D": []
-                          }
-                        }
-                      },
-                      {
-                        "id": "blocked",
-                        "op": "literal",
-                        "inputs": [],
-                        "params": {
-                          "value": [
-                            "C"
-                          ]
-                        }
-                      },
-                      {
-                        "id": "step1",
-                        "op": "bfs",
-                        "inputs": [
-                          "streets",
-                          "blocked"
-                        ],
-                        "params": {
-                          "start": "A",
-                          "goal": "D"
-                        }
-                      },
-                      {
-                        "id": "step2",
-                        "op": "get",
-                        "inputs": [
-                          "step1"
-                        ],
-                        "params": {
-                          "path": "found"
-                        }
-                      },
-                      {
-                        "id": "step3",
-                        "op": "get",
-                        "inputs": [
-                          "step1"
-                        ],
-                        "params": {
-                          "path": "path"
-                        }
-                      },
-                      {
-                        "id": "step4",
-                        "op": "action",
-                        "inputs": [
-                          "step2",
-                          "step3"
-                        ],
-                        "params": {
-                          "allowed": true,
-                          "action": "walk-route"
-                        }
-                      }
-                    ],
-                    "outputs": [
-                      "step4"
-                    ],
                     "design": {
-                      "qdl": 1,
-                      "family": "filament",
-                      "organ": {
-                        "model": "rosette",
-                        "baseRadius": 0.03,
-                        "degreeGain": 0.004,
-                        "literalGain": 0.001,
-                        "amplitudes": [
-                          0.2,
-                          0.13
-                        ]
+                      "chroma": {
+                        "model": "material-territories",
+                        "palette": "roles-1",
+                        "strength": 0.35
                       },
+                      "composition": {
+                        "focus": 0.38,
+                        "lean": 0,
+                        "occupancy": 0.76,
+                        "pitch": 0,
+                        "yaw": 0
+                      },
+                      "family": "filament",
                       "filament": {
-                        "model": "pinned-sine",
                         "bend": 0.04,
                         "frequencyGain": 0.07,
+                        "model": "pinned-sine",
                         "ripple": 0.16
+                      },
+                      "ink": {
+                        "ghostAlpha": 0.09,
+                        "neutral": "#f0f1eb",
+                        "ridgeAlpha": 0.88,
+                        "secondaryAlpha": 0.42
+                      },
+                      "light": {
+                        "crestAlpha": 0.58,
+                        "depthContrast": 0.65,
+                        "model": "density-crest",
+                        "recessAlpha": 0.045
                       },
                       "motion": {
                         "clock": "separate",
                         "phaseRate": 0.038,
                         "reducedMotion": "freeze",
                         "rhythm": {
-                          "model": "coupled-harmonic",
-                          "mode": "periodic",
-                          "rate": 1,
-                          "breath": 0.06,
-                          "wave": 0.055,
-                          "waveNumber": 1.6,
-                          "lag": 0.9,
                           "asymmetry": 0.28,
-                          "overtone": 0.17
-                        },
-                        "gesture": {
-                          "kind": "gather",
-                          "strength": 0.67,
-                          "ticks": [
-                            180,
-                            180,
-                            420,
-                            220
-                          ]
+                          "breath": 0.06,
+                          "lag": 0.9,
+                          "mode": "periodic",
+                          "model": "coupled-harmonic",
+                          "overtone": 0.17,
+                          "rate": 1,
+                          "wave": 0.055,
+                          "waveNumber": 1.6
                         }
                       },
-                      "ink": {
-                        "ghostAlpha": 0.09,
-                        "secondaryAlpha": 0.42,
-                        "ridgeAlpha": 0.88,
-                        "neutral": "#f0f1eb"
+                      "organ": {
+                        "amplitudes": [
+                          0.2,
+                          0.13
+                        ],
+                        "baseRadius": 0.03,
+                        "degreeGain": 0.004,
+                        "literalGain": 0.001,
+                        "model": "rosette"
                       },
+                      "qdl": 1,
                       "surface": {
-                        "model": "folded-ribbon",
-                        "ribbons": 28,
-                        "crests": 4,
-                        "spread": 0.16,
-                        "folds": 7,
-                        "taper": 0.65,
                         "asymmetry": 0.25,
+                        "crests": 4,
                         "depth": 0.28,
-                        "twist": 1.9,
+                        "folds": 7,
+                        "model": "folded-ribbon",
                         "phaseLag": 1.4,
-                        "samples": 24000
+                        "ribbons": 28,
+                        "samples": 24000,
+                        "spread": 0.16,
+                        "taper": 0.65,
+                        "twist": 1.9
                       },
-                      "light": {
-                        "model": "density-crest",
-                        "recessAlpha": 0.045,
-                        "crestAlpha": 0.58,
-                        "depthContrast": 0.65
-                      },
-                      "composition": {
-                        "occupancy": 0.76,
-                        "lean": -0.035,
-                        "yaw": 0.25,
-                        "pitch": 0.08,
-                        "focus": 0.38
-                      },
-                      "chroma": {
-                        "model": "material-territories",
-                        "palette": "roles-1",
-                        "strength": 0.88
-                      },
-                      "anatomy": {
-                        "model": "assembly",
-                        "compiler": "qdl-assembly-experimental",
+                      "woven": {
+                        "dynamics": {
+                          "burn": 320,
+                          "criticalImages": 13,
+                          "densityGrid": 160,
+                          "initial": [
+                            0.11675860118120909,
+                            0.2578447466250509
+                          ],
+                          "iterations": 36864,
+                          "method": "iterate",
+                          "parameters": [
+                            -1.4,
+                            1.6,
+                            1,
+                            0.7
+                          ],
+                          "system": "clifford"
+                        },
+                        "embedding": {
+                          "frequency": [
+                            2.2327346986159684,
+                            2.0158545282203706
+                          ],
+                          "model": "bounded-native-warp",
+                          "overtone": [
+                            0.04782692016800866,
+                            0.04755503365653567
+                          ],
+                          "scale": [
+                            0.4040896574221552,
+                            0.3342342073563486
+                          ],
+                          "shear": 0.06013607745990157,
+                          "warp": [
+                            0.11060671038925649,
+                            0.09821747442241759
+                          ]
+                        },
+                        "folds": 3,
+                        "mechanism": "clifford-flow",
+                        "model": "woven-field-experimental",
                         "seed": 1477331921,
-                        "components": [
+                        "strands": 10,
+                        "territories": [
                           {
-                            "id": "trunk",
-                            "kind": "chamber",
-                            "axes": [
-                              0.34,
-                              0.22863330791937192,
-                              0.10199616091651842
-                            ],
-                            "parent": null
+                            "component": 0,
+                            "node": "streets",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "branch-0",
-                            "kind": "spine",
-                            "length": 0.4424599538631737,
-                            "radii": [
-                              0.041999999999999996,
-                              0.01681101136165671
-                            ],
-                            "bend": [
-                              -0.18,
-                              0.047731496244668964
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0.39522747971117494,
-                                "v": 0.5
-                              },
-                              "angle": 0.8365102109615691,
-                              "hinge": 0.065
-                            }
+                            "component": 1,
+                            "node": "blocked",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "branch-1",
-                            "kind": "spine",
-                            "length": 0.49222868600673975,
-                            "radii": [
-                              0.038,
-                              0.016726356552913785
-                            ],
-                            "bend": [
-                              0.18,
-                              0.04530361261218786
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0.5749590749712661,
-                                "v": 0
-                              },
-                              "angle": -1.1958453128533437,
-                              "hinge": -0.065
-                            }
+                            "component": 2,
+                            "node": "step1",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "tail",
-                            "kind": "spine",
-                            "length": 0.3296673479455058,
-                            "radii": [
-                              0.029140780012123287,
-                              0.017324763756478206
-                            ],
-                            "bend": [
-                              -0.19,
-                              -0.07466902382671833
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0,
-                                "v": 0.25
-                              },
-                              "angle": 2.933885444141924,
-                              "hinge": -0.035
-                            }
+                            "component": 3,
+                            "node": "step2",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "wake",
-                            "kind": "spine",
-                            "length": 0.215,
-                            "radii": [
-                              0.023,
-                              0.017641607012366875
-                            ],
-                            "bend": [
-                              0.19,
-                              0.05975807428359985
-                            ],
-                            "parent": {
-                              "component": "tail",
-                              "socket": {
-                                "u": 0.72,
-                                "v": 0.5
-                              },
-                              "angle": -0.75,
-                              "hinge": 0.035
-                            }
+                            "component": 4,
+                            "node": "step3",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 5,
+                            "node": "step4",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 6,
+                            "node": "streets",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 7,
+                            "node": "blocked",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 8,
+                            "node": "step1",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 9,
+                            "node": "step2",
+                            "u": [
+                              0,
+                              1
+                            ]
                           }
                         ],
-                        "owners": [
-                          {
-                            "node": "streets",
-                            "component": "trunk",
-                            "u": [
-                              0,
-                              0.16666666666666666
-                            ]
-                          },
-                          {
-                            "node": "blocked",
-                            "component": "trunk",
-                            "u": [
-                              0.16666666666666666,
-                              0.3333333333333333
-                            ]
-                          },
-                          {
-                            "node": "step1",
-                            "component": "trunk",
-                            "u": [
-                              0.3333333333333333,
-                              0.5
-                            ]
-                          },
-                          {
-                            "node": "step2",
-                            "component": "trunk",
-                            "u": [
-                              0.5,
-                              0.6666666666666666
-                            ]
-                          },
-                          {
-                            "node": "step3",
-                            "component": "trunk",
-                            "u": [
-                              0.6666666666666666,
-                              0.8333333333333334
-                            ]
-                          },
-                          {
-                            "node": "step4",
-                            "component": "trunk",
-                            "u": [
-                              0.8333333333333334,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "step2",
-                            "component": "branch-0",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "step3",
-                            "component": "branch-1",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "streets",
-                            "component": "tail",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "step4",
-                            "component": "wake",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          }
-                        ]
+                        "topology": {
+                          "convergence": 2,
+                          "depth": 4,
+                          "effects": 1,
+                          "fanout": 2,
+                          "guards": 1
+                        },
+                        "turns": 1.67
                       }
-                    }
+                    },
+                    "format": "quineling-visual-capsule",
+                    "profile": "woven-experimental",
+                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                   }
                 ]
               ]
@@ -420,357 +280,217 @@
               [
                 "quote",
                 {
-                  "version": 1,
-                  "name": "Threadwing",
-                  "nodes": [
-                    {
-                      "id": "streets",
-                      "op": "literal",
-                      "inputs": [],
-                      "params": {
-                        "value": {
-                          "A": [
-                            "B",
-                            "C"
-                          ],
-                          "B": [
-                            "D"
-                          ],
-                          "C": [
-                            "D"
-                          ],
-                          "D": []
-                        }
-                      }
-                    },
-                    {
-                      "id": "blocked",
-                      "op": "literal",
-                      "inputs": [],
-                      "params": {
-                        "value": [
-                          "C"
-                        ]
-                      }
-                    },
-                    {
-                      "id": "step1",
-                      "op": "bfs",
-                      "inputs": [
-                        "streets",
-                        "blocked"
-                      ],
-                      "params": {
-                        "start": "A",
-                        "goal": "D"
-                      }
-                    },
-                    {
-                      "id": "step2",
-                      "op": "get",
-                      "inputs": [
-                        "step1"
-                      ],
-                      "params": {
-                        "path": "found"
-                      }
-                    },
-                    {
-                      "id": "step3",
-                      "op": "get",
-                      "inputs": [
-                        "step1"
-                      ],
-                      "params": {
-                        "path": "path"
-                      }
-                    },
-                    {
-                      "id": "step4",
-                      "op": "action",
-                      "inputs": [
-                        "step2",
-                        "step3"
-                      ],
-                      "params": {
-                        "allowed": true,
-                        "action": "walk-route"
-                      }
-                    }
-                  ],
-                  "outputs": [
-                    "step4"
-                  ],
                   "design": {
-                    "qdl": 1,
-                    "family": "filament",
-                    "organ": {
-                      "model": "rosette",
-                      "baseRadius": 0.03,
-                      "degreeGain": 0.004,
-                      "literalGain": 0.001,
-                      "amplitudes": [
-                        0.2,
-                        0.13
-                      ]
+                    "chroma": {
+                      "model": "material-territories",
+                      "palette": "roles-1",
+                      "strength": 0.35
                     },
+                    "composition": {
+                      "focus": 0.38,
+                      "lean": 0,
+                      "occupancy": 0.76,
+                      "pitch": 0,
+                      "yaw": 0
+                    },
+                    "family": "filament",
                     "filament": {
-                      "model": "pinned-sine",
                       "bend": 0.04,
                       "frequencyGain": 0.07,
+                      "model": "pinned-sine",
                       "ripple": 0.16
+                    },
+                    "ink": {
+                      "ghostAlpha": 0.09,
+                      "neutral": "#f0f1eb",
+                      "ridgeAlpha": 0.88,
+                      "secondaryAlpha": 0.42
+                    },
+                    "light": {
+                      "crestAlpha": 0.58,
+                      "depthContrast": 0.65,
+                      "model": "density-crest",
+                      "recessAlpha": 0.045
                     },
                     "motion": {
                       "clock": "separate",
                       "phaseRate": 0.038,
                       "reducedMotion": "freeze",
                       "rhythm": {
-                        "model": "coupled-harmonic",
-                        "mode": "periodic",
-                        "rate": 1,
-                        "breath": 0.06,
-                        "wave": 0.055,
-                        "waveNumber": 1.6,
-                        "lag": 0.9,
                         "asymmetry": 0.28,
-                        "overtone": 0.17
-                      },
-                      "gesture": {
-                        "kind": "gather",
-                        "strength": 0.67,
-                        "ticks": [
-                          180,
-                          180,
-                          420,
-                          220
-                        ]
+                        "breath": 0.06,
+                        "lag": 0.9,
+                        "mode": "periodic",
+                        "model": "coupled-harmonic",
+                        "overtone": 0.17,
+                        "rate": 1,
+                        "wave": 0.055,
+                        "waveNumber": 1.6
                       }
                     },
-                    "ink": {
-                      "ghostAlpha": 0.09,
-                      "secondaryAlpha": 0.42,
-                      "ridgeAlpha": 0.88,
-                      "neutral": "#f0f1eb"
+                    "organ": {
+                      "amplitudes": [
+                        0.2,
+                        0.13
+                      ],
+                      "baseRadius": 0.03,
+                      "degreeGain": 0.004,
+                      "literalGain": 0.001,
+                      "model": "rosette"
                     },
+                    "qdl": 1,
                     "surface": {
-                      "model": "folded-ribbon",
-                      "ribbons": 28,
-                      "crests": 4,
-                      "spread": 0.16,
-                      "folds": 7,
-                      "taper": 0.65,
                       "asymmetry": 0.25,
+                      "crests": 4,
                       "depth": 0.28,
-                      "twist": 1.9,
+                      "folds": 7,
+                      "model": "folded-ribbon",
                       "phaseLag": 1.4,
-                      "samples": 24000
+                      "ribbons": 28,
+                      "samples": 24000,
+                      "spread": 0.16,
+                      "taper": 0.65,
+                      "twist": 1.9
                     },
-                    "light": {
-                      "model": "density-crest",
-                      "recessAlpha": 0.045,
-                      "crestAlpha": 0.58,
-                      "depthContrast": 0.65
-                    },
-                    "composition": {
-                      "occupancy": 0.76,
-                      "lean": -0.035,
-                      "yaw": 0.25,
-                      "pitch": 0.08,
-                      "focus": 0.38
-                    },
-                    "chroma": {
-                      "model": "material-territories",
-                      "palette": "roles-1",
-                      "strength": 0.88
-                    },
-                    "anatomy": {
-                      "model": "assembly",
-                      "compiler": "qdl-assembly-experimental",
+                    "woven": {
+                      "dynamics": {
+                        "burn": 320,
+                        "criticalImages": 13,
+                        "densityGrid": 160,
+                        "initial": [
+                          0.11675860118120909,
+                          0.2578447466250509
+                        ],
+                        "iterations": 36864,
+                        "method": "iterate",
+                        "parameters": [
+                          -1.4,
+                          1.6,
+                          1,
+                          0.7
+                        ],
+                        "system": "clifford"
+                      },
+                      "embedding": {
+                        "frequency": [
+                          2.2327346986159684,
+                          2.0158545282203706
+                        ],
+                        "model": "bounded-native-warp",
+                        "overtone": [
+                          0.04782692016800866,
+                          0.04755503365653567
+                        ],
+                        "scale": [
+                          0.4040896574221552,
+                          0.3342342073563486
+                        ],
+                        "shear": 0.06013607745990157,
+                        "warp": [
+                          0.11060671038925649,
+                          0.09821747442241759
+                        ]
+                      },
+                      "folds": 3,
+                      "mechanism": "clifford-flow",
+                      "model": "woven-field-experimental",
                       "seed": 1477331921,
-                      "components": [
+                      "strands": 10,
+                      "territories": [
                         {
-                          "id": "trunk",
-                          "kind": "chamber",
-                          "axes": [
-                            0.34,
-                            0.22863330791937192,
-                            0.10199616091651842
-                          ],
-                          "parent": null
+                          "component": 0,
+                          "node": "streets",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "branch-0",
-                          "kind": "spine",
-                          "length": 0.4424599538631737,
-                          "radii": [
-                            0.041999999999999996,
-                            0.01681101136165671
-                          ],
-                          "bend": [
-                            -0.18,
-                            0.047731496244668964
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0.39522747971117494,
-                              "v": 0.5
-                            },
-                            "angle": 0.8365102109615691,
-                            "hinge": 0.065
-                          }
+                          "component": 1,
+                          "node": "blocked",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "branch-1",
-                          "kind": "spine",
-                          "length": 0.49222868600673975,
-                          "radii": [
-                            0.038,
-                            0.016726356552913785
-                          ],
-                          "bend": [
-                            0.18,
-                            0.04530361261218786
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0.5749590749712661,
-                              "v": 0
-                            },
-                            "angle": -1.1958453128533437,
-                            "hinge": -0.065
-                          }
+                          "component": 2,
+                          "node": "step1",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "tail",
-                          "kind": "spine",
-                          "length": 0.3296673479455058,
-                          "radii": [
-                            0.029140780012123287,
-                            0.017324763756478206
-                          ],
-                          "bend": [
-                            -0.19,
-                            -0.07466902382671833
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0,
-                              "v": 0.25
-                            },
-                            "angle": 2.933885444141924,
-                            "hinge": -0.035
-                          }
+                          "component": 3,
+                          "node": "step2",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "wake",
-                          "kind": "spine",
-                          "length": 0.215,
-                          "radii": [
-                            0.023,
-                            0.017641607012366875
-                          ],
-                          "bend": [
-                            0.19,
-                            0.05975807428359985
-                          ],
-                          "parent": {
-                            "component": "tail",
-                            "socket": {
-                              "u": 0.72,
-                              "v": 0.5
-                            },
-                            "angle": -0.75,
-                            "hinge": 0.035
-                          }
+                          "component": 4,
+                          "node": "step3",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 5,
+                          "node": "step4",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 6,
+                          "node": "streets",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 7,
+                          "node": "blocked",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 8,
+                          "node": "step1",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 9,
+                          "node": "step2",
+                          "u": [
+                            0,
+                            1
+                          ]
                         }
                       ],
-                      "owners": [
-                        {
-                          "node": "streets",
-                          "component": "trunk",
-                          "u": [
-                            0,
-                            0.16666666666666666
-                          ]
-                        },
-                        {
-                          "node": "blocked",
-                          "component": "trunk",
-                          "u": [
-                            0.16666666666666666,
-                            0.3333333333333333
-                          ]
-                        },
-                        {
-                          "node": "step1",
-                          "component": "trunk",
-                          "u": [
-                            0.3333333333333333,
-                            0.5
-                          ]
-                        },
-                        {
-                          "node": "step2",
-                          "component": "trunk",
-                          "u": [
-                            0.5,
-                            0.6666666666666666
-                          ]
-                        },
-                        {
-                          "node": "step3",
-                          "component": "trunk",
-                          "u": [
-                            0.6666666666666666,
-                            0.8333333333333334
-                          ]
-                        },
-                        {
-                          "node": "step4",
-                          "component": "trunk",
-                          "u": [
-                            0.8333333333333334,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "step2",
-                          "component": "branch-0",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "step3",
-                          "component": "branch-1",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "streets",
-                          "component": "tail",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "step4",
-                          "component": "wake",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        }
-                      ]
+                      "topology": {
+                        "convergence": 2,
+                        "depth": 4,
+                        "effects": 1,
+                        "fanout": 2,
+                        "guards": 1
+                      },
+                      "turns": 1.67
                     }
-                  }
+                  },
+                  "format": "quineling-visual-capsule",
+                  "profile": "woven-experimental",
+                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                 }
               ]
             ]
@@ -802,7 +522,7 @@
       ]
     ]
   ],
-  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.34,0.22863330791937192,0.10199616091651842],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,0.047731496244668964],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4424599538631737,\"parent\":{\"angle\":0.8365102109615691,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.39522747971117494,\"v\":0.5}},\"radii\":[0.041999999999999996,0.01681101136165671]},{\"bend\":[0.18,0.04530361261218786],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.49222868600673975,\"parent\":{\"angle\":-1.1958453128533437,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5749590749712661,\"v\":0}},\"radii\":[0.038,0.016726356552913785]},{\"bend\":[-0.19,-0.07466902382671833],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.3296673479455058,\"parent\":{\"angle\":2.933885444141924,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.029140780012123287,0.017324763756478206]},{\"bend\":[0.19,0.05975807428359985],\"id\":\"wake\",\"kind\":\"spine\",\"length\":0.215,\"parent\":{\"angle\":-0.75,\"component\":\"tail\",\"hinge\":0.035,\"socket\":{\"u\":0.72,\"v\":0.5}},\"radii\":[0.023,0.017641607012366875]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"streets\",\"u\":[0,0.16666666666666666]},{\"component\":\"trunk\",\"node\":\"blocked\",\"u\":[0.16666666666666666,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.3333333333333333,0.5]},{\"component\":\"trunk\",\"node\":\"step2\",\"u\":[0.5,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step3\",\"u\":[0.6666666666666666,0.8333333333333334]},{\"component\":\"trunk\",\"node\":\"step4\",\"u\":[0.8333333333333334,1]},{\"component\":\"branch-0\",\"node\":\"step2\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"streets\",\"u\":[0,1]},{\"component\":\"wake\",\"node\":\"step4\",\"u\":[0,1]}],\"seed\":1477331921},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.67,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.34,0.22863330791937192,0.10199616091651842],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,0.047731496244668964],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4424599538631737,\"parent\":{\"angle\":0.8365102109615691,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.39522747971117494,\"v\":0.5}},\"radii\":[0.041999999999999996,0.01681101136165671]},{\"bend\":[0.18,0.04530361261218786],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.49222868600673975,\"parent\":{\"angle\":-1.1958453128533437,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5749590749712661,\"v\":0}},\"radii\":[0.038,0.016726356552913785]},{\"bend\":[-0.19,-0.07466902382671833],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.3296673479455058,\"parent\":{\"angle\":2.933885444141924,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.029140780012123287,0.017324763756478206]},{\"bend\":[0.19,0.05975807428359985],\"id\":\"wake\",\"kind\":\"spine\",\"length\":0.215,\"parent\":{\"angle\":-0.75,\"component\":\"tail\",\"hinge\":0.035,\"socket\":{\"u\":0.72,\"v\":0.5}},\"radii\":[0.023,0.017641607012366875]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"streets\",\"u\":[0,0.16666666666666666]},{\"component\":\"trunk\",\"node\":\"blocked\",\"u\":[0.16666666666666666,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.3333333333333333,0.5]},{\"component\":\"trunk\",\"node\":\"step2\",\"u\":[0.5,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step3\",\"u\":[0.6666666666666666,0.8333333333333334]},{\"component\":\"trunk\",\"node\":\"step4\",\"u\":[0.8333333333333334,1]},{\"component\":\"branch-0\",\"node\":\"step2\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"streets\",\"u\":[0,1]},{\"component\":\"wake\",\"node\":\"step4\",\"u\":[0,1]}],\"seed\":1477331921},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.67,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"dynamics\":{\"burn\":320,\"criticalImages\":13,\"densityGrid\":160,\"initial\":[0.11675860118120909,0.2578447466250509],\"iterations\":36864,\"method\":\"iterate\",\"parameters\":[-1.4,1.6,1,0.7],\"system\":\"clifford\"},\"embedding\":{\"frequency\":[2.2327346986159684,2.0158545282203706],\"model\":\"bounded-native-warp\",\"overtone\":[0.04782692016800866,0.04755503365653567],\"scale\":[0.4040896574221552,0.3342342073563486],\"shear\":0.06013607745990157,\"warp\":[0.11060671038925649,0.09821747442241759]},\"folds\":3,\"mechanism\":\"clifford-flow\",\"model\":\"woven-field-experimental\",\"seed\":1477331921,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"streets\",\"u\":[0,1]},{\"component\":1,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"step2\",\"u\":[0,1]},{\"component\":4,\"node\":\"step3\",\"u\":[0,1]},{\"component\":5,\"node\":\"step4\",\"u\":[0,1]},{\"component\":6,\"node\":\"streets\",\"u\":[0,1]},{\"component\":7,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]},{\"component\":9,\"node\":\"step2\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":4,\"effects\":1,\"fanout\":2,\"guards\":1},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"dynamics\":{\"burn\":320,\"criticalImages\":13,\"densityGrid\":160,\"initial\":[0.11675860118120909,0.2578447466250509],\"iterations\":36864,\"method\":\"iterate\",\"parameters\":[-1.4,1.6,1,0.7],\"system\":\"clifford\"},\"embedding\":{\"frequency\":[2.2327346986159684,2.0158545282203706],\"model\":\"bounded-native-warp\",\"overtone\":[0.04782692016800866,0.04755503365653567],\"scale\":[0.4040896574221552,0.3342342073563486],\"shear\":0.06013607745990157,\"warp\":[0.11060671038925649,0.09821747442241759]},\"folds\":3,\"mechanism\":\"clifford-flow\",\"model\":\"woven-field-experimental\",\"seed\":1477331921,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"streets\",\"u\":[0,1]},{\"component\":1,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"step2\",\"u\":[0,1]},{\"component\":4,\"node\":\"step3\",\"u\":[0,1]},{\"component\":5,\"node\":\"step4\",\"u\":[0,1]},{\"component\":6,\"node\":\"streets\",\"u\":[0,1]},{\"component\":7,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]},{\"component\":9,\"node\":\"step2\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":4,\"effects\":1,\"fanout\":2,\"guards\":1},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
   "graph": {
     "version": 1,
     "name": "Threadwing",
@@ -919,16 +639,6 @@
         "lag": 0.9,
         "asymmetry": 0.28,
         "overtone": 0.17
-      },
-      "gesture": {
-        "kind": "gather",
-        "strength": 0.67,
-        "ticks": [
-          180,
-          180,
-          420,
-          220
-        ]
       }
     },
     "ink": {
@@ -958,172 +668,58 @@
     },
     "composition": {
       "occupancy": 0.76,
-      "lean": -0.035,
-      "yaw": 0.25,
-      "pitch": 0.08,
+      "lean": 0,
+      "yaw": 0,
+      "pitch": 0,
       "focus": 0.38
     },
     "chroma": {
       "model": "material-territories",
       "palette": "roles-1",
-      "strength": 0.88
+      "strength": 0.35
     },
-    "anatomy": {
-      "model": "assembly",
-      "compiler": "qdl-assembly-experimental",
+    "woven": {
+      "model": "woven-field-experimental",
+      "mechanism": "clifford-flow",
       "seed": 1477331921,
-      "components": [
-        {
-          "id": "trunk",
-          "kind": "chamber",
-          "axes": [
-            0.34,
-            0.22863330791937192,
-            0.10199616091651842
-          ],
-          "parent": null
-        },
-        {
-          "id": "branch-0",
-          "kind": "spine",
-          "length": 0.4424599538631737,
-          "radii": [
-            0.041999999999999996,
-            0.01681101136165671
-          ],
-          "bend": [
-            -0.18,
-            0.047731496244668964
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0.39522747971117494,
-              "v": 0.5
-            },
-            "angle": 0.8365102109615691,
-            "hinge": 0.065
-          }
-        },
-        {
-          "id": "branch-1",
-          "kind": "spine",
-          "length": 0.49222868600673975,
-          "radii": [
-            0.038,
-            0.016726356552913785
-          ],
-          "bend": [
-            0.18,
-            0.04530361261218786
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0.5749590749712661,
-              "v": 0
-            },
-            "angle": -1.1958453128533437,
-            "hinge": -0.065
-          }
-        },
-        {
-          "id": "tail",
-          "kind": "spine",
-          "length": 0.3296673479455058,
-          "radii": [
-            0.029140780012123287,
-            0.017324763756478206
-          ],
-          "bend": [
-            -0.19,
-            -0.07466902382671833
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0,
-              "v": 0.25
-            },
-            "angle": 2.933885444141924,
-            "hinge": -0.035
-          }
-        },
-        {
-          "id": "wake",
-          "kind": "spine",
-          "length": 0.215,
-          "radii": [
-            0.023,
-            0.017641607012366875
-          ],
-          "bend": [
-            0.19,
-            0.05975807428359985
-          ],
-          "parent": {
-            "component": "tail",
-            "socket": {
-              "u": 0.72,
-              "v": 0.5
-            },
-            "angle": -0.75,
-            "hinge": 0.035
-          }
-        }
-      ],
-      "owners": [
+      "topology": {
+        "depth": 4,
+        "fanout": 2,
+        "convergence": 2,
+        "guards": 1,
+        "effects": 1
+      },
+      "strands": 10,
+      "folds": 3,
+      "turns": 1.67,
+      "territories": [
         {
           "node": "streets",
-          "component": "trunk",
+          "component": 0,
           "u": [
             0,
-            0.16666666666666666
+            1
           ]
         },
         {
           "node": "blocked",
-          "component": "trunk",
+          "component": 1,
           "u": [
-            0.16666666666666666,
-            0.3333333333333333
+            0,
+            1
           ]
         },
         {
           "node": "step1",
-          "component": "trunk",
+          "component": 2,
           "u": [
-            0.3333333333333333,
-            0.5
-          ]
-        },
-        {
-          "node": "step2",
-          "component": "trunk",
-          "u": [
-            0.5,
-            0.6666666666666666
-          ]
-        },
-        {
-          "node": "step3",
-          "component": "trunk",
-          "u": [
-            0.6666666666666666,
-            0.8333333333333334
-          ]
-        },
-        {
-          "node": "step4",
-          "component": "trunk",
-          "u": [
-            0.8333333333333334,
+            0,
             1
           ]
         },
         {
           "node": "step2",
-          "component": "branch-0",
+          "component": 3,
           "u": [
             0,
             1
@@ -1131,7 +727,15 @@
         },
         {
           "node": "step3",
-          "component": "branch-1",
+          "component": 4,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step4",
+          "component": 5,
           "u": [
             0,
             1
@@ -1139,21 +743,75 @@
         },
         {
           "node": "streets",
-          "component": "tail",
+          "component": 6,
           "u": [
             0,
             1
           ]
         },
         {
-          "node": "step4",
-          "component": "wake",
+          "node": "blocked",
+          "component": 7,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step1",
+          "component": 8,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step2",
+          "component": 9,
           "u": [
             0,
             1
           ]
         }
-      ]
+      ],
+      "dynamics": {
+        "system": "clifford",
+        "method": "iterate",
+        "parameters": [
+          -1.4,
+          1.6,
+          1,
+          0.7
+        ],
+        "initial": [
+          0.11675860118120909,
+          0.2578447466250509
+        ],
+        "burn": 320,
+        "iterations": 36864,
+        "densityGrid": 160,
+        "criticalImages": 13
+      },
+      "embedding": {
+        "model": "bounded-native-warp",
+        "scale": [
+          0.4040896574221552,
+          0.3342342073563486
+        ],
+        "warp": [
+          0.11060671038925649,
+          0.09821747442241759
+        ],
+        "overtone": [
+          0.04782692016800866,
+          0.04755503365653567
+        ],
+        "frequency": [
+          2.2327346986159684,
+          2.0158545282203706
+        ],
+        "shear": 0.06013607745990157
+      }
     }
   },
   "contract": {
@@ -1253,27 +911,27 @@
   "sourceMap": [
     {
       "nodeId": "streets",
-      "clause": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"]"
+      "clause": "Supplied input streets"
     },
     {
       "nodeId": "blocked",
-      "clause": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"]"
+      "clause": "Supplied input blocked"
     },
     {
       "nodeId": "step1",
-      "clause": "route A to D in {\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]} blocked [\"C\"]"
+      "clause": "bfs(streets, blocked)"
     },
     {
       "nodeId": "step2",
-      "clause": "simulate \"walk-route\""
+      "clause": "get(step1)"
     },
     {
       "nodeId": "step3",
-      "clause": "simulate \"walk-route\""
+      "clause": "get(step1)"
     },
     {
       "nodeId": "step4",
-      "clause": "simulate \"walk-route\""
+      "clause": "action(step2, step3)"
     }
   ],
   "candidate": null,

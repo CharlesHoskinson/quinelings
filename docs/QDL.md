@@ -312,3 +312,112 @@ These fields are part of the complete constructor source and survive both genome
 [The ranch guide](SDK-RANCH-GUIDE.md) defines four closed construction recipes: compose a declared output into a matching input; mate a pure dependency slice; merge both graphs into one labeled report; or inherit a body while preserving one exact task. Task-changing construction requires supplied graph-matching typed companions. Guard/action cones remain protected, normalized types must agree, and a substitution must contribute to an output. Admission is explicit and records a flat session derivation; previews and rendering execute no tasks.
 
 The ranch social world has its own explicit tick/revision/command sequence, reciprocal pairing, meeting clearings, energy, cooldown, proposals and nursery. A proposal is not a birth. Atomic birth rechecks both parents and charges each once; original admission keys retain exact retry acknowledgements. Presentation time remains independent of world ticks and explicit Run. [Exact interfaces](RANCH-INTERFACES.md), [audit resolutions](RANCH-AUDIT-RESOLUTION.md) and [model obligations](GENERATIVE-FORMAL-MODEL.md) describe limits. QDL and these policies remain experimental.
+
+## Experimental visual capsules
+
+New body authorship uses a separate `quineling-visual-capsule` constructor source,
+with profile `woven-experimental`. This is outside frozen QDL 1. The capsule
+contains `taskSource` (the complete, unchanged executable constructor source) and
+`design` (the separately authored body, pigment and view-independent motion).
+Historical QDL source and sampler meanings remain intact; the frozen interpreter
+refuses capsules. Use the explicit capsule adapter to admit or run them.
+
+The browser authoring API is exported from `assets/ranch/quinelings-runtime.js`:
+
+```js
+import {VisualCapsule, WovenBody} from './assets/ranch/quinelings-runtime.js';
+const body = VisualCapsule.author(taskSource, 42);
+const copy = VisualCapsule.verify(body); // constructor emission, no task run
+const recovered = VisualCapsule.recover(body, 'colors'); // passive exact decode
+const field = WovenBody.compile(body.design.woven, body.task);
+const frame = WovenBody.frame(field, 1.2, {budget: 6500});
+```
+
+`WovenBody.author(graph, seed)` makes an explicit mathematical body record.
+`compile(record, graph)` validates that every operation has positive owned
+territory. `frame` returns finite positions, per-sample owner indices and
+continuous surface contours; `anchor` places an operation within its territory.
+Geometry depends on the authored record and phase, with a fixed camera.
+Viewing and decoding never execute the task. Inspection values come from actual
+run records, separately from these geometric samples.
+
+`VisualCapsule.runtime` adapts the existing legacy `makeTaskProgram`, `describe`
+and `execute` API to capsule sources; old sources retain their existing path.
+Capsule execution first verifies its own source emission, then executes the
+retained task constructor. It reports the capsule emission and the underlying
+`taskSourceEmitted` separately. This authoring API is experimental; the retained
+SDK 1.0.0 archive and frozen QDL 1 API are unchanged.
+
+Source identity and exact codec recovery establish reproduction. Finite sampling,
+framing checks and source ownership do not establish aesthetic quality. The
+experimental capsule model in `spec/visual-capsule.qnt` checks only identity and
+passive-view lifecycle invariants; concrete admission and byte recovery are
+verified in JavaScript.
+
+
+New authoring selects construction from actual graph structure: a computed guard
+selects the Clifford map, fanout selects finite quadratic Julia tissue, an effect
+terminal selects a toroidal weave, convergence selects logarithmic ribbons, and
+other pipelines select a golden-angle phyllotaxis fan. This precedence is part
+of authoring; the complete selected record is retained in capsule source.
+Renaming a program does not select a portrait. Depth and convergence determine
+finite structure budgets, while authored seed parameters vary geometry within
+families. Inspection uses the record's operation-owned material intervals.
+
+The logarithmic family uses `r = 0.1 exp(growth * theta)` with rolled ribbon
+cross-sections. The toroidal family uses a major circular coordinate and a
+winding minor coordinate with source-authored twist. Phyllotaxis petals diverge
+by the golden angle `pi (3 - sqrt(5))`, with tapered folded charts. Each is a
+finite deterministic sample; parameter filaments are material curves, rather
+than claims about chaotic or fractal dynamics. Phase changes deform charts
+locally with a fixed camera. Sampled cycle bounds include padding; browser
+captures and numerical bounds checks supplement them, rather than proving a
+universal continuous enclosure.
+
+The capsule Quint model covers passive view/verification/recovery and preserved
+task identity. JavaScript checks cover admitted numerical budgets, deterministic
+source reconstruction, positive owned tissue, measured gesture and sampled
+phase framing. Neither establishes mathematical beauty.
+
+The native Clifford family iterates
+`x' = sin(a y) + c cos(a x)`, `y' = sin(b x) + d cos(b y)`.
+Current authoring uses the classical `[-1.4, 1.6, 1, 0.7]` parameters and retains
+initial coordinates, burn count, iteration budget, density grid and critical
+image count. Its material follows the finite orbit occupancy and actual forward
+images of the map's determinant-zero set. A positive finite tangent expansion
+estimate is evidence of numerical chaotic behavior for the tested sample;
+finite sampling does not prove chaos. Seed and graph coefficients additionally
+shape the bounded nonlinear embedding, without changing the camera.
+
+The recursive family applies source-authored contractive rotations and scales
+at parent attachment coordinates. Every address through the retained depth
+creates a branch chart; its material width contracts with the same scale.
+Depth is capped at six, with two or three transformation rules. This is a
+finite recursive approximation with visible self-similarity, rather than an
+infinite fractal or a trigonometric ripple. Folded branch charts and material
+curves share each address and its operation territory.
+
+Execution retains its underlying task profile. A legacy run returns `tasks`;
+a QDL 1 run returns typed `occurrences` and retains supplied `bindings`. The
+experimental adapter adds the complete capsule emission and finite combined
+constructor work in `steps`. Passive verification and genome recovery do not
+run either task profile. Unknown or malformed execution options are rejected.
+
+
+Current fanout authoring selects `recursive-julia`. Its explicit source record
+contains the quadratic recurrence `z[n+1] = z[n]^2 + c`, complex parameter,
+finite grid, iteration budget, escape radius and sampled contour levels. The
+finite escape-time approximation resolves repeated branching boundaries at
+several scales; native marching-square contours follow the sampled escape
+field. It is a Julia fractal approximation, rather than a proof about an
+infinite limit set. Seed and graph parameters shape its bounded embedding.
+Previously authored `recursive-affine` records keep their declared immersion;
+they remain admitted but are no longer the default fanout construction.
+
+Spiral and phyllotaxis source records additionally retain a projected-area
+material grid. Finite neighboring chart samples estimate surface compression;
+compressed folds brighten over quieter parameter filaments. This is numerical
+material shading, with explicit finite resolution, rather than an analytical
+caustic theorem. The website batches the same sampled geometry through WebGL
+and retains its CPU rendering fallback. Source decoding is independent of the
+raster backend; screenshots do not encode the complete genome.

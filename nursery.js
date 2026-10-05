@@ -1,11 +1,11 @@
 (function(){
 'use strict';
-const Q=Quinelings,R=LifeformRenderer,collection=document.getElementById('collection'),motion=document.getElementById('motion'),reduced=matchMedia('(prefers-reduced-motion: reduce)'),specimens=[];
+const Q=VisualCapsule.runtime,R=LifeformRenderer,collection=document.getElementById('collection'),motion=document.getElementById('motion'),reduced=matchMedia('(prefers-reduced-motion: reduce)'),specimens=[];
 let moving=!reduced.matches,last=0,lastDraw=0,phase=0;
 function element(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;}
 function syncMotion(){motion.textContent=moving?'Pause motion':'Play motion';motion.setAttribute('aria-pressed',String(moving));}
 function render(s){s.projection=R.draw(s.canvas,s.compiled,phase,{budget:4000,selectedNode:s.selected,showProgram:!!s.selected,palette:s.palette});}
-function inspect(s,id){s.selected=id;const node=s.artifact.graph.nodes.find(n=>n.id===id);s.inspection.textContent=`${node.id} · ${node.op}\nInputs: ${node.inputs.join(', ')||'supplied constant'}\nParameters: ${JSON.stringify(node.params)}`;const row=s.record?.tasks[0].trace.find(row=>row.edge===id);if(row)s.inspection.textContent+='\nRecorded value: '+JSON.stringify(row.value);for(const b of s.operations.children)b.setAttribute('aria-pressed',String(b.dataset.node===id));render(s);}
+function inspect(s,id){s.selected=id;const node=s.artifact.graph.nodes.find(n=>n.id===id);s.inspection.textContent=`${node.id} · ${node.op}\nInputs: ${node.inputs.join(', ')||'supplied constant'}\nParameters: ${JSON.stringify(node.params)}`;const regions=(s.artifact.design.woven?.territories??s.artifact.design.anatomy.owners).filter(o=>o.node===id);s.inspection.textContent+='\nOwned tissue: '+regions.map(r=>'component '+r.component+', u '+r.u.map(n=>n.toFixed(2)).join('–')).join('; ');const row=s.record?.tasks[0].trace.find(row=>row.edge===id);if(row)s.inspection.textContent+='\nRecorded value: '+JSON.stringify(row.value);for(const b of s.operations.children)b.setAttribute('aria-pressed',String(b.dataset.node===id));render(s);}
 function run(s,copy=false){
  try{
   const program=copy?JSON.parse(s.record.emitted[0]):s.artifact.program,result=Q.execute(program);
@@ -23,7 +23,7 @@ function card(artifact){
  if(Q.canon(graph)!==Q.canon(artifact.graph)||Q.canon(shape.design)!==Q.canon(artifact.design))throw Error('Body or graph differs from the source.');
  if(Q.canon(Q.makeTaskProgram(shape.graph,shape.repeats,shape.design))!==artifact.source)throw Error('Invalid constructor source.');
  const article=element('article','arrival');article.dataset.specimen=artifact.id;
- const title=element('h2','',artifact.name);title.id=artifact.id+'-title';article.setAttribute('aria-labelledby',title.id);article.append(title,element('p','description',artifact.description));
+ const title=element('h2','',artifact.name);title.id=artifact.id+'-title';article.setAttribute('aria-labelledby',title.id);article.append(title,element('p','description',artifact.description));if(artifact.design.woven){const r=artifact.design.woven;article.append(element('p','small',({'clifford-flow':'Clifford attractor · finite native map and critical images','recursive-julia':'Julia fractal · finite quadratic recursion and escape contours','recursive-affine':'Recursive affine tissue · bounded self-similar branch charts','logarithmic-mantle':'Logarithmic ribbons · rolled collars and spiral growth','toroidal-weave':'Toroidal weave · winding folded material','phyllotaxis-fan':'Phyllotaxis fan · nested golden-angle whorls'})[r.mechanism]||r.mechanism));}
  const canvas=element('canvas');canvas.width=600;canvas.height=500;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',artifact.name+' animated mathematical body');article.append(canvas);
  const actions=element('div','run-actions'),execute=element('button','primary','Run task'),copy=element('button','','Make a copy');copy.disabled=true;
  const open=element('a','','Open workspace ↗');open.href='create.html?specimen='+encodeURIComponent(artifact.id);actions.append(execute,copy,open);article.append(actions);
@@ -43,6 +43,6 @@ async function load(){
  const artifacts=await Promise.all(manifest.map(async item=>{if(!/^[a-z0-9-]+$/.test(item.id))throw Error('Invalid specimen ID.');const response=await fetch('programs/generated/'+item.id+'.json');if(!response.ok)throw Error('Could not load '+item.name);return response.json();}));
  document.getElementById('loading').remove();artifacts.forEach(card);window.quinelingNursery={specimens,get phase(){return phase;},get moving(){return moving;}};
 }
-function animate(now){const dt=last?Math.min(.1,(now-last)/1000):0;last=now;if(moving&&!document.hidden){phase=(phase+dt*Math.PI*2/13)%(Math.PI*2);if(now-lastDraw>=1000/15){for(const s of specimens)if(s.visible)render(s);lastDraw=now;}}requestAnimationFrame(animate);}
+function animate(now){const dt=last?Math.min(.1,(now-last)/1000):0;last=now;if(moving&&!document.hidden){phase=(phase+dt*Math.PI*2/13)%(Math.PI*2);if(now-lastDraw>=1000/30){for(const s of specimens)if(s.visible)render(s);lastDraw=now;}}requestAnimationFrame(animate);}
 motion.onclick=()=>{moving=!moving;syncMotion();};reduced.addEventListener('change',()=>{moving=false;syncMotion();});document.addEventListener('visibilitychange',()=>{last=0;});syncMotion();load().catch(error=>{collection.replaceChildren(element('p','failure',error.message));});requestAnimationFrame(animate);
 })();

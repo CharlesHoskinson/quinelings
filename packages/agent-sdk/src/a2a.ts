@@ -6,7 +6,8 @@ import { AgentEvent, DefaultRequestHandler, type AgentExecutor, type ExecutionEv
 import { agentCardHandler, jsonRpcHandler, restHandler, UserBuilder } from '@a2a-js/sdk/server/express';
 import { RequestMalformedError, TaskNotCancelableError } from '@a2a-js/sdk/errors';
 import { Runtime } from './index.js';
-import type { Request, Response } from './types.js';
+import type { Request } from './types.js';
+import {isVisualOperation,parseVisualRequest,dispatchVisualRequest,type VisualRequest} from './experimental-adapters.js';
 
 const TERMINAL = new Set([TaskState.TASK_STATE_COMPLETED, TaskState.TASK_STATE_FAILED, TaskState.TASK_STATE_CANCELED, TaskState.TASK_STATE_REJECTED]);
 const OPERATIONS = new Set(['parse','compile','create','inspect','run','reproduce','recover','frame','offspringPreview','offspringFrame','offspringAdmit','lineage','annotate','worldCreate','worldInspect','worldCommand']);
@@ -88,7 +89,7 @@ export class BoundedTaskStore implements TaskStore {
   }
 }
 
-function requestFromMessage(message: Message): Request {
+function requestFromMessage(message: Message, experimentalVisual=false): Request | VisualRequest {
   if (message.role!==Role.ROLE_USER || message.parts.length!==1) throw new RequestMalformedError('Send exactly one user text or JSON data part');
   const part=message.parts[0]!;
   if (part.content?.$case==='text') {
@@ -96,6 +97,7 @@ function requestFromMessage(message: Message): Request {
   }
   if (part.content?.$case!=='data') throw new RequestMalformedError('Only text and JSON data parts are accepted');
   const value: unknown=part.content.value;
+  if(experimentalVisual&&value&&typeof value==='object'&&'operation' in value&&typeof value.operation==='string'&&isVisualOperation(value.operation))return parseVisualRequest(value);
   if (!value||typeof value!=='object'||Array.isArray(value)||!('operation' in value)||typeof value.operation!=='string'||!OPERATIONS.has(value.operation)) throw new RequestMalformedError('JSON data needs a supported operation');
   return value as Request; // Runtime.dispatch performs the closed request validation.
 }
@@ -103,7 +105,7 @@ function requestFromMessage(message: Message): Request {
 /** No ambient execution authority: only explicit structured run/reproduce requests evaluate. */
 export class QuinelingExecutor implements AgentExecutor {
   private readonly pending = new Map<string,{taskId:string;contextId:string;canceled:boolean;running:boolean;bus:ExecutionEventBus}>();
-  constructor(readonly runtime: Runtime) {}
+  constructor(readonly runtime: Runtime, readonly experimentalVisual=false) {}
   isActive(taskId:string,scope=JSON.stringify(['',''])+':'):boolean {return this.pending.has(scope+taskId);}
   async execute(context: RequestContext, bus: ExecutionEventBus): Promise<void> {
     const {taskId,contextId}=context,key=scopeOf(context.context)+taskId,state={taskId,contextId,canceled:false,running:false,bus};
@@ -117,9 +119,9 @@ export class QuinelingExecutor implements AgentExecutor {
     const status=(value:TaskState, text:string,diagnostic?:{code:string;message:string;path:string})=>bus.publish(AgentEvent.statusUpdate({taskId,contextId,status:{state:value,message:Message.fromJSON({messageId:randomUUID(),taskId,contextId,role:'ROLE_AGENT',parts:[{text}],...(diagnostic?{metadata:{quinelingError:diagnostic}}:{})}),timestamp:new Date().toISOString()},metadata:undefined}));
     let requestAccepted=false;
     try {
-      const request=requestFromMessage(context.userMessage);requestAccepted=true;state.running=true;
-      status(TaskState.TASK_STATE_WORKING,request.operation==='run'||request.operation==='reproduce'?'Executing the explicit request.':'Building or inspecting without execution.');
-      const result:Response=this.runtime.dispatch(request);
+      const request=requestFromMessage(context.userMessage,this.experimentalVisual);requestAccepted=true;state.running=true;
+      status(TaskState.TASK_STATE_WORKING,request.operation==='run'||request.operation==='reproduce'||request.operation==='visualRun'?'Executing the explicit request.':'Building or inspecting without execution.');
+      const result=isVisualOperation(request.operation)?dispatchVisualRequest(request):this.runtime.dispatch(request as Request);
       const payload={operation:request.operation,result};
       if(Buffer.byteLength(JSON.stringify(payload))>MAX_TASK_BYTES-65536)throw new Error('Result exceeds the A2A artifact limit');
       bus.publish(AgentEvent.artifactUpdate({taskId,contextId,artifact:A2AArtifact.fromJSON({artifactId:'quineling-result',name:'quineling-'+request.operation,description:'Source-bound Quineling response; execution records exist only for run/reproduce.',parts:[{data:payload,mediaType:'application/json'}]}),append:false,lastChunk:true,metadata:undefined}));
@@ -143,7 +145,7 @@ export class QuinelingExecutor implements AgentExecutor {
   }
 }
 
-export interface A2AOptions { runtime?:Runtime; baseUrl?:string; legacyCompat?:boolean; taskStore?:TaskStore; requestLimitBytes?:number }
+export interface A2AOptions { runtime?:Runtime; baseUrl?:string; legacyCompat?:boolean; taskStore?:TaskStore; requestLimitBytes?:number; experimentalVisual?:boolean }
 export interface A2AApplication {app:express.Express;runtime:Runtime;card:AgentCard;handler:DefaultRequestHandler;taskStore:TaskStore;executor:QuinelingExecutor}
 export function createA2AApp(options:A2AOptions={}):A2AApplication {
   const runtime=options.runtime??new Runtime(),url=new URL(options.baseUrl??'http://127.0.0.1:8049');
@@ -153,7 +155,8 @@ export function createA2AApp(options:A2AOptions={}):A2AApplication {
   const supportedInterfaces=[{url:baseUrl+'/a2a/jsonrpc',protocolBinding:'JSONRPC',protocolVersion:'1.0'},{url:baseUrl+'/a2a/rest',protocolBinding:'HTTP+JSON',protocolVersion:'1.0'}];
   if(legacy)supportedInterfaces.push({url:baseUrl+'/a2a/jsonrpc',protocolBinding:'JSONRPC',protocolVersion:'0.3'});
   const card=AgentCard.fromJSON({name:'Quinelings',description:'Build source-authored mathematical lifeforms from bounded typed tasks. Build, inspect, recover and animate are passive; explicit run/reproduce evaluates a simulated or pure task.',version:'0.0.0-experimental',supportedInterfaces,capabilities:{streaming:true,pushNotifications:false},defaultInputModes:['text/plain','application/json'],defaultOutputModes:['application/json','text/plain'],skills:[{id:'build',name:'Build and inspect a Quineling',description:'Parse a local recipe or compile typed intent, inspect source, recover genomes, and sample a deterministic body without execution.',tags:['quineling','QDL','compile','inspect'],examples:['[2,3,5] | square | sum'],inputModes:['text/plain','application/json'],outputModes:['application/json']},{id:'ranch',name:'Build offspring and manage a Quineling ranch',description:'Prepare typed source-backed offspring, sample without admission, atomically admit explicit births, inspect lineage and control bounded reciprocal social time. World commands and birth never run tasks; retry original keys after transport loss.',tags:['quineling','ranch','offspring','lineage','world'],inputModes:['application/json'],outputModes:['application/json']},{id:'execute',name:'Execute an explicit Quineling request',description:'Only structured operation run or reproduce evaluates a source-bound task and creates a fresh execution record.',tags:['quineling','run','reproduce'],inputModes:['application/json'],outputModes:['application/json']} ]});
-  const taskStore=options.taskStore??new BoundedTaskStore(),executor=new QuinelingExecutor(runtime);
+  if(options.experimentalVisual)card.skills.push({id:'experimental-visual',name:'Experimental mathematical capsule',description:'Explicit visualAuthor, visualAdmit, visualRecover, visualFrame, visualAnchor, visualBounds, visualVerify and visualRun data operations. Only visualRun evaluates the retained task.',tags:['experimental','source','mathematics'],examples:[],inputModes:['application/json'],outputModes:['application/json'],securityRequirements:[]});
+  const taskStore=options.taskStore??new BoundedTaskStore(),executor=new QuinelingExecutor(runtime,options.experimentalVisual??false);
   if(taskStore instanceof BoundedTaskStore)taskStore.protectActiveTasks((id,scope)=>executor.isActive(id,scope));
   // No computation continues during clarification. Release its SDK event bus;
   // later cancellation/resumption is reconstructed from retained task storage.

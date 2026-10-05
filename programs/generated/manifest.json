@@ -14,7 +14,7 @@
   {
     "id": "mosswell",
     "name": "Mosswell",
-    "description": "Shares a limited water supply among three plants in request order.",
+    "description": "Shares a limited water supply among three plants in request order. It also reports the starting and remaining stock.",
     "thought": "allocate 15 L to [{\"id\":\"fern\",\"amount\":9},{\"id\":\"moss\",\"amount\":4},{\"id\":\"sage\",\"amount\":8}]"
   },
   {
@@ -26,7 +26,7 @@
   {
     "id": "hourbloom",
     "name": "Hourbloom",
-    "description": "Schedules four jobs, letting independent work overlap before the final step.",
+    "description": "Schedules four jobs, letting independent work overlap before the final step. The schedule proposal is a local simulation.",
     "thought": "schedule [{\"id\":\"prepare\",\"depends\":[],\"duration\":5},{\"id\":\"weave\",\"depends\":[\"prepare\"],\"duration\":4},{\"id\":\"gather\",\"depends\":[],\"duration\":2},{\"id\":\"finish\",\"depends\":[\"weave\",\"gather\"],\"duration\":3}] s"
   }
 ]

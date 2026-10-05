@@ -25,7 +25,9 @@
     "formal:website": "quint typecheck spec/website-lab.qnt && quint test spec/website-lab.qnt --max-samples=100 --backend=typescript && quint run spec/website-lab.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
     "test:browser:website": "npm run test:website:insights && node verify-living-thoughts.cjs",
     "test:website:insights": "node tests/website-insights.cjs",
-    "test:browser:nursery": "node verify-nursery.cjs"
+    "test:browser:nursery": "node verify-nursery.cjs",
+    "formal:visual": "quint typecheck spec/visual-capsule.qnt && quint test spec/visual-capsule.qnt --max-samples=50 --backend=typescript && quint run spec/visual-capsule.qnt --invariant=safety --max-samples=300 --max-steps=40 --seed=20261004 --backend=typescript --verbosity=1",
+    "test:visual": "node tests/verify-woven-body.cjs && node tests/verify-lifeform-families.cjs && node tests/verify-visual-capsule.cjs && node tests/verify-visual-release.cjs"
   },
   "engines": {
     "node": ">=22"

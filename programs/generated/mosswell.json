@@ -2,7 +2,7 @@
   "format": "quineling-artifact",
   "id": "mosswell",
   "name": "Mosswell",
-  "description": "Shares a limited water supply among three plants in request order.",
+  "description": "Shares a limited water supply among three plants in request order. It also reports the starting and remaining stock.",
   "thought": "allocate 15 L to [{\"id\":\"fern\",\"amount\":9},{\"id\":\"moss\",\"amount\":4},{\"id\":\"sage\",\"amount\":8}]",
   "program": [
     "apply",
@@ -23,267 +23,220 @@
                 [
                   "quote",
                   {
-                    "version": 1,
-                    "name": "Mosswell",
-                    "nodes": [
-                      {
-                        "id": "available",
-                        "op": "literal",
-                        "inputs": [],
-                        "params": {
-                          "value": 15
-                        }
-                      },
-                      {
-                        "id": "requests",
-                        "op": "literal",
-                        "inputs": [],
-                        "params": {
-                          "value": [
-                            {
-                              "id": "fern",
-                              "amount": 9
-                            },
-                            {
-                              "id": "moss",
-                              "amount": 4
-                            },
-                            {
-                              "id": "sage",
-                              "amount": 8
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "id": "step1",
-                        "op": "allocate",
-                        "inputs": [
-                          "available",
-                          "requests"
-                        ],
-                        "params": {}
-                      }
-                    ],
-                    "outputs": [
-                      "step1"
-                    ],
                     "design": {
-                      "qdl": 1,
-                      "family": "filament",
-                      "organ": {
-                        "model": "rosette",
-                        "baseRadius": 0.03,
-                        "degreeGain": 0.004,
-                        "literalGain": 0.001,
-                        "amplitudes": [
-                          0.2,
-                          0.13
-                        ]
+                      "chroma": {
+                        "model": "material-territories",
+                        "palette": "roles-1",
+                        "strength": 0.35
                       },
+                      "composition": {
+                        "focus": 0.38,
+                        "lean": 0,
+                        "occupancy": 0.76,
+                        "pitch": 0,
+                        "yaw": 0
+                      },
+                      "family": "filament",
                       "filament": {
-                        "model": "pinned-sine",
                         "bend": 0.04,
                         "frequencyGain": 0.07,
+                        "model": "pinned-sine",
                         "ripple": 0.16
+                      },
+                      "ink": {
+                        "ghostAlpha": 0.09,
+                        "neutral": "#f0f1eb",
+                        "ridgeAlpha": 0.88,
+                        "secondaryAlpha": 0.42
+                      },
+                      "light": {
+                        "crestAlpha": 0.58,
+                        "depthContrast": 0.65,
+                        "model": "density-crest",
+                        "recessAlpha": 0.045
                       },
                       "motion": {
                         "clock": "separate",
                         "phaseRate": 0.038,
                         "reducedMotion": "freeze",
                         "rhythm": {
-                          "model": "coupled-harmonic",
-                          "mode": "periodic",
-                          "rate": 1,
-                          "breath": 0.06,
-                          "wave": 0.055,
-                          "waveNumber": 1.6,
-                          "lag": 0.9,
                           "asymmetry": 0.28,
-                          "overtone": 0.17
-                        },
-                        "gesture": {
-                          "kind": "gather",
-                          "strength": 0.65,
-                          "ticks": [
-                            180,
-                            180,
-                            420,
-                            220
-                          ]
+                          "breath": 0.06,
+                          "lag": 0.9,
+                          "mode": "periodic",
+                          "model": "coupled-harmonic",
+                          "overtone": 0.17,
+                          "rate": 1,
+                          "wave": 0.055,
+                          "waveNumber": 1.6
                         }
                       },
-                      "ink": {
-                        "ghostAlpha": 0.09,
-                        "secondaryAlpha": 0.42,
-                        "ridgeAlpha": 0.88,
-                        "neutral": "#f0f1eb"
+                      "organ": {
+                        "amplitudes": [
+                          0.2,
+                          0.13
+                        ],
+                        "baseRadius": 0.03,
+                        "degreeGain": 0.004,
+                        "literalGain": 0.001,
+                        "model": "rosette"
                       },
+                      "qdl": 1,
                       "surface": {
-                        "model": "folded-ribbon",
-                        "ribbons": 28,
-                        "crests": 4,
-                        "spread": 0.16,
-                        "folds": 7,
-                        "taper": 0.65,
                         "asymmetry": 0.25,
+                        "crests": 4,
                         "depth": 0.28,
-                        "twist": 1.9,
+                        "folds": 7,
+                        "model": "folded-ribbon",
                         "phaseLag": 1.4,
-                        "samples": 24000
+                        "ribbons": 28,
+                        "samples": 24000,
+                        "spread": 0.16,
+                        "taper": 0.65,
+                        "twist": 1.9
                       },
-                      "light": {
-                        "model": "density-crest",
-                        "recessAlpha": 0.045,
-                        "crestAlpha": 0.58,
-                        "depthContrast": 0.65
-                      },
-                      "composition": {
-                        "occupancy": 0.76,
-                        "lean": -0.035,
-                        "yaw": 0.25,
-                        "pitch": 0.08,
-                        "focus": 0.38
-                      },
-                      "chroma": {
-                        "model": "material-territories",
-                        "palette": "roles-1",
-                        "strength": 0.88
-                      },
-                      "anatomy": {
-                        "model": "assembly",
-                        "compiler": "qdl-assembly-experimental",
+                      "woven": {
+                        "folds": 6,
+                        "geometry": {
+                          "bounds": [
+                            -1.55,
+                            1.55,
+                            -1.2,
+                            1.2
+                          ],
+                          "embedding": {
+                            "frequency": [
+                              2.2800000000000002,
+                              2.1999999999999997
+                            ],
+                            "scale": [
+                              0.39635015685111286,
+                              0.40371803643181925
+                            ],
+                            "shear": -0.04443358338437975,
+                            "warp": [
+                              0.10173855584114791,
+                              0.09638025702675804
+                            ]
+                          },
+                          "escape": 2,
+                          "grid": 192,
+                          "iterations": 64,
+                          "levels": [
+                            3,
+                            5,
+                            8,
+                            12,
+                            18,
+                            26,
+                            36,
+                            48
+                          ],
+                          "model": "quadratic-julia",
+                          "parameter": [
+                            -0.745,
+                            0.113
+                          ]
+                        },
+                        "mechanism": "recursive-julia",
+                        "model": "woven-field-experimental",
                         "seed": 255848624,
-                        "components": [
+                        "strands": 10,
+                        "territories": [
                           {
-                            "id": "trunk",
-                            "kind": "chamber",
-                            "axes": [
-                              0.20638935647020115,
-                              0.2651033196924254,
-                              0.1024770687634591
-                            ],
-                            "parent": null
+                            "component": 0,
+                            "node": "available",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "branch-0",
-                            "kind": "spine",
-                            "length": 0.4218064384777099,
-                            "radii": [
-                              0.041999999999999996,
-                              0.015858737172558902
-                            ],
-                            "bend": [
-                              -0.18,
-                              -0.015980931855738165
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0.40258315902668984,
-                                "v": 0.5
-                              },
-                              "angle": 0.7905007123248652,
-                              "hinge": 0.065
-                            }
+                            "component": 1,
+                            "node": "requests",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "branch-1",
-                            "kind": "spine",
-                            "length": 0.4467122188732028,
-                            "radii": [
-                              0.038,
-                              0.015417197760427371
-                            ],
-                            "bend": [
-                              0.18,
-                              0.06988689534366131
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0.5564401386585087,
-                                "v": 0
-                              },
-                              "angle": -1.2397936895559543,
-                              "hinge": -0.065
-                            }
+                            "component": 2,
+                            "node": "step1",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "tail",
-                            "kind": "spine",
-                            "length": 0.24408022791147232,
-                            "radii": [
-                              0.02762121315835975,
-                              0.015319010173436254
-                            ],
-                            "bend": [
-                              -0.19,
-                              -0.020419045351445675
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0,
-                                "v": 0.25
-                              },
-                              "angle": 2.8556069587357342,
-                              "hinge": -0.035
-                            }
+                            "component": 3,
+                            "node": "remainingStock",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 4,
+                            "node": "stockSummary",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 5,
+                            "node": "available",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 6,
+                            "node": "requests",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 7,
+                            "node": "step1",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 8,
+                            "node": "remainingStock",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 9,
+                            "node": "stockSummary",
+                            "u": [
+                              0,
+                              1
+                            ]
                           }
                         ],
-                        "owners": [
-                          {
-                            "node": "available",
-                            "component": "trunk",
-                            "u": [
-                              0,
-                              0.3333333333333333
-                            ]
-                          },
-                          {
-                            "node": "requests",
-                            "component": "trunk",
-                            "u": [
-                              0.3333333333333333,
-                              0.6666666666666666
-                            ]
-                          },
-                          {
-                            "node": "step1",
-                            "component": "trunk",
-                            "u": [
-                              0.6666666666666666,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "available",
-                            "component": "branch-0",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "requests",
-                            "component": "branch-1",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "available",
-                            "component": "tail",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          }
-                        ]
+                        "topology": {
+                          "convergence": 3,
+                          "depth": 4,
+                          "effects": 0,
+                          "fanout": 2,
+                          "guards": 0
+                        },
+                        "turns": 1.67
                       }
-                    }
+                    },
+                    "format": "quineling-visual-capsule",
+                    "profile": "woven-experimental",
+                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Mosswell\",\"nodes\":[{\"id\":\"available\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":15}},{\"id\":\"requests\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"amount\":9,\"id\":\"fern\"},{\"amount\":4,\"id\":\"moss\"},{\"amount\":8,\"id\":\"sage\"}]}},{\"id\":\"step1\",\"inputs\":[\"available\",\"requests\"],\"op\":\"allocate\",\"params\":{}},{\"id\":\"remainingStock\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"remaining\"}},{\"id\":\"stockSummary\",\"inputs\":[\"step1\",\"available\",\"remainingStock\"],\"op\":\"report\",\"params\":{\"labels\":[\"allocation\",\"available\",\"remaining\"]}}],\"outputs\":[\"stockSummary\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Mosswell\",\"nodes\":[{\"id\":\"available\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":15}},{\"id\":\"requests\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"amount\":9,\"id\":\"fern\"},{\"amount\":4,\"id\":\"moss\"},{\"amount\":8,\"id\":\"sage\"}]}},{\"id\":\"step1\",\"inputs\":[\"available\",\"requests\"],\"op\":\"allocate\",\"params\":{}},{\"id\":\"remainingStock\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"remaining\"}},{\"id\":\"stockSummary\",\"inputs\":[\"step1\",\"available\",\"remainingStock\"],\"op\":\"report\",\"params\":{\"labels\":[\"allocation\",\"available\",\"remaining\"]}}],\"outputs\":[\"stockSummary\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                   }
                 ]
               ]
@@ -330,267 +283,220 @@
               [
                 "quote",
                 {
-                  "version": 1,
-                  "name": "Mosswell",
-                  "nodes": [
-                    {
-                      "id": "available",
-                      "op": "literal",
-                      "inputs": [],
-                      "params": {
-                        "value": 15
-                      }
-                    },
-                    {
-                      "id": "requests",
-                      "op": "literal",
-                      "inputs": [],
-                      "params": {
-                        "value": [
-                          {
-                            "id": "fern",
-                            "amount": 9
-                          },
-                          {
-                            "id": "moss",
-                            "amount": 4
-                          },
-                          {
-                            "id": "sage",
-                            "amount": 8
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "id": "step1",
-                      "op": "allocate",
-                      "inputs": [
-                        "available",
-                        "requests"
-                      ],
-                      "params": {}
-                    }
-                  ],
-                  "outputs": [
-                    "step1"
-                  ],
                   "design": {
-                    "qdl": 1,
-                    "family": "filament",
-                    "organ": {
-                      "model": "rosette",
-                      "baseRadius": 0.03,
-                      "degreeGain": 0.004,
-                      "literalGain": 0.001,
-                      "amplitudes": [
-                        0.2,
-                        0.13
-                      ]
+                    "chroma": {
+                      "model": "material-territories",
+                      "palette": "roles-1",
+                      "strength": 0.35
                     },
+                    "composition": {
+                      "focus": 0.38,
+                      "lean": 0,
+                      "occupancy": 0.76,
+                      "pitch": 0,
+                      "yaw": 0
+                    },
+                    "family": "filament",
                     "filament": {
-                      "model": "pinned-sine",
                       "bend": 0.04,
                       "frequencyGain": 0.07,
+                      "model": "pinned-sine",
                       "ripple": 0.16
+                    },
+                    "ink": {
+                      "ghostAlpha": 0.09,
+                      "neutral": "#f0f1eb",
+                      "ridgeAlpha": 0.88,
+                      "secondaryAlpha": 0.42
+                    },
+                    "light": {
+                      "crestAlpha": 0.58,
+                      "depthContrast": 0.65,
+                      "model": "density-crest",
+                      "recessAlpha": 0.045
                     },
                     "motion": {
                       "clock": "separate",
                       "phaseRate": 0.038,
                       "reducedMotion": "freeze",
                       "rhythm": {
-                        "model": "coupled-harmonic",
-                        "mode": "periodic",
-                        "rate": 1,
-                        "breath": 0.06,
-                        "wave": 0.055,
-                        "waveNumber": 1.6,
-                        "lag": 0.9,
                         "asymmetry": 0.28,
-                        "overtone": 0.17
-                      },
-                      "gesture": {
-                        "kind": "gather",
-                        "strength": 0.65,
-                        "ticks": [
-                          180,
-                          180,
-                          420,
-                          220
-                        ]
+                        "breath": 0.06,
+                        "lag": 0.9,
+                        "mode": "periodic",
+                        "model": "coupled-harmonic",
+                        "overtone": 0.17,
+                        "rate": 1,
+                        "wave": 0.055,
+                        "waveNumber": 1.6
                       }
                     },
-                    "ink": {
-                      "ghostAlpha": 0.09,
-                      "secondaryAlpha": 0.42,
-                      "ridgeAlpha": 0.88,
-                      "neutral": "#f0f1eb"
+                    "organ": {
+                      "amplitudes": [
+                        0.2,
+                        0.13
+                      ],
+                      "baseRadius": 0.03,
+                      "degreeGain": 0.004,
+                      "literalGain": 0.001,
+                      "model": "rosette"
                     },
+                    "qdl": 1,
                     "surface": {
-                      "model": "folded-ribbon",
-                      "ribbons": 28,
-                      "crests": 4,
-                      "spread": 0.16,
-                      "folds": 7,
-                      "taper": 0.65,
                       "asymmetry": 0.25,
+                      "crests": 4,
                       "depth": 0.28,
-                      "twist": 1.9,
+                      "folds": 7,
+                      "model": "folded-ribbon",
                       "phaseLag": 1.4,
-                      "samples": 24000
+                      "ribbons": 28,
+                      "samples": 24000,
+                      "spread": 0.16,
+                      "taper": 0.65,
+                      "twist": 1.9
                     },
-                    "light": {
-                      "model": "density-crest",
-                      "recessAlpha": 0.045,
-                      "crestAlpha": 0.58,
-                      "depthContrast": 0.65
-                    },
-                    "composition": {
-                      "occupancy": 0.76,
-                      "lean": -0.035,
-                      "yaw": 0.25,
-                      "pitch": 0.08,
-                      "focus": 0.38
-                    },
-                    "chroma": {
-                      "model": "material-territories",
-                      "palette": "roles-1",
-                      "strength": 0.88
-                    },
-                    "anatomy": {
-                      "model": "assembly",
-                      "compiler": "qdl-assembly-experimental",
+                    "woven": {
+                      "folds": 6,
+                      "geometry": {
+                        "bounds": [
+                          -1.55,
+                          1.55,
+                          -1.2,
+                          1.2
+                        ],
+                        "embedding": {
+                          "frequency": [
+                            2.2800000000000002,
+                            2.1999999999999997
+                          ],
+                          "scale": [
+                            0.39635015685111286,
+                            0.40371803643181925
+                          ],
+                          "shear": -0.04443358338437975,
+                          "warp": [
+                            0.10173855584114791,
+                            0.09638025702675804
+                          ]
+                        },
+                        "escape": 2,
+                        "grid": 192,
+                        "iterations": 64,
+                        "levels": [
+                          3,
+                          5,
+                          8,
+                          12,
+                          18,
+                          26,
+                          36,
+                          48
+                        ],
+                        "model": "quadratic-julia",
+                        "parameter": [
+                          -0.745,
+                          0.113
+                        ]
+                      },
+                      "mechanism": "recursive-julia",
+                      "model": "woven-field-experimental",
                       "seed": 255848624,
-                      "components": [
+                      "strands": 10,
+                      "territories": [
                         {
-                          "id": "trunk",
-                          "kind": "chamber",
-                          "axes": [
-                            0.20638935647020115,
-                            0.2651033196924254,
-                            0.1024770687634591
-                          ],
-                          "parent": null
+                          "component": 0,
+                          "node": "available",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "branch-0",
-                          "kind": "spine",
-                          "length": 0.4218064384777099,
-                          "radii": [
-                            0.041999999999999996,
-                            0.015858737172558902
-                          ],
-                          "bend": [
-                            -0.18,
-                            -0.015980931855738165
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0.40258315902668984,
-                              "v": 0.5
-                            },
-                            "angle": 0.7905007123248652,
-                            "hinge": 0.065
-                          }
+                          "component": 1,
+                          "node": "requests",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "branch-1",
-                          "kind": "spine",
-                          "length": 0.4467122188732028,
-                          "radii": [
-                            0.038,
-                            0.015417197760427371
-                          ],
-                          "bend": [
-                            0.18,
-                            0.06988689534366131
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0.5564401386585087,
-                              "v": 0
-                            },
-                            "angle": -1.2397936895559543,
-                            "hinge": -0.065
-                          }
+                          "component": 2,
+                          "node": "step1",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "tail",
-                          "kind": "spine",
-                          "length": 0.24408022791147232,
-                          "radii": [
-                            0.02762121315835975,
-                            0.015319010173436254
-                          ],
-                          "bend": [
-                            -0.19,
-                            -0.020419045351445675
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0,
-                              "v": 0.25
-                            },
-                            "angle": 2.8556069587357342,
-                            "hinge": -0.035
-                          }
+                          "component": 3,
+                          "node": "remainingStock",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 4,
+                          "node": "stockSummary",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 5,
+                          "node": "available",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 6,
+                          "node": "requests",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 7,
+                          "node": "step1",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 8,
+                          "node": "remainingStock",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 9,
+                          "node": "stockSummary",
+                          "u": [
+                            0,
+                            1
+                          ]
                         }
                       ],
-                      "owners": [
-                        {
-                          "node": "available",
-                          "component": "trunk",
-                          "u": [
-                            0,
-                            0.3333333333333333
-                          ]
-                        },
-                        {
-                          "node": "requests",
-                          "component": "trunk",
-                          "u": [
-                            0.3333333333333333,
-                            0.6666666666666666
-                          ]
-                        },
-                        {
-                          "node": "step1",
-                          "component": "trunk",
-                          "u": [
-                            0.6666666666666666,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "available",
-                          "component": "branch-0",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "requests",
-                          "component": "branch-1",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "available",
-                          "component": "tail",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        }
-                      ]
+                      "topology": {
+                        "convergence": 3,
+                        "depth": 4,
+                        "effects": 0,
+                        "fanout": 2,
+                        "guards": 0
+                      },
+                      "turns": 1.67
                     }
-                  }
+                  },
+                  "format": "quineling-visual-capsule",
+                  "profile": "woven-experimental",
+                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Mosswell\",\"nodes\":[{\"id\":\"available\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":15}},{\"id\":\"requests\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"amount\":9,\"id\":\"fern\"},{\"amount\":4,\"id\":\"moss\"},{\"amount\":8,\"id\":\"sage\"}]}},{\"id\":\"step1\",\"inputs\":[\"available\",\"requests\"],\"op\":\"allocate\",\"params\":{}},{\"id\":\"remainingStock\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"remaining\"}},{\"id\":\"stockSummary\",\"inputs\":[\"step1\",\"available\",\"remainingStock\"],\"op\":\"report\",\"params\":{\"labels\":[\"allocation\",\"available\",\"remaining\"]}}],\"outputs\":[\"stockSummary\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Mosswell\",\"nodes\":[{\"id\":\"available\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":15}},{\"id\":\"requests\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"amount\":9,\"id\":\"fern\"},{\"amount\":4,\"id\":\"moss\"},{\"amount\":8,\"id\":\"sage\"}]}},{\"id\":\"step1\",\"inputs\":[\"available\",\"requests\"],\"op\":\"allocate\",\"params\":{}},{\"id\":\"remainingStock\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"remaining\"}},{\"id\":\"stockSummary\",\"inputs\":[\"step1\",\"available\",\"remainingStock\"],\"op\":\"report\",\"params\":{\"labels\":[\"allocation\",\"available\",\"remaining\"]}}],\"outputs\":[\"stockSummary\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                 }
               ]
             ]
@@ -622,7 +528,7 @@
       ]
     ]
   ],
-  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.20638935647020115,0.2651033196924254,0.1024770687634591],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,-0.015980931855738165],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4218064384777099,\"parent\":{\"angle\":0.7905007123248652,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.40258315902668984,\"v\":0.5}},\"radii\":[0.041999999999999996,0.015858737172558902]},{\"bend\":[0.18,0.06988689534366131],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.4467122188732028,\"parent\":{\"angle\":-1.2397936895559543,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5564401386585087,\"v\":0}},\"radii\":[0.038,0.015417197760427371]},{\"bend\":[-0.19,-0.020419045351445675],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.24408022791147232,\"parent\":{\"angle\":2.8556069587357342,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.02762121315835975,0.015319010173436254]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"available\",\"u\":[0,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"requests\",\"u\":[0.3333333333333333,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.6666666666666666,1]},{\"component\":\"branch-0\",\"node\":\"available\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"requests\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"available\",\"u\":[0,1]}],\"seed\":255848624},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.65,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Mosswell\",\"nodes\":[{\"id\":\"available\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":15}},{\"id\":\"requests\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"amount\":9,\"id\":\"fern\"},{\"amount\":4,\"id\":\"moss\"},{\"amount\":8,\"id\":\"sage\"}]}},{\"id\":\"step1\",\"inputs\":[\"available\",\"requests\"],\"op\":\"allocate\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.20638935647020115,0.2651033196924254,0.1024770687634591],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[-0.18,-0.015980931855738165],\"id\":\"branch-0\",\"kind\":\"spine\",\"length\":0.4218064384777099,\"parent\":{\"angle\":0.7905007123248652,\"component\":\"trunk\",\"hinge\":0.065,\"socket\":{\"u\":0.40258315902668984,\"v\":0.5}},\"radii\":[0.041999999999999996,0.015858737172558902]},{\"bend\":[0.18,0.06988689534366131],\"id\":\"branch-1\",\"kind\":\"spine\",\"length\":0.4467122188732028,\"parent\":{\"angle\":-1.2397936895559543,\"component\":\"trunk\",\"hinge\":-0.065,\"socket\":{\"u\":0.5564401386585087,\"v\":0}},\"radii\":[0.038,0.015417197760427371]},{\"bend\":[-0.19,-0.020419045351445675],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.24408022791147232,\"parent\":{\"angle\":2.8556069587357342,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.02762121315835975,0.015319010173436254]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"available\",\"u\":[0,0.3333333333333333]},{\"component\":\"trunk\",\"node\":\"requests\",\"u\":[0.3333333333333333,0.6666666666666666]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.6666666666666666,1]},{\"component\":\"branch-0\",\"node\":\"available\",\"u\":[0,1]},{\"component\":\"branch-1\",\"node\":\"requests\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"available\",\"u\":[0,1]}],\"seed\":255848624},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"gather\",\"strength\":0.65,\"ticks\":[180,180,420,220]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Mosswell\",\"nodes\":[{\"id\":\"available\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":15}},{\"id\":\"requests\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"amount\":9,\"id\":\"fern\"},{\"amount\":4,\"id\":\"moss\"},{\"amount\":8,\"id\":\"sage\"}]}},{\"id\":\"step1\",\"inputs\":[\"available\",\"requests\"],\"op\":\"allocate\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":6,\"geometry\":{\"bounds\":[-1.55,1.55,-1.2,1.2],\"embedding\":{\"frequency\":[2.2800000000000002,2.1999999999999997],\"scale\":[0.39635015685111286,0.40371803643181925],\"shear\":-0.04443358338437975,\"warp\":[0.10173855584114791,0.09638025702675804]},\"escape\":2,\"grid\":192,\"iterations\":64,\"levels\":[3,5,8,12,18,26,36,48],\"model\":\"quadratic-julia\",\"parameter\":[-0.745,0.113]},\"mechanism\":\"recursive-julia\",\"model\":\"woven-field-experimental\",\"seed\":255848624,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"available\",\"u\":[0,1]},{\"component\":1,\"node\":\"requests\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"remainingStock\",\"u\":[0,1]},{\"component\":4,\"node\":\"stockSummary\",\"u\":[0,1]},{\"component\":5,\"node\":\"available\",\"u\":[0,1]},{\"component\":6,\"node\":\"requests\",\"u\":[0,1]},{\"component\":7,\"node\":\"step1\",\"u\":[0,1]},{\"component\":8,\"node\":\"remainingStock\",\"u\":[0,1]},{\"component\":9,\"node\":\"stockSummary\",\"u\":[0,1]}],\"topology\":{\"convergence\":3,\"depth\":4,\"effects\":0,\"fanout\":2,\"guards\":0},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Mosswell\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"available\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":15}},{\\\"id\\\":\\\"requests\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"amount\\\":9,\\\"id\\\":\\\"fern\\\"},{\\\"amount\\\":4,\\\"id\\\":\\\"moss\\\"},{\\\"amount\\\":8,\\\"id\\\":\\\"sage\\\"}]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"available\\\",\\\"requests\\\"],\\\"op\\\":\\\"allocate\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"remainingStock\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"remaining\\\"}},{\\\"id\\\":\\\"stockSummary\\\",\\\"inputs\\\":[\\\"step1\\\",\\\"available\\\",\\\"remainingStock\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"allocation\\\",\\\"available\\\",\\\"remaining\\\"]}}],\\\"outputs\\\":[\\\"stockSummary\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Mosswell\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"available\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":15}},{\\\"id\\\":\\\"requests\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"amount\\\":9,\\\"id\\\":\\\"fern\\\"},{\\\"amount\\\":4,\\\"id\\\":\\\"moss\\\"},{\\\"amount\\\":8,\\\"id\\\":\\\"sage\\\"}]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"available\\\",\\\"requests\\\"],\\\"op\\\":\\\"allocate\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"remainingStock\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"remaining\\\"}},{\\\"id\\\":\\\"stockSummary\\\",\\\"inputs\\\":[\\\"step1\\\",\\\"available\\\",\\\"remainingStock\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"allocation\\\",\\\"available\\\",\\\"remaining\\\"]}}],\\\"outputs\\\":[\\\"stockSummary\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":6,\"geometry\":{\"bounds\":[-1.55,1.55,-1.2,1.2],\"embedding\":{\"frequency\":[2.2800000000000002,2.1999999999999997],\"scale\":[0.39635015685111286,0.40371803643181925],\"shear\":-0.04443358338437975,\"warp\":[0.10173855584114791,0.09638025702675804]},\"escape\":2,\"grid\":192,\"iterations\":64,\"levels\":[3,5,8,12,18,26,36,48],\"model\":\"quadratic-julia\",\"parameter\":[-0.745,0.113]},\"mechanism\":\"recursive-julia\",\"model\":\"woven-field-experimental\",\"seed\":255848624,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"available\",\"u\":[0,1]},{\"component\":1,\"node\":\"requests\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"remainingStock\",\"u\":[0,1]},{\"component\":4,\"node\":\"stockSummary\",\"u\":[0,1]},{\"component\":5,\"node\":\"available\",\"u\":[0,1]},{\"component\":6,\"node\":\"requests\",\"u\":[0,1]},{\"component\":7,\"node\":\"step1\",\"u\":[0,1]},{\"component\":8,\"node\":\"remainingStock\",\"u\":[0,1]},{\"component\":9,\"node\":\"stockSummary\",\"u\":[0,1]}],\"topology\":{\"convergence\":3,\"depth\":4,\"effects\":0,\"fanout\":2,\"guards\":0},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Mosswell\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"available\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":15}},{\\\"id\\\":\\\"requests\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"amount\\\":9,\\\"id\\\":\\\"fern\\\"},{\\\"amount\\\":4,\\\"id\\\":\\\"moss\\\"},{\\\"amount\\\":8,\\\"id\\\":\\\"sage\\\"}]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"available\\\",\\\"requests\\\"],\\\"op\\\":\\\"allocate\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"remainingStock\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"remaining\\\"}},{\\\"id\\\":\\\"stockSummary\\\",\\\"inputs\\\":[\\\"step1\\\",\\\"available\\\",\\\"remainingStock\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"allocation\\\",\\\"available\\\",\\\"remaining\\\"]}}],\\\"outputs\\\":[\\\"stockSummary\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Mosswell\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"available\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":15}},{\\\"id\\\":\\\"requests\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"amount\\\":9,\\\"id\\\":\\\"fern\\\"},{\\\"amount\\\":4,\\\"id\\\":\\\"moss\\\"},{\\\"amount\\\":8,\\\"id\\\":\\\"sage\\\"}]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"available\\\",\\\"requests\\\"],\\\"op\\\":\\\"allocate\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"remainingStock\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"remaining\\\"}},{\\\"id\\\":\\\"stockSummary\\\",\\\"inputs\\\":[\\\"step1\\\",\\\"available\\\",\\\"remainingStock\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"allocation\\\",\\\"available\\\",\\\"remaining\\\"]}}],\\\"outputs\\\":[\\\"stockSummary\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
   "graph": {
     "version": 1,
     "name": "Mosswell",
@@ -664,10 +570,36 @@
           "requests"
         ],
         "params": {}
+      },
+      {
+        "id": "remainingStock",
+        "op": "get",
+        "inputs": [
+          "step1"
+        ],
+        "params": {
+          "path": "remaining"
+        }
+      },
+      {
+        "id": "stockSummary",
+        "op": "report",
+        "inputs": [
+          "step1",
+          "available",
+          "remainingStock"
+        ],
+        "params": {
+          "labels": [
+            "allocation",
+            "available",
+            "remaining"
+          ]
+        }
       }
     ],
     "outputs": [
-      "step1"
+      "stockSummary"
     ]
   },
   "design": {
@@ -703,16 +635,6 @@
         "lag": 0.9,
         "asymmetry": 0.28,
         "overtone": 0.17
-      },
-      "gesture": {
-        "kind": "gather",
-        "strength": 0.65,
-        "ticks": [
-          180,
-          180,
-          420,
-          220
-        ]
       }
     },
     "ink": {
@@ -742,126 +664,74 @@
     },
     "composition": {
       "occupancy": 0.76,
-      "lean": -0.035,
-      "yaw": 0.25,
-      "pitch": 0.08,
+      "lean": 0,
+      "yaw": 0,
+      "pitch": 0,
       "focus": 0.38
     },
     "chroma": {
       "model": "material-territories",
       "palette": "roles-1",
-      "strength": 0.88
+      "strength": 0.35
     },
-    "anatomy": {
-      "model": "assembly",
-      "compiler": "qdl-assembly-experimental",
+    "woven": {
+      "model": "woven-field-experimental",
+      "mechanism": "recursive-julia",
       "seed": 255848624,
-      "components": [
-        {
-          "id": "trunk",
-          "kind": "chamber",
-          "axes": [
-            0.20638935647020115,
-            0.2651033196924254,
-            0.1024770687634591
-          ],
-          "parent": null
-        },
-        {
-          "id": "branch-0",
-          "kind": "spine",
-          "length": 0.4218064384777099,
-          "radii": [
-            0.041999999999999996,
-            0.015858737172558902
-          ],
-          "bend": [
-            -0.18,
-            -0.015980931855738165
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0.40258315902668984,
-              "v": 0.5
-            },
-            "angle": 0.7905007123248652,
-            "hinge": 0.065
-          }
-        },
-        {
-          "id": "branch-1",
-          "kind": "spine",
-          "length": 0.4467122188732028,
-          "radii": [
-            0.038,
-            0.015417197760427371
-          ],
-          "bend": [
-            0.18,
-            0.06988689534366131
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0.5564401386585087,
-              "v": 0
-            },
-            "angle": -1.2397936895559543,
-            "hinge": -0.065
-          }
-        },
-        {
-          "id": "tail",
-          "kind": "spine",
-          "length": 0.24408022791147232,
-          "radii": [
-            0.02762121315835975,
-            0.015319010173436254
-          ],
-          "bend": [
-            -0.19,
-            -0.020419045351445675
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0,
-              "v": 0.25
-            },
-            "angle": 2.8556069587357342,
-            "hinge": -0.035
-          }
-        }
-      ],
-      "owners": [
+      "topology": {
+        "depth": 4,
+        "fanout": 2,
+        "convergence": 3,
+        "guards": 0,
+        "effects": 0
+      },
+      "strands": 10,
+      "folds": 6,
+      "turns": 1.67,
+      "territories": [
         {
           "node": "available",
-          "component": "trunk",
+          "component": 0,
           "u": [
             0,
-            0.3333333333333333
+            1
           ]
         },
         {
           "node": "requests",
-          "component": "trunk",
+          "component": 1,
           "u": [
-            0.3333333333333333,
-            0.6666666666666666
+            0,
+            1
           ]
         },
         {
           "node": "step1",
-          "component": "trunk",
+          "component": 2,
           "u": [
-            0.6666666666666666,
+            0,
+            1
+          ]
+        },
+        {
+          "node": "remainingStock",
+          "component": 3,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "stockSummary",
+          "component": 4,
+          "u": [
+            0,
             1
           ]
         },
         {
           "node": "available",
-          "component": "branch-0",
+          "component": 5,
           "u": [
             0,
             1
@@ -869,21 +739,78 @@
         },
         {
           "node": "requests",
-          "component": "branch-1",
+          "component": 6,
           "u": [
             0,
             1
           ]
         },
         {
-          "node": "available",
-          "component": "tail",
+          "node": "step1",
+          "component": 7,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "remainingStock",
+          "component": 8,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "stockSummary",
+          "component": 9,
           "u": [
             0,
             1
           ]
         }
-      ]
+      ],
+      "geometry": {
+        "model": "quadratic-julia",
+        "parameter": [
+          -0.745,
+          0.113
+        ],
+        "grid": 192,
+        "iterations": 64,
+        "escape": 2,
+        "bounds": [
+          -1.55,
+          1.55,
+          -1.2,
+          1.2
+        ],
+        "levels": [
+          3,
+          5,
+          8,
+          12,
+          18,
+          26,
+          36,
+          48
+        ],
+        "embedding": {
+          "scale": [
+            0.39635015685111286,
+            0.40371803643181925
+          ],
+          "warp": [
+            0.10173855584114791,
+            0.09638025702675804
+          ],
+          "frequency": [
+            2.2800000000000002,
+            2.1999999999999997
+          ],
+          "shear": -0.04443358338437975
+        }
+      }
     }
   },
   "contract": {
@@ -936,30 +863,83 @@
             "unit": "L"
           }
         }
+      },
+      "remainingStock": {
+        "kind": "number",
+        "unit": "L"
+      },
+      "stockSummary": {
+        "kind": "record",
+        "fields": {
+          "allocation": {
+            "kind": "record",
+            "fields": {
+              "grants": {
+                "kind": "array",
+                "element": {
+                  "kind": "record",
+                  "fields": {
+                    "id": {
+                      "kind": "string"
+                    },
+                    "requested": {
+                      "kind": "number",
+                      "unit": "L"
+                    },
+                    "granted": {
+                      "kind": "number",
+                      "unit": "L"
+                    }
+                  }
+                }
+              },
+              "remaining": {
+                "kind": "number",
+                "unit": "L"
+              }
+            }
+          },
+          "available": {
+            "kind": "number",
+            "unit": "L"
+          },
+          "remaining": {
+            "kind": "number",
+            "unit": "L"
+          }
+        }
       }
     },
     "assumptions": [],
     "effectMode": "pure",
-    "sourceBytes": 2945,
+    "sourceBytes": 3413,
     "provenance": "companion document; types and thought are not embedded in the quine"
   },
   "sourceMap": [
     {
       "nodeId": "available",
-      "clause": "allocate 15 L to [{\"id\":\"fern\",\"amount\":9},{\"id\":\"moss\",\"amount\":4},{\"id\":\"sage\",\"amount\":8}]"
+      "clause": "Supplied input available"
     },
     {
       "nodeId": "requests",
-      "clause": "allocate 15 L to [{\"id\":\"fern\",\"amount\":9},{\"id\":\"moss\",\"amount\":4},{\"id\":\"sage\",\"amount\":8}]"
+      "clause": "Supplied input requests"
     },
     {
       "nodeId": "step1",
-      "clause": "allocate 15 L to [{\"id\":\"fern\",\"amount\":9},{\"id\":\"moss\",\"amount\":4},{\"id\":\"sage\",\"amount\":8}]"
+      "clause": "allocate(available, requests)"
+    },
+    {
+      "nodeId": "remainingStock",
+      "clause": "get(step1)"
+    },
+    {
+      "nodeId": "stockSummary",
+      "clause": "report(step1, available, remainingStock)"
     }
   ],
   "candidate": null,
   "interpretation": {
-    "summary": "Shares a limited water supply among three plants in request order.",
+    "summary": "Shares a limited water supply among three plants in request order. It also reports the starting and remaining stock.",
     "assumptions": []
   },
   "generation": {
@@ -972,23 +952,27 @@
       "overrides": {},
       "expected": [
         {
-          "grants": [
-            {
-              "id": "fern",
-              "requested": 9,
-              "granted": 9
-            },
-            {
-              "id": "moss",
-              "requested": 4,
-              "granted": 4
-            },
-            {
-              "id": "sage",
-              "requested": 8,
-              "granted": 2
-            }
-          ],
+          "allocation": {
+            "grants": [
+              {
+                "id": "fern",
+                "requested": 9,
+                "granted": 9
+              },
+              {
+                "id": "moss",
+                "requested": 4,
+                "granted": 4
+              },
+              {
+                "id": "sage",
+                "requested": 8,
+                "granted": 2
+              }
+            ],
+            "remaining": 0
+          },
+          "available": 15,
           "remaining": 0
         }
       ]
@@ -1000,23 +984,27 @@
       },
       "expected": [
         {
-          "grants": [
-            {
-              "id": "fern",
-              "requested": 9,
-              "granted": 0
-            },
-            {
-              "id": "moss",
-              "requested": 4,
-              "granted": 0
-            },
-            {
-              "id": "sage",
-              "requested": 8,
-              "granted": 0
-            }
-          ],
+          "allocation": {
+            "grants": [
+              {
+                "id": "fern",
+                "requested": 9,
+                "granted": 0
+              },
+              {
+                "id": "moss",
+                "requested": 4,
+                "granted": 0
+              },
+              {
+                "id": "sage",
+                "requested": 8,
+                "granted": 0
+              }
+            ],
+            "remaining": 0
+          },
+          "available": 0,
           "remaining": 0
         }
       ]
@@ -1028,23 +1016,27 @@
       },
       "expected": [
         {
-          "grants": [
-            {
-              "id": "fern",
-              "requested": 9,
-              "granted": 9
-            },
-            {
-              "id": "moss",
-              "requested": 4,
-              "granted": 4
-            },
-            {
-              "id": "sage",
-              "requested": 8,
-              "granted": 8
-            }
-          ],
+          "allocation": {
+            "grants": [
+              {
+                "id": "fern",
+                "requested": 9,
+                "granted": 9
+              },
+              {
+                "id": "moss",
+                "requested": 4,
+                "granted": 4
+              },
+              {
+                "id": "sage",
+                "requested": 8,
+                "granted": 8
+              }
+            ],
+            "remaining": 79
+          },
+          "available": 100,
           "remaining": 79
         }
       ]

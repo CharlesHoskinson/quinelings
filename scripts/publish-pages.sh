@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+node scripts/check-visual-release.cjs
 npm test
+npm run test:visual
+npm run formal:visual
 npm run test:v1
 npm run formal:all
 npm run formal:correspondence
 npm run sdk:check
-npm run sdk:pack
+node scripts/verify-v1-release.cjs # Preserve the frozen SDK 1.0.0 archive; browser authoring is a separate experimental surface.
 npm run ranch:build
 npm run test:browser:v1
 npm run formal:website
@@ -14,10 +17,12 @@ npm run test:browser:website
 npm run test:browser:nursery
 node scripts/render-sdk-docs.cjs
 node scripts/verify-sdk-package.cjs
+node scripts/verify-experimental-package.cjs assets/sdk/quinelings-agent-sdk-experimental-0.0.0-experimental.20261004.tgz
 node scripts/verify-v1-release.cjs
+node scripts/check-visual-release.cjs # Refuse any source/render drift during the checks.
 site_dir=$(mktemp -d)
 trap 'rm -rf "$site_dir"' EXIT
-cp nursery.html nursery.css nursery.js gallery.html living-thoughts.css living-thoughts.js lab-examples.js lab-insights.js lab-offspring.js living-copy.json ranch-workshop.html ranch-workshop.js qdl-v1-offspring.js v1.html v1.css v1-workspace.js qdl-v1.js qdl-v1-types.js qdl-v1-contract.js qdl-v1-kernels.js qdl-v1-library.js qdl-v1-registry.js qdl-v1-migrate.js index.html create.html sdk.html ranch.html ranch.css ranch.js ranch-renderer.js ranch-world.js ranch-crypto.js offspring.js style.css creation.css translation.css learning.css orbit.js kernels.js anatomy.js qdl.js chroma.js morphology.js core.js thought.js lifeform-renderer.js creation.js gallery.js translation.js "$site_dir/"
+cp nursery.html nursery.css nursery.js gallery.html living-thoughts.css living-thoughts.js lab-examples.js lab-insights.js lab-offspring.js living-copy.json ranch-workshop.html ranch-workshop.js qdl-v1-offspring.js v1.html v1.css v1-workspace.js qdl-v1.js qdl-v1-types.js qdl-v1-contract.js qdl-v1-kernels.js qdl-v1-library.js qdl-v1-registry.js qdl-v1-migrate.js index.html create.html sdk.html ranch.html ranch.css ranch.js ranch-renderer.js ranch-world.js ranch-crypto.js offspring.js style.css creation.css translation.css learning.css orbit.js kernels.js anatomy.js qdl.js chroma.js morphology.js core.js thought.js lifeform-families.js woven-body.js visual-capsule.js lifeform-webgl.js lifeform-renderer.js creation.js gallery.js translation.js "$site_dir/"
 # Publish the product and reference documentation, not internal reports or test logs.
 cp -R programs assets design releases "$site_dir/"
 mkdir -p "$site_dir/docs"

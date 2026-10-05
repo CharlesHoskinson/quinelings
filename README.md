@@ -4,7 +4,7 @@
 
 [Open the live website](https://charleshoskinson.github.io/quinelings/).
 
-Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and specifications to `gh-pages`. GitHub Pages deploys that branch automatically.
+Run `bash scripts/publish-pages.sh` to verify and publish the static application, program library, assets, and product documentation to `gh-pages`. GitHub Pages deploys that branch automatically. Publication first requires current private visual acceptance evidence; passing functional tests cannot supply it.
 
 Quinelings are authored local programs with mathematical bodies. The homepage runs reusable QDL 1 recipes on supplied inputs; the [original gallery](gallery.html) preserves programs whose scenarios rewrite source. Both let you inspect a calculation and check exact source reproduction. Harmonic and RGB genomes preserve the complete source as recoverable data.
 

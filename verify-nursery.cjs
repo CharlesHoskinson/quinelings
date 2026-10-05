@@ -10,9 +10,9 @@ const root=__dirname,server=http.createServer((request,response)=>{const pathnam
  await page.goto(base+'/nursery.html',{waitUntil:'networkidle'});await page.waitForFunction(()=>window.quinelingNursery?.specimens.length===5);
  assert.equal(await page.locator('.arrival').count(),5);assert.ok(await page.evaluate(()=>quinelingNursery.specimens.every(s=>s.record===null)));
  const phase=await page.evaluate(()=>quinelingNursery.phase);await page.waitForFunction(p=>quinelingNursery.phase!==p,phase);await page.locator('#motion').click();
- const sources=new Set(),bodies=new Set();
+ const sources=new Set(),authoredBodies=new Set();
  for(const item of manifest){
-  const artifact=JSON.parse(fs.readFileSync(path.join(root,'programs/generated',item.id+'.json'),'utf8'));sources.add(artifact.source);bodies.add(JSON.stringify(artifact.design.anatomy));
+  const artifact=JSON.parse(fs.readFileSync(path.join(root,'programs/generated',item.id+'.json'),'utf8'));sources.add(artifact.source);authoredBodies.add(JSON.stringify(artifact.design.woven||artifact.design.anatomy));
   const card=page.locator(`[data-specimen="${item.id}"]`);await card.getByRole('button',{name:'Run task',exact:true}).click();
   assert.deepEqual(await page.evaluate(id=>quinelingNursery.specimens.find(s=>s.artifact.id===id).record.tasks[0].output,item.id),artifact.fixtures[0].expected);
   await card.getByRole('button',{name:'Make a copy',exact:true}).click();assert.match(await card.locator('.copy-status').textContent(),/Fresh copy ran with matching source and result/);
@@ -21,7 +21,8 @@ const root=__dirname,server=http.createServer((request,response)=>{const pathnam
   const genome=await page.evaluate(id=>{const s=quinelingNursery.specimens.find(s=>s.artifact.id===id);return [Quinelings.canon(Quinelings.decode(Quinelings.encode(s.artifact.program))),Quinelings.canon(Quinelings.decodeColors(Quinelings.encodeColors(s.artifact.program)))];},item.id);assert.deepEqual(genome,[artifact.source,artifact.source]);
   await card.locator('details').evaluate(e=>e.open=false);
  }
- assert.equal(sources.size,5);assert.equal(bodies.size,5);await page.screenshot({path:'/tmp/quinelings-five.png',fullPage:true});
+ assert.equal(sources.size,5);assert.equal(authoredBodies.size,5); // Authored identity only; rendered diversity is reviewed separately.
+ await page.screenshot({path:'/tmp/quinelings-five.png',fullPage:true});
  for(const item of manifest){
   const artifact=JSON.parse(fs.readFileSync(path.join(root,'programs/generated',item.id+'.json'),'utf8'));
   await page.goto(base+'/create.html?specimen='+item.id,{waitUntil:'networkidle'});await page.waitForFunction(id=>window.creation?.artifact?.graph.name===id,item.name);
@@ -34,5 +35,5 @@ const root=__dirname,server=http.createServer((request,response)=>{const pathnam
  const mobile=await browser.newPage({viewport:{width:320,height:860},reducedMotion:'reduce'});mobile.on('pageerror',error=>errors.push(error.message));await mobile.goto(base+'/nursery.html',{waitUntil:'networkidle'});await mobile.waitForFunction(()=>window.quinelingNursery);
  assert.equal(await mobile.evaluate(()=>quinelingNursery.moving),false);assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth),320);assert.ok(await mobile.evaluate(()=>quinelingNursery.specimens.every(s=>s.record===null)));
  await mobile.locator('[data-specimen="tideglass"]').getByRole('button',{name:'Run task',exact:true}).focus();await mobile.keyboard.press('Enter');assert.deepEqual(await mobile.evaluate(()=>quinelingNursery.specimens[0].record.tasks[0].output),JSON.parse(fs.readFileSync(path.join(root,'programs/generated/tideglass.json'),'utf8')).fixtures[0].expected);
- assert.deepEqual(errors,[]);console.log('Five distinct bodies: runs, fresh copies, both genomes, passive workspace imports, missing imports, mobile and keyboard controls passed.');
+ assert.deepEqual(errors,[]);console.log('Five source/body identities: runs, fresh copies, both genomes, passive workspace imports, missing imports, mobile and keyboard controls passed.');
 }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}})().catch(error=>{console.error(error);process.exitCode=1});

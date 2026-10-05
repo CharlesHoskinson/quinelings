@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),Q=require('../core.js'),D=require('../qdl.js'),V=require('../qdl-v1.js'),C=require('../visual-capsule.js'),W=require('../woven-body.js'),L=require('../qdl-v1-library.js');
+const a=JSON.parse(fs.readFileSync('programs/generated/tideglass.json')),base=Q.makeTaskProgram(a.graph,1,D.create()),capsule=C.author(Q.canon(base),42);
+assert.equal(C.verify(capsule).source,capsule.source);
+for(const encoding of ['harmonics','colors'])assert.equal(C.recover(capsule,encoding).source,capsule.source);
+let fresh=capsule.program;for(let i=0;i<3;i++){const r=C.execute(fresh);assert.deepEqual(r.tasks[0].output,[45.5]);assert.equal(r.emitted[0],capsule.source);fresh=JSON.parse(r.emitted[0]);}
+const shape=C.describe(capsule.program);assert.equal(shape.design.woven.seed,42);assert.equal(Q.canon(shape.graph.nodes),Q.canon(a.graph.nodes));
+assert.throws(()=>Q.describe(capsule.program)); // Explicit upgrade; legacy interpreter cannot silently interpret new source.
+const unknown=JSON.parse(capsule.source);unknown.push(['emit',['quote','wrong']]);assert.throws(()=>C.admit(Q.canon(unknown)));
+const invalid=structuredClone(capsule.design);invalid.woven.territories[0].node='foreign-operation';assert.throws(()=>C.build(capsule.taskSource,invalid));
+const stable=V.admit(V.compile(L.programs.find(p=>p.id==='water-total').intent)),visual=C.author(stable.source,7);assert.equal(visual.taskSource,stable.source);assert.equal(C.verify(visual).exactSource,true);assert.equal(C.recover(visual,'colors').source,visual.source);const stableRun=C.execute(visual.program,{bindings:{readings:[2,3,4]}});assert.equal(stableRun.taskProfile,'qdl-v1');assert(Number.isFinite(stableRun.steps));assert.deepEqual(stableRun.occurrences[0].outputs,[{liters:9,measurements:3}]);assert.equal(stableRun.emitted[0],visual.source);assert.throws(()=>V.admit(visual.source));assert.throws(()=>D.validate(visual.design));
+const phase=W.frame(W.compile(visual.design.woven,visual.task),0,{budget:4000});assert.ok(phase.owners.every(i=>i<visual.task.nodes.length));
+console.log('Experimental capsule: three generations, exact codecs, frozen task source retained, explicit legacy/v1 refusal, constructor and owner tampering rejected.');

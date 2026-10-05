@@ -110,3 +110,38 @@ MCP discovers all 16 `quineling_*` tools: the original parse/compile/create/insp
 
 Guides and visual workspace: https://charleshoskinson.github.io/quinelings/sdk.html
 Source and tests: https://github.com/CharlesHoskinson/quinelings/tree/main/packages/agent-sdk
+
+### New mathematical body extension
+
+The separate package `@quinelings/agent-sdk-experimental` includes the explicit
+`/experimental` entry point. It retains each admitted legacy or QDL 1 task
+source inside a recoverable visual capsule. It adds five graph-authored
+mathematical constructions and deterministic owned tissue sampling. The
+historical `@quinelings/agent-sdk` 1.0.0 archive remains available unchanged.
+
+```ts
+import {VisualCapsule, MathematicalLifeforms}
+  from '@quinelings/agent-sdk-experimental/experimental';
+const capsule = VisualCapsule.author(taskSource, 42);
+VisualCapsule.verify(capsule); // constructor only
+const recovered = VisualCapsule.recover(capsule, 'harmonics');
+const body = MathematicalLifeforms.compile(recovered.design.woven, recovered.task);
+const frame = MathematicalLifeforms.frame(body, 0, {budget: 2048});
+// QDL 1 input ports require explicit supplied bindings:
+const result = VisualCapsule.execute(recovered.program, {bindings: {readings: [2, 3, 4]}});
+```
+
+The result distinguishes `taskProfile: 'legacy'` with `tasks` from
+`taskProfile: 'qdl-v1'` with `occurrences`. Body authoring, verification,
+recovery and sampling are passive. Only execution evaluates the retained task.
+The complete capsule source is emitted exactly by either task profile.
+
+Opt in to the eight `quineling_visual_*` MCP tools with
+`quinelings-mcp --experimental-visual`, or use
+`createQuinelingMcpServer(runtime, {experimentalVisual: true})`.
+The A2A CLI accepts the same flag; `createA2AApp({experimentalVisual: true})`
+accepts `visualAuthor`, `visualAdmit`, `visualRecover`, `visualFrame`,
+`visualAnchor`, `visualBounds`, `visualVerify`, `visualRun` JSON operations.
+These are explicit experimental surfaces; original Runtime and stable QDL 1
+endpoints keep their existing admission formats. See the website's API guide
+for exact request fields and bounds.

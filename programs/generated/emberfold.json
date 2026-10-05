@@ -23,308 +23,182 @@
                 [
                   "quote",
                   {
-                    "version": 1,
-                    "name": "Emberfold",
-                    "nodes": [
-                      {
-                        "id": "input",
-                        "op": "literal",
-                        "inputs": [],
-                        "params": {
-                          "value": [
-                            1,
-                            5,
-                            8,
-                            9,
-                            3,
-                            1
-                          ]
-                        }
-                      },
-                      {
-                        "id": "step1",
-                        "op": "map",
-                        "inputs": [
-                          "input"
-                        ],
-                        "params": {
-                          "kind": "square"
-                        }
-                      },
-                      {
-                        "id": "step2",
-                        "op": "sum",
-                        "inputs": [
-                          "step1"
-                        ],
-                        "params": {}
-                      },
-                      {
-                        "id": "step3",
-                        "op": "report",
-                        "inputs": [
-                          "step2"
-                        ],
-                        "params": {
-                          "labels": [
-                            "energy"
-                          ]
-                        }
-                      }
-                    ],
-                    "outputs": [
-                      "step3"
-                    ],
                     "design": {
-                      "qdl": 1,
-                      "family": "filament",
-                      "organ": {
-                        "model": "rosette",
-                        "baseRadius": 0.03,
-                        "degreeGain": 0.004,
-                        "literalGain": 0.001,
-                        "amplitudes": [
-                          0.2,
-                          0.13
-                        ]
+                      "chroma": {
+                        "model": "material-territories",
+                        "palette": "roles-1",
+                        "strength": 0.35
                       },
+                      "composition": {
+                        "focus": 0.38,
+                        "lean": 0,
+                        "occupancy": 0.76,
+                        "pitch": 0,
+                        "yaw": 0
+                      },
+                      "family": "filament",
                       "filament": {
-                        "model": "pinned-sine",
                         "bend": 0.04,
                         "frequencyGain": 0.07,
+                        "model": "pinned-sine",
                         "ripple": 0.16
+                      },
+                      "ink": {
+                        "ghostAlpha": 0.09,
+                        "neutral": "#f0f1eb",
+                        "ridgeAlpha": 0.88,
+                        "secondaryAlpha": 0.42
+                      },
+                      "light": {
+                        "crestAlpha": 0.58,
+                        "depthContrast": 0.65,
+                        "model": "density-crest",
+                        "recessAlpha": 0.045
                       },
                       "motion": {
                         "clock": "separate",
                         "phaseRate": 0.038,
                         "reducedMotion": "freeze",
                         "rhythm": {
-                          "model": "coupled-harmonic",
-                          "mode": "periodic",
-                          "rate": 1,
-                          "breath": 0.06,
-                          "wave": 0.055,
-                          "waveNumber": 1.6,
-                          "lag": 0.9,
                           "asymmetry": 0.28,
-                          "overtone": 0.17
-                        },
-                        "gesture": {
-                          "kind": "glide",
-                          "strength": 0.68,
-                          "ticks": [
-                            180,
-                            170,
-                            450,
-                            200
-                          ]
+                          "breath": 0.06,
+                          "lag": 0.9,
+                          "mode": "periodic",
+                          "model": "coupled-harmonic",
+                          "overtone": 0.17,
+                          "rate": 1,
+                          "wave": 0.055,
+                          "waveNumber": 1.6
                         }
                       },
-                      "ink": {
-                        "ghostAlpha": 0.09,
-                        "secondaryAlpha": 0.42,
-                        "ridgeAlpha": 0.88,
-                        "neutral": "#f0f1eb"
+                      "organ": {
+                        "amplitudes": [
+                          0.2,
+                          0.13
+                        ],
+                        "baseRadius": 0.03,
+                        "degreeGain": 0.004,
+                        "literalGain": 0.001,
+                        "model": "rosette"
                       },
+                      "qdl": 1,
                       "surface": {
-                        "model": "folded-ribbon",
-                        "ribbons": 28,
-                        "crests": 4,
-                        "spread": 0.16,
-                        "folds": 7,
-                        "taper": 0.65,
                         "asymmetry": 0.25,
+                        "crests": 4,
                         "depth": 0.28,
-                        "twist": 1.9,
+                        "folds": 7,
+                        "model": "folded-ribbon",
                         "phaseLag": 1.4,
-                        "samples": 24000
+                        "ribbons": 28,
+                        "samples": 24000,
+                        "spread": 0.16,
+                        "taper": 0.65,
+                        "twist": 1.9
                       },
-                      "light": {
-                        "model": "density-crest",
-                        "recessAlpha": 0.045,
-                        "crestAlpha": 0.58,
-                        "depthContrast": 0.65
-                      },
-                      "composition": {
-                        "occupancy": 0.76,
-                        "lean": -0.035,
-                        "yaw": 0.25,
-                        "pitch": 0.08,
-                        "focus": 0.38
-                      },
-                      "chroma": {
-                        "model": "material-territories",
-                        "palette": "roles-1",
-                        "strength": 0.88
-                      },
-                      "anatomy": {
-                        "model": "assembly",
-                        "compiler": "qdl-assembly-experimental",
+                      "woven": {
+                        "folds": 4,
+                        "geometry": {
+                          "asymmetry": 0.3173516264092177,
+                          "curl": 0.7944709924980997,
+                          "frequency": 6,
+                          "growth": 0.26364853381179276,
+                          "lobes": 4,
+                          "material": {
+                            "columns": 15,
+                            "focus": 2,
+                            "gain": 0.65,
+                            "model": "projected-compression",
+                            "quiet": 0.12,
+                            "rows": 48
+                          },
+                          "offset": 0.7963582417801343,
+                          "spread": 0.8101780775934457,
+                          "twist": 2.5,
+                          "whorls": 3
+                        },
+                        "mechanism": "phyllotaxis-fan",
+                        "model": "woven-field-experimental",
                         "seed": 1489641563,
-                        "components": [
+                        "strands": 8,
+                        "territories": [
                           {
-                            "id": "trunk",
-                            "kind": "chamber",
-                            "axes": [
-                              0.14175515147764234,
-                              0.35,
-                              0.10766968958824873
-                            ],
-                            "parent": null
+                            "component": 0,
+                            "node": "input",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "neck",
-                            "kind": "spine",
-                            "length": 0.16,
-                            "radii": [
-                              0.034,
-                              0.015875976217444986
-                            ],
-                            "bend": [
-                              0.16,
-                              -0.025517518185079097
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0.77,
-                                "v": 0
-                              },
-                              "angle": -0.9,
-                              "hinge": 0.04
-                            }
+                            "component": 1,
+                            "node": "step1",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "lobe",
-                            "kind": "chamber",
-                            "axes": [
-                              0.081351732108742,
-                              0.11277062955545263,
-                              0.06664779190905393
-                            ],
-                            "parent": {
-                              "component": "neck",
-                              "socket": {
-                                "u": 1,
-                                "v": 0
-                              },
-                              "angle": 0.2,
-                              "hinge": 0.035
-                            }
+                            "component": 2,
+                            "node": "step2",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "lobe-tip",
-                            "kind": "spine",
-                            "length": 0.17,
-                            "radii": [
-                              0.025,
-                              0.015915058413287626
-                            ],
-                            "bend": [
-                              -0.17,
-                              0.04339101344347
-                            ],
-                            "parent": {
-                              "component": "lobe",
-                              "socket": {
-                                "u": 1,
-                                "v": 0
-                              },
-                              "angle": -0.3,
-                              "hinge": 0.025
-                            }
+                            "component": 3,
+                            "node": "step3",
+                            "u": [
+                              0,
+                              1
+                            ]
                           },
                           {
-                            "id": "tail",
-                            "kind": "spine",
-                            "length": 0.3402539538429119,
-                            "radii": [
-                              0.034704355692723766,
-                              0.016928014260716735
-                            ],
-                            "bend": [
-                              -0.19,
-                              0.06109458368271589
-                            ],
-                            "parent": {
-                              "component": "trunk",
-                              "socket": {
-                                "u": 0,
-                                "v": 0.25
-                              },
-                              "angle": 2.811057168897241,
-                              "hinge": -0.035
-                            }
+                            "component": 4,
+                            "node": "input",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 5,
+                            "node": "step1",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 6,
+                            "node": "step2",
+                            "u": [
+                              0,
+                              1
+                            ]
+                          },
+                          {
+                            "component": 7,
+                            "node": "step3",
+                            "u": [
+                              0,
+                              1
+                            ]
                           }
                         ],
-                        "owners": [
-                          {
-                            "node": "input",
-                            "component": "trunk",
-                            "u": [
-                              0,
-                              0.25
-                            ]
-                          },
-                          {
-                            "node": "step1",
-                            "component": "trunk",
-                            "u": [
-                              0.25,
-                              0.5
-                            ]
-                          },
-                          {
-                            "node": "step2",
-                            "component": "trunk",
-                            "u": [
-                              0.5,
-                              0.75
-                            ]
-                          },
-                          {
-                            "node": "step3",
-                            "component": "trunk",
-                            "u": [
-                              0.75,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "step3",
-                            "component": "neck",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "step3",
-                            "component": "lobe",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "step3",
-                            "component": "lobe-tip",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          },
-                          {
-                            "node": "input",
-                            "component": "tail",
-                            "u": [
-                              0,
-                              1
-                            ]
-                          }
-                        ]
+                        "topology": {
+                          "convergence": 1,
+                          "depth": 4,
+                          "effects": 0,
+                          "fanout": 1,
+                          "guards": 0
+                        },
+                        "turns": 1.67
                       }
-                    }
+                    },
+                    "format": "quineling-visual-capsule",
+                    "profile": "woven-experimental",
+                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Emberfold\",\"nodes\":[{\"id\":\"input\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[1,5,8,9,3,1]}},{\"id\":\"step1\",\"inputs\":[\"input\"],\"op\":\"map\",\"params\":{\"kind\":\"square\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"sum\",\"params\":{}},{\"id\":\"step3\",\"inputs\":[\"step2\"],\"op\":\"report\",\"params\":{\"labels\":[\"energy\"]}}],\"outputs\":[\"step3\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Emberfold\",\"nodes\":[{\"id\":\"input\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[1,5,8,9,3,1]}},{\"id\":\"step1\",\"inputs\":[\"input\"],\"op\":\"map\",\"params\":{\"kind\":\"square\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"sum\",\"params\":{}},{\"id\":\"step3\",\"inputs\":[\"step2\"],\"op\":\"report\",\"params\":{\"labels\":[\"energy\"]}}],\"outputs\":[\"step3\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                   }
                 ]
               ]
@@ -371,308 +245,182 @@
               [
                 "quote",
                 {
-                  "version": 1,
-                  "name": "Emberfold",
-                  "nodes": [
-                    {
-                      "id": "input",
-                      "op": "literal",
-                      "inputs": [],
-                      "params": {
-                        "value": [
-                          1,
-                          5,
-                          8,
-                          9,
-                          3,
-                          1
-                        ]
-                      }
-                    },
-                    {
-                      "id": "step1",
-                      "op": "map",
-                      "inputs": [
-                        "input"
-                      ],
-                      "params": {
-                        "kind": "square"
-                      }
-                    },
-                    {
-                      "id": "step2",
-                      "op": "sum",
-                      "inputs": [
-                        "step1"
-                      ],
-                      "params": {}
-                    },
-                    {
-                      "id": "step3",
-                      "op": "report",
-                      "inputs": [
-                        "step2"
-                      ],
-                      "params": {
-                        "labels": [
-                          "energy"
-                        ]
-                      }
-                    }
-                  ],
-                  "outputs": [
-                    "step3"
-                  ],
                   "design": {
-                    "qdl": 1,
-                    "family": "filament",
-                    "organ": {
-                      "model": "rosette",
-                      "baseRadius": 0.03,
-                      "degreeGain": 0.004,
-                      "literalGain": 0.001,
-                      "amplitudes": [
-                        0.2,
-                        0.13
-                      ]
+                    "chroma": {
+                      "model": "material-territories",
+                      "palette": "roles-1",
+                      "strength": 0.35
                     },
+                    "composition": {
+                      "focus": 0.38,
+                      "lean": 0,
+                      "occupancy": 0.76,
+                      "pitch": 0,
+                      "yaw": 0
+                    },
+                    "family": "filament",
                     "filament": {
-                      "model": "pinned-sine",
                       "bend": 0.04,
                       "frequencyGain": 0.07,
+                      "model": "pinned-sine",
                       "ripple": 0.16
+                    },
+                    "ink": {
+                      "ghostAlpha": 0.09,
+                      "neutral": "#f0f1eb",
+                      "ridgeAlpha": 0.88,
+                      "secondaryAlpha": 0.42
+                    },
+                    "light": {
+                      "crestAlpha": 0.58,
+                      "depthContrast": 0.65,
+                      "model": "density-crest",
+                      "recessAlpha": 0.045
                     },
                     "motion": {
                       "clock": "separate",
                       "phaseRate": 0.038,
                       "reducedMotion": "freeze",
                       "rhythm": {
-                        "model": "coupled-harmonic",
-                        "mode": "periodic",
-                        "rate": 1,
-                        "breath": 0.06,
-                        "wave": 0.055,
-                        "waveNumber": 1.6,
-                        "lag": 0.9,
                         "asymmetry": 0.28,
-                        "overtone": 0.17
-                      },
-                      "gesture": {
-                        "kind": "glide",
-                        "strength": 0.68,
-                        "ticks": [
-                          180,
-                          170,
-                          450,
-                          200
-                        ]
+                        "breath": 0.06,
+                        "lag": 0.9,
+                        "mode": "periodic",
+                        "model": "coupled-harmonic",
+                        "overtone": 0.17,
+                        "rate": 1,
+                        "wave": 0.055,
+                        "waveNumber": 1.6
                       }
                     },
-                    "ink": {
-                      "ghostAlpha": 0.09,
-                      "secondaryAlpha": 0.42,
-                      "ridgeAlpha": 0.88,
-                      "neutral": "#f0f1eb"
+                    "organ": {
+                      "amplitudes": [
+                        0.2,
+                        0.13
+                      ],
+                      "baseRadius": 0.03,
+                      "degreeGain": 0.004,
+                      "literalGain": 0.001,
+                      "model": "rosette"
                     },
+                    "qdl": 1,
                     "surface": {
-                      "model": "folded-ribbon",
-                      "ribbons": 28,
-                      "crests": 4,
-                      "spread": 0.16,
-                      "folds": 7,
-                      "taper": 0.65,
                       "asymmetry": 0.25,
+                      "crests": 4,
                       "depth": 0.28,
-                      "twist": 1.9,
+                      "folds": 7,
+                      "model": "folded-ribbon",
                       "phaseLag": 1.4,
-                      "samples": 24000
+                      "ribbons": 28,
+                      "samples": 24000,
+                      "spread": 0.16,
+                      "taper": 0.65,
+                      "twist": 1.9
                     },
-                    "light": {
-                      "model": "density-crest",
-                      "recessAlpha": 0.045,
-                      "crestAlpha": 0.58,
-                      "depthContrast": 0.65
-                    },
-                    "composition": {
-                      "occupancy": 0.76,
-                      "lean": -0.035,
-                      "yaw": 0.25,
-                      "pitch": 0.08,
-                      "focus": 0.38
-                    },
-                    "chroma": {
-                      "model": "material-territories",
-                      "palette": "roles-1",
-                      "strength": 0.88
-                    },
-                    "anatomy": {
-                      "model": "assembly",
-                      "compiler": "qdl-assembly-experimental",
+                    "woven": {
+                      "folds": 4,
+                      "geometry": {
+                        "asymmetry": 0.3173516264092177,
+                        "curl": 0.7944709924980997,
+                        "frequency": 6,
+                        "growth": 0.26364853381179276,
+                        "lobes": 4,
+                        "material": {
+                          "columns": 15,
+                          "focus": 2,
+                          "gain": 0.65,
+                          "model": "projected-compression",
+                          "quiet": 0.12,
+                          "rows": 48
+                        },
+                        "offset": 0.7963582417801343,
+                        "spread": 0.8101780775934457,
+                        "twist": 2.5,
+                        "whorls": 3
+                      },
+                      "mechanism": "phyllotaxis-fan",
+                      "model": "woven-field-experimental",
                       "seed": 1489641563,
-                      "components": [
+                      "strands": 8,
+                      "territories": [
                         {
-                          "id": "trunk",
-                          "kind": "chamber",
-                          "axes": [
-                            0.14175515147764234,
-                            0.35,
-                            0.10766968958824873
-                          ],
-                          "parent": null
+                          "component": 0,
+                          "node": "input",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "neck",
-                          "kind": "spine",
-                          "length": 0.16,
-                          "radii": [
-                            0.034,
-                            0.015875976217444986
-                          ],
-                          "bend": [
-                            0.16,
-                            -0.025517518185079097
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0.77,
-                              "v": 0
-                            },
-                            "angle": -0.9,
-                            "hinge": 0.04
-                          }
+                          "component": 1,
+                          "node": "step1",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "lobe",
-                          "kind": "chamber",
-                          "axes": [
-                            0.081351732108742,
-                            0.11277062955545263,
-                            0.06664779190905393
-                          ],
-                          "parent": {
-                            "component": "neck",
-                            "socket": {
-                              "u": 1,
-                              "v": 0
-                            },
-                            "angle": 0.2,
-                            "hinge": 0.035
-                          }
+                          "component": 2,
+                          "node": "step2",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "lobe-tip",
-                          "kind": "spine",
-                          "length": 0.17,
-                          "radii": [
-                            0.025,
-                            0.015915058413287626
-                          ],
-                          "bend": [
-                            -0.17,
-                            0.04339101344347
-                          ],
-                          "parent": {
-                            "component": "lobe",
-                            "socket": {
-                              "u": 1,
-                              "v": 0
-                            },
-                            "angle": -0.3,
-                            "hinge": 0.025
-                          }
+                          "component": 3,
+                          "node": "step3",
+                          "u": [
+                            0,
+                            1
+                          ]
                         },
                         {
-                          "id": "tail",
-                          "kind": "spine",
-                          "length": 0.3402539538429119,
-                          "radii": [
-                            0.034704355692723766,
-                            0.016928014260716735
-                          ],
-                          "bend": [
-                            -0.19,
-                            0.06109458368271589
-                          ],
-                          "parent": {
-                            "component": "trunk",
-                            "socket": {
-                              "u": 0,
-                              "v": 0.25
-                            },
-                            "angle": 2.811057168897241,
-                            "hinge": -0.035
-                          }
+                          "component": 4,
+                          "node": "input",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 5,
+                          "node": "step1",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 6,
+                          "node": "step2",
+                          "u": [
+                            0,
+                            1
+                          ]
+                        },
+                        {
+                          "component": 7,
+                          "node": "step3",
+                          "u": [
+                            0,
+                            1
+                          ]
                         }
                       ],
-                      "owners": [
-                        {
-                          "node": "input",
-                          "component": "trunk",
-                          "u": [
-                            0,
-                            0.25
-                          ]
-                        },
-                        {
-                          "node": "step1",
-                          "component": "trunk",
-                          "u": [
-                            0.25,
-                            0.5
-                          ]
-                        },
-                        {
-                          "node": "step2",
-                          "component": "trunk",
-                          "u": [
-                            0.5,
-                            0.75
-                          ]
-                        },
-                        {
-                          "node": "step3",
-                          "component": "trunk",
-                          "u": [
-                            0.75,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "step3",
-                          "component": "neck",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "step3",
-                          "component": "lobe",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "step3",
-                          "component": "lobe-tip",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        },
-                        {
-                          "node": "input",
-                          "component": "tail",
-                          "u": [
-                            0,
-                            1
-                          ]
-                        }
-                      ]
+                      "topology": {
+                        "convergence": 1,
+                        "depth": 4,
+                        "effects": 0,
+                        "fanout": 1,
+                        "guards": 0
+                      },
+                      "turns": 1.67
                     }
-                  }
+                  },
+                  "format": "quineling-visual-capsule",
+                  "profile": "woven-experimental",
+                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Emberfold\",\"nodes\":[{\"id\":\"input\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[1,5,8,9,3,1]}},{\"id\":\"step1\",\"inputs\":[\"input\"],\"op\":\"map\",\"params\":{\"kind\":\"square\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"sum\",\"params\":{}},{\"id\":\"step3\",\"inputs\":[\"step2\"],\"op\":\"report\",\"params\":{\"labels\":[\"energy\"]}}],\"outputs\":[\"step3\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Emberfold\",\"nodes\":[{\"id\":\"input\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[1,5,8,9,3,1]}},{\"id\":\"step1\",\"inputs\":[\"input\"],\"op\":\"map\",\"params\":{\"kind\":\"square\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"sum\",\"params\":{}},{\"id\":\"step3\",\"inputs\":[\"step2\"],\"op\":\"report\",\"params\":{\"labels\":[\"energy\"]}}],\"outputs\":[\"step3\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                 }
               ]
             ]
@@ -704,7 +452,7 @@
       ]
     ]
   ],
-  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.14175515147764234,0.35,0.10766968958824873],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[0.16,-0.025517518185079097],\"id\":\"neck\",\"kind\":\"spine\",\"length\":0.16,\"parent\":{\"angle\":-0.9,\"component\":\"trunk\",\"hinge\":0.04,\"socket\":{\"u\":0.77,\"v\":0}},\"radii\":[0.034,0.015875976217444986]},{\"axes\":[0.081351732108742,0.11277062955545263,0.06664779190905393],\"id\":\"lobe\",\"kind\":\"chamber\",\"parent\":{\"angle\":0.2,\"component\":\"neck\",\"hinge\":0.035,\"socket\":{\"u\":1,\"v\":0}}},{\"bend\":[-0.17,0.04339101344347],\"id\":\"lobe-tip\",\"kind\":\"spine\",\"length\":0.17,\"parent\":{\"angle\":-0.3,\"component\":\"lobe\",\"hinge\":0.025,\"socket\":{\"u\":1,\"v\":0}},\"radii\":[0.025,0.015915058413287626]},{\"bend\":[-0.19,0.06109458368271589],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.3402539538429119,\"parent\":{\"angle\":2.811057168897241,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.034704355692723766,0.016928014260716735]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"input\",\"u\":[0,0.25]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.25,0.5]},{\"component\":\"trunk\",\"node\":\"step2\",\"u\":[0.5,0.75]},{\"component\":\"trunk\",\"node\":\"step3\",\"u\":[0.75,1]},{\"component\":\"neck\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"lobe\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"lobe-tip\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"input\",\"u\":[0,1]}],\"seed\":1489641563},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"glide\",\"strength\":0.68,\"ticks\":[180,170,450,200]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Emberfold\",\"nodes\":[{\"id\":\"input\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[1,5,8,9,3,1]}},{\"id\":\"step1\",\"inputs\":[\"input\"],\"op\":\"map\",\"params\":{\"kind\":\"square\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"sum\",\"params\":{}},{\"id\":\"step3\",\"inputs\":[\"step2\"],\"op\":\"report\",\"params\":{\"labels\":[\"energy\"]}}],\"outputs\":[\"step3\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"anatomy\":{\"compiler\":\"qdl-assembly-experimental\",\"components\":[{\"axes\":[0.14175515147764234,0.35,0.10766968958824873],\"id\":\"trunk\",\"kind\":\"chamber\",\"parent\":null},{\"bend\":[0.16,-0.025517518185079097],\"id\":\"neck\",\"kind\":\"spine\",\"length\":0.16,\"parent\":{\"angle\":-0.9,\"component\":\"trunk\",\"hinge\":0.04,\"socket\":{\"u\":0.77,\"v\":0}},\"radii\":[0.034,0.015875976217444986]},{\"axes\":[0.081351732108742,0.11277062955545263,0.06664779190905393],\"id\":\"lobe\",\"kind\":\"chamber\",\"parent\":{\"angle\":0.2,\"component\":\"neck\",\"hinge\":0.035,\"socket\":{\"u\":1,\"v\":0}}},{\"bend\":[-0.17,0.04339101344347],\"id\":\"lobe-tip\",\"kind\":\"spine\",\"length\":0.17,\"parent\":{\"angle\":-0.3,\"component\":\"lobe\",\"hinge\":0.025,\"socket\":{\"u\":1,\"v\":0}},\"radii\":[0.025,0.015915058413287626]},{\"bend\":[-0.19,0.06109458368271589],\"id\":\"tail\",\"kind\":\"spine\",\"length\":0.3402539538429119,\"parent\":{\"angle\":2.811057168897241,\"component\":\"trunk\",\"hinge\":-0.035,\"socket\":{\"u\":0,\"v\":0.25}},\"radii\":[0.034704355692723766,0.016928014260716735]}],\"model\":\"assembly\",\"owners\":[{\"component\":\"trunk\",\"node\":\"input\",\"u\":[0,0.25]},{\"component\":\"trunk\",\"node\":\"step1\",\"u\":[0.25,0.5]},{\"component\":\"trunk\",\"node\":\"step2\",\"u\":[0.5,0.75]},{\"component\":\"trunk\",\"node\":\"step3\",\"u\":[0.75,1]},{\"component\":\"neck\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"lobe\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"lobe-tip\",\"node\":\"step3\",\"u\":[0,1]},{\"component\":\"tail\",\"node\":\"input\",\"u\":[0,1]}],\"seed\":1489641563},\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.88},\"composition\":{\"focus\":0.38,\"lean\":-0.035,\"occupancy\":0.76,\"pitch\":0.08,\"yaw\":0.25},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"gesture\":{\"kind\":\"glide\",\"strength\":0.68,\"ticks\":[180,170,450,200]},\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Emberfold\",\"nodes\":[{\"id\":\"input\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[1,5,8,9,3,1]}},{\"id\":\"step1\",\"inputs\":[\"input\"],\"op\":\"map\",\"params\":{\"kind\":\"square\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"sum\",\"params\":{}},{\"id\":\"step3\",\"inputs\":[\"step2\"],\"op\":\"report\",\"params\":{\"labels\":[\"energy\"]}}],\"outputs\":[\"step3\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":4,\"geometry\":{\"asymmetry\":0.3173516264092177,\"curl\":0.7944709924980997,\"frequency\":6,\"growth\":0.26364853381179276,\"lobes\":4,\"material\":{\"columns\":15,\"focus\":2,\"gain\":0.65,\"model\":\"projected-compression\",\"quiet\":0.12,\"rows\":48},\"offset\":0.7963582417801343,\"spread\":0.8101780775934457,\"twist\":2.5,\"whorls\":3},\"mechanism\":\"phyllotaxis-fan\",\"model\":\"woven-field-experimental\",\"seed\":1489641563,\"strands\":8,\"territories\":[{\"component\":0,\"node\":\"input\",\"u\":[0,1]},{\"component\":1,\"node\":\"step1\",\"u\":[0,1]},{\"component\":2,\"node\":\"step2\",\"u\":[0,1]},{\"component\":3,\"node\":\"step3\",\"u\":[0,1]},{\"component\":4,\"node\":\"input\",\"u\":[0,1]},{\"component\":5,\"node\":\"step1\",\"u\":[0,1]},{\"component\":6,\"node\":\"step2\",\"u\":[0,1]},{\"component\":7,\"node\":\"step3\",\"u\":[0,1]}],\"topology\":{\"convergence\":1,\"depth\":4,\"effects\":0,\"fanout\":1,\"guards\":0},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Emberfold\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"input\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[1,5,8,9,3,1]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"input\\\"],\\\"op\\\":\\\"map\\\",\\\"params\\\":{\\\"kind\\\":\\\"square\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"sum\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step2\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"energy\\\"]}}],\\\"outputs\\\":[\\\"step3\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Emberfold\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"input\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[1,5,8,9,3,1]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"input\\\"],\\\"op\\\":\\\"map\\\",\\\"params\\\":{\\\"kind\\\":\\\"square\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"sum\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step2\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"energy\\\"]}}],\\\"outputs\\\":[\\\"step3\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":4,\"geometry\":{\"asymmetry\":0.3173516264092177,\"curl\":0.7944709924980997,\"frequency\":6,\"growth\":0.26364853381179276,\"lobes\":4,\"material\":{\"columns\":15,\"focus\":2,\"gain\":0.65,\"model\":\"projected-compression\",\"quiet\":0.12,\"rows\":48},\"offset\":0.7963582417801343,\"spread\":0.8101780775934457,\"twist\":2.5,\"whorls\":3},\"mechanism\":\"phyllotaxis-fan\",\"model\":\"woven-field-experimental\",\"seed\":1489641563,\"strands\":8,\"territories\":[{\"component\":0,\"node\":\"input\",\"u\":[0,1]},{\"component\":1,\"node\":\"step1\",\"u\":[0,1]},{\"component\":2,\"node\":\"step2\",\"u\":[0,1]},{\"component\":3,\"node\":\"step3\",\"u\":[0,1]},{\"component\":4,\"node\":\"input\",\"u\":[0,1]},{\"component\":5,\"node\":\"step1\",\"u\":[0,1]},{\"component\":6,\"node\":\"step2\",\"u\":[0,1]},{\"component\":7,\"node\":\"step3\",\"u\":[0,1]}],\"topology\":{\"convergence\":1,\"depth\":4,\"effects\":0,\"fanout\":1,\"guards\":0},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Emberfold\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"input\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[1,5,8,9,3,1]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"input\\\"],\\\"op\\\":\\\"map\\\",\\\"params\\\":{\\\"kind\\\":\\\"square\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"sum\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step2\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"energy\\\"]}}],\\\"outputs\\\":[\\\"step3\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Emberfold\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"input\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[1,5,8,9,3,1]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"input\\\"],\\\"op\\\":\\\"map\\\",\\\"params\\\":{\\\"kind\\\":\\\"square\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"sum\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step2\\\"],\\\"op\\\":\\\"report\\\",\\\"params\\\":{\\\"labels\\\":[\\\"energy\\\"]}}],\\\"outputs\\\":[\\\"step3\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
   "graph": {
     "version": 1,
     "name": "Emberfold",
@@ -792,16 +540,6 @@
         "lag": 0.9,
         "asymmetry": 0.28,
         "overtone": 0.17
-      },
-      "gesture": {
-        "kind": "glide",
-        "strength": 0.68,
-        "ticks": [
-          180,
-          170,
-          450,
-          200
-        ]
       }
     },
     "ink": {
@@ -831,152 +569,50 @@
     },
     "composition": {
       "occupancy": 0.76,
-      "lean": -0.035,
-      "yaw": 0.25,
-      "pitch": 0.08,
+      "lean": 0,
+      "yaw": 0,
+      "pitch": 0,
       "focus": 0.38
     },
     "chroma": {
       "model": "material-territories",
       "palette": "roles-1",
-      "strength": 0.88
+      "strength": 0.35
     },
-    "anatomy": {
-      "model": "assembly",
-      "compiler": "qdl-assembly-experimental",
+    "woven": {
+      "model": "woven-field-experimental",
+      "mechanism": "phyllotaxis-fan",
       "seed": 1489641563,
-      "components": [
-        {
-          "id": "trunk",
-          "kind": "chamber",
-          "axes": [
-            0.14175515147764234,
-            0.35,
-            0.10766968958824873
-          ],
-          "parent": null
-        },
-        {
-          "id": "neck",
-          "kind": "spine",
-          "length": 0.16,
-          "radii": [
-            0.034,
-            0.015875976217444986
-          ],
-          "bend": [
-            0.16,
-            -0.025517518185079097
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0.77,
-              "v": 0
-            },
-            "angle": -0.9,
-            "hinge": 0.04
-          }
-        },
-        {
-          "id": "lobe",
-          "kind": "chamber",
-          "axes": [
-            0.081351732108742,
-            0.11277062955545263,
-            0.06664779190905393
-          ],
-          "parent": {
-            "component": "neck",
-            "socket": {
-              "u": 1,
-              "v": 0
-            },
-            "angle": 0.2,
-            "hinge": 0.035
-          }
-        },
-        {
-          "id": "lobe-tip",
-          "kind": "spine",
-          "length": 0.17,
-          "radii": [
-            0.025,
-            0.015915058413287626
-          ],
-          "bend": [
-            -0.17,
-            0.04339101344347
-          ],
-          "parent": {
-            "component": "lobe",
-            "socket": {
-              "u": 1,
-              "v": 0
-            },
-            "angle": -0.3,
-            "hinge": 0.025
-          }
-        },
-        {
-          "id": "tail",
-          "kind": "spine",
-          "length": 0.3402539538429119,
-          "radii": [
-            0.034704355692723766,
-            0.016928014260716735
-          ],
-          "bend": [
-            -0.19,
-            0.06109458368271589
-          ],
-          "parent": {
-            "component": "trunk",
-            "socket": {
-              "u": 0,
-              "v": 0.25
-            },
-            "angle": 2.811057168897241,
-            "hinge": -0.035
-          }
-        }
-      ],
-      "owners": [
+      "topology": {
+        "depth": 4,
+        "fanout": 1,
+        "convergence": 1,
+        "guards": 0,
+        "effects": 0
+      },
+      "strands": 8,
+      "folds": 4,
+      "turns": 1.67,
+      "territories": [
         {
           "node": "input",
-          "component": "trunk",
+          "component": 0,
           "u": [
             0,
-            0.25
+            1
           ]
         },
         {
           "node": "step1",
-          "component": "trunk",
+          "component": 1,
           "u": [
-            0.25,
-            0.5
+            0,
+            1
           ]
         },
         {
           "node": "step2",
-          "component": "trunk",
-          "u": [
-            0.5,
-            0.75
-          ]
-        },
-        {
-          "node": "step3",
-          "component": "trunk",
-          "u": [
-            0.75,
-            1
-          ]
-        },
-        {
-          "node": "step3",
-          "component": "neck",
+          "component": 2,
           "u": [
             0,
             1
@@ -984,15 +620,7 @@
         },
         {
           "node": "step3",
-          "component": "lobe",
-          "u": [
-            0,
-            1
-          ]
-        },
-        {
-          "node": "step3",
-          "component": "lobe-tip",
+          "component": 3,
           "u": [
             0,
             1
@@ -1000,13 +628,56 @@
         },
         {
           "node": "input",
-          "component": "tail",
+          "component": 4,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step1",
+          "component": 5,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step2",
+          "component": 6,
+          "u": [
+            0,
+            1
+          ]
+        },
+        {
+          "node": "step3",
+          "component": 7,
           "u": [
             0,
             1
           ]
         }
-      ]
+      ],
+      "geometry": {
+        "growth": 0.26364853381179276,
+        "spread": 0.8101780775934457,
+        "curl": 0.7944709924980997,
+        "asymmetry": 0.3173516264092177,
+        "offset": 0.7963582417801343,
+        "frequency": 6,
+        "lobes": 4,
+        "twist": 2.5,
+        "whorls": 3,
+        "material": {
+          "model": "projected-compression",
+          "rows": 48,
+          "columns": 15,
+          "focus": 2,
+          "quiet": 0.12,
+          "gain": 0.65
+        }
+      }
     }
   },
   "contract": {
@@ -1051,19 +722,19 @@
   "sourceMap": [
     {
       "nodeId": "input",
-      "clause": "[1,5,8,9,3,1]"
+      "clause": "Supplied input input"
     },
     {
       "nodeId": "step1",
-      "clause": "square"
+      "clause": "map(input)"
     },
     {
       "nodeId": "step2",
-      "clause": "sum"
+      "clause": "sum(step1)"
     },
     {
       "nodeId": "step3",
-      "clause": "report energy"
+      "clause": "report(step2)"
     }
   ],
   "candidate": null,

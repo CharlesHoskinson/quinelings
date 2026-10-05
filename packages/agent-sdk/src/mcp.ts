@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { Runtime, QuinelingError } from './index.js';
 import {IntentSchema,OffspringInputSchema,OffspringFrameSchema,AdmissionSchema,LineageSchema,AnnotationSchema,WorldConfigSchema,WorldCommandSchema} from './schema.js';
 export * from './schema.js';
+import {registerVisualTools} from './experimental-adapters.js';
+export interface McpOptions {experimentalVisual?:boolean}
 
 const REQUEST_BYTES = 4 * 1024 * 1024;
 const RESPONSE_BYTES = 8 * 1024 * 1024;
@@ -24,7 +26,7 @@ const colors = z.strictObject({
 });
 
 /** All computation is bounded local simulation. This adapter grants no host authority. */
-export function createQuinelingMcpServer(runtime: Runtime = new Runtime()): McpServer {
+export function createQuinelingMcpServer(runtime: Runtime = new Runtime(), adapterOptions: McpOptions = {}): McpServer {
   const server = new McpServer({ name: 'quinelings', version: '0.0.0-experimental' });
 
   function register<S extends z.ZodRawShape>(name: string, description: string,
@@ -121,6 +123,7 @@ export function createQuinelingMcpServer(runtime: Runtime = new Runtime()): McpS
   register('quineling_world_create','Create one bounded experimental ranch in this session. Same worldKey/seed/affinity is idempotent; a different configuration refuses. Residents start with participation disabled.',WorldConfigSchema.shape,input=>runtime.worldCreate(input),false,true);
   register('quineling_world_inspect','Read a detached ranch snapshot without advancing social time, animating or executing tasks.',{worldId:z.string().min(1).max(128)},({worldId})=>runtime.worldInspect(worldId),true,true);
   register('quineling_world_command','Explicit bounded import/retire/participate/invite/cancelProposal/advance command. Exact next sequence and revision required; replay same sequence and complete payload, never allocate a new sequence to retry. Social steps never run tasks.',WorldCommandSchema.shape,input=>runtime.worldCommand(input),false,true,false,true);
+  if(adapterOptions.experimentalVisual)registerVisualTools(register);
   return server;
 }
 

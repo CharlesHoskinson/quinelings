@@ -5816,6 +5816,1138 @@ var require_qdl_v1_offspring = __commonJS({
   }
 });
 
+// lifeform-families.js
+var require_lifeform_families = __commonJS({
+  "lifeform-families.js"(exports, module) {
+    (function(root) {
+      "use strict";
+      const TAU = 2 * Math.PI, tags = ["logarithmic-mantle", "toroidal-weave", "phyllotaxis-fan"];
+      function rng(seed) {
+        let s = seed >>> 0;
+        s = Math.imul(s ^ s >>> 16, 2146121005);
+        s = Math.imul(s ^ s >>> 15, 2221713035);
+        s = (s ^ s >>> 16) >>> 0;
+        return () => (s = Math.imul(s, 1664525) + 1013904223 >>> 0) / 4294967296;
+      }
+      function authorParams(mechanism, t, seed) {
+        const r = rng(seed);
+        return { growth: 0.16 + 0.12 * r(), spread: 0.7 + 0.3 * r(), curl: 0.7 + 0.8 * r(), asymmetry: 0.12 + 0.22 * r(), offset: TAU * r(), frequency: 2 + Math.min(6, t.depth), lobes: 3 + Math.min(6, t.convergence + t.effects), twist: 1 + Math.min(3, t.depth) / 2, whorls: 2 + Math.min(2, Math.floor(t.depth / 3)), ...mechanism === "toroidal-weave" ? {} : { material: { model: "projected-compression", rows: 48, columns: 15, focus: 2, quiet: 0.12, gain: 0.65 } } };
+      }
+      function validate2(record2) {
+        const g = record2.geometry;
+        if (!tags.includes(record2.mechanism) || !g || Object.keys(g).sort().join() !== ["growth", "spread", "curl", "asymmetry", "offset", "frequency", "lobes", "twist", "whorls", ...Object.hasOwn(g, "material") ? ["material"] : []].sort().join()) throw Error("LifeformFamilies: invalid geometry");
+        const limits = { growth: [0.12, 0.35], spread: [0.5, 1.2], curl: [0.4, 1.6], asymmetry: [0, 0.4], offset: [0, TAU], frequency: [2, 8], lobes: [3, 9], twist: [1, 3], whorls: [2, 4] };
+        if (g.material) {
+          const m = g.material;
+          if (record2.mechanism === "toroidal-weave" || Object.keys(m).sort().join() !== ["model", "rows", "columns", "focus", "quiet", "gain"].sort().join() || m.model !== "projected-compression" || m.rows !== 48 || m.columns !== 15 || !Number.isFinite(m.focus) || m.focus < 1 || m.focus > 4 || !Number.isFinite(m.quiet) || m.quiet < 0.02 || m.quiet > 0.2 || !Number.isFinite(m.gain) || m.gain < 0.3 || m.gain > 0.9) throw Error("LifeformFamilies: invalid compression material");
+        }
+        for (const [k, v] of Object.entries(g).filter(([k2]) => k2 !== "material")) if (!Number.isFinite(v) || v < limits[k][0] || v > limits[k][1]) throw Error("LifeformFamilies: bounded parameters required");
+        if (!Number.isInteger(g.frequency) || !Number.isInteger(g.lobes) || !Number.isInteger(g.whorls)) throw Error("LifeformFamilies: integer structure required");
+        return true;
+      }
+      function compile2(record2, graph) {
+        validate2(record2);
+        const r = JSON.parse(JSON.stringify(record2)), nodes = graph.nodes;
+        return { record: r, nodes, territories: r.territories.map((p) => ({ ...p, owner: nodes.findIndex((n) => n.id === p.node) })), familyAdapter: true, chartCount: r.mechanism === "phyllotaxis-fan" ? r.strands * r.geometry.whorls : r.strands };
+      }
+      function owner2(body, k, u) {
+        return body.territories.find((p) => p.component === k % body.record.strands && u >= p.u[0] && (u < p.u[1] || u === 1 && p.u[1] === 1)).owner;
+      }
+      function point(body, k, u, v, phase, skipOwner = false) {
+        const r = body.record, g = r.geometry, p = phase % TAU, n = body.chartCount || r.strands, f = k / n, env = Math.sin(Math.PI * u), edge = Math.max(0, Math.sin(Math.PI * (v + 1) / 2)), offset = g.offset + TAU * f;
+        let x, y, z2;
+        if (r.mechanism === "logarithmic-mantle") {
+          const theta = TAU * (0.12 + g.curl * u) + offset * 0.45 + 0.18 * Math.sin(p - 5 * u + offset), radius = 0.1 * Math.exp(g.growth * theta) * (1 + 0.12 * Math.sin(offset + g.lobes * u)), collar = Math.exp(-(((u - 0.32 - 0.1 * Math.sin(offset)) / 0.1) ** 2)) + Math.exp(-(((u - 0.7 - 0.06 * Math.cos(offset)) / 0.12) ** 2)), width = 0.19 * env ** 0.8 * g.spread * (0.55 + 1.3 * collar), roll = Math.PI * (v + 1) * (1 + 0.7 * collar) + 0.6 * Math.sin(g.frequency * u - p + offset), rr = radius + width * Math.cos(roll);
+          x = rr * Math.cos(theta) + 0.1 * Math.sin(2 * u + p) * env;
+          y = rr * Math.sin(theta) * 1.15 + 0.09 * Math.cos(3 * u - p + offset) * env;
+          z2 = width * Math.sin(roll) + 0.025 * Math.sin(theta + p);
+        } else if (r.mechanism === "toroidal-weave") {
+          const theta = TAU * u, major = 0.3 + 0.12 * g.spread + 0.09 * Math.sin(offset) + 0.07 * Math.sin(g.lobes * theta + offset + p) + g.asymmetry * 0.12 * Math.sin(theta), minor = (0.04 + 0.05 * g.curl + 0.025 * Math.sin(g.frequency * theta - p + offset)) * (0.8 + 0.3 * Math.sin(offset) ** 2), angle = offset + (g.twist + 0.5 * g.curl) * theta + 0.7 * v + 0.35 * Math.sin(p - 2 * theta), rr = major + minor * Math.cos(angle);
+          x = rr * Math.cos(theta) + 0.045 * Math.sin(p + theta);
+          y = rr * Math.sin(theta) * (0.5 + 0.4 * g.curl + 0.12 * Math.cos(offset)) + 0.1 * Math.sin(2 * theta - p + offset);
+          z2 = minor * Math.sin(angle);
+        } else {
+          const angle = k * Math.PI * (3 - Math.sqrt(5)) + g.offset + 0.19 * Math.sin(p + offset - 3 * u) + (1 - f) * 1.5 * u, length = (0.12 + 0.58 * ((k + 1) / n) ** 0.8) * g.spread, width = (0.025 + 0.13 * (1 - f)) * Math.sin(Math.PI * u) ** 0.8, roll = Math.PI * g.curl * v + 0.65 * Math.sin(g.frequency * u - p + offset), radius = 0.01 + length * u + width * 0.5 * Math.sin(roll), side = width * (0.55 * v + 0.6 * Math.cos(roll)), bend = 0.13 * Math.sin(Math.PI * u) * Math.sin(offset + p - 2 * u);
+          x = radius * Math.cos(angle) + (side + bend) * Math.sin(angle);
+          y = radius * Math.sin(angle) - (side + bend) * Math.cos(angle);
+          z2 = width * Math.cos(roll) + 0.045 * env * Math.sin(offset - p);
+        }
+        const alpha = (0.012 + 0.075 * env) * env ** 0.5 * (0.3 + 0.7 * edge) * (1 - 0.55 * Math.abs(v));
+        return { x, y, z: z2, alpha, owner: skipOwner ? -1 : owner2(body, k, u) };
+      }
+      function compressionGrid(body, phase) {
+        const m = body.record.geometry.material;
+        if (!m) return null;
+        if (body.materialGrid?.phase === phase) return body.materialGrid;
+        const n = body.chartCount || body.record.strands, grids = [];
+        for (let k = 0; k < n; k++) {
+          const values = new Float32Array(m.rows * m.columns), x = new Float64Array(values.length), y = new Float64Array(values.length), positive = [];
+          for (let i = 0; i < m.rows; i++) for (let j = 0; j < m.columns; j++) {
+            const q = point(body, k, (i + 0.5) / m.rows, -1 + 2 * j / (m.columns - 1), phase, true), index = i * m.columns + j;
+            x[index] = q.x;
+            y[index] = q.y;
+          }
+          for (let i = 0; i < m.rows; i++) for (let j = 0; j < m.columns; j++) {
+            const ia = Math.max(0, i - 1), ib = Math.min(m.rows - 1, i + 1), ja = Math.max(0, j - 1), jb = Math.min(m.columns - 1, j + 1), a = ia * m.columns + j, b = ib * m.columns + j, c = i * m.columns + ja, d = i * m.columns + jb, J = Math.abs(((x[b] - x[a]) * (y[d] - y[c]) - (y[b] - y[a]) * (x[d] - x[c])) / ((ib - ia) / m.rows * (2 * (jb - ja) / (m.columns - 1))));
+            values[i * m.columns + j] = J;
+            if (J > 1e-12) positive.push(J);
+          }
+          positive.sort((a, b) => a - b);
+          const median = positive[Math.floor(positive.length / 2)] || 1;
+          for (let i = 0; i < values.length; i++) values[i] = Math.pow(Math.max(0, 1 - values[i] / median), m.focus);
+          grids.push({ values, median });
+        }
+        return body.materialGrid = { phase, grids };
+      }
+      function compressionAt(body, grid, k, u, v) {
+        if (!grid) return 0;
+        const m = body.record.geometry.material, x = Math.max(0, Math.min(m.rows - 1, u * m.rows - 0.5)), y = Math.max(0, Math.min(m.columns - 1, (v + 1) * (m.columns - 1) / 2)), i = Math.floor(x), j = Math.floor(y), a = x - i, b = y - j, g = grid.grids[k].values, at = (i2, j2) => g[Math.min(m.rows - 1, i2) * m.columns + Math.min(m.columns - 1, j2)];
+        return (1 - a) * ((1 - b) * at(i, j) + b * at(i, j + 1)) + a * ((1 - b) * at(i + 1, j) + b * at(i + 1, j + 1));
+      }
+      function frame(body, phase, { budget = 6e3, crests = true, reuse } = {}) {
+        if (!Number.isFinite(phase) || !Number.isFinite(budget) || budget < 128 || budget > 1e5) throw Error("LifeformFamilies: frame budget");
+        budget = Math.floor(budget);
+        const points = new Float32Array(budget * 4), owners = new Uint16Array(budget), n = body.chartCount || body.record.strands, grid = compressionGrid(body, phase);
+        for (let j = 0; j < budget; j++) {
+          const k = j % n, local = Math.floor(j / n), rows = Math.ceil(budget / n / 24), u = (Math.floor(local / 24) + 0.5) / rows, v = 2 * (local % 24 + 0.5) / 24 - 1, q = point(body, k, Math.min(0.999, u), v, phase);
+          if (grid) q.alpha *= 0.3 + 2.4 * compressionAt(body, grid, k, Math.min(0.999, u), v);
+          points.set([q.x, q.y, q.z, q.alpha], j * 4);
+          owners[j] = q.owner;
+        }
+        for (let j = 0; j < body.nodes.length; j++) {
+          const patch = body.territories.find((p) => p.owner === j), q = point(body, patch.component, (patch.u[0] + patch.u[1]) / 2, 0, phase);
+          points.set([q.x, q.y, q.z, q.alpha], j * 4);
+          owners[j] = j;
+        }
+        const ridges = [];
+        if (crests) for (let k = 0; k < n; k++) for (let h = 0; h < 15; h++) {
+          const v = -1 + 2 * h / 14, line = [];
+          for (let j = 0; j <= 160; j++) {
+            const u = j / 160, q = point(body, k, u, v, phase), taper = Math.sin(Math.PI * u) ** 0.7;
+            q.alpha = Math.min(1, (h % 7 === 0 ? 1 : 0.65) * taper * (0.5 + 0.5 * Math.sin(3 * u + body.record.geometry.offset + k) ** 2) * (body.record.mechanism === "phyllotaxis-fan" ? 1.7 - 1.1 * k / n : body.record.mechanism === "logarithmic-mantle" ? 1.4 - 0.5 * u : 1));
+            if (grid) {
+              const material = body.record.geometry.material, focus = compressionAt(body, grid, k, u, v);
+              q.alpha = Math.min(1, (material.quiet + material.gain * focus) * taper * (body.record.mechanism === "phyllotaxis-fan" ? 1.7 - 1.1 * k / n : 1.4 - 0.5 * u));
+              q.compression = focus;
+            }
+            line.push(q);
+          }
+          ridges.push({ line, material: "parameter-filament" });
+        }
+        return { points, owners, ridges };
+      }
+      function anchor2(body, nodeId, phase) {
+        const p = body.territories.find((p2) => p2.node === nodeId);
+        if (!p) throw Error("LifeformFamilies: unknown operation");
+        return point(body, p.component, (p.u[0] + p.u[1]) / 2, 0, phase);
+      }
+      function portraitFrame(body) {
+        if (body.bounds) return body.bounds;
+        const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+        for (let k = 0; k < (body.chartCount || body.record.strands); k++) for (let j = 0; j <= 80; j++) for (let h = 0; h < 32; h++) for (const v of [-1, -0.5, 0, 0.5, 1]) {
+          const q = point(body, k, j / 80, v, TAU * h / 32);
+          [q.x, q.y, q.z].forEach((x, d) => {
+            lo[d] = Math.min(lo[d], x);
+            hi[d] = Math.max(hi[d], x);
+          });
+        }
+        const pad = 0.15;
+        return body.bounds = { cx: (lo[0] + hi[0]) / 2, cy: (lo[1] + hi[1]) / 2, cz: (lo[2] + hi[2]) / 2, width: hi[0] - lo[0] + 2 * pad, height: hi[1] - lo[1] + 2 * pad, depth: hi[2] - lo[2] + 2 * pad };
+      }
+      const api = { authorParams, validate: validate2, compile: compile2, frame, anchor: anchor2, portraitFrame };
+      if (typeof module !== "undefined") module.exports = api;
+      root.LifeformFamilies = api;
+    })(typeof globalThis !== "undefined" ? globalThis : exports);
+  }
+});
+
+// woven-body.js
+var require_woven_body = __commonJS({
+  "woven-body.js"(exports, module) {
+    (function(root) {
+      "use strict";
+      const Families = typeof module !== "undefined" ? require_lifeform_families() : root.LifeformFamilies;
+      const ADAPTERS = ["logarithmic-mantle", "toroidal-weave", "phyllotaxis-fan"];
+      const TAU = 2 * Math.PI, MODEL = "woven-field-experimental";
+      const check4 = (b, m) => {
+        if (!b) throw Error("WovenBody: " + m);
+      };
+      function keys(o, k) {
+        check4(o && typeof o === "object" && !Array.isArray(o) && Object.keys(o).length === k.length && k.every((x) => Object.hasOwn(o, x)), "unknown or missing record fields");
+      }
+      function bounded(x, a, b) {
+        check4(typeof x === "number" && Number.isFinite(x) && x >= a && x <= b, "out of bounds");
+      }
+      function nodes(g) {
+        const ns = Array.isArray(g) ? g : g?.nodes;
+        check4(Array.isArray(ns) && ns.length > 0 && ns.length <= 64, "need 1\u201364 operations");
+        const ids = ns.map((n) => n.id);
+        check4(ids.every((s) => typeof s === "string" && s.length > 0 && s.length <= 64) && new Set(ids).size === ids.length, "invalid operation identifiers");
+        return ns;
+      }
+      function topology(g) {
+        const ns = nodes(g), map2 = new Map(ns.map((n) => [n.id, n])), incoming = new Map(ns.map((n) => [n.id, 0])), outgoing = new Map(ns.map((n) => [n.id, 0]));
+        for (const n of ns) for (const d of n.args || n.inputs || []) {
+          const id2 = typeof d === "string" ? d : d?.node;
+          if (map2.has(id2)) {
+            incoming.set(n.id, incoming.get(n.id) + 1);
+            outgoing.set(id2, outgoing.get(id2) + 1);
+          }
+        }
+        if ([...incoming.values()].every((x) => x === 0)) for (const e of g.edges || []) {
+          const a = e.from || e.source, b = e.to || e.target;
+          if (map2.has(a) && map2.has(b)) {
+            incoming.set(b, incoming.get(b) + 1);
+            outgoing.set(a, outgoing.get(a) + 1);
+          }
+        }
+        const memo2 = /* @__PURE__ */ new Map(), vis = /* @__PURE__ */ new Set();
+        function depth2(id2) {
+          if (memo2.has(id2)) return memo2.get(id2);
+          check4(!vis.has(id2), "cyclic graph");
+          vis.add(id2);
+          const n = map2.get(id2), deps = (n.args || n.inputs || []).map((d2) => typeof d2 === "string" ? d2 : d2?.node).filter((d2) => map2.has(d2));
+          const d = 1 + Math.max(0, ...deps.map(depth2));
+          vis.delete(id2);
+          memo2.set(id2, d);
+          return d;
+        }
+        return { depth: Math.max(...ns.map((n) => depth2(n.id))), fanout: Math.max(...outgoing.values()), convergence: Math.max(...incoming.values()), guards: ns.filter((n) => /^(guard|filter|if|condition)$/.test(n.op || "") || n.op === "action" && map2.get(n.inputs?.[0])?.op !== "literal").length, effects: ns.filter((n) => /^(action|effect)$/.test(n.op || "")).length };
+      }
+      function rng(seed) {
+        let s = (seed ^ 2654435769) >>> 0;
+        s = Math.imul(s ^ s >>> 16, 2246822507) >>> 0;
+        s = Math.imul(s ^ s >>> 13, 3266489909) >>> 0;
+        s = (s ^ s >>> 16) >>> 0;
+        return () => {
+          s = Math.imul(s, 1664525) + 1013904223 >>> 0;
+          return s / 4294967296;
+        };
+      }
+      function author(graph, seed = 1) {
+        nodes(graph);
+        bounded(seed, 0, 4294967295);
+        check4(Number.isInteger(seed), "integer seed required");
+        const t = topology(graph), strands = Math.max(8, Math.min(14, 7 + t.fanout + Math.floor(t.convergence / 2))), ns = nodes(graph), territories = [];
+        for (let k = 0; k < strands; k++) {
+          const assigned = ns.filter((n, i) => i % strands === k);
+          if (!assigned.length) assigned.push(ns[k % ns.length]);
+          assigned.forEach((n, i) => territories.push({ node: n.id, component: k, u: [i / assigned.length, (i + 1) / assigned.length] }));
+        }
+        const record2 = { model: MODEL, mechanism: t.guards > 0 ? "clifford-flow" : t.fanout >= 2 ? "recursive-julia" : t.effects > 0 ? "toroidal-weave" : t.convergence >= 2 ? "logarithmic-mantle" : "phyllotaxis-fan", seed, topology: t, strands, folds: t.guards > 0 ? 3 : Math.min(7, 3 + t.convergence), turns: 1.15 + Math.min(8, t.depth) * 0.13, territories };
+        if (t.guards > 0) {
+          const random = rng(seed);
+          record2.dynamics = { system: "clifford", method: "iterate", parameters: [-1.4, 1.6, 1, 0.7], initial: [0.1 + 0.2 * random(), 0.1 + 0.2 * random()], burn: 256 + 64 * t.guards, iterations: 32768 + 1024 * t.depth, densityGrid: 160, criticalImages: Math.min(14, 3 + 2 * t.depth + t.convergence) };
+          record2.embedding = { model: "bounded-native-warp", scale: [0.23 + 0.2 * random(), 0.3 + 0.2 * random()], warp: [0.04 + 0.1 * random(), 0.04 + 0.1 * random()], overtone: [0.025 + 0.035 * random(), 0.025 + 0.035 * random()], frequency: [1.95 + 0.1 * Math.min(8, t.depth) + 0.6 * (random() - 0.5), 1.9 + 0.1 * Math.min(5, t.convergence) + 0.6 * (random() - 0.5)], shear: (random() - 0.5) * 0.36 };
+        } else if (record2.mechanism === "recursive-julia") {
+          const random = rng(seed);
+          record2.geometry = { model: "quadratic-julia", parameter: [-0.745, 0.113], grid: 192, iterations: 48 + 4 * Math.min(8, t.depth), escape: 2, bounds: [-1.55, 1.55, -1.2, 1.2], levels: [3, 5, 8, 12, 18, 26, 36, 48].filter((x) => x < 48 + 4 * Math.min(8, t.depth)), embedding: { scale: [0.32 + 0.02 * t.fanout + 0.08 * random(), 0.4 + 0.08 * random()], warp: [0.07 + 0.04 * random(), 0.06 + 0.05 * random()], frequency: [1.8 + 0.12 * t.depth, 1.9 + 0.15 * t.fanout], shear: 0.14 * (random() - 0.5) } };
+        } else if (record2.mechanism === "recursive-affine") {
+          const random = rng(seed), count = Math.min(3, t.fanout);
+          record2.geometry = { model: "contractive-branch-charts", chart: "rolled-scroll", rollTurns: 2.4 + 0.3 * Math.min(4, t.convergence), depth: Math.min(6, 2 + t.depth), root: [-0.05 + 0.1 * random(), 0.62], length: 0.64, width: 0.19 + 0.045 * random(), angle: -Math.PI / 2 + 0.14 * (random() - 0.5), motion: 0.2, transforms: Array.from({ length: count }, (_, i) => ({ scale: 0.48 + 0.13 * random(), angle: (i / (count - 1) - 0.5) * 1.4 + 0.14 * (random() - 0.5), attach: 0.68 + 0.3 * random() })) };
+        } else if (ADAPTERS.includes(record2.mechanism)) record2.geometry = Families.authorParams(record2.mechanism, { ...t, strands }, seed);
+        return record2;
+      }
+      function validate2(r, graph) {
+        keys(r, ["model", "mechanism", "seed", "topology", "strands", "folds", "turns", "territories", ...["lorenz-flow", "clifford-flow"].includes(r.mechanism) ? ["dynamics"] : [], ...["recursive-affine", "recursive-julia", ...ADAPTERS].includes(r.mechanism) ? ["geometry"] : [], ...Object.hasOwn(r, "embedding") ? ["embedding"] : []]);
+        check4(r.model === MODEL && ["pleated-braid", "lorenz-flow", "clifford-flow", "recursive-affine", "recursive-julia", ...ADAPTERS].includes(r.mechanism), "unknown construction");
+        if (r.mechanism === "lorenz-flow") {
+          const d = r.dynamics;
+          keys(d, ["system", "method", "sigma", "rho", "beta", "initial", "dt", "burn", "steps", "window"]);
+          check4(d.system === "lorenz" && d.method === "rk4" && d.sigma === 10 && d.rho === 28 && d.beta === 8 / 3, "classical Lorenz RK4 required");
+          check4(Array.isArray(d.initial) && d.initial.length === 3, "three initial coordinates required");
+          d.initial.forEach((x) => bounded(x, -2, 2));
+          check4(Math.hypot(d.initial[0], d.initial[1]) > 1e-5, "exclude stationary invariant axis");
+          bounded(d.dt, 2e-3, 0.01);
+          for (const k of ["burn", "steps", "window"]) check4(Number.isInteger(d[k]), "integer integration counts");
+          bounded(d.burn, 256, 4096);
+          bounded(d.steps, 2048, 16384);
+          bounded(d.window, 256, 4096);
+          check4(d.window <= Math.floor((d.steps - 5) / 2), "orbit window and periodic travel exceed samples");
+        }
+        if (r.mechanism === "clifford-flow") {
+          const d = r.dynamics;
+          keys(d, ["system", "method", "parameters", "initial", "burn", "iterations", "densityGrid", "criticalImages"]);
+          check4(d.system === "clifford" && d.method === "iterate", "Clifford recurrence required");
+          check4(Array.isArray(d.parameters) && d.parameters.length === 4 && Array.isArray(d.initial) && d.initial.length === 2, "map vectors required");
+          d.parameters.forEach((x) => bounded(x, -2.5, 2.5));
+          d.initial.forEach((x) => bounded(x, -3, 3));
+          for (const k of ["burn", "iterations", "densityGrid", "criticalImages"]) check4(Number.isInteger(d[k]), "integer map budgets");
+          bounded(d.burn, 32, 4096);
+          bounded(d.iterations, 4096, 131072);
+          bounded(d.densityGrid, 64, 256);
+          bounded(d.criticalImages, 1, 16);
+        }
+        if (Object.hasOwn(r, "embedding")) {
+          check4(r.mechanism === "clifford-flow", "embedding only for native map");
+          const e = r.embedding;
+          keys(e, ["model", "scale", "warp", "overtone", "frequency", "shear"]);
+          check4(e.model === "bounded-native-warp", "unknown embedding");
+          for (const [k, a, b] of [["scale", 0.2, 0.5], ["warp", 0, 0.16], ["overtone", 0, 0.08], ["frequency", 1, 4]]) {
+            check4(Array.isArray(e[k]) && e[k].length === 2, "two embedding coefficients required");
+            e[k].forEach((x) => bounded(x, a, b));
+          }
+          bounded(e.shear, -0.2, 0.2);
+        }
+        if (r.mechanism === "recursive-julia") {
+          const g = r.geometry;
+          keys(g, ["model", "parameter", "grid", "iterations", "escape", "bounds", "levels", "embedding"]);
+          check4(g.model === "quadratic-julia", "unknown fractal recursion");
+          check4(Array.isArray(g.parameter) && g.parameter.length === 2, "complex quadratic parameter");
+          g.parameter.forEach((x) => bounded(x, -1, 1));
+          bounded(g.grid, 128, 256);
+          bounded(g.iterations, 32, 96);
+          check4(Number.isInteger(g.grid) && Number.isInteger(g.iterations) && g.escape === 2, "bounded grid/iterations and escape radius2 required");
+          check4(Array.isArray(g.bounds) && g.bounds.length === 4, "finite domain bounds");
+          g.bounds.forEach((x) => bounded(x, -2, 2));
+          check4(g.bounds[0] < g.bounds[1] && g.bounds[2] < g.bounds[3], "positive domain");
+          check4(Array.isArray(g.levels) && g.levels.length >= 3 && g.levels.length <= 12, "finite contour levels");
+          g.levels.forEach((x, i) => {
+            bounded(x, 2, g.iterations - 1);
+            check4(!i || x > g.levels[i - 1], "ordered contour levels");
+          });
+          const e = g.embedding;
+          keys(e, ["scale", "warp", "frequency", "shear"]);
+          for (const [key, min, max] of [["scale", 0.2, 0.6], ["warp", 0, 0.2], ["frequency", 1, 4]]) {
+            check4(Array.isArray(e[key]) && e[key].length === 2, "two embedding coordinates");
+            e[key].forEach((x) => bounded(x, min, max));
+          }
+          bounded(e.shear, -0.2, 0.2);
+        }
+        if (r.mechanism === "recursive-affine") {
+          const g = r.geometry;
+          keys(g, ["model", "depth", "root", "length", "angle", "motion", "transforms", ...Object.hasOwn(g, "width") ? ["width"] : [], ...Object.hasOwn(g, "chart") ? ["chart"] : [], ...Object.hasOwn(g, "rollTurns") ? ["rollTurns"] : []]);
+          if (Object.hasOwn(g, "rollTurns")) {
+            check4(g.chart === "rolled-scroll", "roll turns require scroll chart");
+            bounded(g.rollTurns, 2, 4.2);
+          }
+          if (Object.hasOwn(g, "chart")) check4(g.chart === "rolled-scroll", "unknown recursive chart");
+          if (Object.hasOwn(g, "width")) bounded(g.width, 0.08, 0.3);
+          check4(g.model === "contractive-branch-charts", "unknown recursion");
+          bounded(g.depth, 2, 6);
+          check4(Number.isInteger(g.depth), "integer recursion depth");
+          check4(Array.isArray(g.root) && g.root.length === 2, "root coordinates");
+          g.root.forEach((x) => bounded(x, -1, 1));
+          bounded(g.length, 0.3, 0.8);
+          bounded(g.angle, -Math.PI, Math.PI);
+          bounded(g.motion, 0, 0.25);
+          check4(Array.isArray(g.transforms) && g.transforms.length >= 2 && g.transforms.length <= 3, "two or three recursive rules");
+          for (const t of g.transforms) {
+            keys(t, ["scale", "angle", "attach"]);
+            bounded(t.scale, 0.35, 0.67);
+            bounded(t.angle, -1.2, 1.2);
+            bounded(t.attach, 0.4, 1);
+          }
+        }
+        if (ADAPTERS.includes(r.mechanism)) {
+          check4(Families, "family adapter missing");
+          Families.validate(r, graph);
+        }
+        bounded(r.seed, 0, 4294967295);
+        check4(Number.isInteger(r.seed), "integer seed required");
+        keys(r.topology, ["depth", "fanout", "convergence", "guards", "effects"]);
+        for (const x of Object.values(r.topology)) {
+          bounded(x, 0, 64);
+          check4(Number.isInteger(x), "integer graph feature required");
+        }
+        bounded(r.strands, 8, 40);
+        bounded(r.folds, 2, 9);
+        bounded(r.turns, 0.5, 4);
+        check4(Number.isInteger(r.strands) && Number.isInteger(r.folds), "integer lanes and folds required");
+        check4(Array.isArray(r.territories) && r.territories.length > 0 && r.territories.length <= 128, "need territories");
+        const groups = Array.from({ length: r.strands }, () => []), seen = /* @__PURE__ */ new Set();
+        for (const p of r.territories) {
+          keys(p, ["node", "component", "u"]);
+          check4(typeof p.node === "string" && p.node.length > 0 && p.node.length <= 64, "invalid owner");
+          bounded(p.component, 0, r.strands - 1);
+          check4(Number.isInteger(p.component), "integer component");
+          check4(Array.isArray(p.u) && p.u.length === 2, "interval required");
+          p.u.forEach((x) => bounded(x, 0, 1));
+          check4(p.u[0] < p.u[1], "positive patch required");
+          groups[p.component].push(p);
+          seen.add(p.node);
+        }
+        for (const group of groups) {
+          group.sort((a, b) => a.u[0] - b.u[0]);
+          check4(group.length && group[0].u[0] === 0 && group.at(-1).u[1] === 1, "component ownership must cover [0,1]");
+          for (let i = 1; i < group.length; i++) check4(group[i - 1].u[1] === group[i].u[0], "ownership gap or overlap");
+        }
+        if (graph) {
+          const ns = nodes(graph), ids = new Set(ns.map((n) => n.id));
+          check4([...seen].every((id2) => ids.has(id2)) && ns.every((n) => seen.has(n.id)), "ownership must exactly cover graph");
+        }
+        return true;
+      }
+      function compile2(record2, graph) {
+        validate2(record2, graph);
+        if (ADAPTERS.includes(record2.mechanism)) return Families.compile(record2, graph);
+        const r = JSON.parse(JSON.stringify(record2)), ns = nodes(graph), random = rng(r.seed), lanes = Array.from({ length: r.strands }, (_, i) => {
+          const core = i < 4, start = core ? 0.025 + 0.09 * random() : 0.02 + 0.38 * random(), end = core ? 0.84 + 0.15 * random() : Math.min(0.99, start + 0.35 + 0.23 * random());
+          return { core, start, end, angle: core ? TAU * i / 4 : TAU * random(), offset: random() * TAU, reach: core ? 0.025 + 0.035 * random() : 0.13 + 0.28 * random(), lag: 0.5 + random(), width: core ? 9e-3 + 7e-3 * random() : 0.13 + 0.12 * random() };
+        });
+        const body = { record: r, nodes: ns.map((n) => ({ ...n })), lanes, territories: r.territories.map((p) => ({ ...p, owner: ns.findIndex((n) => n.id === p.node) })) };
+        if (r.mechanism === "recursive-julia") compileJulia(body);
+        if (r.mechanism === "recursive-affine") compileRecursive(body);
+        if (r.mechanism === "clifford-flow") compileClifford(body);
+        if (r.mechanism === "lorenz-flow") {
+          body.orbit = integrateLorenz(r.dynamics);
+          body.lanes.forEach((l, i) => {
+            l.core = i < 2;
+            l.start = 0;
+            l.end = 1;
+            l.width = 0.1;
+          });
+        }
+        return body;
+      }
+      function mapStep(d, x, y) {
+        const [a, b, c, e] = d.parameters;
+        return [Math.sin(a * y) + c * Math.cos(a * x), Math.sin(b * x) + e * Math.cos(b * y)];
+      }
+      function compileClifford(body) {
+        const d = body.record.dynamics, [a, b, c, e] = d.parameters, n = d.densityGrid, bx = 1 + Math.abs(c), by = 1 + Math.abs(e), cloud = [], cells = Array.from({ length: n * n }, () => ({ count: 0, x: 0, y: 0, index: 0 }));
+        let [x, y] = d.initial, tx = 1, ty = 0, log = 0;
+        for (let i = 0; i < d.burn + d.iterations; i++) {
+          const vx = -a * c * Math.sin(a * x) * tx + a * Math.cos(a * y) * ty, vy = b * Math.cos(b * x) * tx - b * e * Math.sin(b * y) * ty, length = Math.hypot(vx, vy) || 1;
+          tx = vx / length;
+          ty = vy / length;
+          if (i >= d.burn) log += Math.log(length);
+          [x, y] = mapStep(d, x, y);
+          if (i >= d.burn) {
+            const index = i - d.burn, ix = Math.max(0, Math.min(n - 1, Math.floor((x + bx) / (2 * bx) * n))), iy = Math.max(0, Math.min(n - 1, Math.floor((y + by) / (2 * by) * n))), cell = cells[iy * n + ix];
+            cloud.push([x, y]);
+            cell.count++;
+            cell.x += x;
+            cell.y += y;
+            cell.index = index;
+          }
+        }
+        const random = rng(body.record.seed);
+        body.cloud = cloud;
+        body.mapBounds = { bx, by, n };
+        body.lyapunovEstimate = log / d.iterations;
+        body.maxDensity = Math.max(...cells.map((c2) => c2.count));
+        body.densityCells = cells;
+        body.marks = cells.filter((c2) => c2.count).map((c2) => ({ x: c2.x / c2.count, y: c2.y / c2.count, index: c2.index, density: c2.count, rank: Math.log(Math.max(1e-10, random())) / (0.2 + Math.sqrt(c2.count)) })).sort((a2, b2) => b2.rank - a2.rank);
+        body.critical = criticalCurves(body);
+      }
+      function density(body, x, y) {
+        const { bx, by, n } = body.mapBounds, ix = Math.floor((x + bx) / (2 * bx) * n), iy = Math.floor((y + by) / (2 * by) * n);
+        let sum = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (ix + dx >= 0 && ix + dx < n && iy + dy >= 0 && iy + dy < n) sum += body.densityCells[(iy + dy) * n + ix + dx].count;
+        return sum / 9;
+      }
+      function criticalCurves(body) {
+        const d = body.record.dynamics, [a, b, c, e] = d.parameters, { bx, by } = body.mapBounds, curves = [], active = [];
+        const determinant = (x, y) => a * b * (c * e * Math.sin(a * x) * Math.sin(b * y) - Math.cos(a * y) * Math.cos(b * x));
+        for (let j = 0; j <= 240; j++) {
+          const x = -bx + 2 * bx * j / 240, roots = [];
+          let lo = -by, fl = determinant(x, lo);
+          for (let v = 1; v <= 80; v++) {
+            const hi = -by + 2 * by * v / 80, fh = determinant(x, hi);
+            if (fl * fh < 0) {
+              let l = lo, h = hi, f = fl;
+              for (let z2 = 0; z2 < 8; z2++) {
+                const m = (l + h) / 2, g = determinant(x, m);
+                if (f * g <= 0) h = m;
+                else {
+                  l = m;
+                  f = g;
+                }
+              }
+              roots.push((l + h) / 2);
+            }
+            lo = hi;
+            fl = fh;
+          }
+          const next = [], used = /* @__PURE__ */ new Set();
+          for (const y of roots) {
+            let best = -1, dist = 0.15;
+            for (let k = 0; k < active.length; k++) if (!used.has(k) && Math.abs(active[k].y - y) < dist) {
+              dist = Math.abs(active[k].y - y);
+              best = k;
+            }
+            const trace = best < 0 ? { y, line: [] } : active[best];
+            if (best >= 0) used.add(best);
+            trace.y = y;
+            trace.line.push([x, y]);
+            next.push(trace);
+          }
+          for (let k = 0; k < active.length; k++) if (!used.has(k) && active[k].line.length > 3) curves.push(active[k].line);
+          active.splice(0, active.length, ...next);
+        }
+        for (const t of active) if (t.line.length > 3) curves.push(t.line);
+        const images = [];
+        let vertices = 0;
+        const maximum = 2 * d.iterations;
+        function forward(q, count) {
+          let p = q;
+          for (let j = 0; j < count; j++) p = mapStep(d, p[0], p[1]);
+          return p;
+        }
+        function midpoint(p, q) {
+          const x = (p[0] + q[0]) / 2;
+          let y = (p[1] + q[1]) / 2;
+          for (let j = 0; j < 4; j++) {
+            const f = determinant(x, y), derivative = a * b * (c * e * Math.sin(a * x) * b * Math.cos(b * y) + a * Math.sin(a * y) * Math.cos(b * x));
+            if (Math.abs(derivative) > 1e-8) y -= Math.max(-0.08, Math.min(0.08, f / derivative));
+          }
+          return [x, y];
+        }
+        for (let count = 1; count <= d.criticalImages; count++) for (const curve of curves) {
+          let segment = function(p, q, fp, fq, depth2) {
+            if (vertices >= maximum) return;
+            const m = midpoint(p, q), fm = forward(m, count), distance = Math.hypot(fp[0] - fq[0], fp[1] - fq[1]), error62 = Math.hypot(fm[0] - (fp[0] + fq[0]) / 2, fm[1] - (fp[1] + fq[1]) / 2);
+            if (depth2 < 6 && vertices < maximum && (distance > 0.045 || error62 > 6e-3)) {
+              segment(p, m, fp, fm, depth2 + 1);
+              segment(m, q, fm, fq, depth2 + 1);
+            } else {
+              mapped.push(fp);
+              vertices++;
+            }
+          };
+          const mapped = [];
+          for (let j = 0; j < curve.length - 1 && vertices < maximum; j++) segment(curve[j], curve[j + 1], forward(curve[j], count), forward(curve[j + 1], count), 0);
+          if (vertices < maximum) mapped.push(forward(curve.at(-1), count));
+          if (!mapped.length) continue;
+          images.push({ line: mapped.map(([x, y]) => ({ x, y, density: density(body, x, y) })), iteration: count });
+        }
+        return images;
+      }
+      function embedding(body) {
+        return body.record.embedding || { scale: [0.33, 0.43], warp: [0.105, 0.095], overtone: [0.045, 0.035], frequency: [2.4, 2.1], shear: 0 };
+      }
+      function mapWarp(body, x, y, phase) {
+        const p = phase % TAU, e = embedding(body), ox = x * e.scale[0] + e.shear * y, oy = y * e.scale[1], envelope = Math.max(0, 1 - (x / (body.mapBounds.bx + 0.01)) ** 2);
+        return { x: ox + e.warp[0] * envelope * Math.sin(e.frequency[0] * y + p) + e.overtone[0] * Math.sin(p - 1.7 * x) * Math.sin(y), y: oy + e.warp[1] * envelope * Math.sin(e.frequency[1] * x - p) + e.overtone[1] * Math.sin(2 * p + y) * Math.sin(1.7 * x), z: 0.07 * Math.sin(x + y + p), alpha: 1 };
+      }
+      function mapOwner(body, index) {
+        const u = (index + 0.5) / body.cloud.length, k = index % body.record.strands;
+        return ownerAt(body, k, u);
+      }
+      function cliffordFrame(body, phase, { budget = 22e3, crests = true, reuse } = {}) {
+        bounded(phase, -1e12, 1e12);
+        bounded(budget, 128, 1e5);
+        budget = Math.floor(budget);
+        const points = reuse?.points?.length === budget * 4 ? reuse.points : new Float32Array(budget * 4), owners = reuse?.owners?.length === budget ? reuse.owners : new Uint16Array(budget), max = Math.log1p(body.maxDensity);
+        for (let i = 0; i < budget; i++) {
+          let mark = body.marks[i % body.marks.length];
+          if (i < body.nodes.length) {
+            const patch = body.territories.find((p) => p.owner === i), u = (patch.u[0] + patch.u[1]) / 2, index = Math.min(body.cloud.length - 1, Math.floor(u * body.cloud.length / body.record.strands) * body.record.strands + patch.component), [x, y] = body.cloud[index];
+            mark = { x, y, index, density: density(body, x, y) };
+          }
+          const q = mapWarp(body, mark.x, mark.y, phase), alpha = (0.02 + 0.34 * Math.pow(Math.log1p(mark.density) / max, 0.9)) * (0.3 + 0.7 * mark.density / (mark.density + 3));
+          points.set([q.x, q.y, q.z, alpha], i * 4);
+          owners[i] = mapOwner(body, mark.index);
+        }
+        const ridges = [];
+        if (crests) for (let component = 0; component < body.critical.length; component++) {
+          const image = body.critical[component], line = image.line.map((q, j) => {
+            const p = mapWarp(body, q.x, q.y, phase), strength = Math.min(1, Math.log1p(q.density) / max), edge = Math.min(1, j / 5, (image.line.length - 1 - j) / 5);
+            return { ...p, alpha: edge * (image.iteration <= 3 ? 0.32 : image.iteration <= 7 ? 0.6 : 0.9) * strength ** 0.65, owner: ownerAt(body, component % body.record.strands, j / Math.max(1, image.line.length - 1)) };
+          });
+          ridges.push({ line, material: "critical-image" });
+        }
+        return { points, owners, ridges };
+      }
+      function juliaValue(g, x, y) {
+        let zx = x, zy = y, count = 0, escaped = false;
+        for (; count < g.iterations; count++) {
+          const next = zx * zx - zy * zy + g.parameter[0];
+          zy = 2 * zx * zy + g.parameter[1];
+          zx = next;
+          if (zx * zx + zy * zy > g.escape * g.escape) {
+            escaped = true;
+            count++;
+            break;
+          }
+        }
+        const magnitude = Math.hypot(zx, zy), value = escaped ? Math.max(0, Math.min(g.iterations, count + 1 - Math.log2(Math.max(1e-10, Math.log(magnitude))))) : g.iterations;
+        return { value, escaped, count };
+      }
+      function compileJulia(body) {
+        const g = body.record.geometry, n = g.grid, [xmin, xmax, ymin, ymax] = g.bounds, field = new Float32Array(n * n), marks = [], random = rng(body.record.seed), dx = (xmax - xmin) / (n - 1), dy = (ymax - ymin) / (n - 1);
+        for (let row = 0; row < n; row++) for (let col = 0; col < n; col++) {
+          const x = xmin + dx * col, y = ymin + dy * row, q = juliaValue(g, x, y), index = row * n + col;
+          field[index] = q.value;
+          if (q.value > 2.5) {
+            const alpha = q.escaped ? 0.025 + 0.2 * Math.min(1, q.value / g.iterations) ** 0.6 : 0.018, weight = q.escaped ? 0.25 + Math.sqrt(q.value) : 0.15;
+            marks.push({ x, y, index, value: q.value, alpha, rank: Math.log(Math.max(1e-10, random())) / weight });
+          }
+        }
+        body.julia = { field, marks: marks.sort((a, b) => b.rank - a.rank), dx, dy, contours: [] };
+        for (let levelIndex = 0; levelIndex < g.levels.length; levelIndex++) {
+          const level = g.levels[levelIndex], vertices = /* @__PURE__ */ new Map(), segments = [], adj = /* @__PURE__ */ new Map(), vertex = (ax, ay, bx, by) => {
+            const ia = ay * n + ax, ib = by * n + bx, key = Math.min(ia, ib) + ":" + Math.max(ia, ib);
+            if (vertices.has(key)) return key;
+            const a = field[ia], b = field[ib], t = (level - a) / (b - a), x = xmin + dx * (ax + t * (bx - ax)), y = ymin + dy * (ay + t * (by - ay));
+            vertices.set(key, { x, y, level, residual: a + (b - a) * t - level });
+            return key;
+          }, join = (a, b) => {
+            const id2 = segments.length;
+            segments.push([a, b]);
+            for (const key of [a, b]) {
+              if (!adj.has(key)) adj.set(key, []);
+              adj.get(key).push(id2);
+            }
+          };
+          for (let row = 0; row < n - 1; row++) for (let col = 0; col < n - 1; col++) {
+            const corners = [[col, row], [col + 1, row], [col + 1, row + 1], [col, row + 1]], crossings = [];
+            for (let e = 0; e < 4; e++) {
+              const a = corners[e], b = corners[(e + 1) % 4];
+              if (field[a[1] * n + a[0]] >= level !== field[b[1] * n + b[0]] >= level) crossings.push(vertex(...a, ...b));
+            }
+            if (crossings.length === 2) join(...crossings);
+            else if (crossings.length === 4) {
+              const center = corners.reduce((sum, [x, y]) => sum + field[y * n + x], 0) / 4;
+              if (center >= level) {
+                join(crossings[0], crossings[1]);
+                join(crossings[2], crossings[3]);
+              } else {
+                join(crossings[0], crossings[3]);
+                join(crossings[1], crossings[2]);
+              }
+            }
+          }
+          const used = /* @__PURE__ */ new Set(), trace = (start, id2) => {
+            const line = [vertices.get(start)];
+            let key = start;
+            while (id2 !== void 0 && !used.has(id2)) {
+              used.add(id2);
+              const edge = segments[id2];
+              key = edge[0] === key ? edge[1] : edge[0];
+              line.push(vertices.get(key));
+              id2 = adj.get(key).find((i) => !used.has(i));
+            }
+            if (line.length > 2) body.julia.contours.push({ levelIndex, line });
+          };
+          for (const [key, ids] of adj) if (ids.length === 1 && !used.has(ids[0])) trace(key, ids[0]);
+          for (let i = 0; i < segments.length; i++) if (!used.has(i)) trace(segments[i][0], i);
+        }
+        check4(body.julia.marks.length >= body.nodes.length, "Julia field needs positive owned tissue");
+      }
+      function juliaWarp(body, x, y, phase) {
+        const g = body.record.geometry, e = g.embedding, p = phase % TAU, env = Math.max(0, 1 - (x / Math.max(Math.abs(g.bounds[0]), Math.abs(g.bounds[1]))) ** 2);
+        return { x: e.scale[0] * x + e.shear * y + e.warp[0] * env * Math.sin(e.frequency[0] * y + p), y: e.scale[1] * y + e.warp[1] * env * Math.sin(e.frequency[1] * x - p), z: 0.06 * Math.sin(x - y + p), alpha: 1 };
+      }
+      function juliaOwner(body, index) {
+        const g = body.record.geometry, n = g.grid, col = index % n, row = Math.floor(index / n), component = Math.min(body.record.strands - 1, Math.floor(col / n * body.record.strands)), u = row / (n - 1);
+        return ownerAt(body, component, u);
+      }
+      function juliaFrame(body, phase, { budget = 6500, crests = true, reuse } = {}) {
+        bounded(phase, -1e12, 1e12);
+        bounded(budget, 128, 1e5);
+        budget = Math.floor(budget);
+        const points = new Float32Array(budget * 4), owners = new Uint16Array(budget), marks = body.julia.marks;
+        for (let i = 0; i < budget; i++) {
+          const m = marks[i % marks.length], q = juliaWarp(body, m.x, m.y, phase);
+          points.set([q.x, q.y, q.z, m.alpha], i * 4);
+          owners[i] = juliaOwner(body, m.index);
+        }
+        for (let i = 0; i < body.nodes.length; i++) {
+          const m = marks.find((m2) => juliaOwner(body, m2.index) === i);
+          check4(m, "Julia ownership patch misses finite field");
+          const q = juliaWarp(body, m.x, m.y, phase);
+          points.set([q.x, q.y, q.z, m.alpha], i * 4);
+          owners[i] = i;
+        }
+        const ridges = [];
+        if (crests) for (const curve of body.julia.contours) {
+          const component = curve.levelIndex % body.record.strands, line = curve.line.map((q, j) => {
+            const p = juliaWarp(body, q.x, q.y, phase), u = j / (curve.line.length - 1), fade = Math.min(1, j / 4, (curve.line.length - 1 - j) / 4);
+            return { ...p, alpha: (0.14 + 0.68 * (curve.levelIndex / (body.record.geometry.levels.length - 1)) ** 0.7) * Math.max(0, fade), owner: ownerAt(body, component, u), native: { x: q.x, y: q.y, level: q.level, residual: q.residual } };
+          });
+          ridges.push({ line, material: "finite-julia-escape-contour" });
+        }
+        return { points, owners, ridges };
+      }
+      function juliaBounds(body) {
+        const g = body.record.geometry, e = g.embedding, x = Math.max(Math.abs(g.bounds[0]), Math.abs(g.bounds[1])), y = Math.max(Math.abs(g.bounds[2]), Math.abs(g.bounds[3]));
+        return { cx: 0, cy: 0, cz: 0, width: 2 * (x * e.scale[0] + Math.abs(e.shear) * y + e.warp[0] + 0.01), height: 2 * (y * e.scale[1] + e.warp[1] + 0.01), depth: 0.14 };
+      }
+      function compileRecursive(body) {
+        const g = body.record.geometry, branches = [{ parent: -1, rule: -1, depth: 0, scale: 1, component: 0 }];
+        for (let i = 0; i < branches.length; i++) {
+          const b = branches[i];
+          if (b.depth < g.depth) g.transforms.forEach((t, rule) => branches.push({ parent: i, rule, depth: b.depth + 1, scale: b.scale * t.scale, component: branches.length % body.record.strands }));
+        }
+        body.branches = branches;
+        body.recursive = true;
+      }
+      function recursivePose(body, phase) {
+        if (body.recursivePose?.phase === phase) return body.recursivePose.poses;
+        const g = body.record.geometry, poses = [];
+        for (let i = 0; i < body.branches.length; i++) {
+          const b = body.branches[i];
+          let x, y, angle, length = g.length * b.scale;
+          if (b.parent < 0) {
+            [x, y] = g.root;
+            angle = g.angle + 0.1 * g.motion * Math.sin(phase);
+          } else {
+            const parent = poses[b.parent], rule = g.transforms[b.rule];
+            const pb = body.branches[b.parent], u = rule.attach, env = Math.sin(Math.PI * u), D2 = parent.length * (u + (g.chart ? 0.2 * env * Math.sin(TAU * u + 0.4 * Math.sin(phase)) : 0)), S = g.chart ? 0.22 * parent.length * env * Math.sin(TAU * u + 0.6 * Math.sin(phase) + 0.2 * pb.depth) : 0;
+            x = parent.x + D2 * Math.cos(parent.angle) - S * Math.sin(parent.angle);
+            y = parent.y + D2 * Math.sin(parent.angle) + S * Math.cos(parent.angle);
+            angle = parent.angle + rule.angle + g.motion * Math.sin(phase - 0.65 * b.depth + 0.8 * b.rule);
+          }
+          poses.push({ x, y, angle, length });
+        }
+        body.recursivePose = { phase, poses };
+        return poses;
+      }
+      function recursivePleatPoint(body, index, u, v, phase) {
+        const b = body.branches[index], p = recursivePose(body, phase)[index], env = Math.sin(Math.PI * u), bend = 0.13 * p.length * env * Math.sin(phase - 0.4 * b.depth + b.rule), width = p.length * (0.018 + (body.record.geometry.width || 0.065) * env) * (1 - u * 0.55), fold = body.record.folds * Math.PI * v + 2 * Math.sin(6 * u - phase + b.depth), side = width * (v + 0.25 * Math.sin(fold)), s = Math.sin(p.angle), c = Math.cos(p.angle), distance = p.length * u + 0.38 * width * Math.cos(fold), compression = Math.min(6, 1 / (0.2 + Math.abs(1 + 0.25 * body.record.folds * Math.PI * Math.cos(fold))));
+        return { x: p.x + distance * c - (bend + side) * s, y: p.y + distance * s + (bend + side) * c, z: width * Math.cos(fold), alpha: (0.065 + 0.06 * compression) * env ** 0.6 / (1 + 0.06 * b.depth) / (1 + 0.4 * b.depth) ** 2, owner: ownerAt(body, b.component, u) };
+      }
+      function recursiveScrollRow(body, k, u, phase) {
+        const b = body.branches[k], p = recursivePose(body, phase)[k], L = p.length, A3 = body.record.geometry.width || 0.065, env = Math.sin(Math.PI * u), cos = Math.cos(Math.PI * u), w = L * (0.018 + A3 * env) * (1 - 0.55 * u), wu = L * (A3 * Math.PI * cos * (1 - 0.55 * u) - 0.55 * (0.018 + A3 * env)), psi = TAU * u + 0.4 * Math.sin(phase), chi = TAU * u + 0.6 * Math.sin(phase) + 0.2 * b.depth, D2 = L * (u + 0.2 * env * Math.sin(psi)), S = 0.22 * L * env * Math.sin(chi), Du = L * (1 + 0.2 * (Math.PI * cos * Math.sin(psi) + env * TAU * Math.cos(psi))), Su = 0.22 * L * (Math.PI * cos * Math.sin(chi) + env * TAU * Math.cos(chi)), Fu = 3.2 * Math.cos(4 * u - phase), Fv = (body.record.geometry.rollTurns || 1.3) * Math.PI, offset = Fv + 0.8 * Math.sin(4 * u - phase);
+        return { p, b, L, env, w, wu, D: D2, S, Du, Su, Fu, Fv, offset, radialBase: body.record.geometry.rollTurns ? 0.575 : 0.7, radialSlope: body.record.geometry.rollTurns ? 0.425 : 0.12 };
+      }
+      function recursiveScrollJacobian(row, v) {
+        const F = row.Fv * v + row.offset, s = Math.sin(F), c = Math.cos(F), factor = row.radialBase + row.radialSlope * v, R = row.w * factor, Ru = row.wu * factor, Rv = row.radialSlope * row.w, Du = row.Du + 0.7 * (Ru * c - R * s * row.Fu), Dv = 0.7 * (Rv * c - R * s * row.Fv), Su = row.Su + Ru * s + R * c * row.Fu, Sv = Rv * s + R * c * row.Fv;
+        return Du * Sv - Su * Dv;
+      }
+      function recursivePoint(body, k, u, v, phase) {
+        if (!body.record.geometry.chart) return recursivePleatPoint(body, k, u, v, phase);
+        const row = recursiveScrollRow(body, k, u, phase), F = row.Fv * v + row.offset, R = row.w * (row.radialBase + row.radialSlope * v), D2 = row.D + 0.7 * R * Math.cos(F), S = row.S + R * Math.sin(F), c = Math.cos(row.p.angle), s = Math.sin(row.p.angle), J = recursiveScrollJacobian(row, v), compression = Math.min(6, 1 / (0.15 + Math.abs(J) / (row.L * row.w)));
+        return { x: row.p.x + D2 * c - S * s, y: row.p.y + D2 * s + S * c, z: 0.6 * R * Math.cos(F) + 0.2 * row.w * Math.sin(TAU * u - phase), alpha: (0.065 + 0.06 * compression) * row.env ** 0.6 / (1 + 0.06 * row.b.depth) / (1 + 0.4 * row.b.depth) ** 2, owner: ownerAt(body, row.b.component, u) };
+      }
+      function recursiveFrame(body, phase, { budget = 6500, crests = true, reuse } = {}) {
+        bounded(phase, -1e12, 1e12);
+        bounded(budget, 128, 1e5);
+        budget = Math.floor(budget);
+        const points = new Float32Array(budget * 4), owners = new Uint16Array(budget), branches = body.branches, weights = branches.map((b) => b.scale), total = weights.reduce((a, b) => a + b, 0), counts = weights.map((w) => Math.floor(budget * w / total));
+        for (let j = counts.reduce((a, b) => a + b, 0); j < budget; j++) counts[j % counts.length]++;
+        let cursor = 0;
+        for (let k = 0; k < branches.length; k++) for (let j = 0; j < counts[k]; j++) {
+          const cols = Math.min(24, counts[k]), rows = Math.ceil(counts[k] / cols), u = (Math.floor(j / cols) + 0.5) / rows, v = 2 * (j % cols + 0.5) / cols - 1, q = recursivePoint(body, k, u, v, phase);
+          points.set([q.x, q.y, q.z, q.alpha], cursor * 4);
+          owners[cursor++] = q.owner;
+        }
+        for (let j = 0; j < body.nodes.length; j++) {
+          const t = body.territories.find((p) => p.owner === j), k = branches.findIndex((b) => b.component === t.component), q = recursivePoint(body, k, (t.u[0] + t.u[1]) / 2, 0, phase);
+          points.set([q.x, q.y, q.z, q.alpha], j * 4);
+          owners[j] = j;
+        }
+        const ridges = [];
+        if (crests) branches.forEach((b, k) => {
+          if (b.depth <= 2) ridges.push(...recursiveCaustics(body, k, phase));
+          for (const v of b.depth <= 2 ? [-0.9, -0.6, -0.3, 0, 0.3, 0.6, 0.9] : [-0.6, 0, 0.6]) {
+            const line = [], steps = Math.max(24, Math.floor(96 * Math.sqrt(b.scale)));
+            for (let j = 0; j <= steps; j++) {
+              const u = j / steps, q = recursivePoint(body, k, u, v, phase);
+              q.alpha = (b.depth <= 2 ? 0.25 : 0.15) * Math.sin(Math.PI * u) ** 0.6 / (1 + 0.4 * b.depth) ** 2;
+              line.push(q);
+            }
+            ridges.push({ line, material: "recursive-chart" });
+          }
+        });
+        return { points, owners, ridges };
+      }
+      function recursiveJacobianRow(body, k, u, phase) {
+        if (body.record.geometry.chart) {
+          const row = recursiveScrollRow(body, k, u, phase);
+          return (v) => recursiveScrollJacobian(row, v);
+        }
+        const branch = body.branches[k], L = recursivePose(body, phase)[k].length, A3 = body.record.geometry.width || 0.065, env = Math.sin(Math.PI * u), cos = Math.cos(Math.PI * u), w = L * (0.018 + A3 * env) * (1 - 0.55 * u), wu = L * (A3 * Math.PI * cos * (1 - 0.55 * u) - 0.55 * (0.018 + A3 * env)), f = 6 * u - phase + branch.depth, Fu = 12 * Math.cos(f), Fv = body.record.folds * Math.PI, offset = 2 * Math.sin(f), bu = 0.13 * L * Math.PI * cos * Math.sin(phase - 0.4 * branch.depth + branch.rule);
+        return (v) => {
+          const F = Fv * v + offset, S = Math.sin(F), C2 = Math.cos(F), Du = L + 0.38 * (wu * C2 - w * S * Fu), Dv = -0.38 * w * S * Fv, Su = bu + wu * (v + 0.25 * S) + 0.25 * w * C2 * Fu, Sv = w * (1 + 0.25 * C2 * Fv);
+          return Du * Sv - Su * Dv;
+        };
+      }
+      function recursiveCaustics(body, k, phase) {
+        const tracks = [], finished = [], depth2 = body.branches[k].depth;
+        const finish = (t) => {
+          if (t.line.length >= 3) {
+            for (let j = 0; j < t.line.length; j++) {
+              const fade = Math.min(1, j / 3, (t.line.length - 1 - j) / 3);
+              t.line[j].alpha *= Math.max(0, fade);
+            }
+            finished.push({ line: t.line, material: "recursive-projected-caustic" });
+          }
+        };
+        for (let step2 = 0; step2 <= 96; step2++) {
+          const u = step2 / 96, roots = [], jacobian = recursiveJacobianRow(body, k, u, phase);
+          let left = -1, jl = jacobian(left);
+          for (let col = 1; col <= 48; col++) {
+            const right = -1 + 2 * col / 48, jr = jacobian(right);
+            if (jl * jr < 0) {
+              let a = left, b = right, ja = jl;
+              for (let iteration = 0; iteration < 10; iteration++) {
+                const m = (a + b) / 2, jm = jacobian(m);
+                if (ja * jm <= 0) b = m;
+                else {
+                  a = m;
+                  ja = jm;
+                }
+              }
+              roots.push((a + b) / 2);
+            }
+            left = right;
+            jl = jr;
+          }
+          const unmatched = new Set(tracks), next = [];
+          for (const v of roots) {
+            let nearest = null, distance = 0.18;
+            for (const t of unmatched) {
+              const d = Math.abs(v - t.v);
+              if (d < distance) {
+                nearest = t;
+                distance = d;
+              }
+            }
+            const q = recursivePoint(body, k, u, v, phase);
+            q.alpha = (depth2 < 2 ? 1 : 0.8) * Math.sin(Math.PI * u) ** 0.45;
+            q.chart = { branch: k, u, v, jacobian: jacobian(v) };
+            if (nearest) {
+              unmatched.delete(nearest);
+              nearest.line.push(q);
+              nearest.v = v;
+              next.push(nearest);
+            } else next.push({ v, line: [q] });
+          }
+          for (const t of unmatched) finish(t);
+          tracks.splice(0, tracks.length, ...next);
+        }
+        for (const t of tracks) finish(t);
+        return finished;
+      }
+      function recursiveBounds(body) {
+        if (body.bounds) return body.bounds;
+        const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+        for (let h = 0; h < 64; h++) {
+          const phase = TAU * h / 64;
+          for (let k = 0; k < body.branches.length; k++) for (const u of [0, 0.25, 0.5, 0.75, 1]) for (const v of [-1, 0, 1]) {
+            const p = recursivePoint(body, k, u, v, phase);
+            [p.x, p.y, p.z].forEach((x, d) => {
+              lo[d] = Math.min(lo[d], x);
+              hi[d] = Math.max(hi[d], x);
+            });
+          }
+        }
+        const pad = 0.16;
+        return body.bounds = { cx: (lo[0] + hi[0]) / 2, cy: (lo[1] + hi[1]) / 2, cz: (lo[2] + hi[2]) / 2, width: hi[0] - lo[0] + 2 * pad, height: hi[1] - lo[1] + 2 * pad, depth: hi[2] - lo[2] + 2 * pad };
+      }
+      function integrateLorenz(d) {
+        const f = ([x, y, z2]) => [d.sigma * (y - x), x * (d.rho - z2) - y, x * y - d.beta * z2], add = (a, b, m) => a.map((x, i) => x + m * b[i]);
+        let state = d.initial.slice();
+        const orbit = [];
+        for (let i = 0; i < d.burn + d.steps; i++) {
+          const a = f(state), b = f(add(state, a, d.dt / 2)), c = f(add(state, b, d.dt / 2)), e = f(add(state, c, d.dt));
+          state = state.map((x, j) => x + d.dt * (a[j] + 2 * b[j] + 2 * c[j] + e[j]) / 6);
+          check4(state.every((x) => Number.isFinite(x) && Math.abs(x) < 100), "integration escaped finite admitted enclosure");
+          if (i >= d.burn) orbit.push([state[0] * 0.036, (25 - state[2]) * 0.03, state[1] * 9e-3]);
+        }
+        return orbit;
+      }
+      function orbitPoint(body, index) {
+        const n = body.orbit.length, i = Math.max(1, Math.min(n - 3, Math.floor(index))), t = Math.max(0, Math.min(1, index - i)), p = body.orbit;
+        return [0, 1, 2].map((k) => {
+          const a = p[i - 1][k], b = p[i][k], c = p[i + 1][k], d = p[i + 2][k];
+          return 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (-a + 3 * b - 3 * c + d) * t * t * t);
+        });
+      }
+      function orbitTangent(body, index) {
+        const n = body.orbit.length, i = Math.max(1, Math.min(n - 3, Math.floor(index))), t = Math.max(0, Math.min(1, index - i)), p = body.orbit;
+        return [0, 1, 2].map((k) => {
+          const a = p[i - 1][k], b = p[i][k], c = p[i + 1][k], d = p[i + 2][k];
+          return 0.5 * (-a + c + 2 * (2 * a - 5 * b + 4 * c - d) * t + 3 * (-a + 3 * b - 3 * c + d) * t * t);
+        });
+      }
+      function lorenzBasis(body, k, u, phase) {
+        const d = body.record.dynamics, start = 2 + (d.steps - d.window - 5) * 0.5 + 0.45 * d.window * Math.sin(phase), index = start + d.window * u, q = orbitPoint(body, index), t = orbitTangent(body, index), length = Math.hypot(...t) || 1, T3 = t.map((x) => x / length), screen = Math.hypot(T3[0], T3[1]) || 1, N = [-T3[1] / screen, T3[0] / screen, 0], B = [T3[1] * N[2] - T3[2] * N[1], T3[2] * N[0] - T3[0] * N[2], T3[0] * N[1] - T3[1] * N[0]], env = Math.sin(Math.PI * u) ** 0.65, width = (0.016 + 0.08 * env) * (0.3 + 0.7 * k / (body.lanes.length - 1)) * (0.68 + 0.32 / (1 + length * 20));
+        return { family: "lorenz", cx: q[0], cy: q[1], cz: q[2], width, N, B, env, frequency: body.record.folds, twist: 0.28 * Math.sin(phase) - TAU * 1.3 * u, warp: phase - body.lanes[k].offset };
+      }
+      function ownerAt(body, k, u) {
+        return body.territories.find((p) => p.component === k && u >= p.u[0] && (u < p.u[1] || u === 1 && p.u[1] === 1)).owner;
+      }
+      function basis(body, k, u, phase) {
+        let cache = body.chartCache;
+        if (!cache || cache.phase !== phase) body.chartCache = cache = { phase, lanes: body.lanes.map(() => /* @__PURE__ */ new Map()) };
+        const hit = cache.lanes[k].get(u);
+        if (hit) return hit;
+        if (body.record.mechanism === "lorenz-flow") {
+          const b2 = lorenzBasis(body, k, u, phase);
+          cache.lanes[k].set(u, b2);
+          return b2;
+        }
+        const r = body.record, l = body.lanes[k], p = phase % TAU, t = l.start + (l.end - l.start) * u, env = Math.sin(Math.PI * u) ** 0.85, wave = Math.sin(p - TAU * t * l.lag + l.offset), theta = TAU * (l.core ? r.turns : 0.55 + 0.06 * r.topology.fanout) * t + l.angle + 0.7 * wave;
+        const knot = TAU * (l.core ? 1.35 : 2.2) * t + 0.8 * Math.sin(9 * t - p + l.offset), spine = 0.12 * Math.sin(6 * t - 1 + 0.7 * Math.sin(p - 2 * t)) + 0.11 * Math.sin(knot) * env, spread = l.reach * env * (0.7 + 0.3 * Math.sin(4 * t + l.offset)), cx = spine + spread * Math.sin(theta) + (l.core ? 0.055 * env * Math.sin(2 * knot + l.angle) : 0), cy = 1.45 * (t - 0.5) + (l.core ? 0.055 : 0.28) * env * Math.cos(knot + l.angle) + (l.core ? 0.06 : 0.11) * env * Math.sin(p - 5 * t + l.angle), cz = 0.13 * env * Math.cos(theta) + 0.04 * wave;
+        const width = l.width * env * (0.55 + 0.45 * Math.sin(4 * t + l.offset) ** 2) * (0.85 + 0.15 * Math.sin(17 * t + l.offset + 0.5 * Math.sin(p)) ** 2), warp = 2.2 * Math.sin(8 * t - p + l.offset) + 0.7 * Math.sin(19 * t + l.offset + 0.3 * Math.sin(p)), angle = 0.65 * Math.sin(theta) + 0.7 * Math.sin(5 * t - p + l.offset), pocket = 0.32 + 0.3 * Math.sin(l.offset) ** 2 + 0.025 * Math.sin(p + l.offset), roll = l.core ? 0 : Math.exp(-(((u - pocket) / 0.17) ** 2)), b = { cx, cy, cz, width, warp, angle, roll, radial: 0.76 + 0.12 * Math.sin(3 * t + l.offset), turnShift: 0.55 * Math.sin(7 * t + p + l.offset), cc: Math.cos(angle), ss: Math.sin(angle), env, frequency: r.folds * Math.PI, offset: l.offset };
+        cache.lanes[k].set(u, b);
+        return b;
+      }
+      function chartAt(b, v) {
+        if (b.family === "lorenz") {
+          const angle = Math.PI * v + b.twist, fold2 = b.frequency * angle + b.warp, radius2 = b.width * (1 + 0.18 * Math.cos(fold2)), c = Math.cos(angle), s = Math.sin(angle);
+          return { x: b.cx + radius2 * (b.N[0] * c + b.B[0] * s), y: b.cy + radius2 * (b.N[1] * c + b.B[1] * s), z: b.cz + radius2 * (b.N[2] * c + b.B[2] * s), fold: fold2, angle, radius: radius2 };
+        }
+        const fold = b.frequency * v + 0.35 * Math.sin(Math.PI * v + b.offset) + b.warp, turn = Math.PI * 1.22 * (v + 1) + b.turnShift, radius = b.width * (b.radial + 0.11 * v), flatX = b.width * (v + 0.32 * Math.sin(fold)), flatY = b.width * 0.025 * Math.sin(fold), localX = (1 - b.roll) * flatX + b.roll * radius * Math.cos(turn), localY = (1 - b.roll) * flatY + b.roll * radius * 0.7 * Math.sin(turn);
+        return { x: b.cx + localX * b.cc - localY * b.ss, y: b.cy + localX * b.ss + localY * b.cc, z: b.cz + b.width * 0.7 * ((1 - b.roll) * Math.cos(fold) + b.roll * Math.sin(turn)), fold, turn, radius };
+      }
+      function transverseDerivative(ba, q, v) {
+        if (ba.family === "lorenz") {
+          const dr2 = -0.18 * ba.width * Math.sin(q.fold) * ba.frequency * Math.PI, c = Math.cos(q.angle), s = Math.sin(q.angle);
+          return [0, 1, 2].map((k) => dr2 * (ba.N[k] * c + ba.B[k] * s) + q.radius * Math.PI * (-ba.N[k] * s + ba.B[k] * c));
+        }
+        const fd = ba.frequency + 0.35 * Math.PI * Math.cos(Math.PI * v + ba.offset), td = Math.PI * 1.22, dr = ba.width * 0.11, dx = (1 - ba.roll) * ba.width * (1 + 0.32 * Math.cos(q.fold) * fd) + ba.roll * (dr * Math.cos(q.turn) - q.radius * Math.sin(q.turn) * td), dy = (1 - ba.roll) * ba.width * 0.025 * Math.cos(q.fold) * fd + ba.roll * 0.7 * (dr * Math.sin(q.turn) + q.radius * Math.cos(q.turn) * td);
+        return [dx * ba.cc - dy * ba.ss, dx * ba.ss + dy * ba.cc, ba.width * 0.7 * ((1 - ba.roll) * (-Math.sin(q.fold) * fd) + ba.roll * Math.cos(q.turn) * td)];
+      }
+      function differential(body, k, u, v, phase) {
+        const ba = basis(body, k, u, phase), q = chartAt(ba, v), e = 15e-5, ua = Math.max(0, u - e), ub = Math.min(1, u + e), a = chartAt(basis(body, k, ua, phase), v), b = chartAt(basis(body, k, ub, phase), v), du = [(b.x - a.x) / (ub - ua), (b.y - a.y) / (ub - ua), (b.z - a.z) / (ub - ua)], dv = transverseDerivative(ba, q, v), nx = du[1] * dv[2] - du[2] * dv[1], ny = du[2] * dv[0] - du[0] * dv[2], nz = du[0] * dv[1] - du[1] * dv[0], norm = Math.hypot(nx, ny, nz) || 1, ref = Math.max(1e-5, ba.width * (body.lanes[k].end - body.lanes[k].start) * 1.45), compression = Math.min(8, 1 / (0.12 + Math.abs(nz) / ref));
+        return { q, ba, nx, ny, nz, norm, compression };
+      }
+      function point(body, k, u, v, phase, bounds = false) {
+        if (bounds) {
+          const b = basis(body, k, u, phase);
+          if (b.family === "lorenz") return { ...b, ex: 1.18 * b.width, ey: 1.18 * b.width, ez: 1.18 * b.width };
+          const ex = (1 - b.roll) * 1.32 * b.width * Math.abs(b.cc) + b.roll * b.width * Math.sqrt(b.cc * b.cc + 0.7 * 0.7 * b.ss * b.ss), ey = (1 - b.roll) * b.width * (1.32 * Math.abs(b.ss) + 0.025) + b.roll * b.width * Math.sqrt(b.ss * b.ss + 0.7 * 0.7 * b.cc * b.cc);
+          return { ...b, ex, ey, ez: b.width * 0.7 };
+        }
+        const d = differential(body, k, u, v, phase);
+        return { x: d.q.x, y: d.q.y, z: d.q.z, alpha: d.ba.env * (body.lanes[k].core ? 0.16 + 0.04 * d.compression : 0.045 + 0.047 * d.compression) * (body.record.mechanism === "lorenz-flow" ? body.lanes[k].core ? 1 : 0.38 / (1 + 0.18 * (k - 2)) : 1), compression: d.compression, nx: d.nx / d.norm, ny: d.ny / d.norm, nz: d.nz / d.norm, owner: ownerAt(body, k, u) };
+      }
+      function caustics(body, k, phase) {
+        const result = [], active = [], rows = body.record.mechanism === "lorenz-flow" ? 480 : 144, cols = body.record.mechanism === "lorenz-flow" ? 20 : 40, l = body.lanes[k];
+        for (let j = 1; j < rows; j++) {
+          const u = j / rows, roots = [];
+          let va = -1, fa = differential(body, k, u, va, phase).nz;
+          for (let c = 1; c <= cols; c++) {
+            const vb = -1 + 2 * c / cols, fb = differential(body, k, u, vb, phase).nz;
+            if (fa * fb < 0) {
+              let lo = va, hi = vb, flo = fa;
+              for (let z2 = 0; z2 < 5; z2++) {
+                const mid = (lo + hi) / 2, fm = differential(body, k, u, mid, phase).nz;
+                if (flo * fm <= 0) hi = mid;
+                else {
+                  lo = mid;
+                  flo = fm;
+                }
+              }
+              roots.push((lo + hi) / 2);
+            }
+            va = vb;
+            fa = fb;
+          }
+          if (l.core) {
+            roots.sort((a, b) => Math.abs(a) - Math.abs(b));
+            roots.splice(2);
+            roots.sort((a, b) => a - b);
+          }
+          const used = /* @__PURE__ */ new Set(), next = [];
+          for (const v of roots) {
+            let best = -1, distance = body.record.mechanism === "lorenz-flow" ? 0.09 : 0.18;
+            for (let a = 0; a < active.length; a++) {
+              const dist = Math.abs(active[a].v - v);
+              if (!used.has(a) && dist < distance) {
+                distance = dist;
+                best = a;
+              }
+            }
+            const trace = best < 0 ? { line: [], v } : active[best];
+            if (best >= 0) used.add(best);
+            trace.v = v;
+            const q = point(body, k, u, v, phase), taper = Math.sin(Math.PI * u) ** 0.8;
+            q.alpha = (l.core ? k < 3 ? 0.88 : 0.4 : body.record.mechanism === "lorenz-flow" ? 0.13 / (1 + 0.25 * (k - 2)) : 0.72) * Math.sqrt(q.compression / 8) * taper;
+            trace.line.push(q);
+            next.push(trace);
+          }
+          for (let a = 0; a < active.length; a++) if (!used.has(a) && active[a].line.length > 2) result.push({ line: active[a].line, material: l.core ? "braid" : "fold" });
+          active.splice(0, active.length, ...next);
+        }
+        for (const trace of active) if (trace.line.length > 2) result.push({ line: trace.line, material: l.core ? "braid" : "fold" });
+        return result;
+      }
+      function frame(body, phase, { budget = 22e3, crests = true, reuse } = {}) {
+        if (body.familyAdapter) return Families.frame(body, phase, { budget, crests, reuse });
+        if (body.julia) return juliaFrame(body, phase, { budget, crests, reuse });
+        if (body.recursive) return recursiveFrame(body, phase, { budget, crests, reuse });
+        if (body.cloud) return cliffordFrame(body, phase, { budget, crests, reuse });
+        bounded(phase, -1e12, 1e12);
+        bounded(budget, 128, 1e5);
+        budget = Math.floor(budget);
+        const r = body.record, points = reuse?.points?.length === budget * 4 ? reuse.points : new Float32Array(budget * 4), owners = reuse?.owners?.length === budget ? reuse.owners : new Uint16Array(budget);
+        const weights = body.lanes.map((l) => l.core ? 4e-3 : l.width * (l.end - l.start)), sum = weights.reduce((a, b) => a + b, 0), counts = weights.map((w) => Math.floor(budget * w / sum));
+        for (let i = counts.reduce((a, b) => a + b, 0); i < budget; i++) counts[i % body.lanes.length]++;
+        let index = 0;
+        for (let k = 0; k < r.strands; k++) {
+          const count = counts[k], cols = body.lanes[k].core ? 2 : Math.min(36, Math.max(24, Math.floor(Math.sqrt(count)))), rows = Math.max(1, Math.ceil(count / cols));
+          for (let j = 0; j < count; j++) {
+            const row = Math.floor(j / cols), col = j % cols, u = (row + 0.5) / rows, v = 2 * (col + 0.5) / cols - 1, q = point(body, k, u, v, phase);
+            points.set([q.x, q.y, q.z, q.alpha], index * 4);
+            owners[index++] = q.owner;
+          }
+        }
+        const ridges = [];
+        if (crests) for (let k = 0; k < r.strands; k++) ridges.push(...caustics(body, k, phase));
+        if (body.record.mechanism === "lorenz-flow") for (const r2 of ridges) for (let j = 0; j < r2.line.length; j++) r2.line[j].alpha *= Math.min(1, j / 3, (r2.line.length - 1 - j) / 3);
+        return { points, owners, ridges };
+      }
+      function anchor2(body, nodeId, phase) {
+        if (body.familyAdapter) return Families.anchor(body, nodeId, phase);
+        const p = body.territories.find((t) => t.node === nodeId);
+        check4(p, "unknown operation");
+        if (body.julia) {
+          const mark = body.julia.marks.find((m) => juliaOwner(body, m.index) === p.owner);
+          return { ...juliaWarp(body, mark.x, mark.y, phase), owner: p.owner };
+        }
+        if (body.recursive) {
+          const k = body.branches.findIndex((b) => b.component === p.component);
+          return recursivePoint(body, k, (p.u[0] + p.u[1]) / 2, 0, phase);
+        }
+        if (body.cloud) {
+          const u = (p.u[0] + p.u[1]) / 2, index = Math.min(body.cloud.length - 1, Math.floor(u * body.cloud.length / body.record.strands) * body.record.strands + p.component), q = body.cloud[index];
+          return { ...mapWarp(body, q[0], q[1], phase), owner: p.owner };
+        }
+        return point(body, p.component, (p.u[0] + p.u[1]) / 2, 0, phase);
+      }
+      function portraitFrame(body) {
+        if (body?.familyAdapter) return Families.portraitFrame(body);
+        if (body?.julia) return juliaBounds(body);
+        if (body?.recursive) return recursiveBounds(body);
+        if (body?.cloud) {
+          const e = embedding(body);
+          return { cx: 0, cy: 0, cz: 0, width: 2 * (body.mapBounds.bx * e.scale[0] + Math.abs(e.shear) * body.mapBounds.by + e.warp[0] + e.overtone[0] + 0.01), height: 2 * (body.mapBounds.by * e.scale[1] + e.warp[1] + e.overtone[1] + 0.01), depth: 0.2 };
+        }
+        if (body?.orbit) {
+          if (body.bounds) return body.bounds;
+          const lo2 = [Infinity, Infinity, Infinity], hi2 = [-Infinity, -Infinity, -Infinity];
+          for (const q of body.orbit) q.forEach((x, i) => {
+            lo2[i] = Math.min(lo2[i], x);
+            hi2[i] = Math.max(hi2[i], x);
+          });
+          const pad2 = 0.15;
+          return body.bounds = { cx: (lo2[0] + hi2[0]) / 2, cy: (lo2[1] + hi2[1]) / 2, cz: (lo2[2] + hi2[2]) / 2, width: hi2[0] - lo2[0] + 2 * pad2, height: hi2[1] - lo2[1] + 2 * pad2, depth: hi2[2] - lo2[2] + 2 * pad2 };
+        }
+        if (!body) return { cx: 0, cy: 0, cz: 0, width: 2, height: 3, depth: 0.8 };
+        if (body.bounds) return body.bounds;
+        const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+        for (let k = 0; k < body.lanes.length; k++) for (let j = 0; j <= 256; j++) for (let h = 0; h < 128; h++) {
+          const q = point(body, k, j / 256, 0, TAU * h / 128, true), c = [q.cx, q.cy, q.cz], e = [q.ex, q.ey, q.ez];
+          for (let d = 0; d < 3; d++) {
+            lo[d] = Math.min(lo[d], c[d] - e[d]);
+            hi[d] = Math.max(hi[d], c[d] + e[d]);
+          }
+        }
+        const pad = 0.14;
+        body.bounds = { cx: (lo[0] + hi[0]) / 2, cy: (lo[1] + hi[1]) / 2, cz: (lo[2] + hi[2]) / 2, width: hi[0] - lo[0] + 2 * pad, height: hi[1] - lo[1] + 2 * pad, depth: hi[2] - lo[2] + 2 * pad };
+        return body.bounds;
+      }
+      const api = { author, validate: validate2, compile: compile2, frame, anchor: anchor2, portraitFrame, topology };
+      if (typeof module !== "undefined") module.exports = api;
+      root.WovenBody = api;
+    })(typeof globalThis !== "undefined" ? globalThis : exports);
+  }
+});
+
+// visual-capsule.js
+var require_visual_capsule = __commonJS({
+  "visual-capsule.js"(exports, module) {
+    (function(root) {
+      "use strict";
+      const node2 = typeof module !== "undefined" && module.exports, Q4 = node2 ? require_core() : root.Quinelings, V2 = node2 ? require_qdl_v1() : root.QDLV1, D2 = node2 ? require_qdl() : root.QDL, W2 = node2 ? require_woven_body() : root.WovenBody;
+      const clone3 = (x) => JSON.parse(JSON.stringify(x));
+      function validateDesign(design2, graph) {
+        const base = clone3(design2);
+        delete base.woven;
+        D2.validateBindings(base, graph);
+        if (!design2.woven || design2.anatomy) throw Error("Visual capsule requires only its experimental body");
+        W2.validate(design2.woven, graph);
+        return true;
+      }
+      function task(source2) {
+        const program = JSON.parse(source2);
+        if (Q4.canon(program) !== source2) throw Error("Task source must be canonical");
+        if (V2.isProgram(program)) {
+          const a = V2.admit(source2);
+          return { program, graph: a.payload.task, stable: true };
+        }
+        const shape = Q4.describe(program);
+        if (Q4.canon(Q4.makeTaskProgram(shape.graph, shape.repeats, shape.design)) !== source2) throw Error("Task is not an admitted constructor");
+        return { program, graph: shape.graph, stable: false };
+      }
+      function build(taskSource, design2) {
+        const payload = { format: "quineling-visual-capsule", profile: "woven-experimental", taskSource, design: design2 };
+        return admit2(Q4.canon(Q4.makePayloadProgram(payload, 1)));
+      }
+      function author(taskSource, seed = 1) {
+        const t = task(taskSource), design2 = D2.create();
+        Object.assign(design2.composition, { yaw: 0, pitch: 0, lean: 0 });
+        design2.woven = W2.author(t.graph, seed);
+        design2.chroma.strength = 0.35;
+        return build(taskSource, design2);
+      }
+      function admit2(source2) {
+        if (typeof source2 !== "string" || new TextEncoder().encode(source2).length > 65536) throw Error("Visual capsule must be canonical source up to 64 KiB");
+        const program = JSON.parse(source2);
+        let payload;
+        function visit2(t2) {
+          if (!Array.isArray(t2) || t2[0] === "quote") return;
+          if (t2[0] === "run" && t2[1]?.[0] === "quote") {
+            visit2(t2[1][1]);
+            return;
+          }
+          if (t2[0] === "task" && t2[1]?.[0] === "quote") payload = t2[1][1];
+          else for (const x of t2.slice(1)) visit2(x);
+        }
+        visit2(program);
+        if (!payload || payload.format !== "quineling-visual-capsule" || payload.profile !== "woven-experimental" || Object.keys(payload).sort().join(",") !== "design,format,profile,taskSource") throw Error("Unsupported visual capsule");
+        const t = task(payload.taskSource);
+        validateDesign(payload.design, t.graph);
+        if (Q4.canon(Q4.makePayloadProgram(payload, 1)) !== source2) throw Error("Visual capsule constructor does not match its source");
+        return { source: source2, program: clone3(program), taskSource: payload.taskSource, task: t.graph, stable: t.stable, design: clone3(payload.design) };
+      }
+      function verify(capsule) {
+        const a = admit2(capsule.source), copy2 = Q4.execute(a.program, { constructionOnly: true });
+        if (copy2.emitted[0] !== a.source) throw Error("Visual constructor emission differs");
+        return { exactSource: true, source: copy2.emitted[0], constructorSteps: copy2.steps };
+      }
+      function recover(capsule, encoding) {
+        const decoded = encoding === "harmonics" ? Q4.decode(Q4.encode(capsule.program)) : encoding === "colors" ? Q4.decodeColors(Q4.encodeColors(capsule.program)) : null;
+        if (!decoded) throw Error("Unknown genome encoding");
+        const recovered = admit2(Q4.canon(decoded));
+        if (recovered.source !== capsule.source) throw Error("Visual genome differs");
+        return recovered;
+      }
+      function isCapsule(program) {
+        try {
+          admit2(Q4.canon(program));
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      function makeTaskProgram(graph, repeats = 1, design2) {
+        if (!design2?.woven) return Q4.makeTaskProgram(graph, repeats, design2);
+        const base = clone3(design2);
+        delete base.woven;
+        const clean = clone3(graph);
+        delete clean.design;
+        return build(Q4.canon(Q4.makeTaskProgram(clean, repeats, base)), design2).program;
+      }
+      function describe3(program) {
+        if (!isCapsule(program)) return Q4.describe(program);
+        const a = admit2(Q4.canon(program)), s = Q4.describe(JSON.parse(a.taskSource));
+        return { ...s, graph: { ...s.graph, design: clone3(a.design) }, design: clone3(a.design) };
+      }
+      function execute(program, options2) {
+        if (!isCapsule(program)) return Q4.execute(program, options2);
+        if (options2 !== void 0) {
+          if (!options2 || typeof options2 !== "object" || Array.isArray(options2) || Object.getPrototypeOf(options2) !== Object.prototype || Object.keys(options2).some((k) => !["constructionOnly", "bindings"].includes(k)) || "constructionOnly" in options2 && typeof options2.constructionOnly !== "boolean" || options2.constructionOnly === true && "bindings" in options2) throw Error("Invalid visual execution options");
+          if ("bindings" in options2 && (!options2.bindings || typeof options2.bindings !== "object" || Array.isArray(options2.bindings))) throw Error("Invalid visual bindings");
+        }
+        const a = admit2(Q4.canon(program)), proof = verify(a);
+        if (options2?.constructionOnly) return { emitted: [proof.source], tasks: [], trace: [], steps: proof.constructorSteps };
+        const result = Q4.execute(JSON.parse(a.taskSource), options2);
+        return { ...result, taskSourceEmitted: result.emitted, emitted: [proof.source], steps: (result.steps ?? result.constructorSteps ?? 0) + proof.constructorSteps, taskProfile: a.stable ? "qdl-v1" : "legacy" };
+      }
+      const api = { author, build, admit: admit2, verify, recover, validateDesign, isCapsule, makeTaskProgram, describe: describe3, execute, runtime: { ...Q4, makeTaskProgram, describe: describe3, execute } };
+      if (node2) module.exports = api;
+      root.VisualCapsule = api;
+    })(typeof globalThis !== "undefined" ? globalThis : exports);
+  }
+});
+
 // packages/agent-sdk/src/browser-crypto.ts
 var import_ranch_crypto = __toESM(require_ranch_crypto());
 function createHash(algorithm) {
@@ -26596,11 +27728,15 @@ function admit(session, candidate) {
 var policy = import_qdl_v1_offspring.default.POLICY;
 
 // packages/agent-sdk/src/browser-entry.ts
+var import_woven_body = __toESM(require_woven_body(), 1);
+var import_visual_capsule = __toESM(require_visual_capsule(), 1);
+var import_lifeform_families = __toESM(require_lifeform_families(), 1);
 if (!globalThis.Buffer) globalThis.Buffer = { byteLength(text2) {
   return new TextEncoder().encode(text2).length;
 } };
 var export_Anatomy = import_anatomy3.default;
 var export_Chroma = import_chroma3.default;
+var export_LifeformFamilies = import_lifeform_families.default;
 var export_QDL = import_qdl2.default;
 var export_QDLV1 = import_qdl_v12.default;
 var export_QDLV1Library = import_qdl_v1_library.default;
@@ -26608,9 +27744,12 @@ var export_QuinelingKernels = import_kernels2.default;
 var export_QuinelingOffspring = import_offspring2.default;
 var export_QuinelingWorld = import_ranch_world2.default;
 var export_Quinelings = import_core12.default;
+var export_VisualCapsule = import_visual_capsule.default;
+var export_WovenBody = import_woven_body.default;
 export {
   export_Anatomy as Anatomy,
   export_Chroma as Chroma,
+  export_LifeformFamilies as LifeformFamilies,
   export_QDL as QDL,
   export_QDLV1 as QDLV1,
   export_QDLV1Library as QDLV1Library,
@@ -26622,6 +27761,8 @@ export {
   Runtime,
   v1_ranch_exports as V1Ranch,
   Session as V1Session,
+  export_VisualCapsule as VisualCapsule,
+  export_WovenBody as WovenBody,
   migrateLegacy
 };
 //# sourceMappingURL=quinelings-runtime.js.map

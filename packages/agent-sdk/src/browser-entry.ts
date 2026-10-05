@@ -26,3 +26,11 @@ export {default as Chroma} from '../../../chroma.js';
 export {migrateLegacy} from './v1-migrate.js';
 
 export * as V1Ranch from './v1-ranch.js';
+
+// @ts-expect-error shared experimental JavaScript has no declarations
+export {default as WovenBody} from '../../../woven-body.js';
+// @ts-expect-error separate source-authoring profile, outside frozen QDL 1
+export {default as VisualCapsule} from '../../../visual-capsule.js';
+
+// @ts-expect-error Experimental browser geometry adapter is authored JavaScript.
+export {default as LifeformFamilies} from '../../../lifeform-families.js';

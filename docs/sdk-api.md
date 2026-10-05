@@ -145,3 +145,50 @@ Admission prepares validation, source/companion conflicts, capacities, geometry,
 Cancellation before dispatch prevents work. Synchronous evaluation or commit runs to completion; cancellation/disconnection cannot roll it back. Adapter response serialization or storage can fail after a Runtime mutation committed, so a failed transport result does not prove nonadmission or nonexecution. Retry keyed admissions and commands with the original complete payload; `run` and `reproduce` always request fresh execution.
 
 `QuinelingError` exposes `code`, `message`, `path` and `toJSON()`. Codes include `invalid-input`, `invalid-intent`, `source-budget`, `invalid-source`, `unknown-artifact`, `unknown-record`, `stale-record`, `resource-limit`, `execution-failed`, `cancelled`, `metadata-conflict`, `invalid-offspring`, `stale-state`, and `unknown-world`. Some pure-world sequence/conflict/ineligibility errors currently wrap as `invalid-offspring`; use message/context and inspect a fresh snapshot instead of assuming every concurrency refusal is `stale-state`. MCP uses `isError` and `{error:{code,message,path}}`; A2A Runtime errors appear in task-status message metadata as `quinelingError`. A semantic preview refusal is a successful structured result with `status:'rejected'`. Null target, command, affinity, cursor or limit is malformed; omit optional fields rather than supplying null.
+
+## Experimental mathematical bodies
+
+The separate experimental SDK package adds `/experimental`. The frozen SDK
+1.0.0 archive and its existing `Runtime` and QDL 1 admission rules remain
+unchanged. The new capsule retains an admitted task source and a complete
+source-authored mathematical body. Use `VisualCapsule.author`, `admit`,
+`verify`, `recover`, `execute`, and `MathematicalLifeforms.compile`, `frame`,
+`anchor`, `portraitFrame` through the typed extension.
+
+```ts
+import {VisualCapsule, MathematicalLifeforms}
+  from '@quinelings/agent-sdk-experimental/experimental';
+const creature = VisualCapsule.author(taskSource, 42);
+const proof = VisualCapsule.verify(creature); // no task evaluation
+const copy = VisualCapsule.recover(creature, 'colors');
+const body = MathematicalLifeforms.compile(copy.design.woven, copy.task);
+const pose = MathematicalLifeforms.frame(body, 0, {budget: 2048, crests: false});
+const run = VisualCapsule.execute(copy.program, {bindings: {readings: [2, 3, 4]}});
+if ('taskProfile' in run && run.taskProfile === 'qdl-v1') {
+  console.log(run.occurrences[0]?.outputs); // supplied-data result
+}
+```
+
+For literal legacy tasks, omit bindings; the discriminated result has
+`taskProfile: 'legacy'` and `tasks`. Bound QDL 1 tasks have `taskProfile:
+'qdl-v1'`, `occurrences` and retained bindings. Both emit the capsule's exact
+full source. `constructionOnly: true` is passive and refuses bindings.
+
+The experimental package's MCP and A2A CLIs accept `--experimental-visual`.
+Programmatic callers opt in with `createQuinelingMcpServer(runtime,
+{experimentalVisual: true})` or `createA2AApp({experimentalVisual: true})`.
+This adds eight MCP tools: `quineling_visual_author`, `_admit`, `_recover`,
+`_frame`, `_anchor`, `_bounds`, `_verify`, `_run`. A2A uses corresponding
+operations `visualAuthor`, `visualAdmit`, `visualRecover`, `visualFrame`,
+`visualAnchor`, `visualBounds`, `visualVerify`, `visualRun` in a JSON data part.
+The original operations keep their existing source formats.
+
+Author accepts `taskSource` and optional uint32 `seed`. Other operations accept
+canonical capsule `source`. Recover adds `encoding: 'harmonics' | 'colors'`;
+frame adds finite `phase`, optional `budget` (128–12000) and boolean `crests`
+(default false); anchor adds `nodeId` and phase. Run accepts explicit bindings
+or constructor-only mode. Author, admission, sampling, inspection, verification
+and recovery do not evaluate tasks. `visualRun` is the execution operation;
+actions remain local simulated receipts. Frame JSON includes point coordinates
+and per-sample operation owners. A source identifies the experimental body;
+phase is view state.

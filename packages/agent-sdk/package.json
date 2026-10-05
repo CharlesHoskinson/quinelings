@@ -46,6 +46,10 @@
     "./v1-ranch": {
       "types": "./dist/v1-ranch.d.ts",
       "import": "./dist/v1-ranch.js"
+    },
+    "./experimental": {
+      "types": "./dist/experimental.d.ts",
+      "import": "./dist/experimental.js"
     }
   },
   "bin": {

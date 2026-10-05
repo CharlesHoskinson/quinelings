@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
-const root=path.resolve(__dirname,'..'),T=require('../thought.js'),A=require('../anatomy.js'),D=require('../qdl.js'),Q=require('../core.js');
+const root=path.resolve(__dirname,'..'),T=require('../thought.js'),W=require('../woven-body.js'),C=require('../visual-capsule.js'),D=require('../qdl.js'),Q=C.runtime;
 const supplied=process.argv.indexOf('--seed');
 const seed=supplied<0?crypto.randomBytes(4).readUInt32LE():Number(process.argv[supplied+1]);
 assert.ok(Number.isInteger(seed)&&seed>=0&&seed<=4294967295,'Seed must be uint32');
@@ -26,11 +26,27 @@ const recipes=[
 const manifest=[];
 for(const recipe of recipes){
  const parsed=T.parse(recipe.thought);assert.equal(parsed.status,'supported',JSON.stringify(parsed.diagnostics));parsed.intent.name=recipe.name;
+ // Structural task differences, rather than portrait assignments, exercise the grammar.
+ if(recipe.id==='mosswell'){
+  const allocation=parsed.intent.outputs[0];
+  parsed.intent.steps.push({id:'remainingStock',op:'get',inputs:[allocation],params:{path:'remaining'}},{id:'stockSummary',op:'report',inputs:[allocation,'available','remainingStock'],params:{labels:['allocation','available','remaining']}});
+  parsed.intent.outputs=['stockSummary'];
+  const wrap=(out,stock)=>[{allocation:out[0],available:stock,remaining:out[0].remaining}];
+  recipe.expected=wrap(recipe.expected,available);for(const f of recipe.cases)if(!f.fails)f.expected=wrap(f.expected,f.overrides.available??available);
+  recipe.description+=' It also reports the starting and remaining stock.';
+ }
+ if(recipe.id==='hourbloom'){
+  const plan=parsed.intent.outputs[0];
+  parsed.intent.inputs.push({id:'simulationAllowed',value:true,type:{kind:'boolean'}});
+  parsed.intent.steps.push({id:'scheduleProposal',op:'action',inputs:['simulationAllowed',plan],params:{allowed:true,action:'schedule-proposal'}});
+  parsed.intent.outputs=[plan,'scheduleProposal'];
+  const wrap=out=>[out[0],{status:'simulated',action:'schedule-proposal',payload:out[0]}];recipe.expected=wrap(recipe.expected);for(const f of recipe.cases)if(!f.fails)f.expected=wrap(f.expected);
+  recipe.description+=' The schedule proposal is a local simulation.';
+ }
  const result=T.compile(parsed.intent),graph=structuredClone(result.graph);delete graph.design;
  // Local pipeline inputs have a generated name. Resolve the supplied array by its value.
  if(recipe.id==='emberfold')for(const fixture of recipe.cases){const input=graph.nodes.find(n=>n.op==='literal'&&json(n.params.value)===json(signal));fixture.overrides={[input.id]:fixture.overrides.value};}
- const bodySeed=integer(0,4294967295),assembly=A.generate(graph,bodySeed),design=D.create('filament');
- design.anatomy=assembly.anatomy;design.motion.gesture=assembly.gesture;design.composition.yaw=.25;design.composition.pitch=.08;design.composition.lean=-.035;design.chroma.strength=.88;
+ const bodySeed=integer(0,4294967295),design=D.create('filament');design.woven=W.author(graph,bodySeed);Object.assign(design.composition,{yaw:0,pitch:0,lean:0});design.chroma.strength=.35;
  if(recipe.domain)design.chroma.lens={kind:'scalar',id:'output',label:'Recorded water reading',unit:'L',domain:recipe.domain,bindings:[{node:graph.outputs[0],path:[]}]};
  const program=Q.makeTaskProgram(graph,1,design),source=Q.canon(program);
  const fixtures=[{label:'generated inputs',overrides:{},expected:recipe.expected},...recipe.cases];
@@ -38,7 +54,7 @@ for(const recipe of recipes){
  let fresh=program;
  for(let generation=0;generation<3;generation++){const run=Q.execute(fresh);assert.deepEqual(run.tasks[0].output,recipe.expected);assert.equal(run.emitted[0],source);fresh=JSON.parse(run.emitted[0]);}
  assert.equal(Q.canon(Q.decode(Q.encode(program))),source);assert.equal(Q.canon(Q.decodeColors(Q.encodeColors(program))),source);
- const artifact={format:'quineling-artifact',id:recipe.id,name:recipe.name,description:recipe.description,thought:recipe.thought,program,source,graph,design,contract:result.contract,sourceMap:parsed.sourceMap,candidate:null,interpretation:{summary:recipe.description,assumptions:result.contract.assumptions||[]},generation:{batchSeed:seed,bodySeed},fixtures};
+ const artifact={format:'quineling-artifact',id:recipe.id,name:recipe.name,description:recipe.description,thought:recipe.thought,program,source,graph,design,contract:result.contract,sourceMap:result.sourceMap,candidate:null,interpretation:{summary:recipe.description,assumptions:result.contract.assumptions||[]},generation:{batchSeed:seed,bodySeed},fixtures};
  const directory=path.join(root,'programs/generated');fs.mkdirSync(directory,{recursive:true});fs.writeFileSync(path.join(directory,recipe.id+'.json'),JSON.stringify(artifact,null,2)+'\n');
  manifest.push({id:recipe.id,name:recipe.name,description:recipe.description,thought:recipe.thought});
  console.log(`${recipe.name}: ${json(recipe.expected)}; three fixtures, three generations and both genomes verified.`);

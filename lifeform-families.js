@@ -5,20 +5,35 @@ function rng(seed){let s=seed>>>0;s=Math.imul(s^(s>>>16),0x7feb352d);s=Math.imul
 function authorParams(mechanism,t,seed){const r=rng(seed);return {growth:.16+.12*r(),spread:.7+.3*r(),curl:.7+.8*r(),asymmetry:.12+.22*r(),offset:TAU*r(),frequency:2+Math.min(6,t.depth),lobes:3+Math.min(6,t.convergence+t.effects),twist:1+Math.min(3,t.depth)/2,whorls:2+Math.min(2,Math.floor(t.depth/3)),...(mechanism==='toroidal-weave'?{}:{material:{model:'projected-compression',rows:48,columns:15,focus:2,quiet:.12,gain:.65}})};}
 function validate(record){const g=record.geometry;if(!tags.includes(record.mechanism)||!g||Object.keys(g).sort().join()!==['growth','spread','curl','asymmetry','offset','frequency','lobes','twist','whorls',...(Object.hasOwn(g,'material')?['material']:[])].sort().join())throw Error('LifeformFamilies: invalid geometry');const limits={growth:[.12,.35],spread:[.5,1.2],curl:[.4,1.6],asymmetry:[0,.4],offset:[0,TAU],frequency:[2,8],lobes:[3,9],twist:[1,3],whorls:[2,4]};if(g.material){const m=g.material;if(record.mechanism==='toroidal-weave'||Object.keys(m).sort().join()!==['model','rows','columns','focus','quiet','gain'].sort().join()||m.model!=='projected-compression'||m.rows!==48||m.columns!==15||!Number.isFinite(m.focus)||m.focus<1||m.focus>4||!Number.isFinite(m.quiet)||m.quiet<.02||m.quiet>.2||!Number.isFinite(m.gain)||m.gain<.3||m.gain>.9)throw Error('LifeformFamilies: invalid compression material');}for(const [k,v]of Object.entries(g).filter(([k])=>k!=='material'))if(!Number.isFinite(v)||v<limits[k][0]||v>limits[k][1])throw Error('LifeformFamilies: bounded parameters required');if(!Number.isInteger(g.frequency)||!Number.isInteger(g.lobes)||!Number.isInteger(g.whorls))throw Error('LifeformFamilies: integer structure required');return true;}
 function compile(record,graph){validate(record);const r=JSON.parse(JSON.stringify(record)),nodes=graph.nodes;return {record:r,nodes,territories:r.territories.map(p=>({...p,owner:nodes.findIndex(n=>n.id===p.node)})),familyAdapter:true,chartCount:r.mechanism==='phyllotaxis-fan'?r.strands*r.geometry.whorls:r.strands};}
-function owner(body,k,u){return body.territories.find(p=>p.component===k%body.record.strands&&u>=p.u[0]&&(u<p.u[1]||u===1&&p.u[1]===1)).owner;}
-// Each component is a genuine two-parameter ribbon chart. Material filaments
-// follow longitudinal parameter lines; no connecting chords between samples.
-function point(body,k,u,v,phase,skipOwner=false){const r=body.record,g=r.geometry,p=phase%TAU,n=body.chartCount||r.strands,f=k/n,env=Math.sin(Math.PI*u),edge=Math.max(0,Math.sin(Math.PI*(v+1)/2)),offset=g.offset+TAU*f;let x,y,z;
+// Compiled-only caches preserve the authored record and exact arithmetic order.
+const basisCaches=new WeakMap(),componentCaches=new WeakMap();
+function owner(body,k,u){let components=componentCaches.get(body);if(!components){components=Array.from({length:body.record.strands},()=>[]);for(const p of body.territories)components[p.component].push(p);componentCaches.set(body,components);}return components[k%body.record.strands].find(p=>u>=p.u[0]&&(u<p.u[1]||u===1&&p.u[1]===1)).owner;}
+function basis(body,k,u,phase){let cache=basisCaches.get(body);if(!cache||!Object.is(cache.phase,phase)){cache={phase,charts:[]};basisCaches.set(body,cache);}let chart=cache.charts[k];if(!chart)cache.charts[k]=chart=new Map();if(chart.has(u))return chart.get(u);
+ const r=body.record,g=r.geometry,p=phase%TAU,n=body.chartCount||r.strands,f=k/n,env=Math.sin(Math.PI*u),offset=g.offset+TAU*f,b={env};
  if(r.mechanism==='logarithmic-mantle'){
-  const theta=TAU*(.12+g.curl*u)+offset*.45+.18*Math.sin(p-5*u+offset),radius=.1*Math.exp(g.growth*theta)*(1+.12*Math.sin(offset+g.lobes*u)),collar=Math.exp(-(((u-.32-.1*Math.sin(offset))/.1)**2))+Math.exp(-(((u-.7-.06*Math.cos(offset))/.12)**2)),width=.19*env**.8*g.spread*(.55+1.3*collar),roll=Math.PI*(v+1)*(1+.7*collar)+.6*Math.sin(g.frequency*u-p+offset),rr=radius+width*Math.cos(roll);
-  x=rr*Math.cos(theta)+.1*Math.sin(2*u+p)*env;y=rr*Math.sin(theta)*1.15+.09*Math.cos(3*u-p+offset)*env;z=width*Math.sin(roll)+.025*Math.sin(theta+p);
+  const theta=TAU*(.12+g.curl*u)+offset*.45+.18*Math.sin(p-5*u+offset),radius=.1*Math.exp(g.growth*theta)*(1+.12*Math.sin(offset+g.lobes*u)),collar=Math.exp(-(((u-.32-.1*Math.sin(offset))/.1)**2))+Math.exp(-(((u-.7-.06*Math.cos(offset))/.12)**2));
+  Object.assign(b,{radius,collar,width:.19*env**.8*g.spread*(.55+1.3*collar),rollTail:.6*Math.sin(g.frequency*u-p+offset),cos:Math.cos(theta),sin:Math.sin(theta),dx:.1*Math.sin(2*u+p)*env,dy:.09*Math.cos(3*u-p+offset)*env,dz:.025*Math.sin(theta+p)});
  }else if(r.mechanism==='toroidal-weave'){
-  const theta=TAU*u,major=.3+.12*g.spread+.09*Math.sin(offset)+.07*Math.sin(g.lobes*theta+offset+p)+g.asymmetry*.12*Math.sin(theta),minor=(.04+.05*g.curl+.025*Math.sin(g.frequency*theta-p+offset))*(.8+.3*Math.sin(offset)**2),angle=offset+(g.twist+.5*g.curl)*theta+.7*v+.35*Math.sin(p-2*theta),rr=major+minor*Math.cos(angle);
-  x=rr*Math.cos(theta)+.045*Math.sin(p+theta);y=rr*Math.sin(theta)*(.5+.4*g.curl+.12*Math.cos(offset))+.1*Math.sin(2*theta-p+offset);z=minor*Math.sin(angle);
+  const theta=TAU*u;
+  Object.assign(b,{major:.3+.12*g.spread+.09*Math.sin(offset)+.07*Math.sin(g.lobes*theta+offset+p)+g.asymmetry*.12*Math.sin(theta),minor:(.04+.05*g.curl+.025*Math.sin(g.frequency*theta-p+offset))*(.8+.3*Math.sin(offset)**2),angleHead:offset+(g.twist+.5*g.curl)*theta,angleTail:.35*Math.sin(p-2*theta),cos:Math.cos(theta),sin:Math.sin(theta),dx:.045*Math.sin(p+theta),yScale:.5+.4*g.curl+.12*Math.cos(offset),dy:.1*Math.sin(2*theta-p+offset)});
  }else{
-  // Golden-angle divergence with folded, tapered petals at different scales.
-  const angle=k*Math.PI*(3-Math.sqrt(5))+g.offset+.19*Math.sin(p+offset-3*u)+(1-f)*1.5*u,length=(.12+.58*((k+1)/n)**.8)*g.spread,width=(.025+.13*(1-f))*Math.sin(Math.PI*u)**.8,roll=Math.PI*g.curl*v+.65*Math.sin(g.frequency*u-p+offset),radius=.01+length*u+width*.5*Math.sin(roll),side=width*(.55*v+.6*Math.cos(roll)),bend=.13*Math.sin(Math.PI*u)*Math.sin(offset+p-2*u);
-  x=radius*Math.cos(angle)+(side+bend)*Math.sin(angle);y=radius*Math.sin(angle)-(side+bend)*Math.cos(angle);z=width*Math.cos(roll)+.045*env*Math.sin(offset-p);
+  const angle=k*Math.PI*(3-Math.sqrt(5))+g.offset+.19*Math.sin(p+offset-3*u)+(1-f)*1.5*u;
+  Object.assign(b,{length:(.12+.58*((k+1)/n)**.8)*g.spread,width:(.025+.13*(1-f))*Math.sin(Math.PI*u)**.8,rollTail:.65*Math.sin(g.frequency*u-p+offset),bend:.13*Math.sin(Math.PI*u)*Math.sin(offset+p-2*u),cos:Math.cos(angle),sin:Math.sin(angle),dz:.045*env*Math.sin(offset-p)});
+ }
+ chart.set(u,b);return b;
+}
+// Each component is a genuine two-parameter ribbon chart. Reuse its longitudinal
+// basis across transverse samples without changing any point formula.
+function point(body,k,u,v,phase,skipOwner=false){const r=body.record,g=r.geometry,b=basis(body,k,u,phase),env=b.env,edge=Math.max(0,Math.sin(Math.PI*(v+1)/2));let x,y,z;
+ if(r.mechanism==='logarithmic-mantle'){
+  const roll=Math.PI*(v+1)*(1+.7*b.collar)+b.rollTail,rr=b.radius+b.width*Math.cos(roll);
+  x=rr*b.cos+b.dx;y=rr*b.sin*1.15+b.dy;z=b.width*Math.sin(roll)+b.dz;
+ }else if(r.mechanism==='toroidal-weave'){
+  const angle=b.angleHead+.7*v+b.angleTail,rr=b.major+b.minor*Math.cos(angle);
+  x=rr*b.cos+b.dx;y=rr*b.sin*b.yScale+b.dy;z=b.minor*Math.sin(angle);
+ }else{
+  const roll=Math.PI*g.curl*v+b.rollTail,radius=.01+b.length*u+b.width*.5*Math.sin(roll),side=b.width*(.55*v+.6*Math.cos(roll));
+  x=radius*b.cos+(side+b.bend)*b.sin;y=radius*b.sin-(side+b.bend)*b.cos;z=b.width*Math.cos(roll)+b.dz;
  }
  const alpha=(.012+.075*env)*env**.5*(.3+.7*edge)*(1-.55*Math.abs(v));return{x,y,z,alpha,owner:skipOwner?-1:owner(body,k,u)};
 }
@@ -40,6 +55,6 @@ function frame(body,phase,{budget=6000,crests=true,reuse}={}){if(!Number.isFinit
  for(let j=0;j<body.nodes.length;j++){const patch=body.territories.find(p=>p.owner===j),q=point(body,patch.component,(patch.u[0]+patch.u[1])/2,0,phase);points.set([q.x,q.y,q.z,q.alpha],j*4);owners[j]=j;}
  const ridges=[];if(crests)for(let k=0;k<n;k++)for(let h=0;h<15;h++){const v=-1+2*h/14,line=[];for(let j=0;j<=160;j++){const u=j/160,q=point(body,k,u,v,phase),taper=Math.sin(Math.PI*u)**.7;q.alpha=Math.min(1,(h%7===0?1:.65)*taper*(.5+.5*Math.sin(3*u+body.record.geometry.offset+k)**2)*(body.record.mechanism==='phyllotaxis-fan'?1.7-1.1*k/n:body.record.mechanism==='logarithmic-mantle'?1.4-.5*u:1));if(grid){const material=body.record.geometry.material,focus=compressionAt(body,grid,k,u,v);q.alpha=Math.min(1,(material.quiet+material.gain*focus)*taper*(body.record.mechanism==='phyllotaxis-fan'?1.7-1.1*k/n:1.4-.5*u));q.compression=focus;}line.push(q);}ridges.push({line,material:'parameter-filament'});}return{points,owners,ridges};}
 function anchor(body,nodeId,phase){const p=body.territories.find(p=>p.node===nodeId);if(!p)throw Error('LifeformFamilies: unknown operation');return point(body,p.component,(p.u[0]+p.u[1])/2,0,phase);}
-function portraitFrame(body){if(body.bounds)return body.bounds;const lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(let k=0;k<(body.chartCount||body.record.strands);k++)for(let j=0;j<=80;j++)for(let h=0;h<32;h++)for(const v of [-1,-.5,0,.5,1]){const q=point(body,k,j/80,v,TAU*h/32);[q.x,q.y,q.z].forEach((x,d)=>{lo[d]=Math.min(lo[d],x);hi[d]=Math.max(hi[d],x);});}const pad=.15;return body.bounds={cx:(lo[0]+hi[0])/2,cy:(lo[1]+hi[1])/2,cz:(lo[2]+hi[2])/2,width:hi[0]-lo[0]+2*pad,height:hi[1]-lo[1]+2*pad,depth:hi[2]-lo[2]+2*pad};}
+function portraitFrame(body){if(body.bounds)return body.bounds;const lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(let h=0;h<32;h++)for(let k=0;k<(body.chartCount||body.record.strands);k++)for(let j=0;j<=80;j++)for(const v of [-1,-.5,0,.5,1]){const q=point(body,k,j/80,v,TAU*h/32,true);lo[0]=Math.min(lo[0],q.x);hi[0]=Math.max(hi[0],q.x);lo[1]=Math.min(lo[1],q.y);hi[1]=Math.max(hi[1],q.y);lo[2]=Math.min(lo[2],q.z);hi[2]=Math.max(hi[2],q.z);}const pad=.15;return body.bounds={cx:(lo[0]+hi[0])/2,cy:(lo[1]+hi[1])/2,cz:(lo[2]+hi[2])/2,width:hi[0]-lo[0]+2*pad,height:hi[1]-lo[1]+2*pad,depth:hi[2]-lo[2]+2*pad};}
 const api={authorParams,validate,compile,frame,anchor,portraitFrame};if(typeof module!=='undefined')module.exports=api;root.LifeformFamilies=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

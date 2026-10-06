@@ -108,3 +108,7 @@ Generate five new task/body combinations with `node scripts/generate-quinelings.
 The website separates task execution from drawing: changing animation position, highlighting a step, or sampling geometry creates no task run. Input changes keep QDL 1 source intact; editing instructions or body design creates different source. Body colors identify operation roles or an explicitly selected recorded-value scale. Exact RGB genome data encodes the source separately.
 
 Presentation follows [Impeccable](https://github.com/pbakaus/impeccable), with a shared layout and self-hosted, openly licensed typography. Renderer and sampler caches reuse geometric work without reducing source-owned sample counts or contour detail. The frozen language and SDK release remain unchanged.
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).

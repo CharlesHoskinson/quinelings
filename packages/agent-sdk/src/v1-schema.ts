@@ -75,7 +75,7 @@ export const FrameSchema=z.strictObject({
  points:z.array(coordinate).min(16000).max(96000),normals:z.array(coordinate).min(12000).max(72000),owners:z.array(owner).min(4000).max(24000),
  ridges:z.array(z.strictObject({line:z.array(z.strictObject({x:coordinate,y:coordinate,z:coordinate,nx:coordinate,ny:coordinate,nz:coordinate,owner})).length(301),primary:z.boolean()})).min(2).max(4),
  nodeIds:z.array(id).min(1).max(64),nodeColors:z.array(z.string().regex(/^#[0-9a-f]{6}$/i)).min(1).max(64),nodeRoles:z.array(z.enum(['input','process','decision','quote','action','report'])).min(1).max(64)
-}).superRefine((f,ctx)=>{if(f.points.length!==4*f.owners.length||f.normals.length!==3*f.owners.length||f.nodeColors.length!==f.nodeIds.length||f.nodeRoles.length!==f.nodeIds.length||f.owners.some(i=>i>=f.nodeIds.length))ctx.addIssue({code:'custom',message:'Frame buffers and owner metadata disagree'});}) as z.ZodType<Frame>;
+}).superRefine((f,ctx)=>{if(f.points.length!==4*f.owners.length||f.normals.length!==3*f.owners.length||f.nodeColors.length!==f.nodeIds.length||f.nodeRoles.length!==f.nodeIds.length||f.owners.some(i=>i>=f.nodeIds.length)||f.ridges.some(r=>r.line.some(p=>p.owner>=f.nodeIds.length)))ctx.addIssue({code:'custom',message:'Frame buffers and owner metadata disagree'});}) as z.ZodType<Frame>;
 export const BakeOptionsSchema=z.strictObject({frames:z.number().int().min(1).max(240).optional(),budget:z.number().int().min(512).max(24000).optional(),crests:z.number().int().min(2).max(4).optional(),quantize:z.enum(['int16','float32']).optional()});
 export const BakeInputSchema=z.strictObject({artifactId,options:BakeOptionsSchema.optional()});
 export const TraceOwnersInputSchema=z.strictObject({recordId:z.string().regex(/^run_[0-9a-f-]{36}$/)});

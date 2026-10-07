@@ -22,7 +22,7 @@ const bytes=(value:unknown)=>Buffer.byteLength(JSON.stringify(value));
 const wellFormed=(text:string)=>!/[\uD800-\uDFFF]/u.test(text);
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex');
 export class QdlError extends Error {
- constructor(public readonly code:string,message:string,public readonly path='$'){super(message.slice(0,2048));this.name='QdlError';}
+ constructor(public readonly code:string,message:string,public readonly path='$'){super(message.slice(0,2048));this.path=path.slice(0,2048);this.name='QdlError';}
  toJSON():ErrorDetail{return {code:this.code,message:this.message,path:this.path};}
 }
 function check(ok:unknown,code:string,message:string,path='$'):asserts ok {if(!ok)throw new QdlError(code,message,path);}

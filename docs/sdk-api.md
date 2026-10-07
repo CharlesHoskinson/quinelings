@@ -148,24 +148,26 @@ Cancellation before dispatch prevents work. Synchronous evaluation or commit run
 
 ## Experimental mathematical bodies
 
-The separate experimental SDK package adds `/experimental`. The frozen SDK
-1.0.0 archive and its existing `Runtime` and QDL 1 admission rules remain
-unchanged. The new capsule retains an admitted task source and a complete
-source-authored mathematical body. Use `VisualCapsule.author`, `admit`,
-`verify`, `recover`, `execute`, and `MathematicalLifeforms.compile`, `frame`,
-`anchor`, `portraitFrame` through the typed extension.
+The `/experimental` entry point is on `@quinelings/agent-sdk`, not a second package name. The frozen SDK 1.0.0 archive and its existing `Runtime` and QDL 1 admission rules remain unchanged. The capsule retains an admitted task source and a complete source-authored mathematical body. Use `VisualCapsule.author`, `admit`, `verify`, `recover`, `execute`, and `MathematicalLifeforms.compile`, `frame`, `anchor`, `portraitFrame` through that entry point.
 
 ```ts
-import {VisualCapsule, MathematicalLifeforms}
-  from '@quinelings/agent-sdk-experimental/experimental';
-const creature = VisualCapsule.author(taskSource, 42);
+import { Session } from '@quinelings/agent-sdk/v1';
+import { VisualCapsule, MathematicalLifeforms } from '@quinelings/agent-sdk/experimental';
+const admitted = new Session().compile({
+  format: 'qdl-intent', version: 1, name: 'Supplied reading total',
+  thought: 'Sum the explicitly supplied readings.',
+  inputs: [{id: 'readings', name: 'readings', type: {kind: 'array', element: {kind: 'number', unit: 'L'}}}],
+  steps: [{id: 'total', op: 'sum', inputs: ['readings'], params: {}}],
+  outputs: ['total']
+});
+const creature = VisualCapsule.author(admitted.source, 42);
 const proof = VisualCapsule.verify(creature); // no task evaluation
 const copy = VisualCapsule.recover(creature, 'colors');
 const body = MathematicalLifeforms.compile(copy.design.woven, copy.task);
 const pose = MathematicalLifeforms.frame(body, 0, {budget: 2048, crests: false});
 const run = VisualCapsule.execute(copy.program, {bindings: {readings: [2, 3, 4]}});
 if ('taskProfile' in run && run.taskProfile === 'qdl-v1') {
-  console.log(run.occurrences[0]?.outputs); // supplied-data result
+  console.log(run.occurrences[0]?.outputs); // [9]
 }
 ```
 
@@ -174,7 +176,7 @@ For literal legacy tasks, omit bindings; the discriminated result has
 'qdl-v1'`, `occurrences` and retained bindings. Both emit the capsule's exact
 full source. `constructionOnly: true` is passive and refuses bindings.
 
-The experimental package's MCP and A2A CLIs accept `--experimental-visual`.
+The legacy `quinelings-mcp` and `quinelings-a2a` CLIs accept `--experimental-visual` once. The stable v1 CLIs do not.
 Programmatic callers opt in with `createQuinelingMcpServer(runtime,
 {experimentalVisual: true})` or `createA2AApp({experimentalVisual: true})`.
 This adds eight MCP tools: `quineling_visual_author`, `_admit`, `_recover`,

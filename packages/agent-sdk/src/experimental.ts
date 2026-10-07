@@ -72,6 +72,7 @@ export const MathematicalLifeforms = bodyRuntime as {
   author(graph:TaskGraph,seed?:number):MathematicalBody;
   validate(body:MathematicalBody,graph?:TaskGraph):true;
   compile(body:MathematicalBody,graph:TaskGraph):CompiledBody;
+  /** Sample a compiled woven body. `budget` is an integer from 128 through 100000. `crests` is a boolean; omitting it draws crests. MCP and A2A visualFrame accept budget 128..12000 and default to budget 2048 and crests false. Point groups are [x, y, z, alpha]. Session.frame is a separate assembly sampler. */
   frame(body:CompiledBody,phase:number,options?:{budget?:number;crests?:boolean}):Frame;
   anchor(body:CompiledBody,nodeId:string,phase:number):{x:number;y:number;z:number;alpha:number;owner:number};
   portraitFrame(body:CompiledBody):{cx:number;cy:number;cz:number;width:number;height:number;depth:number};

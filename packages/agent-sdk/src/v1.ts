@@ -153,7 +153,7 @@ export class Session {
   if(request.operation==='reproduce'){parent=this.#records.get(request.recordId);check(parent,'unknown-record','Execution record is not in this session');check(parent.artifactId===artifact.id&&parent.result.sourceHash===artifact.sourceHash,'stale-record','Record belongs to another source');}
   const inputs=request.operation==='run'?request.inputs:parent!.result.bindings,result=wrap(()=>V.execute(artifact.program,inputs));
   if(parent)check(Q.canon(result)===Q.canon(parent.result),'stale-record','Fresh execution differs from retained parent result');
-  const proposed:ExecutionRecord={id:'run_'+randomUUID(),artifactId:artifact.id,requestId:request.requestId,result,evidence:'retained',...(parent?{parentRecordId:parent.id}:{})};
+  const proposed:ExecutionRecord={id:`run_${randomUUID()}`,artifactId:artifact.id,requestId:request.requestId,result,evidence:'retained',...(parent?{parentRecordId:parent.id}:{})};
   const record=wrap(()=>ExecutionRecordSchema.parse(proposed)),recordSize=bytes(record);check(recordSize<=this.#limits.maxRecordBytes,'resource-limit','Execution record exceeds byte budget');check(this.#recordBytes+recordSize<=this.#limits.maxRecordsBytes,'resource-limit','Execution store exceeds aggregate byte budget');
   const returned=clone(record),receipt={payload,request:clone(request),recordId:record.id},nextRecords=new Map(this.#records),nextReceipts=new Map(this.#receipts);
   nextRecords.set(record.id,record);nextReceipts.set(request.requestId,receipt);

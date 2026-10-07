@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import { Runtime, QuinelingError } from './index.js';
+import type { ColorGenome, CreationOptions, FrameOptions, HarmonicGenome } from './types.js';
 import {IntentSchema,OffspringInputSchema,OffspringFrameSchema,AdmissionSchema,LineageSchema,AnnotationSchema,WorldConfigSchema,WorldCommandSchema} from './schema.js';
 export * from './schema.js';
 import {registerVisualTools} from './experimental-adapters.js';
@@ -13,17 +14,21 @@ const id = z.string().min(1).max(160);
 const options = z.strictObject({
   seed: z.number().int().min(0).max(0xffffffff).optional(),
   repeats: z.number().int().min(1).max(8).optional()
-}).optional();
+}).optional() as z.ZodType<CreationOptions | undefined>;
 const harmonics = z.strictObject({
   format: z.literal('quineling-harmonics-1'),
   bands: z.array(z.array(z.number().int().min(0).max(256)).length(32)).min(1).max(2049)
-});
+}) as z.ZodType<HarmonicGenome>;
 const colors = z.strictObject({
   format: z.literal('quineling-chroma-1'),
   pixels: z.array(z.array(z.tuple([
     z.number().int().min(0).max(255), z.number().int().min(0).max(255), z.number().int().min(0).max(255)
   ]).nullable()).length(32)).min(1).max(2049)
-});
+}) as z.ZodType<ColorGenome>;
+const frameOptions = z.strictObject({
+  budget: z.number().int().min(4000).max(24000).optional(),
+  crests: z.number().int().min(2).max(4).optional()
+}).optional() as z.ZodType<FrameOptions | undefined>;
 
 /** All computation is bounded local simulation. This adapter grants no host authority. */
 export function createQuinelingMcpServer(runtime: Runtime = new Runtime(), adapterOptions: McpOptions = {}): McpServer {
@@ -110,10 +115,7 @@ export function createQuinelingMcpServer(runtime: Runtime = new Runtime(), adapt
 
   register('quineling_frame',
     'Sample a deterministic body pose as JSON at a finite phase. Watch-only: does not execute instructions or change source. Use budget 4000 for agent inspection; crest count is 2–4; all owners and operation anchors remain inspectable.',
-    { artifactId: id, phase: z.number().min(-1e6).max(1e6), options: z.strictObject({
-      budget: z.number().int().min(4000).max(24000).optional(),
-      crests: z.number().int().min(2).max(4).optional()
-    }).optional() }, ({ artifactId, phase, options: selected }) => runtime.frame(artifactId, phase, selected), true, true);
+    { artifactId: id, phase: z.number().min(-1e6).max(1e6), options: frameOptions }, ({ artifactId, phase, options: selected }) => runtime.frame(artifactId, phase, selected), true, true);
 
   register('quineling_offspring_preview','Prepare a source-backed typed compose/mate/merge/body candidate without storing, executing, ticking or creating offspring. Bounded pure refinement evaluation is allowed; units/guards are checked.',{input:OffspringInputSchema},({input})=>runtime.offspringPreview(input),true,true);
   register('quineling_offspring_frame','Statelessly rebuild a prepared candidate and sample its body. Both candidate and exact child-source identities must match. No admission or execution.',OffspringFrameSchema.shape,input=>runtime.offspringFrame(input),true,true);

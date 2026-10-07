@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import type {Json,ValueType,Intent,Run,Artifact,ExecutionRecord,Request,Snapshot,Frame} from './v1-types.js';
+import type {Json,ValueType,Intent,Run,Artifact,ExecutionRecord,Request,Snapshot,Frame,FrameOptions,HarmonicGenome,ColorGenome} from './v1-types.js';
 const safe=z.string().min(1).max(16384).regex(/^(?!__proto__$|prototype$|constructor$)[\s\S]+$/);
 const id=z.string().regex(/^(?!__proto__$|prototype$|constructor$)[A-Za-z][A-Za-z0-9_-]{0,63}$/);
 const artifactId=z.string().regex(/^ql_[0-9a-f]{64}$/);
@@ -56,8 +56,8 @@ export const PortSchema=z.strictObject({name:id,nodeId:id,type:ValueTypeSchema})
 export const PayloadSchema=z.strictObject({format:z.literal('qdl-program'),version:z.literal(1),name:boundedText(120),registry:safe,registryDigest:digest,canonical:z.literal('qdl-json-1'),thought:ThoughtSchema,task:z.strictObject({format:z.literal('qdl-task'),version:z.literal(1),nodes:z.array(StepSchema.and(z.object({type:ValueTypeSchema}))).min(1).max(64),outputs:z.array(id).min(1).max(16)}),design,repeats:z.number().int().min(1).max(8)});
 const harmonics=z.strictObject({format:z.literal('quineling-harmonics-1'),bands:z.array(z.array(z.number().int().min(0).max(256)).length(32)).min(1).max(2049)});
 const colors=z.strictObject({format:z.literal('quineling-chroma-1'),pixels:z.array(z.array(z.tuple([z.number().int().min(0).max(255),z.number().int().min(0).max(255),z.number().int().min(0).max(255)]).nullable()).length(32)).min(1).max(2049)});
-export const HarmonicGenomeSchema=harmonics;
-export const ColorGenomeSchema=colors;
+export const HarmonicGenomeSchema=harmonics as z.ZodType<HarmonicGenome>;
+export const ColorGenomeSchema=colors as z.ZodType<ColorGenome>;
 export const ArtifactSchema=z.strictObject({id:artifactId,sourceHash:artifactId,source,program:z.array(JsonSchema),payload:PayloadSchema,ports:z.array(PortSchema).max(64),order:refs,harmonics,colors}) as unknown as z.ZodType<Artifact>;
 export const BindingsSchema=z.record(safe,JsonSchema).refine(x=>Object.keys(x).length<=64,'At most 64 input ports');
 export const RunSchema=z.strictObject({
@@ -68,7 +68,7 @@ export const RunSchema=z.strictObject({
 export const ExecutionRecordSchema=z.strictObject({id:z.string().regex(/^run_[0-9a-f-]{36}$/),artifactId,requestId,result:RunSchema,evidence:z.enum(['retained','asserted']),parentRecordId:z.string().regex(/^run_[0-9a-f-]{36}$/).optional()}) as z.ZodType<ExecutionRecord>;
 export const VerificationSchema=z.strictObject({source,sourceHash:artifactId,constructorSteps:z.number().int().min(0).max(20000)});
 export const RecoverySchema=z.union([z.strictObject({source}),z.strictObject({harmonics}),z.strictObject({colors})]);
-export const FrameOptionsSchema=z.strictObject({budget:z.number().int().min(4000).max(24000).optional(),crests:z.number().int().min(2).max(4).optional()});
+export const FrameOptionsSchema=z.strictObject({budget:z.number().int().min(4000).max(24000).optional(),crests:z.number().int().min(2).max(4).optional()}) as z.ZodType<FrameOptions>;
 export const FrameInputSchema=z.strictObject({artifactId,phase:z.number().finite().min(-1e9).max(1e9),options:FrameOptionsSchema.optional()});
 const coordinate=z.number().finite(),owner=z.number().int().min(0).max(63);
 export const FrameSchema=z.strictObject({

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Intent, IntentStep, IntentType, Json } from './types.js';
+import type { FrameOptions, Intent, IntentStep, IntentType, Json } from './types.js';
 
 const key = z.string().min(1).max(16384).regex(/^(?!__proto__$|constructor$|prototype$)[\s\S]+$/);
 const field = z.string().min(1).max(16384).regex(/^(?!__proto__$|constructor$|prototype$)[^.]+$/);
@@ -42,8 +42,8 @@ const unary = z.tuple([id]);
 const binary = z.tuple([id,id]);
 const ternary = z.tuple([id,id,id]);
 
-/** Each operation has exact ordered ports and a closed parameter object. */
-export const IntentStepSchema: z.ZodType<IntentStep> = z.discriminatedUnion('op',[
+/** Each operation has exact ordered ports and a closed parameter object. The cast records bounds Zod's output type leaves as number, including retry maxAttempts 1..8. */
+export const IntentStepSchema = z.discriminatedUnion('op',[
   z.strictObject({id,op:z.literal('sum'),inputs:unary,params:empty}),
   z.strictObject({id,op:z.literal('mean'),inputs:unary,params:empty}),
   z.strictObject({id,op:z.literal('min'),inputs:unary,params:empty}),
@@ -70,7 +70,7 @@ export const IntentStepSchema: z.ZodType<IntentStep> = z.discriminatedUnion('op'
   z.strictObject({id,op:z.literal('consensus'),inputs:unary,params:z.strictObject({required:z.number().int().min(1).max(Number.MAX_SAFE_INTEGER)})}),
   z.strictObject({id,op:z.literal('retry'),inputs:unary,params:z.strictObject({maxAttempts:z.number().int().min(1).max(8)})}),
   z.strictObject({id,op:z.literal('evidence'),inputs:unary,params:z.strictObject({claim:z.string().max(16384).optional()})})
-]);
+]) as z.ZodType<IntentStep>;
 
 /** Structural schema only: parsing it never executes a kernel or grants effect authority. */
 export const IntentSchema = z.strictObject({
@@ -81,7 +81,7 @@ export const IntentSchema = z.strictObject({
   steps:z.array(IntentStepSchema).max(64),
   outputs:z.array(id).min(1).max(16),
   assumptions:z.array(z.string().max(512)).max(32).optional()
-}).superRefine(depthBound) satisfies z.ZodType<Intent>;
+}).superRefine(depthBound) as unknown as z.ZodType<Intent>;
 
 /** Experimental source-authored genetics: closed integer authoring fields. */
 export const TraitsSchema=z.strictObject({elongation:z.number().int().min(-1000).max(1000),spread:z.number().int().min(-1000).max(1000),curvature:z.number().int().min(-1000).max(1000),gestureGain:z.number().int().min(-1000).max(1000),tempo:z.number().int().min(-1000).max(1000),pigmentGain:z.number().int().min(-1000).max(1000)});
@@ -94,7 +94,7 @@ export const OffspringRecipeSchema=z.discriminatedUnion('kind',[
 export const OffspringOriginSchema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('manual')}),z.strictObject({kind:z.literal('pairing'),worldId:ranchId,proposalId:ranchId,parentResidents:z.tuple([ranchId,ranchId]),epochs:z.tuple([counter,counter])})]);
 export const OffspringInputSchema=z.strictObject({parents:z.tuple([ParentPinSchema,ParentPinSchema]),recipe:OffspringRecipeSchema,nonce:z.number().int().min(0).max(4294967295),style:z.strictObject({mutation:z.enum(['none','gentle']),traits:TraitsSchema.optional()}),origin:OffspringOriginSchema}).superRefine((x,c)=>{if(x.style.traits&&x.style.mutation!=='none')c.addIssue({code:'custom',path:['style','mutation'],message:'Complete traits override requires mutation:none'});});
-export const FrameOptionsSchema=z.strictObject({budget:z.number().int().min(4000).max(24000).optional(),crests:z.number().int().min(2).max(4).optional()});
+export const FrameOptionsSchema=z.strictObject({budget:z.number().int().min(4000).max(24000).optional(),crests:z.number().int().min(2).max(4).optional()}) as z.ZodType<FrameOptions>;
 export const OffspringFrameSchema=z.strictObject({input:OffspringInputSchema,candidateId:z.string().regex(/^qc_[0-9a-f]{64}$/),childSourceHash:digest,phase:z.number().finite().min(-1e9).max(1e9),options:FrameOptionsSchema.optional()});
 export const OffspringTargetSchema=z.discriminatedUnion('kind',[z.strictObject({kind:z.literal('library')}),z.strictObject({kind:z.literal('world'),worldId:ranchId,expectedRevision:counter})]);
 export const AdmissionSchema=z.strictObject({input:OffspringInputSchema,candidateId:z.string().regex(/^qc_[0-9a-f]{64}$/),childSourceHash:digest,target:OffspringTargetSchema,requestId:ranchId});

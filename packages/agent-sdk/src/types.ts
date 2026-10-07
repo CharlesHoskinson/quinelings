@@ -25,14 +25,14 @@ export type IntentStep = {id:string} & (
   | {op:'report'; inputs:string[]; params:{labels:string[]}}
   | {op:'bfs'; inputs:[string,string]; params:{start:string;goal:string}}
   | {op:'consensus'; inputs:[string]; params:{required:number}}
-  | {op:'retry'; inputs:[string]; params:{maxAttempts:number}}
+  | {op:'retry'; inputs:[string]; params:{maxAttempts:OneToEight}}
   | {op:'evidence'; inputs:[string]; params:{claim?:string}}
 );
 export interface Intent {
   format: 'quineling-intent'; name: string; thought: string;
   inputs: { id: string; value: Json; type: IntentType }[];
   steps: IntentStep[];
-  outputs: string[]; assumptions?: string[];
+  outputs: [string, ...string[]]; assumptions?: string[];
 }
 export interface Diagnostic { code: string; path: string; message: string }
 export interface SourceMapping { nodeId: string; clause: string; start?: number; end?: number }
@@ -65,8 +65,8 @@ export interface Contract {
   format:'quineling-contract'; registry:string; types:Record<string,IntentType>;
   assumptions:string[]; effectMode:'pure'|'simulation'; sourceBytes:number; provenance:string;
 }
-export interface HarmonicGenome {format:'quineling-harmonics-1'; bands:number[][]}
-export interface ColorGenome {format:'quineling-chroma-1'; pixels:([number,number,number]|null)[][]}
+export interface HarmonicGenome {format:'quineling-harmonics-1'; bands:FixedLength<number,32>[]}
+export interface ColorGenome {format:'quineling-chroma-1'; pixels:FixedLength<[number,number,number]|null,32>[]}
 export interface Artifact {
   id:string; source:string; program:Json[]; graph:Graph; design:Design;
   intent?:Intent; contract?:Contract; sourceMap:SourceMapping[];
@@ -75,16 +75,36 @@ export interface Artifact {
 export interface TaskRecord {output:Json[]; effects:Json[]; trace:Json[]; graph:Graph}
 export interface ExecutionResult {result:Json; emitted:string[]; tasks:TaskRecord[]; plans:Json[]; trace:Json[]; steps:number}
 export interface ExecutionRecord {id:string; artifactId:string; source:string; result:ExecutionResult; parentRecordId?:string}
-export interface CreationOptions {seed?:number; repeats?:number}
+/** Integer accepted by the runtime where the schema bound is 1..8. */
+export type OneToEight = 1|2|3|4|5|6|7|8;
+/** Crest lines accepted by Session.frame and Runtime.frame. */
+export type CrestCount = 2|3|4;
+export type NodeRole = 'input'|'process'|'decision'|'quote'|'action'|'report';
+/**
+ * Hash-prefixed color. This is wider than the wire pattern `/^#[0-9a-f]{6}$/i`
+ * and still rejects a bare name such as `red`.
+ */
+export type HexColor = `#${string}`;
+/**
+ * Array with a tracked length. A recursive tuple of 301 elements exceeds
+ * TypeScript instantiation depth, so crest lines use this brand.
+ */
+export type FixedLength<T, N extends number> = T[] & {readonly length:N};
+export interface CreationOptions {seed?:number; repeats?:OneToEight}
 export type CreationResult = {diagnostics:Diagnostic[]; assumptions:string[]} & (
   {status:'supported'; artifact:Artifact} | {status:Exclude<ParseStatus,'supported'>; artifact?:never}
 );
-export interface FrameOptions {budget?:number; crests?:number}
+export interface FrameOptions {
+  /** Integer sample count. The wire schema and spec/design.qnt validProfile samples both use 4000..24000. Omitting it samples 12000 points. A numeric brand is not used: plain numeric literals must stay assignable. */
+  budget?:number;
+  /** Integer crest count. Omitting it returns 3 lines. */
+  crests?:CrestCount;
+}
 export interface Frame {
-/** points: xyzw (w=0.18), four floats per sample. normals: xyz, three per sample. */
+/** points: xyzw, four floats per sample. w is Math.fround(0.18) on every sample. normals: xyz, three per sample. owners index nodeIds, nodeRoles and nodeColors. */
   points:number[]; normals:number[]; owners:number[];
-  ridges:{line:{x:number;y:number;z:number;nx:number;ny:number;nz:number;owner:number}[]; primary:boolean}[];
-  nodeIds:string[]; nodeColors:string[]; nodeRoles:string[];
+  ridges:{line:FixedLength<{x:number;y:number;z:number;nx:number;ny:number;nz:number;owner:number},301>; primary:boolean}[];
+  nodeIds:string[]; nodeColors:HexColor[]; nodeRoles:NodeRole[];
 }
 export type RecoveryInput = {source:string; harmonics?:never; colors?:never} | {source?:never; harmonics:HarmonicGenome; colors?:never} | {source?:never; harmonics?:never; colors:ColorGenome};
 export type Request =

@@ -72,6 +72,7 @@ See the [stable SDK guide](../../docs/SDK-V1.md), [QDL 1 contract](../../docs/QD
 Exports:
 
 - `@quinelings/agent-sdk/v1`: stable `Session`, `sourceOnly`, `QdlError` and typed intents, requests and results.
+- `@quinelings/agent-sdk/browser`: single-file browser ESM for that same `Session`, `sourceOnly`, `QdlError`, and experimental `MathematicalLifeforms`.
 - `@quinelings/agent-sdk/v1-schema`, `/v1-mcp`, `/v1-a2a`, `/v1-migrate`: shared schemas, adapters and explicit passive legacy migration.
 - `@quinelings/agent-sdk/v1-ranch`: experimental typed analyze/preview/admit policies.
 - `@quinelings/agent-sdk`: legacy experimental `Runtime`, `QuinelingError`, typed intent/requests/results, recipes.
@@ -80,6 +81,8 @@ Exports:
 - `@quinelings/agent-sdk/a2a`: `createA2AApp`, `BoundedTaskStore`, `QuinelingExecutor` and CLI `quinelings-a2a`.
 
 Node.js 22+; ESM and TypeScript declarations. `npm ci && npm run build && npm run typecheck && npm test` in this package builds and verifies the checkout. Then run `node examples/basic.mjs` for an asserted total-29 calculation and source-matching copy. Install a built directory or the downloadable tarball; this package has not been published to npm.
+
+`npm run build` also writes a single-file browser bundle of stable `Session` plus experimental `MathematicalLifeforms`. `dist/browser/quinelings-v1.mjs` is the ESM file (`@quinelings/agent-sdk/browser`). `dist/browser/quinelings-v1.iife.js` installs the global `QuinelingsV1`. `examples/browser.html` loads the IIFE from a `file://` page, draws one `Session.frame`, and leaves the task unevaluated until `run`. The bundle aliases `node:crypto` to the browser SHA-256 helper and defines `Buffer.byteLength` with `TextEncoder`. It does not include MCP, A2A, or the Node filesystem. `npm run build:browser` rebuilds only those two files.
 
 For stable QDL 1, start MCP with `node dist/v1-mcp-cli.js` or A2A with `node dist/v1-a2a-cli.js`. The following legacy experimental API remains available.
 

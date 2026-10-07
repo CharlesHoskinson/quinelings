@@ -1,4 +1,5 @@
 import { build } from 'esbuild';
+import { buildBrowser } from './build-browser.mjs';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -12,5 +13,6 @@ const outdir=resolve(packageDirectory,'dist');
 rmSync(outdir,{recursive:true,force:true});
 await build({absWorkingDir:packageDirectory,entryPoints,outdir,bundle:true,splitting:true,platform:'node',format:'esm',target:'node22',packages:'external',sourcemap:true});
 execFileSync(process.execPath,[resolve(packageDirectory,'node_modules/typescript/bin/tsc'),'--project',resolve(packageDirectory,'tsconfig.json'),'--emitDeclarationOnly'],{cwd:packageDirectory,stdio:'inherit'});
+await buildBrowser();
 const targets=[...Object.values(manifest.exports).flatMap(conditions=>Object.values(conditions)),...Object.values(manifest.bin)];
 for(const target of targets)if(typeof target!=='string'||!existsSync(resolve(packageDirectory,target)))throw new Error('SDK build did not produce its declared package target: '+target);

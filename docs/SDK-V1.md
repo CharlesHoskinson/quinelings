@@ -24,6 +24,8 @@ readings [4,5], reserve 2 → [11]
 
 Both runs preserve exact source/hash/emission, while their input digests differ. The example checks source-only verification, exact keyed replay, conflict refusal, fresh reproduction, both exact genomes, passive snapshot restoration and the asserted-versus-retained evidence labels. It requires no provider token, sensor connection or world dispatch.
 
+`npm run build:browser` writes `packages/agent-sdk/dist/browser/quinelings-v1.mjs` and `quinelings-v1.iife.js`. The package export `@quinelings/agent-sdk/browser` is that ESM file. The IIFE global is `QuinelingsV1`. `examples/browser.html` loads the IIFE from a local file URL and draws one `Session.frame` on a canvas. `describe`, `compile`, `inspect`, `verify`, `recover`, and `frame` stay passive. `run` and `reproduce` are the evaluation calls. The bundle supplies `Buffer.byteLength` and SHA-256. It does not ship MCP, A2A, or Node filesystem APIs. Experimental `MathematicalLifeforms` is on the same file and is not part of frozen QDL 1.
+
 Once installed from a local tarball, the public import is:
 
 ```js

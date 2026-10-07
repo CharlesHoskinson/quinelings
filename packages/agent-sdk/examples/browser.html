@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Quinelings v1 browser frame</title>
+  <style>
+    body { margin: 0; background: #101410; color: #e7eee4; font: 15px/1.4 ui-sans-serif, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px; }
+    canvas { display: block; width: 100%; height: auto; background: #141816; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>One framed creature</h1>
+    <p>Stable QDL 1 <code>Session.frame</code> samples this body. It does not evaluate the task. The explicit run below the picture is separate.</p>
+    <canvas id="creature" width="720" height="480">The framed creature is drawn here after the bundle loads.</canvas>
+    <pre id="report">pending</pre>
+  </main>
+  <script>
+    addEventListener('error', function (event) {
+      var node = document.getElementById('report');
+      if (node) node.textContent = JSON.stringify({ok: false, error: String(event.message)});
+    });
+  </script>
+  <script src="../dist/browser/quinelings-v1.iife.js"></script>
+  <script src="./browser-draw.js"></script>
+  <script>QuinelingBrowserDraw(QuinelingsV1);</script>
+</body>
+</html>

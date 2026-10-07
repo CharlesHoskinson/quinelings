@@ -51,6 +51,10 @@
     "./experimental": {
       "types": "./dist/experimental.d.ts",
       "import": "./dist/experimental.js"
+    },
+    "./browser": {
+      "types": "./dist/browser-v1.d.ts",
+      "import": "./dist/browser/quinelings-v1.mjs"
     }
   },
   "bin": {
@@ -66,6 +70,7 @@
   ],
   "scripts": {
     "build": "node build.mjs",
+    "build:browser": "node build-browser.mjs",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.tests.json",
     "test": "tsx --test test/*.test.ts",
     "prepack": "npm run build"

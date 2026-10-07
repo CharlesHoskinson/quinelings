@@ -7,6 +7,7 @@
   "include": [
     "src/**/*.ts",
     "test/type-contract.ts",
-    "test/v1-type-contract.ts"
+    "test/v1-type-contract.ts",
+    "test/v1-frame-model.test.ts"
   ]
 }

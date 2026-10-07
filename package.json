@@ -11,7 +11,7 @@
     "lean:fixtures": "node scripts/generate-lean-fixtures.cjs",
     "formal:lean": "bash scripts/check-lean.sh",
     "lean:install": "bash scripts/install-lean.sh",
-    "formal:all": "npm run formal:lean && npm run formal && npm run formal:creation && npm run formal:session && npm run formal:ranch && npm run formal:v1 && npm run formal:bake",
+    "formal:all": "npm run formal:lean && npm run formal && npm run formal:creation && npm run formal:session && npm run formal:ranch && npm run formal:v1 && npm run formal:bake && npm run formal:frame",
     "formal:creation": "quint typecheck spec/creation.qnt && quint test spec/creation.qnt --max-samples=100 --backend=typescript && quint run spec/creation.qnt --invariant=safety --max-samples=1000 --max-steps=50 --seed=20261004 --backend=typescript --verbosity=1",
     "sdk:install": "npm ci --prefix packages/agent-sdk",
     "sdk:check": "npm run typecheck --prefix packages/agent-sdk && npm run build --prefix packages/agent-sdk && npm test --prefix packages/agent-sdk",
@@ -29,7 +29,8 @@
     "test:website:insights": "node tests/website-insights.cjs",
     "test:browser:nursery": "node verify-nursery.cjs",
     "formal:visual": "quint typecheck spec/visual-capsule.qnt && quint test spec/visual-capsule.qnt --max-samples=50 --backend=typescript && quint run spec/visual-capsule.qnt --invariant=safety --max-samples=300 --max-steps=40 --seed=20261004 --backend=typescript --verbosity=1 --witnesses authoredWitness viewWitness recoverWitness recoveryRejectedWitness verifyWitness constructWitness runWitness tamperedRejectedWitness editDiscardsRecordWitness recordAfterAuthorWitness",
-    "test:visual": "node tests/verify-woven-body.cjs && node tests/verify-lifeform-families.cjs && node tests/verify-visual-capsule.cjs && node tests/verify-visual-release.cjs"
+    "test:visual": "node tests/verify-woven-body.cjs && node tests/verify-lifeform-families.cjs && node tests/verify-visual-capsule.cjs && node tests/verify-visual-release.cjs",
+    "formal:frame": "quint typecheck spec/v1-frame.qnt && quint typecheck spec/v1-frame_test.qnt && quint test spec/v1-frame_test.qnt --main=v1FrameTest --max-samples=100 --seed=20261004 --backend=typescript && quint run spec/v1-frame.qnt --main=v1Frame --invariant=safety --witnesses renderedWitness hitWitness invalidWitness unknownWitness unsupportedWitness failedWitness mutatedWitness --max-samples=10000 --max-steps=40 --seed=20261004 --backend=typescript --verbosity=1 && quint run spec/v1-frame.qnt --main=v1Frame --init=warmCacheInit --step=cacheStep --invariant=safety --witnesses evictionWitness --max-samples=10000 --max-steps=8 --seed=20261005 --backend=typescript --verbosity=1 && (cd packages/agent-sdk && node --import tsx test/v1-frame-model.test.ts)"
   },
   "engines": {
     "node": ">=22"

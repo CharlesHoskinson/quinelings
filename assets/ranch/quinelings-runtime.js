@@ -1087,8 +1087,8 @@ var require_anatomy = __commonJS({
           state = Math.imul(1664525, state) + 1013904223 >>> 0;
           return state / 4294967296;
         }, clamp = (x, a, b) => Math.max(a, Math.min(b, x)), count = (ops) => nodes.filter((n) => ops.includes(n.op)).length;
-        const maxDepth = Math.max(...depth2.values()), forks = nodes.filter((n) => fanout.get(n.id) > 1), merges = nodes.filter((n) => n.inputs.length > 1), maxFork = Math.max(...fanout.values()), maxMerge = Math.max(...nodes.map((n) => n.inputs.length)), arithmetic = count(["map", "sum", "mean", "min", "max", "weightedMean"]), selection = count(["filter", "compare", "choose", "dedupe", "sort"]), effect = count(["action", "retry"]), sequencing = count(["schedule", "retry"]), kind = merges.length > forks.length ? "gather" : forks.length ? "unfurl" : maxDepth >= 2 ? "glide" : "hover";
-        const spread = clamp(0.12 + 0.026 * maxMerge + 0.022 * selection + 0.13 * effect + 0.055 * sequencing + 0.018 * forks.length + (rnd() - 0.5) * 0.07, 0.105, 0.34), height = clamp(0.22 + 0.025 * Math.min(maxDepth, 5) + 0.021 * arithmetic - 0.026 * selection - 0.095 * effect - 0.045 * sequencing + (rnd() - 0.5) * 0.07, 0.15, 0.35), thickness = clamp(0.075 + 0.025 * rnd() + 0.012 * Math.min(maxMerge, 4), 0.075, 0.16), hand = rnd() < 0.5 ? -1 : 1;
+        const maxDepth = Math.max(...depth2.values()), forks = nodes.filter((n) => fanout.get(n.id) > 1), merges = nodes.filter((n) => n.inputs.length > 1), maxFork = Math.max(...fanout.values()), maxMerge = Math.max(...nodes.map((n) => n.inputs.length)), arithmetic = count(["map", "sum", "mean", "min", "max", "weightedMean"]), selection2 = count(["filter", "compare", "choose", "dedupe", "sort"]), effect = count(["action", "retry"]), sequencing = count(["schedule", "retry"]), kind = merges.length > forks.length ? "gather" : forks.length ? "unfurl" : maxDepth >= 2 ? "glide" : "hover";
+        const spread = clamp(0.12 + 0.026 * maxMerge + 0.022 * selection2 + 0.13 * effect + 0.055 * sequencing + 0.018 * forks.length + (rnd() - 0.5) * 0.07, 0.105, 0.34), height = clamp(0.22 + 0.025 * Math.min(maxDepth, 5) + 0.021 * arithmetic - 0.026 * selection2 - 0.095 * effect - 0.045 * sequencing + (rnd() - 0.5) * 0.07, 0.15, 0.35), thickness = clamp(0.075 + 0.025 * rnd() + 0.012 * Math.min(maxMerge, 4), 0.075, 0.16), hand = rnd() < 0.5 ? -1 : 1;
         const parts = [{ id: "trunk", kind: "chamber", axes: [spread, height, thickness], parent: null }], buckets = [ids.slice()];
         function append(part, owners2) {
           parts.push(part);
@@ -1110,7 +1110,7 @@ var require_anatomy = __commonJS({
           const neck = spine("neck", terminal.id, "trunk", 0.77, side > 0 ? 0 : 0.5, -side * 0.9, 0.16, 0.034, side * 0.16);
           const lobe = append({ id: "lobe", kind: "chamber", axes: [0.065 + 0.02 * rnd(), 0.1 + 0.022 * rnd(), 0.055 + 0.012 * rnd()], parent: { component: neck, socket: { u: 1, v: 0 }, angle: side * 0.2, hinge: 0.035 } }, [terminal.id]);
           spine("lobe-tip", terminal.id, lobe, 1, 0, -side * 0.3, 0.17, 0.025, -side * 0.17, 0.025);
-        } else if (selection) {
+        } else if (selection2) {
           const n = nodes.find((n2) => ["filter", "compare", "choose", "dedupe", "sort"].includes(n2.op)) || nodes.at(-1);
           spine("sweep", n.id, "trunk", 0.62, hand > 0 ? 0 : 0.5, -hand * 1.75, 0.32 + 0.04 * rnd(), 0.035, hand * 0.2, hand * 0.065);
         } else {
@@ -6949,6 +6949,21 @@ var require_visual_capsule = __commonJS({
           return false;
         }
       }
+      function claimsCapsule(program) {
+        let found = false, visits = 0;
+        function visit2(t) {
+          if (found || !Array.isArray(t) || t[0] === "quote" || ++visits > 1e5) return;
+          if (t[0] === "run" && t[1]?.[0] === "quote") {
+            visit2(t[1][1]);
+            return;
+          }
+          if (t[0] === "task" && t[1]?.[0] === "quote") {
+            if (t[1][1] && typeof t[1][1] === "object" && t[1][1].format === "quineling-visual-capsule") found = true;
+          } else for (const x of t.slice(1)) visit2(x);
+        }
+        visit2(program);
+        return found;
+      }
       function makeTaskProgram(graph, repeats = 1, design2) {
         if (!design2?.woven) return Q4.makeTaskProgram(graph, repeats, design2);
         const base = clone3(design2);
@@ -6963,7 +6978,13 @@ var require_visual_capsule = __commonJS({
         return { ...s, graph: { ...s.graph, design: clone3(a.design) }, design: clone3(a.design) };
       }
       function execute(program, options2) {
-        if (!isCapsule(program)) return Q4.execute(program, options2);
+        if (!isCapsule(program)) {
+          if (claimsCapsule(program)) {
+            admit2(Q4.canon(program));
+            throw Error("Visual capsule admission failed");
+          }
+          return Q4.execute(program, options2);
+        }
         if (options2 !== void 0) {
           if (!options2 || typeof options2 !== "object" || Array.isArray(options2) || Object.getPrototypeOf(options2) !== Object.prototype || Object.keys(options2).some((k) => !["constructionOnly", "bindings"].includes(k)) || "constructionOnly" in options2 && typeof options2.constructionOnly !== "boolean" || options2.constructionOnly === true && "bindings" in options2) throw Error("Invalid visual execution options");
           if ("bindings" in options2 && (!options2.bindings || typeof options2.bindings !== "object" || Array.isArray(options2.bindings))) throw Error("Invalid visual bindings");
@@ -27329,8 +27350,11 @@ var FrameSchema = external_exports.strictObject({
   nodeColors: external_exports.array(external_exports.string().regex(/^#[0-9a-f]{6}$/i)).min(1).max(64),
   nodeRoles: external_exports.array(external_exports.enum(["input", "process", "decision", "quote", "action", "report"])).min(1).max(64)
 }).superRefine((f, ctx) => {
-  if (f.points.length !== 4 * f.owners.length || f.normals.length !== 3 * f.owners.length || f.nodeColors.length !== f.nodeIds.length || f.nodeRoles.length !== f.nodeIds.length || f.owners.some((i) => i >= f.nodeIds.length)) ctx.addIssue({ code: "custom", message: "Frame buffers and owner metadata disagree" });
+  if (f.points.length !== 4 * f.owners.length || f.normals.length !== 3 * f.owners.length || f.nodeColors.length !== f.nodeIds.length || f.nodeRoles.length !== f.nodeIds.length || f.owners.some((i) => i >= f.nodeIds.length) || f.ridges.some((r) => r.line.some((p) => p.owner >= f.nodeIds.length))) ctx.addIssue({ code: "custom", message: "Frame buffers and owner metadata disagree" });
 });
+var BakeOptionsSchema = external_exports.strictObject({ frames: external_exports.number().int().min(1).max(240).optional(), budget: external_exports.number().int().min(512).max(24e3).optional(), crests: external_exports.number().int().min(2).max(4).optional(), quantize: external_exports.enum(["int16", "float32"]).optional() });
+var BakeInputSchema = external_exports.strictObject({ artifactId, options: BakeOptionsSchema.optional() });
+var TraceOwnersInputSchema = external_exports.strictObject({ recordId: external_exports.string().regex(/^run_[0-9a-f-]{36}$/) });
 var RunInputSchema = external_exports.strictObject({ artifactId, requestId, inputs: BindingsSchema });
 var ReproduceInputSchema = external_exports.strictObject({ artifactId, recordId: external_exports.string().regex(/^run_[0-9a-f-]{36}$/), requestId });
 var runRequest = external_exports.strictObject({ operation: external_exports.literal("run"), ...RunInputSchema.shape });
@@ -27363,6 +27387,41 @@ var ResponseSchema = external_exports.union([ArtifactSchema, ExecutionRecordSche
 var SnapshotSchema = external_exports.strictObject({ format: external_exports.literal("qdl-session-snapshot"), version: external_exports.literal(1), registry: safe, registryDigest: digest, artifacts: external_exports.array(external_exports.strictObject({ id: artifactId, source })).max(1024), records: external_exports.array(ExecutionRecordSchema).max(4096), receipts: external_exports.array(external_exports.strictObject({ request: external_exports.union([runRequest, reproduceRequest]), recordId: external_exports.string().regex(/^run_[0-9a-f-]{36}$/) })).max(4096) });
 var ErrorSchema = external_exports.strictObject({ code: external_exports.string().max(128), path: external_exports.string().max(2048), message: external_exports.string().max(2048) });
 
+// packages/agent-sdk/src/v1-bake.ts
+var FRAME_FLOOR = 4e3;
+var BAKE_MAX_SAMPLES = 1 << 20;
+var INT16_SCALE = 32767;
+function reservedCount(parts) {
+  return parts.reduce((sum, p) => sum + p.regions.length + p.charts.filter((c) => c !== "side").length, 0);
+}
+var sourceBudget = (budget) => budget >= FRAME_FLOOR ? budget : FRAME_FLOOR;
+function selection(reserved, budget, floor = FRAME_FLOOR) {
+  const out = new Uint32Array(budget);
+  if (budget >= floor) {
+    for (let i = 0; i < budget; i++) out[i] = i;
+    return out;
+  }
+  const k = budget - reserved, d = floor - reserved;
+  for (let i = 0; i < reserved; i++) out[i] = i;
+  for (let j = 0; j < k; j++) out[reserved + j] = reserved + Math.floor(j * d / k);
+  return out;
+}
+function normalizer(box, quantize) {
+  const center = [box.cx, box.cy, box.cz], scale = Math.max(box.width, box.height, box.depth) / 2;
+  if (!(Number.isFinite(scale) && scale > 0) || !center.every(Number.isFinite)) throw Object.assign(new Error("Body bounds are degenerate"), { code: "unsupported-frame" });
+  const alloc = (n) => quantize === "int16" ? new Int16Array(n) : new Float32Array(n);
+  const write = (target, offset, x, y, z2) => {
+    const xyz = [x, y, z2];
+    for (let a = 0; a < 3; a++) {
+      const v = (xyz[a] - center[a]) / scale;
+      if (!(Math.abs(v) <= 1 + 1e-9)) throw Object.assign(new Error("Sample lies outside the portrait bounds"), { code: "unsupported-frame" });
+      const c = Math.max(-1, Math.min(1, v));
+      target[offset + a] = quantize === "int16" ? Math.round(c * INT16_SCALE) : c;
+    }
+  };
+  return { center: [...center], scale, alloc, write };
+}
+
 // packages/agent-sdk/src/v1.ts
 var ARTIFACT_BYTES = 32 * 1024 * 1024;
 var RECORD_BYTES = 2 * 1024 * 1024;
@@ -27378,6 +27437,7 @@ var QdlError = class extends Error {
     super(message.slice(0, 2048));
     this.code = code;
     this.path = path2;
+    this.path = path2.slice(0, 2048);
     this.name = "QdlError";
   }
   toJSON() {
@@ -27538,6 +27598,86 @@ var Session = class _Session {
     }
     return frame;
   }
+  /** Passive embedding bake (formal model: spec/v1-bake.qnt). Samples a seamless loop
+   * of `frames` poses with the shared body sampler, normalizes them into the body's
+   * phase-invariant portrait box and returns fresh buffers. Budgets below the sampler
+   * floor (4000) keep every reserved owner/chart sample and a strided subset of the
+   * rest, so every task node stays visible. Never evaluates a task or mutates state. */
+  bake(artifactId2, options2 = {}) {
+    const selected = parse3(BakeInputSchema, { artifactId: artifactId2, options: options2 }, 1024), artifact = this.#lookup(selected.artifactId), design2 = artifact.payload.design, o = selected.options ?? {};
+    const frames = o.frames ?? 24, budget = o.budget ?? 1500, crests = o.crests ?? 3, quantize = o.quantize ?? "float32";
+    check3(frames * budget <= BAKE_MAX_SAMPLES, "resource-limit", "Bake frames x budget exceeds " + BAKE_MAX_SAMPLES + " samples", "$.options");
+    check3(design2.anatomy?.model === "assembly" && design2.motion.gesture, "unsupported-frame", "Source has no supported assembly anatomy and gesture");
+    const nodes = artifact.payload.task.nodes, nodeIds = nodes.map((n) => n.id), cached2 = this.#bodies.get(artifact.id);
+    const body = cached2 ?? wrap2(() => import_anatomy2.default.compile(design2.anatomy, nodes, design2.motion.gesture));
+    if (!cached2) {
+      if (this.#bodies.size >= 32) this.#bodies.delete(this.#bodies.keys().next().value);
+      this.#bodies.set(artifact.id, body);
+    }
+    const reserved = reservedCount(body.parts);
+    check3(reserved <= budget, "unsupported-frame", "Bake budget cannot cover reserved owner samples", "$.options.budget");
+    const indices = selection(reserved, budget), box = wrap2(() => import_anatomy2.default.portraitFrame(body)), norm = wrap2(() => normalizer(box, quantize));
+    const owners = new Uint8Array(budget), positions = [], anchors = [], ridges = [], phases = [];
+    for (let k = 0; k < frames; k++) {
+      const phase = 2 * Math.PI * k / frames, sample = wrap2(() => import_anatomy2.default.frame(body, phase, { budget: sourceBudget(budget), crests }));
+      phases.push(phase);
+      const p = norm.alloc(3 * budget);
+      for (let j = 0; j < budget; j++) {
+        const i = indices[j], owner2 = sample.owners[i];
+        if (k === 0) owners[j] = owner2;
+        else check3(owners[j] === owner2, "unsupported-frame", "Sample ownership changed with phase");
+        wrap2(() => norm.write(p, 3 * j, sample.points[4 * i], sample.points[4 * i + 1], sample.points[4 * i + 2]));
+      }
+      const a = norm.alloc(3 * nodeIds.length);
+      nodeIds.forEach((id2, n) => {
+        const q = wrap2(() => import_anatomy2.default.anchor(body, id2, phase));
+        wrap2(() => norm.write(a, 3 * n, q.x, q.y, q.z));
+      });
+      ridges.push(sample.ridges.map((r) => {
+        const b = norm.alloc(3 * r.line.length);
+        r.line.forEach((q, m) => wrap2(() => norm.write(b, 3 * m, q.x, q.y, q.z)));
+        return b;
+      }));
+      positions.push(p);
+      anchors.push(a);
+    }
+    for (let n = 0; n < nodeIds.length; n++) check3(owners.includes(n), "unsupported-frame", "A task node has no visible sample");
+    return {
+      format: "qdl-bake",
+      version: 1,
+      artifactId: artifact.id,
+      sourceHash: artifact.sourceHash,
+      quantize,
+      quantScale: quantize === "int16" ? INT16_SCALE : 1,
+      frames,
+      budget,
+      crests,
+      phases,
+      bounds: { center: norm.center, scale: norm.scale, size: [box.width, box.height, box.depth] },
+      nodeIds,
+      nodeColors: nodes.map((_, i) => import_chroma2.default.colorFor({ design: design2, nodes }, i)),
+      nodeRoles: nodes.map((n) => import_chroma2.default.role(n.op)),
+      owners,
+      positions,
+      anchors,
+      ridges
+    };
+  }
+  /** Map each retained trace step of a record to an owner index into the artifact's
+   * nodeIds, so a renderer can light the executing node. Reads the record only. */
+  traceOwners(recordId) {
+    const selected = parse3(TraceOwnersInputSchema, { recordId }, 1024), record2 = this.#records.get(selected.recordId);
+    check3(record2, "unknown-record", "Execution record is not in this session", "$.recordId");
+    const artifact = this.#lookup(record2.artifactId);
+    check3(record2.result.sourceHash === artifact.sourceHash, "stale-record", "Record belongs to another source");
+    const nodeIds = artifact.payload.task.nodes.map((n) => n.id), index = new Map(nodeIds.map((id2, i) => [id2, i]));
+    const occurrences = record2.result.occurrences.map((o) => ({ occurrence: o.occurrence, status: o.status, owners: o.trace.map((step2) => {
+      const i = index.get(step2.nodeId);
+      check3(i !== void 0, "stale-record", "Trace step names a node outside the source task", "$.recordId");
+      return i;
+    }) }));
+    return { format: "qdl-trace-owners", version: 1, recordId: record2.id, artifactId: artifact.id, sourceHash: artifact.sourceHash, nodeIds, occurrences };
+  }
   run(input2) {
     const selected = parse3(RunInputSchema, input2, 131072);
     return this.#execute({ operation: "run", ...selected });
@@ -27564,7 +27704,7 @@ var Session = class _Session {
     }
     const inputs = request.operation === "run" ? request.inputs : parent.result.bindings, result = wrap2(() => import_qdl_v1.default.execute(artifact.program, inputs));
     if (parent) check3(import_core10.default.canon(result) === import_core10.default.canon(parent.result), "stale-record", "Fresh execution differs from retained parent result");
-    const proposed = { id: "run_" + randomUUID(), artifactId: artifact.id, requestId: request.requestId, result, evidence: "retained", ...parent ? { parentRecordId: parent.id } : {} };
+    const proposed = { id: `run_${randomUUID()}`, artifactId: artifact.id, requestId: request.requestId, result, evidence: "retained", ...parent ? { parentRecordId: parent.id } : {} };
     const record2 = wrap2(() => ExecutionRecordSchema.parse(proposed)), recordSize = bytes(record2);
     check3(recordSize <= this.#limits.maxRecordBytes, "resource-limit", "Execution record exceeds byte budget");
     check3(this.#recordBytes + recordSize <= this.#limits.maxRecordsBytes, "resource-limit", "Execution store exceeds aggregate byte budget");

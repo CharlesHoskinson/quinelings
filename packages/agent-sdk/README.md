@@ -47,7 +47,25 @@ console.log(session.inspect(artifact.id).source === artifact.source); // true
 session.verify(artifact.id); // source-only; no task evaluation
 ```
 
-`compile`, `inspect`, `verify`, `recover` and `frame` are passive. `run` and `reproduce` explicitly evaluate tasks. Exact request-key replay returns the retained record without another evaluation; changed inputs need a new key. Source carries all six public declaration arrays, normalized types, policy, task and body. These declarations do not expose private reasoning or establish observation truth. Imported snapshot histories remain asserted.
+`compile`, `inspect`, `verify`, `recover`, `frame`, `bake` and `traceOwners` are passive. `run` and `reproduce` explicitly evaluate tasks. Exact request-key replay returns the retained record without another evaluation; changed inputs need a new key. Source carries all six public declaration arrays, normalized types, policy, task and body. These declarations do not expose private reasoning or establish observation truth. Imported snapshot histories remain asserted.
+
+### Embedding bodies in your own renderer
+
+`Session.bake(artifactId, {frames, budget, crests, quantize})` returns a seamless loop of
+`frames` poses (frame k is phase `2πk/frames`) as fresh typed buffers: per-frame `positions`
+(xyz per sample), per-node `anchors` and crest `ridges`, plus phase-invariant `owners`,
+`nodeIds`, `nodeColors`, `nodeRoles`, `bounds` and the `sourceHash`. Coordinates are
+normalized into the body's fixed portrait box: `world = bounds.center + bounds.scale * stored / quantScale`
+(`quantScale` is 32767 for `int16`, 1 for `float32`). Defaults: 24 frames, budget 1500,
+3 crests, `float32`. Budgets run from 512 to 24000; `frames × budget` is capped at 2^20.
+Below 4000 the bake keeps every reserved owner and cap sample of the shared sampler and a
+strided subset of the rest, so every task node stays visible (the worst admissible
+anatomy reserves 160 samples). `frame()` keeps its 4000 floor.
+
+`Session.traceOwners(recordId)` maps every retained trace step of a run to an index into
+`nodeIds`, so a renderer can light the executing node. Both methods are passive: they
+never evaluate a task or change the session. See `examples/bake.mjs` and the formal model
+`spec/v1-bake.qnt` (`npm run formal:bake` at the repository root).
 
 See the [stable SDK guide](../../docs/SDK-V1.md), [QDL 1 contract](../../docs/QDL-V1.md), [ten reusable recipes](../../docs/QDL-V1-LIBRARY.md) and [identity/upgrade policy](../../docs/QDL-V1-UPGRADES.md). The release identity is `qdl-v1.0.0`.
 

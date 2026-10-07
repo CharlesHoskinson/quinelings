@@ -86,3 +86,29 @@ export interface Snapshot {
   receipts:{request:Extract<Request,{operation:'run'|'reproduce'}>;recordId:string}[];
 }
 export interface ErrorDetail {code:string;path:string;message:string}
+/** Additive embedding API (Session.bake). quantize defaults to 'float32'. */
+export interface BakeOptions {frames?:number;budget?:number;crests?:number;quantize?:'int16'|'float32'}
+export type BakeBuffer = Int16Array|Float32Array;
+/** Detached, deterministic baked loop of one assembly body for external renderers.
+ * Coordinates are normalized: world = center + scale * (stored / quantScale), and
+ * every stored coordinate lies in [-quantScale, quantScale]. Frame k is sampled at
+ * phase 2*PI*k/frames, so the sequence loops without a seam. */
+export interface Bake {
+  format:'qdl-bake';version:1;artifactId:string;sourceHash:string;
+  quantize:'int16'|'float32';quantScale:number;frames:number;budget:number;crests:number;phases:number[];
+  bounds:{center:[number,number,number];scale:number;size:[number,number,number]};
+  nodeIds:string[];nodeColors:string[];nodeRoles:string[];
+  /** Per-sample owner index into nodeIds; identical for every frame. */
+  owners:Uint8Array;
+  /** Per frame: xyz per sample (3*budget). */
+  positions:BakeBuffer[];
+  /** Per frame: xyz per node (3*nodeIds.length), the node's territory anchor. */
+  anchors:BakeBuffer[];
+  /** Per frame, per crest: xyz per ridge point (3*301). */
+  ridges:BakeBuffer[][];
+}
+/** Owner index (into the artifact's nodeIds) for each retained trace step. */
+export interface TraceOwners {
+  format:'qdl-trace-owners';version:1;recordId:string;artifactId:string;sourceHash:string;nodeIds:string[];
+  occurrences:{occurrence:number;status:'completed'|'failed';owners:number[]}[];
+}

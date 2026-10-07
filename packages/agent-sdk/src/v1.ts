@@ -10,10 +10,12 @@ import A from '../../../anatomy.js';
 // @ts-expect-error shared source-authored chroma has no declarations
 import Chroma from '../../../chroma.js';
 import {z} from 'zod';
-import {IntentSchema,ArtifactSchema,ExecutionRecordSchema,RequestSchema,RunInputSchema,ReproduceInputSchema,RecoverySchema,SnapshotSchema,VerificationSchema,FrameInputSchema,FrameSchema} from './v1-schema.js';
-import type {Artifact,Intent,ExecutionRecord,RecoveryInput,RunInput,ReproduceInput,SessionOptions,Descriptor,Request,Response,ResponseFor,TaggedResponse,Snapshot,ErrorDetail,Verification,Json,Frame,FrameOptions} from './v1-types.js';
+import {IntentSchema,ArtifactSchema,ExecutionRecordSchema,RequestSchema,RunInputSchema,ReproduceInputSchema,RecoverySchema,SnapshotSchema,VerificationSchema,FrameInputSchema,FrameSchema,BakeInputSchema,TraceOwnersInputSchema} from './v1-schema.js';
+import {BAKE_MAX_SAMPLES,INT16_SCALE,reservedCount,selection,sourceBudget,normalizer} from './v1-bake.js';
+import type {Artifact,Intent,ExecutionRecord,RecoveryInput,RunInput,ReproduceInput,SessionOptions,Descriptor,Request,Response,ResponseFor,TaggedResponse,Snapshot,ErrorDetail,Verification,Json,Frame,FrameOptions,Bake,BakeOptions,BakeBuffer,TraceOwners} from './v1-types.js';
 export type * from './v1-types.js';
-export {IntentSchema,ArtifactSchema,ExecutionRecordSchema,RequestSchema,RunSchema,ResultSchemas,ResponseSchema,SnapshotSchema,ErrorSchema,RunInputSchema,ReproduceInputSchema,RecoverySchema,VerificationSchema,DescriptorSchema,BindingsSchema,ValueTypeSchema,ThoughtSchema,CompileInputSchema,ArtifactInputSchema,DescribeInputSchema,TaggedResponseSchema,FrameSchema,FrameInputSchema,FrameOptionsSchema,HarmonicGenomeSchema,ColorGenomeSchema} from './v1-schema.js';
+export {IntentSchema,ArtifactSchema,ExecutionRecordSchema,RequestSchema,RunSchema,ResultSchemas,ResponseSchema,SnapshotSchema,ErrorSchema,RunInputSchema,ReproduceInputSchema,RecoverySchema,VerificationSchema,DescriptorSchema,BindingsSchema,ValueTypeSchema,ThoughtSchema,CompileInputSchema,ArtifactInputSchema,DescribeInputSchema,TaggedResponseSchema,FrameSchema,FrameInputSchema,FrameOptionsSchema,HarmonicGenomeSchema,ColorGenomeSchema,BakeOptionsSchema,BakeInputSchema,TraceOwnersInputSchema} from './v1-schema.js';
+export {BAKE_FLOOR,BAKE_CEILING,BAKE_MAX_FRAMES,BAKE_MAX_SAMPLES} from './v1-bake.js';
 const ARTIFACT_BYTES=32*1024*1024,RECORD_BYTES=2*1024*1024,RECORDS_BYTES=64*1024*1024,SNAPSHOT_BYTES=128*1024*1024,RECEIPT_BYTES=32*1024*1024;
 const clone=<A>(value:A):A=>structuredClone(value);
 const bytes=(value:unknown)=>Buffer.byteLength(JSON.stringify(value));
@@ -99,6 +101,45 @@ export class Session {
   const body=cached??wrap(()=>A.compile(design.anatomy,nodes,design.motion.gesture)),sample=wrap(()=>A.frame(body,selected.phase,selected.options??{}));
   const frame=wrap(()=>FrameSchema.parse({points:Array.from(sample.points),normals:Array.from(sample.normals),owners:Array.from(sample.owners),ridges:clone(sample.ridges),nodeIds:nodes.map(n=>n.id),nodeColors:nodes.map((_,i)=>Chroma.colorFor({design,nodes},i)),nodeRoles:nodes.map(n=>Chroma.role(n.op))}));
   if(!cached){if(this.#bodies.size>=32)this.#bodies.delete(this.#bodies.keys().next().value!);this.#bodies.set(artifact.id,body);}return frame;
+ }
+ /** Passive embedding bake (formal model: spec/v1-bake.qnt). Samples a seamless loop
+  * of `frames` poses with the shared body sampler, normalizes them into the body's
+  * phase-invariant portrait box and returns fresh buffers. Budgets below the sampler
+  * floor (4000) keep every reserved owner/chart sample and a strided subset of the
+  * rest, so every task node stays visible. Never evaluates a task or mutates state. */
+ bake(artifactId:string,options:BakeOptions={}):Bake {
+  const selected=parse(BakeInputSchema,{artifactId,options},1024),artifact=this.#lookup(selected.artifactId),design=artifact.payload.design,o=selected.options??{};
+  const frames=o.frames??24,budget=o.budget??1500,crests=o.crests??3,quantize=o.quantize??'float32';
+  check(frames*budget<=BAKE_MAX_SAMPLES,'resource-limit','Bake frames x budget exceeds '+BAKE_MAX_SAMPLES+' samples','$.options');
+  check(design.anatomy?.model==='assembly'&&design.motion.gesture,'unsupported-frame','Source has no supported assembly anatomy and gesture');
+  const nodes=artifact.payload.task.nodes,nodeIds=nodes.map(n=>n.id),cached=this.#bodies.get(artifact.id);
+  const body=cached??wrap(()=>A.compile(design.anatomy,nodes,design.motion.gesture));
+  if(!cached){if(this.#bodies.size>=32)this.#bodies.delete(this.#bodies.keys().next().value!);this.#bodies.set(artifact.id,body);}
+  const reserved=reservedCount(body.parts);check(reserved<=budget,'unsupported-frame','Bake budget cannot cover reserved owner samples','$.options.budget');
+  const indices=selection(reserved,budget),box=wrap(()=>A.portraitFrame(body)),norm=wrap(()=>normalizer(box,quantize));
+  const owners=new Uint8Array(budget),positions:BakeBuffer[]=[],anchors:BakeBuffer[]=[],ridges:BakeBuffer[][]=[],phases:number[]=[];
+  for(let k=0;k<frames;k++){
+   const phase=2*Math.PI*k/frames,sample=wrap(()=>A.frame(body,phase,{budget:sourceBudget(budget),crests}));phases.push(phase);
+   const p=norm.alloc(3*budget);
+   for(let j=0;j<budget;j++){const i=indices[j]!,owner=sample.owners[i];
+    if(k===0)owners[j]=owner;else check(owners[j]===owner,'unsupported-frame','Sample ownership changed with phase');
+    wrap(()=>norm.write(p,3*j,sample.points[4*i],sample.points[4*i+1],sample.points[4*i+2]));}
+   const a=norm.alloc(3*nodeIds.length);nodeIds.forEach((id,n)=>{const q=wrap(()=>A.anchor(body,id,phase));wrap(()=>norm.write(a,3*n,q.x,q.y,q.z));});
+   ridges.push(sample.ridges.map((r:{line:{x:number;y:number;z:number}[]})=>{const b=norm.alloc(3*r.line.length);r.line.forEach((q,m)=>wrap(()=>norm.write(b,3*m,q.x,q.y,q.z)));return b;}));
+   positions.push(p);anchors.push(a);
+  }
+  for(let n=0;n<nodeIds.length;n++)check(owners.includes(n),'unsupported-frame','A task node has no visible sample');
+  return {format:'qdl-bake',version:1,artifactId:artifact.id,sourceHash:artifact.sourceHash,quantize,quantScale:quantize==='int16'?INT16_SCALE:1,frames,budget,crests,phases,
+   bounds:{center:norm.center,scale:norm.scale,size:[box.width,box.height,box.depth]},nodeIds,nodeColors:nodes.map((_,i)=>Chroma.colorFor({design,nodes},i)),nodeRoles:nodes.map(n=>Chroma.role(n.op)),owners,positions,anchors,ridges};
+ }
+ /** Map each retained trace step of a record to an owner index into the artifact's
+  * nodeIds, so a renderer can light the executing node. Reads the record only. */
+ traceOwners(recordId:string):TraceOwners {
+  const selected=parse(TraceOwnersInputSchema,{recordId},1024),record=this.#records.get(selected.recordId);check(record,'unknown-record','Execution record is not in this session','$.recordId');
+  const artifact=this.#lookup(record.artifactId);check(record.result.sourceHash===artifact.sourceHash,'stale-record','Record belongs to another source');
+  const nodeIds=artifact.payload.task.nodes.map(n=>n.id),index=new Map(nodeIds.map((id,i)=>[id,i]));
+  const occurrences=record.result.occurrences.map(o=>({occurrence:o.occurrence,status:o.status,owners:o.trace.map(step=>{const i=index.get(step.nodeId);check(i!==undefined,'stale-record','Trace step names a node outside the source task','$.recordId');return i;})}));
+  return {format:'qdl-trace-owners',version:1,recordId:record.id,artifactId:artifact.id,sourceHash:artifact.sourceHash,nodeIds,occurrences};
  }
  run(input:RunInput):ExecutionRecord {const selected=parse(RunInputSchema,input,131072);return this.#execute({operation:'run',...selected});}
  reproduce(input:ReproduceInput):ExecutionRecord {const selected=parse(ReproduceInputSchema,input,1024);return this.#execute({operation:'reproduce',...selected});}

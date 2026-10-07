@@ -86,3 +86,29 @@ test('experimental execution refuses malformed options instead of silently skipp
       `Malformed options must refuse: ${JSON.stringify(malformed)}`);
   }
 });
+
+// spec/visual-capsule.qnt admittedOnly: construct/run act only on admitted
+// capsules. A capsule-shaped program that fails admission must refuse rather
+// than fall back to the legacy interpreter (whose constructionOnly path skips
+// task and design validation and returned a successful record).
+test('experimental execution refuses tampered capsules even when construction-only',()=>{
+  const created=new Runtime().create('[2,3,4] | square | sum | report total');
+  if(created.status!=='supported')throw Error('Unsupported test recipe');
+  const capsule=VisualCapsule.author(created.artifact.source,42);
+  const territory=JSON.stringify(capsule.design.woven.territories[0]!.node);
+  const seeded=capsule.source.replace('"seed":42','"seed":43');
+  assert.notEqual(seeded,capsule.source);
+  const renamed=capsule.source.replace(territory,'"foreign-operation"');
+  assert.notEqual(renamed,capsule.source);
+  for(const tampered of [seeded,renamed]){
+    const program=JSON.parse(tampered) as unknown[];
+    assert.throws(()=>VisualCapsule.admit(tampered));
+    for(const options of [undefined,{constructionOnly:true},{constructionOnly:false},{bindings:{}}])
+      assert.throws(()=>VisualCapsule.execute(program,options as never),`Tampered capsule must refuse: ${JSON.stringify(options)}`);
+  }
+  // Admitted capsules and genuine legacy programs keep their behaviour.
+  const constructed=VisualCapsule.execute(capsule.program,{constructionOnly:true});
+  assert.equal(constructed.emitted[0],capsule.source);
+  const legacy=VisualCapsule.execute(JSON.parse(created.artifact.source) as unknown[],{constructionOnly:true});
+  assert.equal(legacy.emitted[0],created.artifact.source);
+});

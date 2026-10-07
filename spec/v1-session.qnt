@@ -96,23 +96,61 @@ module v1Session {
     before.observations.keys().forall(a=>not(terminal(before.observations.get(a))) or
       (s.observations.get(a).status==before.observations.get(a).status and s.observations.get(a).units==before.observations.get(a).units))
   val quantityMonotone = confirmedUnits(s)>=confirmedUnits(before)
+  // Holds by construction: no step action writes submissions. It is kept as the
+  // target of the unknown-resubmission negative control, not as a sampled check.
   val noSubmission = s.submissions==0
+  // A live draft is always fresh and fits: stage refuses known keys and a full
+  // ledger, and only commit (which clears the draft) grows the ledger. Hence the
+  // replay/conflict/full branches of commit are unreachable defensive code.
+  val draftFresh = pending.key==0 or (not(s.receipts.keys().contains(pending.key)) and
+    s.receipts.keys().size()<2)
+  // A replay returns a response the ledger actually retains, never a new one.
+  val replayFromLedger = last!="replay" or s.receipts.keys().exists(k=>s.receipts.get(k).response==returned)
   val safety = bounded and ledgerMonotone and countOnce and receiptShape and atomic and passive and
-    refusalUnchanged and terminalMonotone and quantityMonotone and noSubmission
+    refusalUnchanged and terminalMonotone and quantityMonotone and noSubmission and draftFresh and replayFromLedger
+
+  // Witnesses (quint run --witnesses): each names an outcome that must be reachable.
+  val stagedWitness = last=="stage"
+  val preflightWitness = last=="preflight"
+  val commitWitness = last=="commit"
+  val secondCommitWitness = s.commits==2
+  val replayWitness = last=="replay"
+  val conflictWitness = last=="conflict"
+  val fullWitness = last=="full"
+  val staleDraftRefusedWitness = last=="refuse" and priorPending.checked and priorPending.expected!=before.revision
+  val cancelDraftWitness = last=="cancel" and priorPending.key!=0
+  val observeWitness = last=="observe"
+  val confirmedWitness = confirmedUnits(s)>0
+  val retryBlockedWitness = not(mayRetry(s))
+  val terminalRefusedWitness = last=="refuse" and s.observations.keys().exists(a=>terminal(s.observations.get(a)))
 
   action step = {
+    // Domains reach one step past the admitted tokens so out-of-domain refusals run.
+    nondet key=0.to(3).oneOf()
+    nondet request=0.to(2).oneOf()
+    nondet expected=Set(s.revision,s.revision+1).oneOf()
+    nondet world=Set(0,1,8,9).oneOf()
+    nondet response=Set(0,2,8,9).oneOf()
+    nondet ok=Set(false,true).oneOf()
+    nondet attempt=0.to(2).oneOf()
+    nondet sequence=(-1).to(5).oneOf()
+    nondet status=statuses.union(Set("lost")).oneOf()
+    nondet units=0.to(3).oneOf()
+    any {stage(key,request,expected,world,response,ok),preflight(ok),commit,view,cancel,
+      observe(attempt,sequence,status,units)}
+  }
+
+  // Ledger-focused sampler: drafts are valid and preflight passes; commit is
+  // listed twice to bias the choice. Second commits, the full ledger and replays
+  // are then sampled often.
+  // The general step above still explores every refusal path.
+  action ledgerStep = {
     nondet key=requestKeys.oneOf()
     nondet request=requests.oneOf()
     nondet expected=Set(s.revision,s.revision+1).oneOf()
     nondet world=Set(0,1,8,9).oneOf()
     nondet response=Set(0,2,8,9).oneOf()
-    nondet ok=Set(false,true).oneOf()
-    nondet attempt=attempts.oneOf()
-    nondet sequence=0.to(4).oneOf()
-    nondet status=statuses.oneOf()
-    nondet units=Set(0,1,2).oneOf()
-    any {stage(key,request,expected,world,response,ok),preflight(ok),commit,view,cancel,
-      observe(attempt,sequence,status,units)}
+    any {stage(key,request,expected,world,response,true),preflight(true),commit,commit,view}
   }
 
   action first = init.then(stage(1,1,0,3,5,true)).then(preflight(true)).then(commit)
@@ -149,5 +187,9 @@ module v1Session {
   run detects_partial_commitTest = init.then(stage(1,1,0,3,5,true)).then(preflight(true)).then(unsafePartialCommit).expect(not(atomic) and s.world!=before.world and s.commits==before.commits)
   run detects_receipt_evictionTest = first.then(unsafeEvict).expect(not(ledgerMonotone) and not(countOnce))
   run detects_terminal_regressionTest = init.then(observe(1,1,"confirmed",1)).then(unsafeTerminalRegression).expect(not(terminalMonotone) and not(quantityMonotone))
+  action unsafeRestage = move(s,{key:1,request:1,expected:s.revision,world:1,response:1,valid:true,checked:true},"stage",0)
+  action unsafeFabricatedReplay = move(s,noDraft,"replay",7)
+  run detects_stale_draftTest = first.then(unsafeRestage).expect(not(draftFresh))
+  run detects_fabricated_replayTest = first.then(unsafeFabricatedReplay).expect(not(replayFromLedger))
   run detects_unknown_resubmissionTest = init.then(observe(1,1,"unknown",0)).then(unsafeUnknownResubmit).expect(not(noSubmission))
 }

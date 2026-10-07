@@ -72,6 +72,8 @@ function transition(state, command) {
     case 'unsafePartialCommit': result = move({...s,world:pending.world},noDraft(),'commit',pending.response); break;
     case 'unsafeEvict': result = move({...s,receipts:{}},noDraft(),'view'); break;
     case 'unsafeTerminalRegression': result = move({...s,observations:{...s.observations,1:{sequence:2,status:'pending',units:0}}},pending,'observe'); break;
+    case 'unsafeRestage': result = move(s,{key:1,request:1,expected:s.revision,world:1,response:1,valid:true,checked:true},'stage'); break;
+    case 'unsafeFabricatedReplay': result = move(s,noDraft(),'replay',7); break;
     case 'unsafeUnknownResubmit': result = move({...s,submissions:s.submissions+1},pending,'observe'); break;
     default: throw Error('Unknown token-model command: '+kind);
   }
@@ -79,7 +81,7 @@ function transition(state, command) {
   return result;
 }
 
-function invariants({s,before,priorPending,last,returned}) {
+function invariants({s,before,pending,priorPending,last,returned}) {
   const entries=Object.entries(s.receipts), observations=Object.values(s.observations);
   const bounded=s.world >= 0 && s.world <= 8 && entries.length <= 2 &&
     entries.every(([key]) => [1,2,3].includes(Number(key))) && Object.keys(s.observations).every(a => [1,2].includes(Number(a))) &&
@@ -97,7 +99,9 @@ function invariants({s,before,priorPending,last,returned}) {
   const terminalMonotone=Object.entries(before.observations).every(([key,o]) => s.observations[key] &&
     (!terminal(o) || (o.status === s.observations[key].status && o.units === s.observations[key].units)));
   return {bounded,ledgerMonotone,countOnce,receiptShape,atomic,passive,refusalUnchanged,terminalMonotone,
-    quantityMonotone:confirmedUnits(s) >= confirmedUnits(before), noSubmission:s.submissions === 0};
+    quantityMonotone:confirmedUnits(s) >= confirmedUnits(before), noSubmission:s.submissions === 0,
+    draftFresh:pending.key === 0 || (!Object.hasOwn(s.receipts,pending.key) && entries.length < 2),
+    replayFromLedger:last !== 'replay' || entries.some(([,r]) => r.response === returned)};
 }
 
 const stage=(key,request,expected,world,response,valid=true) => ['stage',key,request,expected,world,response,valid];
@@ -131,6 +135,8 @@ const scenarios={
   detects_partial_commitTest:{commands:[stage(1,1,0,3,5),check(),['unsafePartialCommit']],broken:['atomic']},
   detects_receipt_evictionTest:{commands:[...first,['unsafeEvict']],broken:['ledgerMonotone','countOnce']},
   detects_terminal_regressionTest:{commands:[observe(1,1,'confirmed',1),['unsafeTerminalRegression']],broken:['terminalMonotone','quantityMonotone']},
+  detects_stale_draftTest:{commands:[...first,['unsafeRestage']],broken:['draftFresh']},
+  detects_fabricated_replayTest:{commands:[...first,['unsafeFabricatedReplay']],broken:['replayFromLedger']},
   detects_unknown_resubmissionTest:{commands:[observe(1,1,'unknown'),['unsafeUnknownResubmit']],broken:['noSubmission']}
 };
 
@@ -185,7 +191,7 @@ try {
       if (Object.hasOwn(scenario,'retry')) assert.equal(mayRetry(state.s),scenario.retry,name);
     }
   }
-  console.log(JSON.stringify({status:'passed',quintScenarios:tests.length,comparedStates,negativeControls:4,
+  console.log(JSON.stringify({status:'passed',quintScenarios:tests.length,comparedStates,negativeControls:Object.values(scenarios).filter(x => x.broken).length,
     scope:'Independent JS token transitions versus executed Quint ITF traces; no production SDK/interpreter/durability/external refinement'},null,2));
 } finally {
   fs.rmSync(tmp,{recursive:true,force:true});

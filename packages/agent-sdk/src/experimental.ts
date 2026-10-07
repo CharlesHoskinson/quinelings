@@ -29,13 +29,44 @@ export interface StableExecutionRecord {taskProfile:'qdl-v1';format:'qdl-run';ve
 export interface ConstructionRecord {emitted:string[];tasks:[];trace:[];steps:number}
 export type ExecutionRecord = LegacyExecutionRecord | StableExecutionRecord | ConstructionRecord;
 
-export const VisualCapsule = capsuleRuntime as {
+type VisualCapsuleApi = {
   author(taskSource:string,seed?:number):VisualCapsule;
   build(taskSource:string,design:VisualDesign):VisualCapsule;
   admit(source:string):VisualCapsule;
   verify(capsule:VisualCapsule):{exactSource:true;source:string;constructorSteps:number};
   recover(capsule:VisualCapsule,encoding:'harmonics'|'colors'):VisualCapsule;
   execute(program:unknown[],options?:{constructionOnly?:boolean;bindings?:Record<string,unknown>}):ExecutionRecord;
+};
+const capsules = capsuleRuntime as VisualCapsuleApi & {isCapsule(program:unknown):boolean;runtime:{canon(value:unknown):string}};
+/** True when a task payload in the program carries the visual capsule format
+ * marker, using the same walk as visual-capsule.js admission. */
+function claimsCapsule(program:unknown):boolean {
+  const stack:unknown[]=[program];let visits=0;
+  while(stack.length){
+    const t=stack.pop();if(!Array.isArray(t)||t[0]==='quote'||++visits>100000)continue;
+    const quoted=Array.isArray(t[1])&&t[1][0]==='quote'?t[1][1]:undefined;
+    if(t[0]==='run'&&Array.isArray(t[1])&&t[1][0]==='quote'){stack.push(quoted);continue;}
+    if(t[0]==='task'&&Array.isArray(t[1])&&t[1][0]==='quote'){
+      if(quoted&&typeof quoted==='object'&&(quoted as {format?:unknown}).format==='quineling-visual-capsule')return true;
+      continue;
+    }
+    for(const x of t.slice(1))stack.push(x);
+  }
+  return false;
+}
+/** Explicit experimental runtime. A program that claims to be a visual capsule
+ * must pass admission before any execution, including construction-only runs;
+ * it never falls back to the legacy interpreter (spec/visual-capsule.qnt
+ * admittedOnly). Programs without the capsule marker keep the legacy path. */
+export const VisualCapsule: VisualCapsuleApi = {
+  ...capsules,
+  execute(program:unknown[],options?:{constructionOnly?:boolean;bindings?:Record<string,unknown>}):ExecutionRecord {
+    if(claimsCapsule(program)&&!capsules.isCapsule(program)){
+      capsules.admit(capsules.runtime.canon(program));
+      throw new Error('Visual capsule admission failed');
+    }
+    return capsules.execute(program,options);
+  }
 };
 export const MathematicalLifeforms = bodyRuntime as {
   author(graph:TaskGraph,seed?:number):MathematicalBody;

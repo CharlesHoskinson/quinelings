@@ -135,6 +135,10 @@ The result distinguishes `taskProfile: 'legacy'` with `tasks` from
 `taskProfile: 'qdl-v1'` with `occurrences`. Body authoring, verification,
 recovery and sampling are passive. Only execution evaluates the retained task.
 The complete capsule source is emitted exactly by either task profile.
+`VisualCapsule.execute` refuses a program that carries the visual capsule
+payload but fails admission, also with `constructionOnly: true`; it does not
+fall back to the legacy interpreter. Programs without that payload keep the
+legacy execution path.
 
 Opt in to the eight `quineling_visual_*` MCP tools with
 `quinelings-mcp --experimental-visual`, or use

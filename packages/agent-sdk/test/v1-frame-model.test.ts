@@ -85,12 +85,12 @@ after(()=>{if(directory)rmSync(directory,{recursive:true,force:true});});
 const errorCodes:Record<string,string>={InvalidInput:'invalid-input',UnknownArtifact:'unknown-artifact',
   UnsupportedFrame:'unsupported-frame',SampleFailed:'sample-failed'};
 function argumentsFor(r:ModelRequest):[string,number,FrameOptions] {
-  let phase=r.phase;let options:FrameOptions={budget:r.budget,crests:r.crests};
+  let phase=r.phase;let options:FrameOptions={budget:r.budget,crests:r.crests as FrameOptions['crests']};
   switch(r.shape.tag){
     case 'Normal':break;
     case 'Defaults':options={};break;
     case 'FractionalBudget':options.budget=r.budget+0.5;break;
-    case 'FractionalCrests':options.crests=r.crests+0.5;break;
+    case 'FractionalCrests':options.crests=(r.crests+0.5) as FrameOptions['crests'];break;
     case 'NonfinitePhase':phase=r.phase===0?NaN:r.phase>0?Infinity:-Infinity;break;
     case 'ExtraOption':options={...options,reuse:true} as FrameOptions;break;
     default:assert.fail('Unknown model input shape '+r.shape.tag);

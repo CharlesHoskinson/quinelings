@@ -27778,10 +27778,13 @@ var export_QuinelingWorld = import_ranch_world2.default;
 var export_Quinelings = import_core12.default;
 var export_VisualCapsule = import_visual_capsule.default;
 var export_WovenBody = import_woven_body.default;
+var export_Morphology = globalThis.Morphology;
+var export_ThoughtCompiler = globalThis.ThoughtCompiler;
 export {
   export_Anatomy as Anatomy,
   export_Chroma as Chroma,
   export_LifeformFamilies as LifeformFamilies,
+  export_Morphology as Morphology,
   export_QDL as QDL,
   export_QDLV1 as QDLV1,
   export_QDLV1Library as QDLV1Library,
@@ -27791,6 +27794,7 @@ export {
   export_QuinelingWorld as QuinelingWorld,
   export_Quinelings as Quinelings,
   Runtime,
+  export_ThoughtCompiler as ThoughtCompiler,
   v1_ranch_exports as V1Ranch,
   Session as V1Session,
   export_VisualCapsule as VisualCapsule,

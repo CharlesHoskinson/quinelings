@@ -93,6 +93,6 @@ function colorFor(shape,nodeIndex,lensState){
  if(lensState?.lens&&!entry)color=desaturate(color,.48);
  return strength===1?color:strength===0?neutral:mix(neutral,color,strength);
 }
-const api={ROLES,ROLE_MAP,SCALE_STOPS,STATUS_COLORS,STATUS_LABELS,role,compile,owner,scalarColor,resolveLens,colorFor};
+const api={ROLES,ROLE_MAP,SCALE_STOPS,STATUS_COLORS,STATUS_LABELS,role,channels,hex,compile,owner,scalarColor,resolveLens,colorFor};
 if(typeof module!=='undefined')module.exports=api;root.Chroma=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

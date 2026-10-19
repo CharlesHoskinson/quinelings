@@ -1,0 +1,13 @@
+# Designer 3 Research: Apple VisionOS Continuation Wafers & Recursion Unwind Cascade
+
+## 1. Pedagogical Mental Models for Recursion & Continuations (Python Tutor & Substitution Hole Model)
+- **The "Waiting Hole `[ ? ]`" Substitution Model**: Beginners and experts alike comprehend recursive descent best when each suspended stack frame is shown not as an opaque mechanical block, but as an **incomplete algebraic expression with a literal waiting socket `[ ? ]`** (e.g., `4 * [ ? ]`, `xs.head + [ ? ]`, `if [ ? ] then ...`).
+- **Isolated Lexical Reality (Python Tutor Stack Frames)**: Each frame in a recursive call chain lives in its own isolated lexical bubble (`n = 4`, `n = 3`, `n = 2`). Keeping the lexical binding capsule (`n=4`) physically docked directly to the right edge of its continuation wafer eliminates cognitive "spaghetti-line tracing" between distant satellites and frames.
+- **Winding (Descent) vs. Unwinding (Fold / Ascent)**:
+  - **Winding (`Push frame` / `DESCEND`)**: A new continuation wafer spawns at the top of the well and glides down to its depth terrace, leaving its `[ ? ]` socket open and connected via a taut central optical thread to the child evaluation below.
+  - **Unwinding (`Return` / `Binary primitive` / `Restore scope`)**: When the child call resolves, its result physically ascends along the central spine as a **Luminous Emerald-Gold Result Orb** that plugs directly into the parent wafer's `[ ? ]` socket, flashing the parent wafer emerald as `[ ? ]` resolves into a concrete value.
+
+## 2. Apple VisionOS Spatial Glass & Dieter Rams Industrial Restraint
+- **Precision Frosted-Glass Continuation Wafers**: Inspired by Apple VisionOS spatial glass cards and M4 silicon interposers, each continuation frame is rendered as an ultra-thin, continuous-curvature rounded square wafer (`x, z ∈ [-0.78, 0.78]`) with a dark translucent frosted interior (`MeshPhysicalMaterial` / high-contrast dark glass), a precision chamfered anodized aluminum/titanium rim color-coded by `FRAME_KIND_META[frame.kind].color`, and subtle specular edge highlights.
+- **Zero Mechanical Clutter**: All Wave 1 mechanical teeth, clamp jaws, injector nozzles, rotating turrets, and tangled Bezier tethers are eliminated in favor of clean architectural geometry, generous negative space, and a single taut vertical **Recursion Light-Spine** along `(x = 0, z = 0)`.
+- **High-DPI Foreground Typography**: Each wafer carries a crystal-clear, upward-canted high-DPI label plaque (`createPlaqueTexture`) that foregrounds the **depth, waiting computation with `[ ? ]`, and lexical bindings** at a glance, paired with a neat pill-shaped **Lexical Env Capsule** docked flush to the right rim.

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Sherlock — The execution engine at the center of Moriarty</title>
+  <meta name="description" content="Sherlock is the execution engine at the center of Moriarty: a small computer whose internal workings are intentionally visible so every step can be accounted for and proved." />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./src/styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.webgpu.js",
+        "three/webgpu": "./vendor/three.webgpu.js",
+        "three/tsl": "./vendor/three.tsl.js"
+      }
+    }
+  </script>
+  <link rel="modulepreload" href="./vendor/three.webgpu.js" />
+  <link rel="modulepreload" href="./vendor/three.core.js" />
+  <link rel="modulepreload" href="./src/app.js" />
+</head>
+<body>
+  <div class="workbench-shell">
+    <!-- M3 Top App Bar / Editorial Masthead -->
+    <header class="masthead">
+      <div class="masthead-copy">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <p class="brandmark" style="margin:0;">Sherlock &middot; Moriarty Execution Engine</p>
+          <a href="./slideshow.html" style="display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:linear-gradient(135deg,rgba(56,189,248,0.2),rgba(167,139,250,0.22));border:1px solid rgba(56,189,248,0.5);color:#bae6fd;font-size:12px;font-weight:700;text-decoration:none;letter-spacing:0.03em;">
+            ✨ Quinelings 2.0 Lifeforms Slideshow &rarr;
+          </a>
+        </div>
+        <h1 class="subtitle">A small computer whose internal workings are intentionally visible.</h1>
+        <p class="deck">Sherlock is the execution engine at the center of Moriarty. Instead of every loan, payment arrangement, or swap inventing its own execution machinery, Sherlock gives supported programs one common machine with one common meaning. A calculator only tells you that <code>40 &minus; 30 = 10</code>; Sherlock establishes which prepared program (<code>ProgramImage</code>) ran, what committed state (<code>MachineImage</code>) it began from, which of the <strong>39 fixed machine rules</strong> fired on each step (<code>StepRecord</code>), and what fuel and stack limits applied &mdash; turning &ldquo;follow the agreement&rdquo; into an unbroken chain that a cryptographic proof can verify without trusting the solver that ran it.</p>
+      </div>
+    </header>
+
+    <!-- M3 4-Card Plain-Language Orientation Strip Above the Workbench -->
+    <section class="top-primer-strip top-primer-grid" aria-label="How to read Sherlock">
+      <article class="primer-card">
+        <div class="primer-card-top">
+          <span class="primer-index">01 &middot; Instruction book, desk &amp; bookmarks</span>
+          <strong class="primer-lead">Nothing disappears into a hidden runtime stack.</strong>
+        </div>
+        <p>Think of the prepared program (<code>ProgramImage</code>) as a fixed instruction book, current values as the contents of a desk, and saved function calls as bookmarks telling the machine where to return. At every step Sherlock keeps four things in plain view: what program is running, where execution currently is, what values and unfinished work it carries, and how much execution budget (fuel) remains permitted.</p>
+      </article>
+
+      <article class="primer-card">
+        <div class="primer-card-top">
+          <span class="primer-index">02 &middot; Reading the six split-arc rings</span>
+          <strong class="primer-lead">Outermost is oldest waiting work; innermost is the active frontier.</strong>
+        </div>
+        <p>When <code>fact(4)</code> calls <code>fact(3)</code>, it cannot multiply by <code>4</code> yet. It leaves two frames on the ring: <span class="swatch-inline swatch-teal">Teal</span> on the left (<code>Slot A</code>) saves the caller&rsquo;s variables, and <span class="swatch-inline swatch-gold">Gold</span> on the right (<code>Slot B</code>) holds the waiting math <code>4 &times; [?]</code> (<span class="swatch-inline swatch-amber">Amber</span> marks operands or arguments still in progress; <span class="swatch-inline swatch-violet">Violet</span> marks an open <code>if</code>, <code>match</code>, or <code>let</code>; <span class="swatch-inline swatch-cyan">Cyan</span> marks a <code>let</code> scope). Rings fill from <code>R1</code> inward to <code>R6</code> and clear from the inside out as answers return.</p>
+      </article>
+
+      <article class="primer-card">
+        <div class="primer-card-top">
+          <span class="primer-index">03 &middot; The 39 silicon floor modules (A080&ndash;A225)</span>
+          <strong class="primer-lead">Every step fires exactly one physical rule module on the chamber floor.</strong>
+        </div>
+        <p>Drop inside the chip via <strong>Inside Hollow Chip</strong> and look down at the chamber floor: those <strong>39 gold-socketed 3D silicon chiplets</strong> are Sherlock&rsquo;s complete transition table (<code>sherlock-k-a/1</code>). On each tick, the single rule governing that step (such as <code>A135 PushFrame</code>, <code>A149 RightOp</code>, or <code>A080 Done</code>) physically rises from its socket and lights its status bar while the prior step&rsquo;s module glows in trail mode.</p>
+      </article>
+
+      <article class="primer-card">
+        <div class="primer-card-top">
+          <span class="primer-index">04 &middot; Why every single step is counted</span>
+          <strong class="primer-lead">Arithmetic alone is not authority &mdash; the path matters.</strong>
+        </div>
+        <p>A final answer of <code>10</code> could conceal an unauthorized recipient, an inflated solver fee, or a skipped guard. The <strong>10-sector center dial</strong> shows the active control state, the <strong>39-rule floor</strong> proves which rule justified the transition, and the <strong>outer rim</strong> drains <code>1</code> unit of fuel per charged step so <code>WitnessPlan</code> and <code>ConstraintPlan</code> can lock the entire trace into a Midnight proof.</p>
+      </article>
+    </section>
+
+    <!-- Main 3-Pane Material Design 3 Workbench Layout -->
+    <main class="workbench-grid">
+      <!-- LEFT SUPPORTING PANE: Program -->
+      <section class="panel panel-left" aria-label="Program">
+        <div class="panel-header">
+          <h2>Program</h2>
+          <button class="btn-primary" id="compileRunBtn" title="Run program (Ctrl+Enter)">
+            Run program
+          </button>
+        </div>
+
+        <!-- 8 Preset Programs (M3 Interactive Filter Cards) -->
+        <div class="preset-strip" id="presetStrip" role="group" aria-label="Preset programs"></div>
+        <p class="preset-desc" id="presetDescription"></p>
+
+        <!-- Live Source Editor with Active Line Highlight -->
+        <div class="editor-container">
+          <div class="editor-toolbar">
+            <span id="activeAstBadge" class="ast-badge">moriarty-sherlock-draft/1</span>
+            <span id="activeSpanBadge" class="span-badge">Line 1</span>
+          </div>
+          <div class="code-editor-wrap">
+            <div class="line-numbers" id="editorLineNumbers">1</div>
+            <textarea id="sourceEditor" spellcheck="false" autocomplete="off" aria-label="Sherlock program source"></textarea>
+          </div>
+          <div id="compileErrorBanner" class="compile-error hidden"></div>
+        </div>
+
+        <!-- Compact Initial Fuel & Frame Limit M3 Sliders -->
+        <div class="hw-controls-grid">
+          <div class="hw-control">
+            <div class="hw-control-top">
+              <label for="fuelSlider">Initial fuel</label>
+              <span class="mono-val" id="fuelValLabel">200</span>
+            </div>
+            <input type="range" id="fuelSlider" min="4" max="300" value="200" />
+          </div>
+          <div class="hw-control">
+            <div class="hw-control-top">
+              <label for="stackSlider">Frame limit</label>
+              <span class="mono-val" id="stackValLabel">16</span>
+            </div>
+            <input type="range" id="stackSlider" min="2" max="20" value="16" />
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER FOCAL PANE: 3D Chip Viewport, Quiet Stage Caption Bar, Transport & M3 Segmented Camera Bar -->
+      <section class="stage-column" aria-label="3D Interpreter Die">
+        <!-- Mobile Stage-Top Horizontal Preset Strip (Synced with #presetStrip) -->
+        <div class="stage-preset-strip" id="stagePresetStrip" role="group" aria-label="Quick preset switcher"></div>
+
+        <div class="stage-viewport-card">
+          <div class="canvas-holder">
+            <canvas id="sherlockCanvas"></canvas>
+          </div>
+
+          <!-- Floating On-Canvas Touch Control Cluster -->
+          <div class="stage-touch-hud" id="stageTouchHud" role="toolbar" aria-label="3D Camera Touch Controls">
+            <button type="button" class="touch-hud-btn" id="touchZoomInBtn" title="Zoom in" aria-label="Zoom in">
+              <span class="touch-hud-glyph" aria-hidden="true">+</span>
+            </button>
+            <button type="button" class="touch-hud-btn" id="touchZoomOutBtn" title="Zoom out" aria-label="Zoom out">
+              <span class="touch-hud-glyph" aria-hidden="true">&minus;</span>
+            </button>
+            <button type="button" class="touch-hud-btn touch-hud-btn-label" id="touchResetViewBtn" title="Reset camera view" aria-label="Reset camera view">
+              Reset
+            </button>
+            <div class="touch-hud-bore-group hidden" id="touchBoreGroup" role="group" aria-label="Interior Bore Elevator">
+              <button type="button" class="touch-hud-btn touch-hud-btn-label" id="touchBoreUpBtn" title="Rise toward 6 Rings" aria-label="Rise toward 6 Rings">
+                &uarr; Rings
+              </button>
+              <button type="button" class="touch-hud-btn touch-hud-btn-label" id="touchBoreDownBtn" title="Descend toward 39-Rule Floor" aria-label="Descend toward 39-Rule Floor">
+                &darr; Floor
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clean, Quiet Stage Caption Bar Directly Below Canvas -->
+        <div class="stage-caption" id="stageCaptionBar">
+          <div class="stage-caption-main">
+            <span class="status-badge status-evaluating" id="stageStatusBadge" aria-live="polite">Evaluating</span>
+            <span class="stage-control-op" id="hudControlSummary">Eval(fact(4))</span>
+            <span class="stage-caption-sep" id="stageCaptionSep" aria-hidden="true">&middot;</span>
+            <span class="stage-equation" id="recursionEquationText">fact(4)</span>
+          </div>
+          <div class="stage-caption-meta" id="stageInspectText" title="Hover or click any 3D element on the die to inspect">
+            Drag to orbit &middot; Pinch to zoom &middot; 2-finger pan
+          </div>
+        </div>
+
+        <!-- M3 Transport & Step Timeline Scrubber -->
+        <div class="transport-bar">
+          <div class="transport-buttons">
+            <button class="btn-icon" id="playPauseBtn" title="Play / Pause (Space)">Pause</button>
+            <button class="btn-icon" id="stepPrevBtn" title="Previous step (Left Arrow)">&larr; Step</button>
+            <button class="btn-icon" id="stepNextBtn" title="Next step (Right Arrow)">Step &rarr;</button>
+            <button class="btn-icon" id="resetStepBtn" title="Reset to step 1">Reset</button>
+          </div>
+
+          <div class="scrubber-wrap">
+            <div class="scrubber-top">
+              <span class="scrubber-label" id="scrubberStepLabel">Step 1 / 45</span>
+              <span class="scrubber-hint">Space plays/pauses &middot; &larr; &rarr; step</span>
+            </div>
+            <input type="range" id="stepScrubber" min="0" max="100" step="1" value="0" aria-label="Execution step position" />
+          </div>
+
+          <div class="speed-group">
+            <label for="speedSelect">Speed</label>
+            <select id="speedSelect">
+              <option value="0.5">0.5&times;</option>
+              <option value="1" selected>1.0&times;</option>
+              <option value="2">2.0&times;</option>
+              <option value="4">4.0&times;</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- M3 Single-Select Segmented Camera View Bar -->
+        <div class="lens-bar">
+          <span class="bar-label">Camera view</span>
+          <div class="lens-buttons" id="cameraLensBar" role="group" aria-label="Camera views">
+            <button type="button" data-preset="overview" class="active" aria-pressed="true">Overview</button>
+            <button type="button" data-preset="quineling" aria-pressed="false">Quineling</button>
+            <button type="button" data-preset="interior" aria-pressed="false">Inside Chip</button>
+            <button type="button" data-preset="interior_floor" aria-pressed="false">39 Floor</button>
+            <button type="button" data-preset="interior_up" aria-pressed="false">Look Up</button>
+            <button type="button" data-preset="well" aria-pressed="false">Top Rings</button>
+            <button type="button" data-preset="frames" aria-pressed="false">Cutaway</button>
+            <button type="button" data-preset="cinema" aria-pressed="false">Orbit</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT SUPPORTING PANE: Inspector -->
+      <section class="panel panel-right" id="inspector" aria-label="Inspector">
+        <div class="panel-header">
+          <h2>Inspector</h2>
+          <span class="rule-pill" id="telemetryRuleBadge">Rule A102</span>
+        </div>
+
+        <!-- Clean M3 Tonal Telemetry Summary Grid -->
+        <dl class="telemetry-dl">
+          <div>
+            <dt>Status</dt>
+            <dd id="telemetryStatus">Evaluating</dd>
+          </div>
+          <div>
+            <dt>Transition</dt>
+            <dd id="telemetryTransition">1 / 45 <small>Rule A102</small></dd>
+          </div>
+          <div>
+            <dt>Current control</dt>
+            <dd class="mono" id="telemetryControl">Eval(fact(4))</dd>
+          </div>
+          <div>
+            <dt>Quineling Core</dt>
+            <dd id="telemetryQdlMorph">Nautilus Arithmeticus <small>&middot; logarithmic-mantle</small></dd>
+          </div>
+          <div>
+            <dt>Saved frames</dt>
+            <dd id="telemetryFrames">0 <small>&middot; 0 of 6 rings</small></dd>
+          </div>
+          <div>
+            <dt>Active calls</dt>
+            <dd id="telemetryCalls">0</dd>
+          </div>
+          <div>
+            <dt>Remaining fuel</dt>
+            <dd id="telemetryFuel">200 / 200 <small>&middot; charge 1</small></dd>
+          </div>
+        </dl>
+
+        <!-- 6 Split-Arc Rings (West Slot A | East Slot B) & 10-Sector Control Strip -->
+        <div class="subpanel">
+          <div class="subpanel-header">
+            <span>6 Split-Arc Rings (West A | East B) &amp; Control Stator</span>
+            <span class="mono-count" id="ringsSummaryBadge">0/12 slots &middot; CTRL: EVAL</span>
+          </div>
+          <div class="ring-legend rings-legend" aria-label="Semantic frame families">
+            <span class="legend-item"><i class="swatch swatch-env-return"></i><i class="swatch swatch-env-scope"></i>ENV (Return / Scope)</span>
+            <span class="legend-item"><i class="swatch swatch-op-left"></i><i class="swatch swatch-op-right"></i>OP (Left&middot;Args&middot;Unary &rarr; Right)</span>
+            <span class="legend-item"><i class="swatch swatch-gate"></i>GATE (If / Match / Let)</span>
+          </div>
+          <div class="six-rings-bar" id="sixRingsGauge"></div>
+        </div>
+
+        <!-- Saved frames, top first -->
+        <div class="subpanel">
+          <div class="subpanel-header">
+            <span>Saved frames, top first</span>
+            <span class="mono-count" id="frameStackCount">0 frames</span>
+          </div>
+          <div class="frames-list" id="frameStackList"></div>
+        </div>
+
+        <!-- Active calls -->
+        <div class="subpanel">
+          <div class="subpanel-header">
+            <span>Active calls</span>
+            <span class="recursion-mode-pill" id="recursionModePill">Unfolding</span>
+          </div>
+          <div class="recursion-calls-track" id="recursionCallsTrack"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Below-the-Fold M3 Editorial Architecture Guide, 39-Rule Floor Documentation & Report Data Tables -->
+    <section class="prose-deck" aria-label="Architecture guide and reference tables">
+      <!-- Tier 1: 4-Card M3 Editorial Narrative Grid -->
+      <div class="prose-grid editorial-grid prose-grid-4">
+        <article class="prose-card">
+          <span class="panel-index">01 &middot; Delegation &amp; Authority</span>
+          <h3>Why Sherlock exists &mdash; Freedom to search vs. authority to spend</h3>
+          <p>Suppose a Borrower owes a Lender <strong>40 units</strong> under a Moriarty credit agreement that permits an external solver to execute installments of <code>5..40</code> units to <code>Account_Lender</code> with at most a <strong>1-unit fee</strong>. If the solver proposes paying <strong>30 units</strong>, a calculator can confirm that <code>40 &minus; 30 = 10</code>. But if the solver routes those 30 units to its own account (or Charlie) or claims a <strong>3-unit fee</strong>, the subtraction is still <code>10</code> while the agreement&rsquo;s authority is violated.</p>
+          <p>Sherlock separates a solver&rsquo;s off-chain <em>freedom to search</em> from its on-ledger <em>authority to settle</em>. The owner&rsquo;s agreement is frozen into a fingerprinted <code>ProgramImage</code>; Sherlock executes candidate inputs step by step under strict limits; and Midnight verifies the resulting proof without trusting the solver or exposing private witness data.</p>
+        </article>
+
+        <article class="prose-card">
+          <span class="panel-index">02 &middot; State, Frames &amp; Continuing Duties</span>
+          <h3>The machinery inside Sherlock &mdash; Explicit frames &amp; resumable state</h3>
+          <p>Named functions stay fixed in the <code>ProgramImage</code> while the machine&rsquo;s explicit <strong>state</strong> (<a href="https://github.com/CharlesHoskinson/Moriarty/blob/main/crates/mori-core/src/sherlock/reference_types.rs" target="_blank" rel="noreferrer"><code>Snapshot</code></a>) advances one step at a time: current <code>Control</code>, immutable values (<code>UInt128</code>, <code>Bool</code>, <code>List</code>, <code>Tree</code>), lexical <code>Environment</code>, saved continuation <code>frames</code>, and remaining <code>fuel</code>. Entering a call saves caller bindings in <code>Frame::Return</code>; binary operators push <code>Left([?] * rhs)</code> and rewrite in-place to <code>Right(4 * [?])</code> (<code>Rule A149</code>); <code>Let</code> rewrites in-place to <code>Scope</code> (<code>Rule A145</code>); and <code>Args</code> advances in-place (<code>Rule A177</code>).</p>
+          <p>In continuing agreements, Sherlock keeps four concepts distinct: <em>finishing a computation</em> (<code>Done</code>), <em>completing an economic obligation</em> (<code>0</code> owed), <em>saving a resumable agreement</em> (packing <code>30 paid</code> and <code>10 remaining</code> into a committed <code>MachineImage</code>), and <em>splitting proof work into chunks</em> (<code>ReferenceSlice</code>). A failed tentative attempt in Stage 2 is discarded off-ledger without erasing Stage 1&rsquo;s committed history.</p>
+        </article>
+
+        <article class="prose-card">
+          <span class="panel-index">03 &middot; Spatial Hardware Mapping</span>
+          <h3>How the 3D chip maps to the abstract machine</h3>
+          <p><strong>Central 10-Sector Dial &amp; Outer Fuel Rim</strong>: The center stator lights the active <code>Control</code> state of <code>sherlock-k-a/1</code> (<code>EVAL</code>, <code>PUSH</code>, <code>RET</code>, <code>INVOKE</code>, <code>ENTER</code>, <code>BOUND</code>, <code>CASES</code>, <code>MATCH</code>, <code>PRIM</code>, <code>ERR</code>) and aims its transfer needle West (<code>Slot A</code>) or East (<code>Slot B</code>) at the newest visible frame, while the 48-segment outer rim drains <code>1</code> unit of fuel per charged rule.</p>
+          <p><strong>Six Concentric Split-Arc Rings (<code>R1..R6</code>) &amp; Open Bore</strong>: Ordered chronologically from oldest waiting work at the perimeter (<code>R1.A = frames[len &minus; 1]</code>) to the active frontier on the inside (<code>frames[0]</code>), each ring pairs two 180&deg; half-arcs: <strong>Teal / Sky-Cyan</strong> for saved caller and <code>let</code> environments, <strong>Amber / Gold</strong> for pending operands (<code>4 &times; [?]</code>), and <strong>Violet</strong> for <code>if</code>, <code>match</code>, and <code>let</code> gates.</p>
+        </article>
+
+        <article class="prose-card">
+          <span class="panel-index">04 &middot; Inside the Hollow Vault</span>
+          <h3>The 39-rule decoder floor &amp; the unbroken <code>StepRecord</code> chain</h3>
+          <p>Switch the camera to <strong>Inside Hollow Chip</strong> or <strong>Cross-Section</strong> to inspect the <code>6 &times; 7</code> matrix of <strong>39 physical 3D silicon rule modules</strong> (<code>A080..A225</code>) on the vault floor (<code>y = &minus;3.38</code>). Instead of hiding interpreter logic in host software, <code>sherlock-k-a/1</code> defines every legal transition as one of these 39 elementary rules across six categories.</p>
+          <p>On every tick, Sherlock emits a <code>StepRecord</code> and the justifying floor module physically rises out of its gold socket and lights its south-lip beacon, while the previous step&rsquo;s module retains a decaying trail glow. That visible handoff represents the exact mathematical chain where <code>Step[i].after == Step[i+1].before</code>: the <strong><code>WitnessPlan</code></strong> arranges the private <code>StepRecord</code> values for the prover, and the <strong><code>ConstraintPlan</code></strong> enforces the fixed algebraic equations of the active rule.</p>
+        </article>
+      </div>
+
+      <!-- Tier 2A: Dedicated 6-Category 39-Rule Floor Guide Card -->
+      <section class="floor-guide-card" aria-label="39-Rule Decoder Floor Guide">
+        <div class="m3-table-header">
+          <div>
+            <span class="panel-index">Inside Hollow Chip &middot; Vault Floor at y = &minus;3.38</span>
+            <h3 class="m3-table-title">The 39-Rule Silicon Decoder Floor (<code>sherlock-k-a/1</code>) &mdash; What the 39 Floor Modules Are</h3>
+          </div>
+        </div>
+
+        <p class="floor-guide-intro">When you enter <strong>Inside Chip</strong> (drag down or scroll down the vertical elevator) or view <strong>Cutaway</strong>, the floor of the chamber exposes <strong>39 gold-bezeled 3D silicon rule modules</strong> arranged in 6 columns by 7 rows (with the <code>SHERLOCK &middot; K-A/1 &middot; 39-RULE ROM</code> plaque in the lower-right corner). Together, these 39 modules form Sherlock&rsquo;s entire instruction set: every single transition in a recursive calculation or financial agreement must fire <strong>exactly one</strong> module from these six categories:</p>
+
+        <div class="floor-category-grid">
+          <article class="floor-cat-item">
+            <div class="floor-cat-top">
+              <span class="floor-cat-name"><i class="swatch swatch-env-return"></i>1. Terminal 0F</span>
+              <span class="floor-cat-meta">3 rules &middot; Charge 0F &middot; Indices 0&ndash;2</span>
+            </div>
+            <p class="floor-cat-desc">Free publication rules that convert a completed or halted control state into a public outcome without spending fuel.</p>
+            <div class="floor-rule-chips">
+              <span class="rule-chip chip-teal" title="Line 80: Publishes Done(v) when Return meets an empty frame stack">A080 Done</span>
+              <span class="rule-chip chip-error" title="Line 82: Publishes Rejected(code) from Control::Error(code)">A082 Rejected</span>
+              <span class="rule-chip chip-amber" title="Line 84: Publishes Exhausted when remaining_fuel == 0">A084 Exhausted</span>
+            </div>
+          </article>
+
+          <article class="floor-cat-item">
+            <div class="floor-cat-top">
+              <span class="floor-cat-name"><i class="swatch swatch-op-left"></i>2. Expression Dispatch 1F</span>
+              <span class="floor-cat-meta">10 rules &middot; Charge 1F &middot; Indices 3&ndash;12</span>
+            </div>
+            <p class="floor-cat-desc">Inspects <code>Control::Eval(expr)</code>. Leaves return immediately; compound expressions schedule a continuation frame via <code>Push</code>.</p>
+            <div class="floor-rule-chips">
+              <span class="rule-chip chip-gold">A102 Literal</span>
+              <span class="rule-chip chip-gold">A108 VarFound</span>
+              <span class="rule-chip chip-error" title="Error(3): Unbound variable">A111 VarMissing (E3)</span>
+              <span class="rule-chip chip-violet">A114 Let</span>
+              <span class="rule-chip chip-amber">A117 BinLeft</span>
+              <span class="rule-chip chip-amber">A120 Unary</span>
+              <span class="rule-chip chip-violet">A123 If</span>
+              <span class="rule-chip chip-violet">A126 Match</span>
+              <span class="rule-chip chip-gold">A129 Call0</span>
+              <span class="rule-chip chip-amber">A131 CallArgs</span>
+            </div>
+          </article>
+
+          <article class="floor-cat-item">
+            <div class="floor-cat-top">
+              <span class="floor-cat-name"><i class="swatch swatch-error"></i>3. Frame Stack Guard 1F</span>
+              <span class="floor-cat-meta">2 rules &middot; Charge 1F &middot; Indices 13&ndash;14</span>
+            </div>
+            <p class="floor-cat-desc">Checks <code>frames.len() &lt; stack_limit</code> before shelving a waiting frame onto the split-arc rings, or halts with <code>Error(4)</code>.</p>
+            <div class="floor-rule-chips">
+              <span class="rule-chip chip-amber" title="Commits waiting frame to frames[0] and enters sub-expression">A135 PushFrame</span>
+              <span class="rule-chip chip-error" title="Error(4): Stack limit reached (try the Frame limit preset)">A140 FrameErr (E4)</span>
+            </div>
+          </article>
+
+          <article class="floor-cat-item">
+            <div class="floor-cat-top">
+              <span class="floor-cat-name"><i class="swatch swatch-op-right"></i>4. Continuation Frame 1F</span>
+              <span class="floor-cat-meta">10 rules &middot; Charge 1F &middot; Indices 15&ndash;24</span>
+            </div>
+            <p class="floor-cat-desc">Handles <code>Control::Return(v)</code> meeting the top waiting frame: rewrites frames in-place (<code>A145</code>, <code>A149</code>, <code>A177</code>) or pops them to branch or compute.</p>
+            <div class="floor-rule-chips">
+              <span class="rule-chip chip-cyan" title="In-place rewrite: Let -> Scope">A145 BindLet</span>
+              <span class="rule-chip chip-gold" title="In-place rewrite: Left -> Right">A149 RightOp</span>
+              <span class="rule-chip chip-gold">A153 BinPrim</span>
+              <span class="rule-chip chip-amber">A157 UnPrim</span>
+              <span class="rule-chip chip-teal">A161 IfTrue</span>
+              <span class="rule-chip chip-violet">A165 IfFalse</span>
+              <span class="rule-chip chip-error" title="Error(5): Non-boolean condition">A169 IfErr (E5)</span>
+              <span class="rule-chip chip-violet">A173 StartCases</span>
+              <span class="rule-chip chip-amber" title="In-place advance: Args">A177 NextArg</span>
+              <span class="rule-chip chip-gold">A181 FinishArgs</span>
+            </div>
+          </article>
+
+          <article class="floor-cat-item">
+            <div class="floor-cat-top">
+              <span class="floor-cat-name"><i class="swatch swatch-gate"></i>5. Function &amp; Pattern 1F</span>
+              <span class="floor-cat-meta">12 rules &middot; Charge 1F &middot; Indices 25&ndash;36</span>
+            </div>
+            <p class="floor-cat-desc">Resolves function calls, isolates caller variables in <code>Return</code> frames, restores lexical scopes, and steps through <code>List</code> / <code>Tree</code> pattern arms.</p>
+            <div class="floor-rule-chips">
+              <span class="rule-chip chip-teal">A185 RetOk</span>
+              <span class="rule-chip chip-error" title="Error(6): Return type mismatch">A190 RetErr (E6)</span>
+              <span class="rule-chip chip-cyan">A195 RestoreScope</span>
+              <span class="rule-chip chip-gold">A200 LookupFn</span>
+              <span class="rule-chip chip-error" title="Error(7): Undefined function">A202 MissingFn (E7)</span>
+              <span class="rule-chip chip-teal">A204 BindParams</span>
+              <span class="rule-chip chip-error" title="Error(8): Arity/type mismatch">A206 BindErr (E8)</span>
+              <span class="rule-chip chip-teal">A208 SchedBody</span>
+              <span class="rule-chip chip-error" title="Error(9): Non-exhaustive match">A212 NoMatchErr (E9)</span>
+              <span class="rule-chip chip-violet">A214 TryPat</span>
+              <span class="rule-chip chip-muted">A217 PatMiss</span>
+              <span class="rule-chip chip-teal">A220 MatchBody</span>
+            </div>
+          </article>
+
+          <article class="floor-cat-item">
+            <div class="floor-cat-top">
+              <span class="floor-cat-name"><i class="swatch swatch-op-right"></i>6. Primitive Op 1F</span>
+              <span class="floor-cat-meta">2 rules &middot; Charge 1F &middot; Indices 37&ndash;38</span>
+            </div>
+            <p class="floor-cat-desc">Commits 16-byte <code>UInt128</code> arithmetic, comparison, and ADT constructor results verified by <code>aux/2</code>, or traps on checked overflow/underflow.</p>
+            <div class="floor-rule-chips">
+              <span class="rule-chip chip-gold" title="Commits verified primitive result into Control::Return(v)">A223 PrimOk</span>
+              <span class="rule-chip chip-error" title="Error(10/11): Checked UInt128 overflow/underflow (try Checked arithmetic preset)">A225 PrimErr (E10/11)</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Tier 2B: CEK + 39-Rule Decoder Mapping Table -->
+      <div class="cek-table-wrap cek-mapping-section" role="region" aria-label="CEK Machine Mapping">
+        <div class="m3-table-header">
+          <div>
+            <span class="panel-index">Hardware-to-Machine Reference</span>
+            <h3 class="m3-table-title">How every formal component of <code>sherlock-k-a/1</code> appears on the 3D die &amp; Inspector</h3>
+          </div>
+        </div>
+        <table class="cek-table">
+          <thead>
+            <tr>
+              <th>Sherlock Machine Component</th>
+              <th>Conventional Analogue</th>
+              <th>On This Page &mdash; Inspector &amp; 3D Die</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Control</code> of <code>sherlock-k-a/1</code> (<code>Eval</code>, <code>Push</code>, <code>Return</code>, <code>Invoke</code>, <code>Enter</code>, <code>Bound</code>, <code>Cases</code>, <code>CaseResult</code>, <code>PrimitiveResult</code>, <code>Error</code>; <code>None</code> after publication)</td>
+              <td>Program counter + active instruction</td>
+              <td>Carries the expression or value itself, not a memory address. Lights one of the 10 sectors on the <strong>Central <code>Control</code> Stator</strong> and inspector strip (<code>EVAL</code>, <code>PUSH</code>, <code>RET</code>, <code>INVOKE</code>, <code>ENTER</code>, <code>BOUND</code>, <code>CASES</code>, <code>MATCH</code>, <code>PRIM</code>, <code>ERR</code>); the transfer needle points West (<code>Slot A</code>) or East (<code>Slot B</code>) at the newest visible frame.</td>
+            </tr>
+            <tr>
+              <td><code>Environment</code> = <code>BTreeMap&lt;Name, Value&gt;</code></td>
+              <td>Register file / local stack frame</td>
+              <td>No fixed register bank; the live lexical map is replaced wholesale. <code>Return</code>, <code>Scope</code>, <code>Let</code>, <code>If</code>, <code>Match</code>, <code>Left</code>, and <code>Args</code> store an explicit map copy; <code>Right</code> and <code>Unary</code> borrow enclosing bindings for display without duplicating storage.</td>
+            </tr>
+            <tr>
+              <td><code>frames: Vec&lt;Frame&gt;</code>, newest first at <code>frames[0]</code> (<code>Let</code>, <code>Left</code>, <code>Right</code>, <code>Unary</code>, <code>If</code>, <code>Match</code>, <code>Args</code>, <code>Return</code>, <code>Scope</code>)</td>
+              <td>Call stack / activation records</td>
+              <td>Many frames are paused operands or branch gates rather than call records. Displayed newest-first in <em>Saved frames</em> and mapped chronologically across the <strong>6 Split-Arc Rings (<code>R1.A..R6.B</code>, 12-frame window, with <code>+N overflow</code> on <code>R6.B</code>)</strong> and <strong>Open-Bore Continuation Rings</strong>: <code>ENV</code> (Teal <code>Return</code> / Sky-Cyan <code>Scope</code>), <code>OP</code> (Amber <code>Left</code>&middot;<code>Args</code>&middot;<code>Unary</code> &rarr; Gold <code>Right</code>), and <code>GATE</code> (Violet <code>If</code>&middot;<code>Match</code>&middot;<code>Let</code>).</td>
+            </tr>
+            <tr>
+              <td><code>remaining_fuel</code> &amp; <code>stack_limit</code></td>
+              <td>Execution gas / stack overflow guard</td>
+              <td>Each operational or error rule costs <code>1</code> fuel (<code>1F</code>) and terminal publication (<code>A080 Done</code>, <code>A082 Rejected</code>, <code>A084 Exhausted</code>) costs <code>0</code> fuel (<code>0F</code>), draining the <strong>48-Segment Outer Fuel Rim</strong>. Pushing when <code>frames.len() == stack_limit</code> fires <code>Rule A140</code> to <code>Control::Error(4)</code> (<code>1F</code>), pulsing the interior <code>stackLimit</code> horizon ring crimson before <code>Rule A082</code> publishes <code>Rejected(error 4)</code> (<code>0F</code>).</td>
+            </tr>
+            <tr>
+              <td><code>StepRecord</code> &amp; 39-Rule Decoder Table (<code>A080..A225</code>)</td>
+              <td>ISA microcode ROM &amp; audit trace</td>
+              <td>Laid out as <strong>39 3D silicon chiplets in gold sockets</strong> across a <code>6 &times; 7</code> floor grid at <code>y = &minus;3.38</code> inside the hollow vault, badged in the Inspector as <code>Rule Axxx</code>. On each step, the active rule chiplet elevates and lights its status bar while the prior step&rsquo;s chiplet glows in trail mode, showing the step-by-step transition chain fed into <code>WitnessPlan</code> and checked by <code>ConstraintPlan</code>.</td>
+            </tr>
+            <tr>
+              <td><code>ProgramImage</code> AST &amp; Live Morphogenesis (<code>Quinelings QDL v1</code>)</td>
+              <td>Program syntax tree &amp; dynamic execution graph</td>
+              <td>Translated deterministically via the <strong>Quinelings QDL framework</strong> (<code>logarithmic-mantle</code>, <code>toroidal-weave</code>, <code>phyllotaxis-fan</code>) into a unique <strong>3D Quineling Core Organism</strong> suspended at <code>(0, &minus;2.15, 0)</code> inside the hollow processor chamber (16 articulated vertebrae, 48 harmonic ribs/petals, endpoint-pinned soliton filaments, and 64 lossless RGB source-byte spores). Unfurls petals on <code>Rule A135 PushFrame</code>, twists in-place on <code>Rules A145/A149/A177</code>, blooms on <code>A080 Done</code>, and locks crimson fault spines on <code>A082/A140/A225</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tier 3: Side-by-Side M3 Data Tables from Sherlock Execution Engine Report -->
+      <div class="report-tables-grid">
+        <!-- Table 1: 5-Layer Architecture Table -->
+        <div class="cek-table-wrap">
+          <div class="m3-table-header">
+            <div>
+              <span class="panel-index">System Architecture &middot; Separation of Duties</span>
+              <h3 class="m3-table-title">From Agreement Authoring to Midnight Settlement (5-Layer Pipeline)</h3>
+            </div>
+          </div>
+          <table class="cek-table">
+            <thead>
+              <tr>
+                <th>System Layer</th>
+                <th>Primary Responsibility</th>
+                <th>What Enters the Layer</th>
+                <th>What Leaves the Layer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Moriarty</strong></td>
+                <td>Agreement authoring, authority specification &amp; orchestration</td>
+                <td>Participant rules, ownership permissions, spending caps &amp; continuing terms</td>
+                <td>Structured agreement definitions &amp; delegated execution boundaries</td>
+              </tr>
+              <tr>
+                <td><strong>2. Solver or Executor</strong></td>
+                <td>Off-chain candidate discovery &amp; transaction proposal</td>
+                <td>Market data, agreement terms &amp; off-chain search heuristics</td>
+                <td>Concrete candidate action &amp; inputs (payment amount, recipient, fee claim)</td>
+              </tr>
+              <tr>
+                <td><strong>3. Sherlock</strong></td>
+                <td>Deterministic preparation, bounded step execution &amp; proof planning</td>
+                <td>Frozen <code>ProgramImage</code>, committed state (<code>MachineImage</code>) &amp; solver inputs</td>
+                <td>Verified effects, updated <code>MachineImage</code>, <code>StepRecord</code> chain, <code>WitnessPlan</code> &amp; <code>ConstraintPlan</code></td>
+              </tr>
+              <tr>
+                <td><strong>4. Cryptographic Proof Machinery</strong></td>
+                <td>Zero-knowledge mathematical proof generation</td>
+                <td>Private execution trace (<strong><code>WitnessPlan</code></strong>) &amp; fixed transition equations (<strong><code>ConstraintPlan</code></strong>)</td>
+                <td>Compact zero-knowledge proof bound to public program, state &amp; effect commitments</td>
+              </tr>
+              <tr>
+                <td><strong>5. Midnight Verification &amp; Settlement</strong></td>
+                <td>Ledger proof verification, nullifier recording &amp; finality</td>
+                <td>ZK proof, public <code>ProgramImage</code> &amp; <code>MachineImage</code> commitments, and settlement effects</td>
+                <td>Settled asset transfers, consumed prior state marker &amp; active residual obligation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table 2: 40-Unit Credit Agreement Authorized vs. Rejected Variations -->
+        <div class="cek-table-wrap">
+          <div class="m3-table-header">
+            <div>
+              <span class="panel-index">Verification Case Study &middot; 40-Unit Credit Agreement</span>
+              <h3 class="m3-table-title">How Sherlock &amp; <code>ConstraintPlan</code> Block Dishonest Solver Variations</h3>
+            </div>
+          </div>
+          <table class="cek-table">
+            <thead>
+              <tr>
+                <th>Execution Stage / Guard</th>
+                <th>Authorized Execution<br><small>(Pay 30, Fee 1, to Lender)</small></th>
+                <th>Rejected Variation A: Excessive Fee<br><small>(Pay 30, Fee 3, to Lender)</small></th>
+                <th>Rejected Variation B: Wrong Recipient<br><small>(Pay 30, Fee 1, to Solver / Charlie)</small></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Starting Obligation</strong></td>
+                <td><code>40 units</code> owed (committed state)</td>
+                <td><code>40 units</code> owed (committed state)</td>
+                <td><code>40 units</code> owed (committed state)</td>
+              </tr>
+              <tr>
+                <td><strong>1. Recipient Authority Guard</strong></td>
+                <td><span class="table-status status-pass">Passes</span> <code>Account_Lender == Account_Lender</code></td>
+                <td><span class="table-status status-pass">Passes</span> <code>Account_Lender == Account_Lender</code></td>
+                <td><span class="table-status status-fail">Fails</span> <code>Account_Solver == Account_Lender</code> &rarr; halts immediately</td>
+              </tr>
+              <tr>
+                <td><strong>2. Payment Bounds Guard</strong></td>
+                <td><span class="table-status status-pass">Passes</span> <code>5 &le; 30 &le; 40</code></td>
+                <td><span class="table-status status-pass">Passes</span> <code>5 &le; 30 &le; 40</code></td>
+                <td><span class="table-status status-muted">Not reached</span> (halted at recipient check)</td>
+              </tr>
+              <tr>
+                <td><strong>3. Fee Ceiling Guard</strong></td>
+                <td><span class="table-status status-pass">Passes</span> <code>1 &le; 1</code></td>
+                <td><span class="table-status status-fail">Fails</span> <code>3 &le; 1</code> is <code>false</code> &rarr; triggers <code>RequiredRejection</code></td>
+                <td><span class="table-status status-muted">Not reached</span> (halted at recipient check)</td>
+              </tr>
+              <tr>
+                <td><strong>4. Principal Balance Math</strong></td>
+                <td><code>40 &minus; 30 = 10 units</code> remaining</td>
+                <td>Aborted; no state transition emitted</td>
+                <td>Aborted; even though <code>40 &minus; 30 = 10</code>, authority failed</td>
+              </tr>
+              <tr>
+                <td><strong>5. Proof &amp; Settlement Outcome</strong></td>
+                <td><strong>Settled on Midnight:</strong> <code>30</code> to Lender, <code>1</code> to Solver; <code>10</code> owed saved in <code>MachineImage v1</code></td>
+                <td><strong>Refused:</strong> Forging <code>true</code> in <code>StepRecord</code> violates <code>ConstraintPlan</code> equations</td>
+                <td><strong>Refused:</strong> Swapping recipient after guard check violates <code>CheckedFieldCopy</code> equality constraints</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

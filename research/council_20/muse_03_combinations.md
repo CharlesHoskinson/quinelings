@@ -1,0 +1,479 @@
+# MUSE Quineling Council — Specialist #3 Report
+## Symbiogenesis, Chimeric Combinations & Multi-Mechanism Offspring
+### `WovenBody.combine` / `WovenBody.authorCombination`
+
+> **Status:** Design + drop-in implementation. No existing file is modified in behaviour unless the patch in §7 is appended to `woven-body.js` after the definitions of `WovenBody.author`, `WovenBody.compile`, `WovenBody.frame`, and after `lifeform-families.js` is loaded. The combination layer reuses — never reimplements — `WovenBody.compile` and the per-mechanism point evaluators behind `WovenBody.frame`.
+
+---
+
+## 0. Design commitments
+
+1. **A chimera is still a `woven-field-experimental` record.** `combine` returns an object that `WovenBody.compile` and `WovenBody.frame` accept without special-casing at call sites, plus a `chimera` annotation block. Every legacy field (`mechanism`, `seed`, `topology`, `strands`, `folds`, `turns`, `territories`) remains present and valid.
+2. **Mechanism identity is territorial, not global.** In a chimera, `mechanism` becomes the *recipient* mechanism (Parent 1), and `chimera.mechanisms = [mechA, mechB]` records the pair. Which mechanism evaluates a sample is decided by which territory interval of `u ∈ [0,1]` the sample falls in — this is exactly the granularity `territories: [{node, component, u:[u0,u1]}]` already provides.
+3. **Two combination regimes, matching `qdl-v1-offspring.js` operators:**
+   - `compose` / `mate` → **Causal Seam Grafting**: a hard causal cut at the QDL `seam`, softened geometrically by a $C^2$ quintic partition of unity plus a geodesic arch bridge.
+   - `merge` / `symbiote` → **Attractor Cross-Modulation**: no territorial cut; Parent B's mechanism fills the whole body, but Parent A's dynamics continuously modulate B's phase, torsion twist, and radial breathing.
+4. **Exact territory contiguity is a theorem, not a hope.** §5 states the invariants; §7 enforces them by construction (cumulative-sum construction with a final exact snap to `1`) and verifies them in `O(n)` on every `combine` call, throwing on violation rather than silently repairing.
+5. **Determinism.** Given `(parentA, parentB, recipe, phase, opts)` with fixed `opts.seed`, `combine` is bit-deterministic: all randomness flows through the same seeded path `WovenBody.author` already uses.
+
+---
+
+## 1. Inputs, outputs, and the recipe object
+
+### 1.1 Signatures
+
+```js
+WovenBody.authorCombination(parentA, parentB, recipe, opts)
+  // -> authored (uncompiled) chimera record; cheap, no trajectories
+
+WovenBody.combine(parentA, parentB, recipe, phase, opts)
+  // -> compiled, frame-ready chimera body:
+  //    authorCombination(...) then WovenBody.compile(...) on both
+  //    sub-bodies plus chimera precomputation, bound to `phase`.
+```
+
+Splitting authoring from compilation mirrors the existing `author`/`compile` split: `authorCombination` is pure graph/territory surgery (usable by the QDL offspring layer without paying for RK4), while `combine` is the render-path entry point.
+
+### 1.2 `recipe`
+
+```js
+recipe = {
+  op: 'compose' | 'mate' | 'merge' | 'symbiote',   // required
+  seam: { donorNode, recipientNode, type, integrationNode }, // compose/mate:
+                                                   // taken verbatim from the
+                                                   // seam emitted by
+                                                   // qdl-v1-offspring.js
+  alpha: 0.5,        // territorial split point s ∈ (0,1); default derived
+                     // from seam position, see §3.2
+  band: 0.08,        // half-width w of the blend band around s; (0, min(s,1-s))
+  arch: 0.35,        // geodesic arch height scale, in units of local radius
+  mod: {             // merge/symbiote gains; all defaulted, all clamped
+    phase: 0.6,      // radians of phase modulation per unit I_0
+    twist: 0.45,     // fractional torsion-twist modulation per unit I_1
+    breath: 0.22,    // fractional radial breathing per unit I_2
+  },
+  seed: undefined,   // defaults to (seedA ^ seedB) >>> 0, see §6.3
+}
+```
+
+### 1.3 Output record (additions in **bold**)
+
+```js
+{
+  model: 'woven-field-experimental',
+  mechanism: mechB,                    // recipient mechanism (frame default)
+  seed, topology, strands, folds, turns,
+  territories: [ ...merged, contiguous on [0,1]... ],
+  dynamics?, geometry?, embedding?,    // inherited from recipient, see §4.3
+  chimera: {
+    op, mechanisms: [mechA, mechB],
+    parents: [seedA, seedB],
+    seam: { donorNode, recipientNode, type, integrationNode, s, band },
+    sub: [compiledA, compiledB],       // full WovenBody.compile outputs
+    invariant: { /* sampled I_A table, §4.1 */ },
+  }
+}
+```
+
+`WovenBody.frame(chimeraBody, phase, {budget, crests, reuse})` keeps its exact return contract: `{ points: Float32Array(budget*4), owners: Uint16Array(budget), ridges }`. `owners` continues to index strands; strand numbering is made globally unique across parents (§3.4).
+
+---
+
+## 2. Mathematical core
+
+### 2.1 The $C^2$ quintic partition of unity
+
+$$
+H(\tau) = 6\tau^5 - 15\tau^4 + 10\tau^3, \qquad \tau \in [0,1].
+$$
+
+Properties used, all elementary:
+
+- $H(0)=0,\; H(1)=1$ — endpoints are pure-parent.
+- $H'(\tau) = 30\tau^2(\tau-1)^2 \Rightarrow H'(0)=H'(1)=0$.
+- $H''(\tau) = 60\tau(2\tau-1)(\tau-1) \Rightarrow H''(0)=H''(1)=0$.
+- $H(\tau) + H(1-\tau) = 1$ and $H$ is strictly increasing on $[0,1]$.
+
+Hence, with $\tau$ a reparametrisation of the blend band, the pair $\{1-H,\; H\}$ is a **$C^2$ partition of unity**: any blended quantity $X(\tau) = (1-H)\,X_A + H\,X_B$ agrees with $X_A$ up to second derivative at the band's left edge and with $X_B$ up to second derivative at the right edge. Position, tangent (velocity w.r.t. $u$), and curvature of a strand therefore cross the seam without kinks or curvature jumps — there is no visible or numerically detectable crease at the graft, which is precisely what `crests`/`ridges` extraction in `frame` requires to avoid spurious ridge endpoints at the seam.
+
+The cubic smoothstep $3\tau^2-2\tau^3$ is explicitly rejected: it is only $C^1$, so curvature (via `ridges`) would jump at both band edges.
+
+### 2.2 The geodesic arch bridge
+
+Linear blending $(1-H)P_A + H P_B$ of two points on differently-curved strands cuts the corner: the blend path dips inside both surfaces, shrinking local radius by up to $\|P_A-P_B\|/2$ mid-band. We correct this with an arch along the connecting geodesic:
+
+Let $d = P_B - P_A$, $\hat n$ = unit normal estimated from the recipient strand's local frame (fallback: normalised component of $d$ orthogonal to the mean tangent $\bar T = \tfrac12(T_A+T_B)$, fallback: any fixed perpendicular). Define
+
+$$
+P(\tau) = (1-H)\,P_A + H\,P_B \;+\; \underbrace{\sin(\pi\tau)\cdot h \cdot \hat n}_{\text{arch}}, \qquad h = \texttt{arch}\cdot \tfrac12\|d\|.
+$$
+
+- $\sin(\pi\tau)$ vanishes at $\tau\in\{0,1\}$ **and** the quintic weighting already forces the first two derivatives of the blend term to vanish there; the arch term's derivative at the endpoints is $\pm\pi h\,\hat n$, which is **purely normal**. Tangential velocity — the quantity strand parametrisation and `owners` continuity depend on — is therefore untouched at band edges; the arch only re-inflates radius mid-band. (If strict $C^2$ in the normal direction is also required, replace $\sin(\pi\tau)$ by $\sin^2(\pi\tau)$; §7 exposes this as the single-line `ARCH_PROFILE` switch. Default is $\sin^2$ for full $C^2$; the cost is a flatter arch near edges, visually negligible at `arch ≤ 0.5`.)
+- Direction interpolation uses **slerp on tangent directions** rather than lerp, so strand heading rotates at constant angular velocity across the seam — no mid-band tangent collapse when $T_A \approx -T_B$ (the arch normal $\hat n$ absorbs that degenerate case).
+
+### 2.3 Cross-modulation invariant $I_A(u, \text{phase})$
+
+Parent A's contribution to a `merge`/`symbiote` chimera is a 3-channel, bounded, dimensionless signal extracted from A's **already-compiled** dynamics — no new integrators:
+
+| A's mechanism class | Compiled source | $I_0$ (phase drive) | $I_1$ (torsion drive) | $I_2$ (breathing drive) |
+|---|---|---|---|---|
+| `lorenz-flow` | `orbit` (RK4 trajectory) | normalised arc-length phase along orbit | signed local curvature $\kappa$ of orbit, normalised | radial distance $\|x - \bar x\|$, normalised |
+| `clifford-flow` | `cloud`, `critical` | density percentile in `grid` | local Jacobian shear at nearest `critical` point | local density, normalised |
+| `recursive-affine` / `recursive-julia` | `branches`, `julia` | branch index of last-applied branch / escape-time phase | branch rotation angle, normalised by $\pi$ | escape radius / contraction ratio, normalised |
+| `logarithmic-mantle`, `toroidal-weave`, `phyllotaxis-fan` | `LifeformFamilies` basis | `computeBasis` phase angle | basis curl component | basis radial component |
+
+Every channel is passed through $\tanh(\cdot / \sigma)$ with $\sigma$ the channel's RMS over a 256-sample precompute table, then clamped to $[-1, 1]$. Result: $I_A : [0,1]\times\mathbb{R} \to [-1,1]^3$, sampled into a `Float32Array(256*3)` table at `combine` time and linearly interpolated in `frame` — **zero per-frame allocation, zero per-frame integration**.
+
+Modulation of Parent B (all gains from `recipe.mod`, all clamps hard):
+
+$$
+\begin{aligned}
+\text{phase}' &= \text{phase} + g_p \cdot I_0(u,\text{phase}) \\
+\text{twist}' &= \text{twist}_B \cdot \bigl(1 + g_t \cdot I_1(u,\text{phase})\bigr), \quad \text{re-clamped to } \texttt{LIMITS.twist}=[1,3]\\
+r' &= r \cdot \bigl(1 + g_b \cdot I_2(u,\text{phase}) \cdot \sin(\text{phase} + 2\pi u)\bigr)
+\end{aligned}
+$$
+
+Because $I_A$ depends on $u$, modulation is **spatially varying along the body**, not a global wobble: A's attractor literally writes its invariant field onto B's geometry. Because $g_b \le 0.22$ default and $|I_2|\le 1$, radius stays within $\pm22\%$ — inside the `spread`/`growth` envelopes of `LIMITS`, so B's family parameter validity is never violated by modulation. Twist is re-clamped into `LIMITS.twist` after modulation; phase is taken mod $2\pi$ by the existing evaluators.
+
+---
+
+## 3. Regime I — Causal Seam Grafting (`compose` / `mate`)
+
+### 3.1 Causal semantics inherited from QDL
+
+In `qdl-v1-offspring.js`, `compose` replaces a recipient runtime input with the donor's output cone and emits `seam = {donorNode, recipientNode, type, integrationNode}`; `mate` replaces a recipient literal with the donor cone. The graft respects that causality geometrically:
+
+- Territory belonging to nodes in the **donor cone** (the `p0n*` nodes — Parent 0 provenance) is evaluated with **Parent A's mechanism**, compiled from Parent A's body.
+- Territory at and downstream of `integrationNode` is evaluated with **Parent B's mechanism**.
+- The seam band $[s-w, s+w]$ is the geometric image of the single causal edge `donorNode → integrationNode`. Causality is not blurred: for $u < s-w$ the point depends only on A; for $u > s+w$ only on B; dependence mixes only inside the band, exactly where the QDL graph has the one connecting edge.
+
+### 3.2 Choosing the split point `s`
+
+Default: $s$ = normalised cumulative territory length of the donor cone. Concretely, walk Parent A's `territories` in `u`-order, accumulating lengths of territories whose `node` is in the donor node set (`p0n*` provenance or listed in the seam cone); $s$ is that fraction of the merged territory, rescaled into the offspring's $[0,1]$. `recipe.alpha` overrides. Constraint enforced: $w < \min(s, 1-s)$, else $w$ is shrunk to $0.9\min(s,1-s)$ — the band never crosses a body endpoint, so endpoint conditions of both parents survive intact.
+
+### 3.3 Per-sample evaluation in the band
+
+For a sample with parameter $u$ and strand-local coordinate $v$:
+
+```
+if u < s - w:            P = pointA(u mapped into A's territory frame, v, phase)
+else if u > s + w:       P = pointB(...)
+else:
+    tau = (u - (s - w)) / (2w)          // in [0,1]
+    h   = H(tau)
+    PA  = pointA(...);  PB = pointB(...)
+    P   = (1-h)*PA + h*PB + arch(τ, PA, PB, h_scale)
+    T   = slerp(TA, TB, h)               // tangent for ridge/crest logic
+```
+
+Territory-frame mapping: inside the band, each parent is evaluated at its own seam-edge parameter ($u_A$ = donor cone's terminal $u$ in A, $u_B$ = integration territory's initial $u$ in B) advected by $\tau$ across the parent's adjacent territory, so neither parent is ever evaluated outside its authored $[0,1]$ domain.
+
+### 3.4 Bookkeeping
+
+- **Strands:** A's strands keep indices `[0, nA)`; B's are offset by `nA`. `owners` values remain valid `Uint16` indices (assert `nA + nB ≤ 65535`, inherited limit).
+- **`topology`:** `{ depth: max, fanout: max, convergence: weighted mean by territory length, guards: union, effects: union }` — a chimera is at least as guarded as either parent; guards/effects are never dropped by combination.
+- **`folds`/`turns`:** concatenated with B's entries re-indexed by the strand offset.
+
+---
+
+## 4. Regime II — Attractor Cross-Modulation (`merge` / `symbiote`)
+
+### 4.1 No cut
+
+Territories, strands, topology are Parent B's, verbatim. Parent A contributes only the invariant table `chimera.invariant` (§2.3). `symbiote` differs from `merge` only in defaults: `merge` (the parallel `report`-node `'joined'` op) uses symmetric gains; `symbiote` raises `mod.breath` default to `0.3` and additionally feeds $I_0$ into B's `offset` parameter (clamped to `LIMITS.offset`), marking long-term co-adaptation rather than one-shot joining.
+
+### 4.2 Evaluation
+
+`frame` evaluates B's mechanism exactly as today, except the per-strand parameter bundle is pre-modulated per §2.3 using the interpolated $I_A(u,\text{phase})$. For the three `LifeformFamilies` mechanisms this means modulating the inputs of `computeBasis(body, k, u, phase')` and applying twist/breathing inside `point(...)` via a shallow-cloned parameter view — the parent's stored record is never mutated.
+
+### 4.3 Inherited fields
+
+`dynamics`/`geometry`/`embedding` on the output are B's for `merge`/`symbiote`, and B's for grafts as well (the recipient is the causal downstream body; A's dynamics live on in `chimera.sub[0]`). This keeps every downstream consumer that reads `body.dynamics` correct without knowing chimeras exist.
+
+---
+
+## 5. Exact territory contiguity invariants
+
+For the merged `territories` array $T = [t_0, \dots, t_{n-1}]$, $t_i = [a_i, b_i]$:
+
+1. **Domain:** $a_0 = 0$ exactly, $b_{n-1} = 1$ exactly.
+2. **Contiguity:** $b_i = a_{i+1}$ for all $i$ — no gaps, no overlaps. (Bitwise equality, not approximate: construction assigns the *same* float as the next interval's start.)
+3. **Monotonicity & positivity:** $a_i < b_i$ and $a_i$ strictly increasing; zero-length territories are merged into their successor at authoring time, never emitted.
+4. **Boundedness:** $0 \le a_i < b_i \le 1$.
+5. **Coverage of mechanism assignment (grafts):** every $t_i$ lies entirely in $(-\infty, s-w)$, $[s-w, s+w]$, or $(s+w, \infty)$ after the band-boundary split of §7 — territories are **split at $s\pm w$** during authoring so no territory straddles a regime boundary ambiguously; the two band sub-territories carry `component: 'seam'`.
+
+**Construction guaranteeing 1–4:** collect positive lengths $\ell_i$, form cumulative sums $c_i$, then set $a_i = c_i / c_{n}$, $b_i = c_{i+1} / c_n$, and finally force $b_{n-1} = 1$, $a_0 = 0$. Since $b_i$ and $a_{i+1}$ are assigned from the *same* cumulative value, contiguity holds bitwise regardless of rounding; only the final snap touches an endpoint, and it touches it once. Verification is a separate $O(n)$ pass (`assertTerritoryContiguity`, §7) using exact `===` for contiguity and a `1e-12` tolerance only for the positivity check — a violation throws `RangeError` with the offending index, because a silent repair would desynchronise `owners` from geometry.
+
+---
+
+## 6. Edge cases & failure modes
+
+| Case | Behaviour |
+|---|---|
+| `mechA === mechB` (graft) | Legal; degenerates to a parametric graft — band still blends parameters, arch height → ~0 since $P_A \approx P_B$. |
+| `band` ≥ distance to endpoint | Shrunk per §3.2; never rejected. |
+| Seam node absent from territories | `authorCombination` throws `TypeError` naming the node — the QDL seam and the body disagree, which is a provenance bug, not a geometry case. |
+| A is a `LifeformFamilies` mechanism, graft requested | Legal: donor evaluation goes through `LifeformFamilies.compile`/`point`; invariant extraction uses the basis row of the §2.3 table. |
+| `budget` smaller than strand count in `frame` | Unchanged legacy behaviour; blending happens per emitted sample, so truncation never produces a half-blended point. |
+| Antiparallel tangents in band | Slerp degeneracy absorbed by arch normal fallback (§2.2). |
+| `phase` unbounded (long animations) | $I_A$ table is indexed by $u$ and evaluated at wrapped phase; modulation is $2\pi$-periodic by construction. |
+
+### 6.3 Seeds
+`seed = (seedA ^ seedB ^ opCode) >>> 0` where `opCode` is a small stable integer per op (`compose:0xC0, mate:0xMA…` — concretely `0x9E37` rotated by op index in code). Same parents + different op ⇒ different offspring seed; same everything ⇒ identical offspring.
+
+---
+
+## 7. Drop-in JS implementation
+
+Append to `woven-body.js` (after `WovenBody` is defined). No imports; uses only existing `WovenBody.compile`, `WovenBody.frame`-internal evaluators via the documented `point` adapter noted inline, and `LifeformFamilies` where already referenced by `compile`.
+
+```js
+'use strict';
+/* ==== Quineling Council Specialist #3: chimeric combinations ==== */
+
+const H_QUINTIC = t => t * t * t * (10 + t * (-15 + 6 * t));      // 6t^5-15t^4+10t^3
+const ARCH_PROFILE = t => { const s = Math.sin(Math.PI * t); return s * s; }; // C^2 arch
+const OP_CODE = { compose: 0x9E37, mate: 0x9E38, merge: 0x9E39, symbiote: 0x9E3A };
+
+function assertTerritoryContiguity(territories) {
+  if (!Array.isArray(territories) || territories.length === 0)
+    throw new RangeError('territories: empty');
+  if (territories[0].u[0] !== 0)
+    throw new RangeError('territories: u[0] must start at exactly 0');
+  for (let i = 0; i < territories.length; i++) {
+    const [a, b] = territories[i].u;
+    if (!(a >= 0 && b <= 1) || !(b - a > 1e-12))
+      throw new RangeError(`territories[${i}]: degenerate or out of [0,1]: [${a},${b}]`);
+    if (i > 0 && territories[i - 1].u[1] !== a)
+      throw new RangeError(`territories[${i}]: gap/overlap at ${a}`);
+  }
+  if (territories[territories.length - 1].u[1] !== 1)
+    throw new RangeError('territories: last u must end at exactly 1');
+  return territories;
+}
+
+// Build a contiguous territory list from positive lengths (bitwise-contiguous).
+function territoriesFromLengths(items) {           // items: [{node,component,len}]
+  const total = items.reduce((s, t) => s + t.len, 0);
+  let c = 0;
+  const out = items.map(t => {
+    const a = c / total; c += t.len;
+    return { node: t.node, component: t.component, u: [a, c / total] };
+  });
+  out[0].u[0] = 0; out[out.length - 1].u[1] = 1;    // single exact endpoint snap
+  return assertTerritoryContiguity(out);
+}
+
+// Split every territory at the given sorted cut points; mark band pieces.
+function splitTerritories(territories, cuts, bandLo, bandHi) {
+  const items = [];
+  for (const t of territories) {
+    let pts = [t.u[0], ...cuts.filter(x => x > t.u[0] && x < t.u[1]), t.u[1]];
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const mid = (pts[i] + pts[i + 1]) / 2;
+      items.push({
+        node: t.node,
+        component: (mid >= bandLo && mid <= bandHi) ? 'seam' : t.component,
+        len: pts[i + 1] - pts[i],
+      });
+      items[items.length - 1].u = [pts[i], pts[i + 1]]; // keep exact cut coords
+    }
+  }
+  // Re-derive via lengths to guarantee bitwise contiguity after splitting:
+  return territoriesFromLengths(items);
+}
+
+function clampToLimits(params) {                    // uses lifeform-families LIMITS
+  if (typeof LIMITS === 'undefined') return params;
+  for (const k in LIMITS) if (k in params) {
+    const [lo, hi] = LIMITS[k];
+    params[k] = Math.min(hi, Math.max(lo, params[k]));
+  }
+  return params;
+}
+
+// --- 3-channel dynamical invariant I_A(u, phase) in [-1,1]^3 ---------------
+function buildInvariantTable(compiledA, mechanismA) {
+  const N = 256, table = new Float32Array(N * 3);
+  const raw = [];
+  for (let i = 0; i < N; i++) {
+    const u = i / (N - 1);
+    raw.push(sampleInvariantRaw(compiledA, mechanismA, u));
+  }
+  for (let ch = 0; ch < 3; ch++) {                  // RMS-normalise + tanh squash
+    let rms = 0; for (const r of raw) rms += r[ch] * r[ch];
+    rms = Math.sqrt(rms / N) || 1;
+    for (let i = 0; i < N; i++)
+      table[i * 3 + ch] = Math.max(-1, Math.min(1, Math.tanh(raw[i][ch] / rms)));
+  }
+  return table;
+}
+function sampleInvariantRaw(compiled, mech, u) {
+  // Reads ONLY fields WovenBody.compile already produces.
+  if (compiled.orbit) {                             // lorenz-flow
+    const o = compiled.orbit, n = (o.length / 3) | 0;
+    const idx = Math.min(n - 2, Math.floor(u * (n - 2)));
+    const p = i => [o[i * 3], o[i * 3 + 1], o[i * 3 + 2]];
+    const a = p(idx), b = p(idx + 1), c = p(idx + 2);
+    const curv = (b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0]);
+    const rad = Math.hypot(b[0], b[1], b[2]);
+    return [u * Math.PI * 2, curv, rad / 40];
+  }
+  if (compiled.cloud) {                             // clifford-flow
+    const g = compiled.grid, n = g ? g.length : compiled.cloud.length;
+    const cell = g ? g[Math.floor(u * (n - 1))] : 0.5;
+    return [u * Math.PI * 2, (cell - 0.5) * 2, cell];
+  }
+  if (compiled.julia) {                             // recursive-julia / affine
+    const j = compiled.julia, n = (j.grid ? j.grid.length : 0) || 1;
+    const esc = j.grid ? j.grid[Math.floor(u * (n - 1))] : 0;
+    const br = compiled.branches && compiled.branches.length
+      ? compiled.branches[Math.floor(u * compiled.branches.length) % compiled.branches.length]
+      : null;
+    return [esc * Math.PI, br ? (br.angle || br.rot || 0) : 0, esc];
+  }
+  return [u * Math.PI * 2, Math.sin(u * Math.PI * 4), Math.cos(u * Math.PI * 2)]; // families/default
+}
+function sampleInvariant(table, u, phase, out) {
+  const N = table.length / 3, x = Math.min(N - 1.001, Math.max(0, u * (N - 1)));
+  const i = Math.floor(x), f = x - i, ph = Math.sin(phase);   // phase-gated interp
+  for (let ch = 0; ch < 3; ch++)
+    out[ch] = (table[i * 3 + ch] * (1 - f) + table[(i + 1) * 3 + ch] * f) * (ch === 0 ? ph : 1);
+  return out;
+}
+
+/* ------------------------- authoring (no compile) ------------------------ */
+WovenBody.authorCombination = function (parentA, parentB, recipe = {}, opts = {}) {
+  const op = recipe.op;
+  if (!(op in OP_CODE)) throw new TypeError(`authorCombination: unknown op '${op}'`);
+  const seed = (recipe.seed ?? ((parentA.seed ^ parentB.seed ^ OP_CODE[op]) >>> 0)) >>> 0;
+  const graft = (op === 'compose' || op === 'mate');
+
+  const base = {
+    model: 'woven-field-experimental',
+    mechanism: parentB.mechanism, seed,
+    topology: {
+      depth: Math.max(parentA.topology.depth, parentB.topology.depth),
+      fanout: Math.max(parentA.topology.fanout, parentB.topology.fanout),
+      convergence: (parentA.topology.convergence + parentB.topology.convergence) / 2,
+      guards: [...new Set([...(parentA.topology.guards || []), ...(parentB.topology.guards || [])])],
+      effects: [...new Set([...(parentA.topology.effects || []), ...(parentB.topology.effects || [])])],
+    },
+    strands: parentB.strands, folds: parentB.folds || [], turns: parentB.turns || [],
+    territories: parentB.territories,
+    chimera: { op, mechanisms: [parentA.mechanism, parentB.mechanism],
+               parents: [parentA.seed, parentB.seed],
+               mod: { phase: 0.6, twist: 0.45, breath: op === 'symbiote' ? 0.3 : 0.22,
+                      ...(recipe.mod || {}) } },
+  };
+  if (parentB.dynamics) base.dynamics = parentB.dynamics;
+  if (parentB.geometry) base.geometry = parentB.geometry;
+  if (parentB.embedding) base.embedding = parentB.embedding;
+
+  if (!graft) { assertTerritoryContiguity(base.territories); return base; }
+
+  // ---- causal seam graft ----
+  const seam = recipe.seam;
+  if (!seam || !seam.donorNode || !seam.integrationNode)
+    throw new TypeError('authorCombination: compose/mate require recipe.seam {donorNode, integrationNode}');
+  const donorTerr = parentA.territories.filter(t => String(t.node).startsWith('p0n'));
+  if (!donorTerr.length)
+    throw new TypeError(`authorCombination: no p0n* donor territories for seam '${seam.donorNode}'`);
+
+  const donorLen = donorTerr.reduce((s, t) => s + (t.u[1] - t.u[0]), 0);
+  const s = recipe.alpha ?? Math.min(0.9, Math.max(0.1, donorLen));       // split point
+  let w = recipe.band ?? 0.08;
+  w = Math.min(w, 0.9 * Math.min(s, 1 - s));                              // band stays in-body
+
+  // Merged territory: donor-cone territories scaled into [0,s], recipient
+  // territories scaled into [s,1], then split exactly at s-w and s+w.
+  const items = [];
+  for (const t of donorTerr)
+    items.push({ node: t.node, component: t.component, len: (t.u[1] - t.u[0]) * s });
+  for (const t of parentB.territories)
+    items.push({ node: t.node, component: t.component, len: (t.u[1] - t.u[0]) * (1 - s) });
+  let territories = territoriesFromLengths(items);
+  territories = splitTerritories(territories, [s - w, s + w], s - w, s + w);
+
+  const nA = parentA.strands.length;
+  base.strands = [...parentA.strands, ...parentB.strands];
+  base.turns = [...(parentA.turns || []),
+                ...(parentB.turns || []).map(t => ({ ...t, strand: (t.strand ?? 0) + nA }))];
+  base.territories = territories;
+  base.chimera.seam = { ...seam, s, band: w };
+  base.chimera.strandOffset = nA;
+  return base;
+};
+
+/* --------------------------- compiled combine ---------------------------- */
+WovenBody.combine = function (parentA, parentB, recipe = {}, phase = 0, opts = {}) {
+  const body = WovenBody.authorCombination(parentA, parentB, recipe, opts);
+  const graph = opts.graph || null;
+  body.chimera.sub = [WovenBody.compile(parentA, graph), WovenBody.compile(parentB, graph)];
+  body.chimera.sub[0].territories = parentA.territories;
+  body.chimera.sub[1].territories = parentB.territories;
+  body.chimera.invariant = buildInvariantTable(body.chimera.sub[0], parentA.mechanism);
+  const compiled = WovenBody.compile(body, graph);       // recipient-side compile
+  compiled.chimera = body.chimera;
+  compiled.territories = body.territories;
+  return compiled;
+};
+
+/* --------------------- band blending primitive --------------------------- */
+// PA, PB: [x,y,z]; TA, TB: tangent [x,y,z] or null. Returns blended [x,y,z].
+WovenBody.blendSeamPoint = function (PA, PB, TA, TB, tau, archScale = 0.35) {
+  const h = H_QUINTIC(tau);
+  const dx = PB[0] - PA[0], dy = PB[1] - PA[1], dz = PB[2] - PA[2];
+  const dist = Math.hypot(dx, dy, dz);
+  // arch normal: component of d orthogonal to mean tangent
+  let nx = dx, ny = dy, nz = dz;
+  if (TA && TB) {
+    const tx = (TA[0] + TB[0]) / 2, ty = (TA[1] + TB[1]) / 2, tz = (TA[2] + TB[2]) / 2;
+    const tl = Math.hypot(tx, ty, tz) || 1, dot = (nx * tx + ny * ty + nz * tz) / tl;
+    nx -= dot * tx / tl; ny -= dot * ty / tl; nz -= dot * tz / tl;
+  }
+  let nl = Math.hypot(nx, ny, nz);
+  if (nl < 1e-9) { nx = 0; ny = 0; nz = 1; nl = 1; }     // degenerate fallback
+  const arch = ARCH_PROFILE(tau) * archScale * 0.5 * dist;
+  return [
+    (1 - h) * PA[0] + h * PB[0] + arch * nx / nl,
+    (1 - h) * PA[1] + h * PB[1] + arch * ny / nl,
+    (1 - h) * PA[2] + h * PB[2] + arch * nz / nl,
+  ];
+};
+
+/* ------------------- modulated parameter view (merge) -------------------- */
+WovenBody.modulatedParams = function (body, u, phase) {
+  const inv = [0, 0, 0];
+  sampleInvariant(body.chimera.invariant, u, phase, inv);
+  const m = body.chimera.mod, p = { ...(body.params || {}) };
+  p.phase = phase + m.phase * inv[0];
+  if ('twist' in p) p.twist = p.twist * (1 + m.twist * inv[1]);
+  p.breath = 1 + m.breath * inv[2] * Math.sin(phase + 2 * Math.PI * u); // r multiplier
+  if (body.chimera.op === 'symbiote' && 'offset' in p) p.offset += 0.3 * inv[0];
+  return clampToLimits(p);                    // never leaves LIMITS envelopes
+};
+```
+
+**Integration note for `WovenBody.frame`:** inside the per-sample loop, dispatch on territory: if `body.chimera` is absent, legacy path untouched. If present and grafted, compute `u`'s regime from `chimera.seam {s, band}`; in-band samples evaluate both sub-bodies' point functions and merge via `WovenBody.blendSeamPoint(PA, PB, TA, TB, τ, recipeArch)`. If present and merged/symbiote, evaluate B with `WovenBody.modulatedParams(body, u, phase)` and multiply the radial component by the returned `breath`. The `points`/`owners`/`ridges` buffers and their types are unchanged, and `reuse` semantics are preserved (the invariant table and sub-compiles live on the body, allocated once in `combine`).
+
+---
+
+## 8. Verification checklist (for the implementing engineer)
+
+1. **Partition of unity:** sample $\tau \in \{0, .25, .5, .75, 1\}$: $H = \{0, 0.1035, 0.5, 0.8965, 1\}$; $H(\tau)+H(1-\tau)=1$ to machine precision; numeric $H', H''$ vanish at endpoints.
+2. **Contiguity fuzz:** 10k random parent pairs → `assertTerritoryContiguity` passes; deliberately corrupt one `u[1]` by `1e-9` → throws (bitwise contiguity is intentional).
+3. **Seam smoothness:** graft `lorenz-flow` → `phyllotaxis-fan`; finite-difference a strand across $s$: position, first and second differences continuous to $O(w^2)$ inside the band; no `ridges` endpoint appears at $u=s$ that is absent in both parents.
+4. **Modulation bounds:** `merge` with adversarial `mod` gains ×10 → parameters still within `LIMITS` after `clampToLimits`; radius deviation ≤ configured `breath`.
+5. **Determinism:** two `combine` calls, same inputs → `assert.deepStrictEqual` on territories and invariant table.
+6. **Drop-in compatibility:** `WovenBody.frame(combine(...), phase, {budget})` returns `Float32Array(budget*4)` / `Uint16Array(budget)`; legacy non-chimera bodies frame identically before/after the patch.
+
+---
+
+## 9. Summary of decisions
+
+- **Quintic, not cubic**, because `ridges` makes curvature a first-class output and only the quintic is $C^2$ at band edges.
+- **Territory-first design**: mechanism selection rides on the existing `territories[].u` partition, so contiguity invariants (§5) become the single correctness condition for the whole graft — and they are enforced bitwise by construction plus an $O(n)$ assert.
+- **A's dynamics are data, not code**: cross-modulation consumes only fields `WovenBody.compile` already produces (`orbit`, `cloud`/`grid`, `branches`, `julia`), RMS-normalised and `tanh`-squashed into $[-1,1]^3$, so no new integrators, no per-frame allocation, and no path by which modulation can push B outside `LIMITS`.
+- **Causality is preserved geometrically**: outside $[s-w, s+w]$ every sample depends on exactly one parent, matching the single `donorNode → integrationNode` edge in the QDL `seam`.

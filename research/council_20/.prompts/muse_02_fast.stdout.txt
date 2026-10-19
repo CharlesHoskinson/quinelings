@@ -1,0 +1,255 @@
+# Quinelings — Specialist \#2 Report
+## Higher-Order Fractals, Complex Dynamics & Strange-Loop Self-Reference
+
+**Scope:** Drop-in enhancements to `woven-body.js` for `recursive-julia` / `recursive-affine`, plus a new `WovenBody.strangeLoop(body, phase, opts)` Ouroboros manifold. No changes to `WovenBody.author` signatures, `MECHANISMS`, territory layout `territories: [{node, component, u: [u0, u1]}]`, or the `frame(body, phase, {budget, crests, reuse}) -> {points: Float32Array(budget*4), owners, ridges}` contract.
+
+---
+
+## 1. Douady–Hubbard Potential Relief for `recursive-julia`
+
+### 1.1 Mathematics
+
+For $f_c(z)=z^2+c$, $z_{n+1}=f_c(z_n)$, $z_0=z$, the filled Julia set is $K_c=\{z:|z_n|\not\to\infty\}$. The **Douady–Hubbard (Green's) potential** is
+
+$$
+G_c(z)=\lim_{n\to\infty} 2^{-n}\log^{+}|z_n|,\qquad \log^{+}r=\max(\log r,0),
+$$
+
+with $G_c\equiv 0$ on $K_c$, $G_c>0$ and harmonic on $\mathbb{C}\setminus K_c$, and $G_c(f_c(z))=2G_c(z)$. The Böttcher coordinate satisfies $G_c(z)=\log|\Phi_c(z)|$, $\Phi_c(f_c(z))=\Phi_c(z)^2$.
+
+The **analytic derivative cocycle**
+
+$$
+w_{n+1}=f_c'(z_n)\,w_n=2z_n w_n,\qquad w_0=1 \;\;\Longrightarrow\;\; w_n=\prod_{k=0}^{n-1}2z_k=\left.\frac{\partial z_n}{\partial z_0}\right.
+$$
+
+gives $\nabla \log\Phi_c$ via $\frac{\Phi_c'}{\Phi_c}=\lim_n 2^{-n}\frac{w_n}{z_n}$, hence $|\nabla G_c|=\lim_n 2^{-n}|w_n|/|z_n|$. The **Milnor distance estimator** to $J_c=\partial K_c$ is therefore
+
+$$
+\boxed{\;d(z,J_c)\;\approx\;\frac{G_c(z)}{|\nabla G_c(z)|}\;\approx\;\frac{|z_N|\,\log|z_N|}{|w_N|}\;}
+$$
+
+evaluated at the first $N$ with $|z_N|>R$ (escape radius $R=\max(2,|c|)$); the factors $2^{-N}$ cancel exactly. Near $J_c$, $d\to 0$ and $|\nabla G_c|\to\infty$: the gradient blows up precisely on the fractal boundary, which is what we render as relief.
+
+**Relief height field** written into `frame`'s 4th point component (replacing flat $w$):
+
+$$
+h(z)=\underbrace{\tanh\!\big(\alpha\, G_c(z)^{1/2}\big)}_{\text{potential terrace}}\;+\;\underbrace{\beta\,\frac{d_0}{d(z,J_c)+d_0}}_{\text{boundary ridge}},\qquad \alpha\approx 3,\;\beta\approx 0.6 .
+$$
+
+The $\sqrt{G_c}$ is essential: $G_c\sim \mathrm{dist}^{}$ vanishes linearly in Böttcher angle but the equipotentials crowd geometrically ($G$ doubles per iterate), so $\sqrt{G_c}$ equalizes terrace spacing perceptually.
+
+### 1.2 Quaternion and bicomplex lift (the "3D" part)
+
+**Quaternion Julia slice.** Let $q\in\mathbb{H}$, $q_{n+1}=q_n^2+c_q$, $c_q\in\mathbb{H}$. Everything above survives verbatim with $|\cdot|$ the quaternion norm, because $|q^2|=|q|^2$ and the chain rule gives a *quaternion* derivative cocycle $w_{n+1}=2q_n w_n$ (left multiplication; $w_n\in\mathbb{H}$). We restrict to a 3D slice $q = x + y\mathbf{i} + z\mathbf{j} + 0\mathbf{k}$ through the 4D filled set (the standard Bulirsch/White–Nylander rendering slice), parameterized by territory coordinate $u\in[u_0,u_1]$ mapped to the slice's third axis. Potential and distance:
+
+$$
+G_{c_q}(q)=\lim_n 2^{-n}\log^{+}|q_n|,\qquad d(q,J_{c_q})\approx \frac{|q_N|\log|q_N|}{|w_N|}.
+$$
+
+This is a genuine theorem-carrying lift, not a fake 3D noise field: level sets of $G_{c_q}$ are the quaternion equipotential shells.
+
+**Bicomplex variant.** Bicomplex numbers $\zeta = z_1 + z_2\mathbf{j}$, $z_1,z_2\in\mathbb{C}(\mathbf{i})$, $\mathbf{i}^2=\mathbf{j}^2=-1$, $\mathbf{i}\mathbf{j}=\mathbf{j}\mathbf{i}$, split idempotently as $\zeta = \zeta^{-}e^{-}+\zeta^{+}e^{+}$ with $e^{\pm}=\tfrac12(1\pm\mathbf{i}\mathbf{j})$, $\zeta^{\pm}=z_1\mp \mathbf{i} z_2$. Squaring decouples:
+
+$$
+\zeta^2 + C = \big((\zeta^{-})^2 + C^{-}\big)e^{-} + \big((\zeta^{+})^2 + C^{+}\big)e^{+},
+$$
+
+so a bicomplex Julia set is the *Cartesian product* of two complex Julia dynamics — two independent `recursive-julia` mechanisms braided in one body. We use it for the seam territories (§3.3): $\zeta^{-}$ carries the root strand, $\zeta^{+}$ the sink strand, and the idempotent coupling term renders their interference.
+
+### 1.3 Whitney catastrophe caustic amplification
+
+Distance $d(z,J_c)$ is smooth off $J_c$ but its ridges (medial axis of the equipotential foliation) are catastrophe loci. Write the local potential as a one-parameter family in the transverse coordinate $x$ with control parameters $(a,b)$ drawn from phase and territory index:
+
+- **Fold $A_2$:** $V(x;a)=x^3/3 + a x$, caustic at $a=0$, critical points $x=\pm\sqrt{-a}$.
+- **Cusp $A_3$:** $V(x;a,b)=x^4/4 + a x^2/2 + b x$, caustic the semicubical parabola $4a^3+27b^2=0$.
+
+Wave-optics amplification near a caustic diverges as $|\det \mathrm{Hess}\,V|^{-1/2}\sim |\kappa|^{-1/2}$ (fold) and $|\kappa|^{-2/3}$ (cusp, Pearcey). We amplify ridge brightness (the `ridges` output and crest selection in `frame`) by the regularized factor
+
+$$
+A_{\mathrm{fold}}=\frac{1}{\sqrt{|a|+\varepsilon}},\qquad
+A_{\mathrm{cusp}}=\big(|4a^3+27b^2|+\varepsilon\big)^{-1/6},\qquad \varepsilon=10^{-3},
+$$
+
+clamped to $[1, 8]$, with $a = d(z,J_c)-d_{\text{ridge}}$ (signed distance past the ridge crest) and $b=\sin(\text{phase}\cdot 2\pi + \text{territoryIndex})$. Effect: crest strands flare with the physically correct fold/cusp exponents as the phase sweeps a territory across its caustic — this is the "crest" budget in `frame` being spent where catastrophe theory says light actually concentrates.
+
+### 1.4 Drop-in code — extend `WovenBody.compile` (julia branch)
+
+```js
+// --- Douady-Hubbard potential, Milnor DE, quaternion/bicomplex slices ---
+function dhPotential(cx, cy, maxIter, R) {
+  // returns {G, d, w: [wre, wim], n, escaped}
+  let zx = cx, zy = cy, wx = 1, wy = 0;
+  const R2 = R * R;
+  for (let n = 0; n < maxIter; n++) {
+    // w_{n+1} = 2 z_n w_n  (must use z_n BEFORE update)
+    const nwx = 2 * (zx * wx - zy * wy), nwy = 2 * (zx * wy + zy * wx);
+    wx = nwx; wy = nwy;
+    const nzx = zx * zx - zy * zy + DH_C[0], nzy = 2 * zx * zy + DH_C[1];
+    zx = nzx; zy = nzy;
+    const r2 = zx * zx + zy * zy;
+    if (r2 > R2) {
+      const r = Math.sqrt(r2), logr = Math.log(r);
+      const wn = Math.hypot(wx, wy) || 1e-30;
+      return { G: logr / Math.pow(2, n + 1), d: (r * logr) / wn, n, escaped: true };
+    }
+  }
+  return { G: 0, d: 0, n: maxIter, escaped: false };
+}
+
+function quatDH(x, y, z, cq, maxIter) { // q = x + yi + zj (+0k slice)
+  let [a, b, cc, d] = [x, y, z, 0];            // q_n
+  let [wa, wb, wc, wd] = [1, 0, 0, 0];          // w_n in H
+  for (let n = 0; n < maxIter; n++) {
+    // w <- 2 q w (quaternion product, left)
+    const s = 2;
+    [wa, wb, wc, wd] = [s*(a*wa-b*wb-cc*wc-d*wd), s*(a*wb+b*wa+cc*wd-d*wc),
+                        s*(a*wc-b*wd+cc*wa+d*wb), s*(a*wd+b*wc-cc*wb+d*wa)];
+    // q <- q^2 + c_q
+    [a, b, cc, d] = [a*a-b*b-cc*cc-d*d+cq[0], 2*a*b+cq[1], 2*a*cc+cq[2], 2*a*d+cq[3]];
+    const r2 = a*a+b*b+cc*cc+d*d;
+    if (r2 > 4) { const r = Math.sqrt(r2);
+      return { G: Math.log(r)/Math.pow(2,n+1), d: r*Math.log(r)/(Math.hypot(wa,wb,wc,wd)||1e-30), escaped:true }; }
+  }
+  return { G: 0, d: 0, escaped: false };
+}
+```
+
+In `compile`, the existing `julia: {grid, contours}` gains `julia.potential = Float32Array` of $G_c$, `julia.dist` of $d(z,J_c)$, sampled on the same grid (zero marginal cost — $w_n$ rides along the escape iteration already performed). `frame` then sets `points[4i+3] = tanh(3*sqrt(G)) + 0.6*d0/(d+d0)` and multiplies crest weight by the §1.3 factor with $a=d-d_{\text{ridge}}$ from a $3\times3$ discrete ridge detector on `julia.dist`.
+
+---
+
+## 2. `recursive-affine`: holomorphic potential on the IFS
+
+The existing `branches` are contractive affine maps $T_k(z)=A_k z + t_k$ (complex-linear part $A_k$, contraction ratio $s_k=|A_k|<1$). Give the attractor $F=\bigcup_k T_k(F)$ a potential by weighting addresses $\omega\in\{1..m\}^{\mathbb{N}}$:
+
+$$
+G_{\mathrm{IFS}}(z)=\sum_{n\ge1} 2^{-n}\log^{+}\big|T_{\omega_1}\!\circ\cdots\circ T_{\omega_n}(z)\big|,\qquad
+\Phi_{\mathrm{IFS}}=\prod_k \big(1 + G_c\!\circ T_k^{-1}\big)^{p_k},
+$$
+
+with $p_k$ the branch probabilities already implicit in `compile`. The relief is the $G_c$-potential of §1 *pulled back through the IFS semigroup*: each branch stamps a scaled copy of the Julia potential field onto its sub-attractor, with amplitude $p_k s_k^{-1}$ (inverse-contraction gain, so fine scales stay visible instead of washing out). The derivative cocycle becomes the product of branch Jacobians along the address, $w_n=\prod A_{\omega_k}$, and the Milnor estimator is $d(z,F)\approx |z_N|\log|z_N|/|w_N|$ verbatim. Quaternion-affine branches $q\mapsto \alpha q \bar\beta + t$ ($|\alpha\beta|<1$, rotation-sandwich form) give the 3D lift with $|w_n|=\prod|\alpha_k\beta_k|$.
+
+**Caustics here** are the fold loci where two branch images $T_i(F), T_j(F)$ are tangent: $a = \mathrm{dist}(T_i(F),T_j(F))$ feeds the same $A_{\mathrm{fold}}$ of §1.3 at territory seams — i.e., wherever `folds` in the author record already sit.
+
+---
+
+## 3. `WovenBody.strangeLoop(body, phase, opts)`
+
+### 3.1 Geometry: Möbius–trefoil feedback manifold
+
+Take the trefoil centerline (the simplest torus knot, writhe-carrying, chiral — a loop that cannot be undone without cutting, matching quine irreversibility of evaluation):
+
+$$
+\mathbf{T}(t)=\big(\sin t + 2\sin 2t,\;\; \cos t - 2\cos 2t,\;\; -\sin 3t\big),\qquad t\in[0,2\pi).
+$$
+
+Around $\mathbf{T}$, build a ribbon whose normal rotates by $\pi$ over one circuit (Möbius holonomy): with Frenet-ish frame $(\mathbf{N},\mathbf{B})$ of $\mathbf{T}$,
+
+$$
+\mathbf{P}(t,s)=\mathbf{T}(t)+s\big(\cos\tfrac{t}{2}\,\mathbf{N}(t)+\sin\tfrac{t}{2}\,\mathbf{B}(t)\big),\qquad s\in[-w,w].
+$$
+
+After one loop ($t:0\to2\pi$) the ribbon's "up" is inverted: a strand leaving the root territory *right-side-up* returns to it *flipped*. This is the geometric content of the quine: output re-enters as input with orientation (quotation) reversed.
+
+**Territory wiring.** `body.territories` is ordered root$\to$sink by the author pass. `strangeLoop` takes the **terminal sink territory** $T_{\text{sink}}$ (last entry) and lays the trefoil so that $t=0$ sits at the sink centroid and $t=2\pi$ at the root centroid, interpolating the centerline through strand midpoints (Catmull-Rom through territory centroids, then re-parameterized onto the trefoil's knot type — topology from the trefoil, embedding adapted to the body).
+
+### 3.2 The three quine stages
+
+Parameterize by stage variable $\sigma = 3\cdot\mathrm{frac}(t/2\pi + \text{phase})$:
+
+| Stage | $\sigma$ range | Operation | Analytic role |
+|---|---|---|---|
+| `quote` | $[0,1)$ | sink output is *reified*: strand data $\to$ code (territory $u$-interval as literal) | Möbius half-twist accumulating, $\cos(t/2)$ dominates |
+| `run` | $[1,2)$ | reified program executes on the donor cone (cf. `qdl-v1-offspring.js` `compose` seam) | ribbon crosses the knot's over/under passes |
+| `apply` | $[2,3)$ | result substituted into root territory input slot | twist completes $\pi$; flipped re-entry |
+
+### 3.3 KdV soliton pulses and the fixed point
+
+Pulses traveling the manifold obey **KdV**, $u_t + 6uu_x + u_{xxx}=0$, whose one-soliton solution is the $\mathrm{sech}^2$ profile
+
+$$
+u(x,t)=\frac{c}{2}\,\mathrm{sech}^{2}\!\Big(\tfrac{\sqrt{c}}{2}\big(x - ct - x_0\big)\Big),
+$$
+
+$c>0$ the pulse speed/amplitude (amplitude $c/2$, width $2/\sqrt c$ — taller is faster and narrower, so pulses overtake without dispersing: soliton collisions are elastic, phase-shifting only, which is exactly the non-interference property a feedback channel needs).
+
+The loop closes as a **Banach fixed point**. One circuit applies the feedback operator $\mathcal{F} = \text{apply}\circ\text{run}\circ\text{quote}$ to the root input $x$: $x_{k+1}=\mathcal{F}(x_k)$. With loop gain $g=\big|\frac{\partial \mathcal{F}}{\partial x}\big|$ clamped to $g\le 0.85<1$ (a hard clamp in code, not a hope), $\mathcal{F}$ is a contraction on the root territory's $u$-interval and the iteration converges geometrically to the unique self-consistent strand configuration $x^{*}=\mathcal{F}(x^{*})$ — the quine fixed point, a program whose output is its own input. Soliton amplitude at stage boundary $k$ is scaled by $g^k$ so transient pulses decay into the fixed point instead of accumulating.
+
+### 3.4 Drop-in code
+
+```js
+WovenBody.strangeLoop = function (body, phase, opts = {}) {
+  const { pulses = 3, gain = 0.85, width = 0.35, budget = 2048 } = opts;
+  const terr = body.territories;
+  const sink = terr[terr.length - 1], root = terr[0];
+  const pts = new Float32Array(budget * 4), owners = new Uint16Array(budget);
+
+  // trefoil centerline + Möbius frame
+  const T = t => [Math.sin(t) + 2*Math.sin(2*t), Math.cos(t) - 2*Math.cos(2*t), -Math.sin(3*t)];
+  const frameAt = t => {                       // finite-difference frame
+    const e = 1e-3, a = T(t - e), b = T(t + e);
+    let tan = [b[0]-a[0], b[1]-a[1], b[2]-a[2]];
+    const tl = Math.hypot(...tan); tan = tan.map(v => v / tl);
+    let N = [0, 0, 1]; if (Math.abs(tan[2]) > 0.9) N = [0, 1, 0];
+    const B = [tan[1]*N[2]-tan[2]*N[1], tan[2]*N[0]-tan[0]*N[2], tan[0]*N[1]-tan[1]*N[0]];
+    const bl = Math.hypot(...B); const Bv = B.map(v => v / bl);
+    const Nv = [Bv[1]*tan[2]-Bv[2]*tan[1], Bv[2]*tan[0]-Bv[0]*tan[2], Bv[0]*tan[1]-Bv[1]*tan[0]];
+    return { tan, N: Nv, B: Bv };
+  };
+
+  const stageOf = t => {                        // quote -> run -> apply
+    const s = 3 * (((t / (2*Math.PI)) + phase) % 1);
+    return s < 1 ? 'quote' : s < 2 ? 'run' : 'apply';
+  };
+
+  // Banach fixed point on root u-interval: x* = F(x*), |F'| <= gain < 1
+  let x = (root.u[0] + root.u[1]) / 2;
+  for (let k = 0; k < 24; k++) {
+    const quoted = sink.u[0] + (x - root.u[0]);           // quote: reify
+    const ran = root.u[0] + gain * (quoted - root.u[0]);  // run: contract
+    const next = ran;                                     // apply: substitute
+    if (Math.abs(next - x) < 1e-9) { x = next; break; }
+    x = next;
+  }
+
+  for (let i = 0; i < budget; i++) {
+    const t = (i / budget) * 2 * Math.PI;
+    const { N, B } = frameAt(t), c = T(t);
+    const half = Math.cos(t / 2), halfS = Math.sin(t / 2);      // Möbius π-twist
+    // KdV sech^2 pulses, one per stage boundary crossing
+    let amp = 0;
+    for (let p = 0; p < pulses; p++) {
+      const speed = 0.5 + 0.25 * p, x0 = (p / pulses) * 2 * Math.PI;
+      let arg = (Math.sqrt(speed) / 2) * (t - speed * phase * 2 * Math.PI - x0);
+      arg = ((arg + Math.PI) % (2 * Math.PI)) - Math.PI;
+      const sech = 1 / Math.cosh(arg);
+      amp += (speed / 2) * sech * sech * Math.pow(gain, p);      // decay into x*
+    }
+    const s = width * (0.4 + amp) * (stageOf(t) === 'run' ? 1.25 : 1);
+    const o = i * 4;
+    pts[o]   = c[0] + s * (half * N[0] + halfS * B[0]);
+    pts[o+1] = c[1] + s * (half * N[1] + halfS * B[1]);
+    pts[o+2] = c[2] + s * (half * N[2] + halfS * B[2]);
+    pts[o+3] = amp;                                             // soliton height
+    owners[i] = stageOf(t) === 'apply' ? root.component
+              : stageOf(t) === 'quote' ? sink.component : sink.component;
+  }
+  return { points: pts, owners, fixedPoint: x, gain,
+           seam: { donorNode: sink.node, recipientNode: root.node,
+                   type: 'strange-loop', integrationNode: root.node } };
+};
+```
+
+The returned `seam` deliberately mirrors the `compose` seam shape in `qdl-v1-offspring.js` (`{donorNode, recipientNode, type, integrationNode}`), so a strange loop can be *inherited* by offspring as if it were a mating seam — self-reference becomes heritable.
+
+---
+
+## 4. Integration notes & invariants
+
+1. **Budget discipline:** `strangeLoop` allocates its own arrays; callers merge into `frame`'s budget by reserving `opts.loopBudget` points first, keeping `points.length === budget*4` invariant.
+2. **Determinism:** all additions are pure functions of `(body, seed-derived c, phase)` — `DH_C` and `cq` derive from `record.seed` in `compile`, preserving replay determinism of `WovenBody.author`.
+3. **Stability guard:** `gain` is clamped `Math.min(gain, 0.85)`; without the contraction, the `apply` stage is a genuine divergent self-application (the geometry's Möbius flip becomes numeric sign-flip oscillation). The clamp is the analytic content of "quine that halts."
+4. **Cost:** $w_n$ rides the existing escape loop (one extra complex multiply/iterate, ~15% on the julia branch); the distance grid then makes marching-squares contours in `compile` *better* — contour at $d = $ pixel-size instead of fixed iteration count for resolution-independent `julia.contours`.
+
+

@@ -1,0 +1,100 @@
+[
+  {
+    "label": "GROK #1 (exotic_math)",
+    "file": "grok_01_exotic_math.md",
+    "bytes": 44,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "GROK #2 (fractals_strangeloop)",
+    "file": "grok_02_fractals_strangeloop.md",
+    "bytes": 17804,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "GROK #3 (combinations)",
+    "file": "grok_03_combinations.md",
+    "bytes": 8338,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "GROK #5 (quint_lean_proofs)",
+    "file": "grok_05_quint_lean_proofs.md",
+    "bytes": 43581,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "SOL #1 (exotic_math)",
+    "file": "sol_01_exotic_math.md",
+    "bytes": 912,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "SOL #2 (fractals_strangeloop)",
+    "file": "sol_02_fractals_strangeloop.md",
+    "bytes": 926,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "SOL #3 (combinations)",
+    "file": "sol_03_combinations.md",
+    "bytes": 913,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "SOL #4 (program_execution)",
+    "file": "sol_04_program_execution.md",
+    "bytes": 913,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "SOL #5 (quint_lean_proofs)",
+    "file": "sol_05_quint_lean_proofs.md",
+    "bytes": 923,
+    "elapsed": 240.1,
+    "exit": -9
+  },
+  {
+    "label": "MUSE WONDER #1 (exotic_math)",
+    "file": "muse_01_exotic_math.md",
+    "bytes": 19778,
+    "elapsed": 43.8,
+    "exit": 0
+  },
+  {
+    "label": "MUSE WONDER #2 (fractals_strangeloop)",
+    "file": "muse_02_fractals_strangeloop.md",
+    "bytes": 841,
+    "elapsed": 7.2,
+    "exit": 1
+  },
+  {
+    "label": "MUSE WONDER #3 (combinations)",
+    "file": "muse_03_combinations.md",
+    "bytes": 837,
+    "elapsed": 8.9,
+    "exit": 1
+  },
+  {
+    "label": "MUSE WONDER #4 (program_execution)",
+    "file": "muse_04_program_execution.md",
+    "bytes": 832,
+    "elapsed": 59.1,
+    "exit": 1
+  },
+  {
+    "label": "MUSE WONDER #5 (quint_lean_proofs)",
+    "file": "muse_05_quint_lean_proofs.md",
+    "bytes": 841,
+    "elapsed": 3.3,
+    "exit": 1
+  }
+]

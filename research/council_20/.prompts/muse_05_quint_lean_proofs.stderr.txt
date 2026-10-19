@@ -1,0 +1,4 @@
+muse: local session messaging disabled: session logging is required
+muse: workspace root: /home/charles/repos/quinelings (cwd default)
+muse: workspace trust: trusted source=run-flag
+agent loop failed: model did not reach a terminal state within 1 step(s)

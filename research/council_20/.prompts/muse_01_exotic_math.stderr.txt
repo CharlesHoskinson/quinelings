@@ -1,0 +1,3 @@
+muse: local session messaging disabled: session logging is required
+muse: workspace root: /home/charles/repos/quinelings (cwd default)
+muse: workspace trust: trusted source=run-flag

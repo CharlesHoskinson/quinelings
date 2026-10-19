@@ -1,0 +1,137 @@
+[
+  {
+    "provider": "grok",
+    "track": 1,
+    "slug": "exotic_math",
+    "exitCode": -15,
+    "elapsedSec": 654.6,
+    "bytes": 78,
+    "report": "/home/charles/repos/quinelings/research/council_20/grok_01_exotic_math.md"
+  },
+  {
+    "provider": "grok",
+    "track": 2,
+    "slug": "fractals_strangeloop",
+    "exitCode": -15,
+    "elapsedSec": 654.4,
+    "bytes": 83,
+    "report": "/home/charles/repos/quinelings/research/council_20/grok_02_fractals_strangeloop.md"
+  },
+  {
+    "provider": "grok",
+    "track": 3,
+    "slug": "combinations",
+    "exitCode": -15,
+    "elapsedSec": 654.4,
+    "bytes": 78,
+    "report": "/home/charles/repos/quinelings/research/council_20/grok_03_combinations.md"
+  },
+  {
+    "provider": "grok",
+    "track": 4,
+    "slug": "program_execution",
+    "exitCode": -15,
+    "elapsedSec": 654.5,
+    "bytes": 13949,
+    "report": "/home/charles/repos/quinelings/research/council_20/grok_04_program_execution.md"
+  },
+  {
+    "provider": "grok",
+    "track": 5,
+    "slug": "quint_lean_proofs",
+    "exitCode": -15,
+    "elapsedSec": 654.4,
+    "bytes": 83,
+    "report": "/home/charles/repos/quinelings/research/council_20/grok_05_quint_lean_proofs.md"
+  },
+  {
+    "provider": "muse",
+    "track": 1,
+    "slug": "exotic_math",
+    "exitCode": 1,
+    "elapsedSec": 17.7,
+    "bytes": 627,
+    "report": "/home/charles/repos/quinelings/research/council_20/muse_01_exotic_math.md"
+  },
+  {
+    "provider": "muse",
+    "track": 2,
+    "slug": "fractals_strangeloop",
+    "exitCode": 1,
+    "elapsedSec": 17.7,
+    "bytes": 632,
+    "report": "/home/charles/repos/quinelings/research/council_20/muse_02_fractals_strangeloop.md"
+  },
+  {
+    "provider": "muse",
+    "track": 3,
+    "slug": "combinations",
+    "exitCode": 1,
+    "elapsedSec": 18.0,
+    "bytes": 627,
+    "report": "/home/charles/repos/quinelings/research/council_20/muse_03_combinations.md"
+  },
+  {
+    "provider": "muse",
+    "track": 4,
+    "slug": "program_execution",
+    "exitCode": 1,
+    "elapsedSec": 17.9,
+    "bytes": 622,
+    "report": "/home/charles/repos/quinelings/research/council_20/muse_04_program_execution.md"
+  },
+  {
+    "provider": "muse",
+    "track": 5,
+    "slug": "quint_lean_proofs",
+    "exitCode": 1,
+    "elapsedSec": 17.7,
+    "bytes": 632,
+    "report": "/home/charles/repos/quinelings/research/council_20/muse_05_quint_lean_proofs.md"
+  },
+  {
+    "provider": "sol",
+    "track": 1,
+    "slug": "exotic_math",
+    "exitCode": 0,
+    "elapsedSec": 420.0,
+    "bytes": 77,
+    "report": "/home/charles/repos/quinelings/research/council_20/sol_01_exotic_math.md"
+  },
+  {
+    "provider": "sol",
+    "track": 2,
+    "slug": "fractals_strangeloop",
+    "exitCode": 0,
+    "elapsedSec": 420.0,
+    "bytes": 82,
+    "report": "/home/charles/repos/quinelings/research/council_20/sol_02_fractals_strangeloop.md"
+  },
+  {
+    "provider": "sol",
+    "track": 3,
+    "slug": "combinations",
+    "exitCode": 0,
+    "elapsedSec": 420.0,
+    "bytes": 77,
+    "report": "/home/charles/repos/quinelings/research/council_20/sol_03_combinations.md"
+  },
+  {
+    "provider": "sol",
+    "track": 4,
+    "slug": "program_execution",
+    "exitCode": 0,
+    "elapsedSec": 420.0,
+    "bytes": 72,
+    "report": "/home/charles/repos/quinelings/research/council_20/sol_04_program_execution.md"
+  },
+  {
+    "provider": "sol",
+    "track": 5,
+    "slug": "quint_lean_proofs",
+    "exitCode": 0,
+    "elapsedSec": 420.0,
+    "bytes": 82,
+    "report": "/home/charles/repos/quinelings/research/council_20/sol_05_quint_lean_proofs.md"
+  }
+]

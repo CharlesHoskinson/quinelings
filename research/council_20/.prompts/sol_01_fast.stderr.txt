@@ -1,0 +1,651 @@
+OpenAI Codex v0.163.0
+--------
+workdir: /tmp/quineling_council_clean
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: low
+reasoning summaries: none
+session id: 01a1536c-6af0-7461-8c93-70eccd5ce0f8
+--------
+user
+You are SOL Quineling Council Specialist #1: Exotic Strange Attractors, Chaotic Flows & Differential Geometry.
+
+### Reference Codebase (`woven-body.js`, `lifeform-families.js`, `qdl-v1-offspring.js`, `spec/lean/QDL/Geometry.lean`):
+- `woven-body.js`:
+  - `MECHANISMS = ['pleated-braid', 'lorenz-flow', 'clifford-flow', 'recursive-affine', 'recursive-julia', 'logarithmic-mantle', 'toroidal-weave', 'phyllotaxis-fan']`
+  - `WovenBody.author(graph, seed)` -> `{ model: 'woven-field-experimental', mechanism, seed, topology: {depth, fanout, convergence, guards, effects}, strands, folds, turns, territories: [{node, component, u: [u0, u1]}], dynamics?, geometry?, embedding? }`
+  - `WovenBody.compile(record, graph)` -> precomputes Lorenz RK4 trajectory (`orbit`), Clifford attractor (`cloud`, `grid`, `critical`), contractive IFS branches (`branches`), Julia escape grid & marching-squares contours (`julia`), or `LifeformFamilies.compile`.
+  - `WovenBody.frame(body, phase, {budget, crests, reuse})` -> `{ points: Float32Array(budget*4), owners: Uint16Array(budget), ridges }`.
+- `lifeform-families.js`:
+  - `LIMITS = { growth:[.12,.35], spread:[.5,1.2], curl:[.4,1.6], asymmetry:[0,.4], offset:[0,TAU], frequency:[2,8], lobes:[3,9], twist:[1,3], whorls:[2,4] }`
+  - `computeBasis(body, k, u, phase)` & `point(body, k, u, v, phase)` for `logarithmic-mantle`, `toroidal-weave`, and `phyllotaxis-fan`.
+- `qdl-v1-offspring.js`:
+  - Combines two parents `[parent0, parent1]` via `compose` (replaces recipient runtime input with donor output cone; emits `seam = {donorNode, recipientNode, type, integrationNode}`), `mate` (replaces recipient literal with donor cone), `merge` (parallel `report` node `'joined'`), or `body` (trait re-seed).
+
+
+### Assignment:
+Design concrete mathematical evolutions for `woven-body.js` and `lifeform-families.js`:
+1. Hopf Fibration & Stereographic S^3 -> R^3 linked fibers (`toroidal-weave`) where distinct strand fibers are linked Villarceau circles with Gauss linking number 1.
+2. Coupled chaotic attractors (Lorenz + René Thomas cyclically symmetric labyrinth attractor `dw/dt = sin(w_cyc + 2.2 q) - b_T w` or Rössler/Halvorsen coupling) and discrete SO(3) Bishop parallel-transport torsion frames eliminating the z-axis Gimbal flip in `lorenzSpine`.
+3. Hofstadter Strange-Loop Holonomy Twist (`Phi_SL(u, k, phase)`) providing a quantized Möbius pi half-twist across `u in [0, 1]` and golden-ratio strand foliation.
+Include exact mathematical equations, bounded parameter domains, and drop-in JS code.
+
+CRITICAL: You are running in an empty directory with NO files and NO tools. Do NOT call any tools or shell commands. Write your complete Markdown engineering report directly in this response.
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart Completed
+hook: SessionStart Completed
+codex
+The three evolutions should share one geometric rule: **integrate or construct the centerline first, build a transported normal frame second, and apply ribbon twists last.** This preserves the Hopf linking invariant, avoids unstable world-axis frames, and keeps chaotic dynamics separate from their visual embedding.
+
+The code below is a proposed implementation against the supplied interfaces. It has not been executed against the repository.
+
+## 1. Hopf-linked `toroidal-weave`
+
+### Exact geometry
+
+Represent \(S^3\subset\mathbb C^2\) by
+
+\[
+(z_1,z_2)=
+\left(
+\cos\eta\,e^{it},
+\sin\eta\,e^{i(t+\alpha)}
+\right),
+\qquad t\in[0,2\pi].
+\]
+
+The Hopf map
+
+\[
+H(z_1,z_2)=
+\left(
+2\operatorname{Re}(z_1\overline{z_2}),
+2\operatorname{Im}(z_1\overline{z_2}),
+|z_1|^2-|z_2|^2
+\right)
+\]
+
+is constant along \(t\):
+
+\[
+H=
+\left(
+\sin(2\eta)\cos\alpha,
+-\sin(2\eta)\sin\alpha,
+\cos(2\eta)
+\right).
+\]
+
+Thus each pair \((\eta,\alpha)\) identifies one fiber.
+
+Write \((z_1,z_2)=(x_1+ix_2,x_3+ix_4)\). Stereographic projection from \(N=(0,0,0,1)\) gives
+
+\[
+\boxed{
+\mathbf c_{\eta,\alpha}(t)=
+s\,
+\frac{
+\left(
+\cos\eta\cos t,\,
+\cos\eta\sin t,\,
+\sin\eta\cos(t+\alpha)
+\right)}
+{1-\sin\eta\sin(t+\alpha)}.
+}
+\]
+
+Every selected fiber is an exact Euclidean circle. With fixed interior \(\eta\), these circles form a Villarceau family on a torus of revolution. Distinct fibers have Gauss linking number \(+1\), using increasing \(t\), the standard complex orientation of \(S^3\), and the corresponding orientation of \(\mathbb R^3\).
+
+The invariant is
+
+\[
+\operatorname{Lk}(C_i,C_j)=
+\frac1{4\pi}
+\int_0^{2\pi}\!\!\int_0^{2\pi}
+\frac{
+(\mathbf c_i-\mathbf c_j)\cdot
+(\mathbf c_i'\times\mathbf c_j')
+}{
+\|\mathbf c_i-\mathbf c_j\|^3
+}\,dt\,ds
+=1.
+\]
+
+This statement concerns centerlines. Ribbon width must be constrained separately to prevent surface intersections.
+
+### Bounded parameters
+
+Use
+
+\[
+\eta\in[0.25,1.05],\qquad
+s\in[0.35,1.2],\qquad
+K\in\{2,\ldots,128\}.
+\]
+
+Then
+
+\[
+D=1-\sin\eta\sin(t+\alpha)
+\ge 1-\sin(1.05)>0.132,
+\]
+
+so projection remains finite.
+
+For the exact common-torus Villarceau construction, use the same \(\eta\) for every strand. Assign distinct fibers through golden-angle foliation:
+
+\[
+\varphi=\frac{1+\sqrt5}{2},\qquad
+\alpha_k=2\pi\operatorname{frac}
+\left(\alpha_0+\frac{k}{\varphi^2}\right).
+\]
+
+The irrational increment guarantees distinct fibers for distinct finite integer indices in exact arithmetic.
+
+### Drop-in geometry helper
+
+```js
+const TAU = 2 * Math.PI;
+const GOLDEN = (1 + Math.sqrt(5)) / 2;
+
+const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+const fract = x => x - Math.floor(x);
+
+function hopfBasis(geometry, k, u, phase = 0) {
+  const eta = clamp(geometry.hopfEta ?? 0.72, 0.25, 1.05);
+  const scale = clamp(geometry.hopfScale ?? 0.7, 0.35, 1.2);
+  const offset = fract(geometry.fiberOffset ?? 0);
+
+  const alpha = TAU * fract(offset + k / (GOLDEN * GOLDEN));
+
+  // phase is in radians. This changes traversal, not the fiber itself.
+  const t = TAU * u + phase;
+  const a = Math.cos(eta);
+  const b = Math.sin(eta);
+  const st = Math.sin(t), ct = Math.cos(t);
+  const sp = Math.sin(t + alpha), cp = Math.cos(t + alpha);
+
+  const denominator = 1 - b * sp;
+  const numerator = [a * ct, a * st, b * cp];
+  const numeratorDerivative = [-a * st, a * ct, -b * sp];
+  const denominatorDerivative = -b * cp;
+
+  const position = numerator.map(x => scale * x / denominator);
+  const tangent = unit(numerator.map((x, j) =>
+    scale * (
+      numeratorDerivative[j] * denominator -
+      x * denominatorDerivative
+    ) / (denominator * denominator)
+  ));
+
+  return { position, tangent };
+}
+```
+
+Use `hopfBasis` as the centerline branch inside `computeBasis` for `toroidal-weave`. Obtain the remaining basis vectors from the transport code below.
+
+A per-strand translation or nonuniform deformation generally destroys the exact-circle claim. A shared rigid transform and positive uniform scale preserve it.
+
+---
+
+## 2. Coupled Lorenz–Thomas flow
+
+### Six-dimensional system
+
+Let \(\mathbf x=(x,y,z)\) be Lorenz state and \(\mathbf w=(w_1,w_2,w_3)\) be Thomas state. Define the bounded coupling signal
+
+\[
+\mathbf q(\mathbf x)=
+\left(
+\tanh(x/L),\,
+\tanh(y/L),\,
+\tanh((z-z_c)/L)
+\right).
+\]
+
+Use
+
+\[
+\begin{aligned}
+\dot x&=\sigma(y-x)+\epsilon\sin w_1,\\
+\dot y&=x(\rho-z)-y+\epsilon\sin w_2,\\
+\dot z&=xy-\beta z+\epsilon\sin w_3,
+\end{aligned}
+\]
+
+and
+
+\[
+\boxed{
+\begin{aligned}
+\dot w_1&=\sin(w_2+2.2q_1)-b_Tw_1,\\
+\dot w_2&=\sin(w_3+2.2q_2)-b_Tw_2,\\
+\dot w_3&=\sin(w_1+2.2q_3)-b_Tw_3.
+\end{aligned}
+}
+\]
+
+This retains the cyclic Thomas coupling pattern. The combined six-dimensional system does not inherit full cyclic symmetry because Lorenz dynamics lack that symmetry.
+
+Recommended domains:
+
+| Parameter | Domain | Default |
+|---|---:|---:|
+| \(\sigma\) | \([9,11]\) | \(10\) |
+| \(\rho\) | \([26,30]\) | \(28\) |
+| \(\beta\) | \([2.5,3]\) | \(8/3\) |
+| \(b_T\) | \([0.18,0.25]\) | \(0.208186\) |
+| \(\epsilon\) | \([0,0.8]\) | \(0.25\) |
+| \(L\) | \([20,50]\) | \(32\) |
+| \(z_c\) | \([20,30]\) | \(27\) |
+| RK4 step \(h\) | \([0.001,0.005]\) | \(0.003\) |
+
+These are bounded exploration domains, **not a guarantee of chaos for every parameter tuple**.
+
+Because the sine forcing is bounded,
+
+\[
+|w_i(t)|
+\le
+e^{-b_Tt}|w_i(0)|
++\frac{1-e^{-b_Tt}}{b_T}.
+\]
+
+The Lorenz subsystem also remains dissipative under this bounded forcing. For example, with
+
+\[
+V=\rho x^2+\sigma y^2+\sigma(z-2\rho)^2,
+\]
+
+the cubic terms cancel in \(\dot V\), and Young’s inequality gives
+
+\[
+\dot V\le -cV+C
+\]
+
+for suitable positive constants over the stated compact parameter domain. Consequently, the continuous system has a bounded absorbing region.
+
+### Compile-time integration
+
+```js
+function coupledParameters(input = {}) {
+  return {
+    sigma: clamp(input.sigma ?? 10, 9, 11),
+    rho: clamp(input.rho ?? 28, 26, 30),
+    beta: clamp(input.beta ?? 8 / 3, 2.5, 3),
+    bT: clamp(input.bT ?? 0.208186, 0.18, 0.25),
+    epsilon: clamp(input.epsilon ?? 0.25, 0, 0.8),
+    L: clamp(input.L ?? 32, 20, 50),
+    zCenter: clamp(input.zCenter ?? 27, 20, 30),
+    h: clamp(input.h ?? 0.003, 0.001, 0.005)
+  };
+}
+
+function coupledDerivative(s, p) {
+  const [x, y, z, a, b, c] = s;
+  const qx = Math.tanh(x / p.L);
+  const qy = Math.tanh(y / p.L);
+  const qz = Math.tanh((z - p.zCenter) / p.L);
+
+  return [
+    p.sigma * (y - x) + p.epsilon * Math.sin(a),
+    x * (p.rho - z) - y + p.epsilon * Math.sin(b),
+    x * y - p.beta * z + p.epsilon * Math.sin(c),
+    Math.sin(b + 2.2 * qx) - p.bT * a,
+    Math.sin(c + 2.2 * qy) - p.bT * b,
+    Math.sin(a + 2.2 * qz) - p.bT * c
+  ];
+}
+
+function rk4Coupled(s, p) {
+  const h = p.h;
+  const shifted = (v, factor) =>
+    s.map((x, i) => x + factor * h * v[i]);
+
+  const a = coupledDerivative(s, p);
+  const b = coupledDerivative(shifted(a, 0.5), p);
+  const c = coupledDerivative(shifted(b, 0.5), p);
+  const d = coupledDerivative(shifted(c, 1), p);
+
+  return s.map((x, i) =>
+    x + h * (a[i] + 2 * b[i] + 2 * c[i] + d[i]) / 6
+  );
+}
+
+function compileCoupledOrbit(input = {}, initial = [0.1, 0, 0, 0.1, 0, 0]) {
+  const p = coupledParameters(input);
+  const count = Math.round(clamp(input.samples ?? 4096, 512, 16384));
+  const stride = Math.round(clamp(input.stride ?? 4, 1, 16));
+  const burnSteps = Math.ceil(60 / p.h);
+  const points = [];
+
+  let state = initial.slice();
+  if (state.length !== 6 || !state.every(Number.isFinite)) {
+    throw new Error("Expected six finite initial coordinates");
+  }
+
+  const advance = () => {
+    state = rk4Coupled(state, p);
+    if (!state.every(Number.isFinite)) {
+      throw new Error("Nonfinite coupled orbit");
+    }
+  };
+
+  for (let i = 0; i < burnSteps; ++i) advance();
+
+  for (let i = 0; i < count; ++i) {
+    for (let j = 0; j < stride; ++j) advance();
+
+    const [x, y, z, a, b, c] = state;
+    points.push([
+      x / 32 + 0.06 * a,
+      y / 32 + 0.06 * b,
+      (z - p.zCenter) / 32 + 0.06 * c
+    ]);
+  }
+
+  return { points, parameters: p };
+}
+```
+
+Integrate the full six-dimensional state with RK4. Updating Thomas after a completed Lorenz step would implement a different numerical coupling.
+
+### Discrete Bishop transport in \(SO(3)\)
+
+For consecutive unit tangents \(\mathbf t_i,\mathbf t_{i+1}\), set
+
+\[
+\mathbf a=\mathbf t_i\times\mathbf t_{i+1},\qquad
+c=\mathbf t_i\cdot\mathbf t_{i+1}.
+\]
+
+Away from antiparallel tangents, the shortest rotation is
+
+\[
+R_i=I+[\mathbf a]_\times+
+\frac{[\mathbf a]_\times^2}{1+c}.
+\]
+
+Transport the normal by \(R_i\), remove numerical tangent contamination, and rebuild the binormal:
+
+\[
+\mathbf n_{i+1}
+=\operatorname{normalize}
+\left(
+R_i\mathbf n_i-
+\mathbf t_{i+1}
+(\mathbf t_{i+1}\cdot R_i\mathbf n_i)
+\right),
+\qquad
+\mathbf b_{i+1}=\mathbf t_{i+1}\times\mathbf n_{i+1}.
+\]
+
+This is a discrete rotation-minimizing frame. It avoids repeatedly crossing the tangent with the global \(z\)-axis.
+
+```js
+const dot = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+const cross = (a, b) => [
+  a[1]*b[2] - a[2]*b[1],
+  a[2]*b[0] - a[0]*b[2],
+  a[0]*b[1] - a[1]*b[0]
+];
+const add = (a, b) => a.map((x, i) => x + b[i]);
+const sub = (a, b) => a.map((x, i) => x - b[i]);
+const mul = (a, s) => a.map(x => x * s);
+
+function unit(a) {
+  const length = Math.hypot(...a);
+  if (!(length > 1e-12)) throw new Error("Degenerate direction");
+  return mul(a, 1 / length);
+}
+
+function initialNormal(t) {
+  const axes = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+  axes.sort((a, b) => Math.abs(dot(a, t)) - Math.abs(dot(b, t)));
+  return unit(sub(axes[0], mul(t, dot(axes[0], t))));
+}
+
+function rotateAround(v, axis, angle) {
+  const c = Math.cos(angle), s = Math.sin(angle);
+  return add(
+    add(mul(v, c), mul(cross(axis, v), s)),
+    mul(axis, dot(axis, v) * (1 - c))
+  );
+}
+
+function transportNormal(n, from, to) {
+  const c = clamp(dot(from, to), -1, 1);
+  let moved;
+
+  if (c < -1 + 1e-8) {
+    // At exact reversal the shortest rotation is nonunique.
+    // Choose the previous normal as a deterministic rotation axis.
+    moved = rotateAround(n, n, Math.PI);
+  } else {
+    const a = cross(from, to);
+    moved = add(
+      add(n, cross(a, n)),
+      mul(cross(a, cross(a, n)), 1 / (1 + c))
+    );
+  }
+
+  return unit(sub(moved, mul(to, dot(moved, to))));
+}
+
+function bishopFrames(tangents) {
+  let n = initialNormal(tangents[0]);
+
+  return tangents.map((t, i) => {
+    if (i) n = transportNormal(n, tangents[i - 1], t);
+    return { t, n: n.slice(), b: unit(cross(t, n)) };
+  });
+}
+```
+
+For a sampled chaotic spine, derive tangents from centered differences, with one-sided differences at the ends. Collapse consecutive duplicate samples before normalization.
+
+Near-antiparallel tangent pairs indicate under-resolved geometry; subdivide or resample them. The fallback makes the computation defined but cannot resolve a geometrically ambiguous reversal.
+
+---
+
+## 3. Strange-loop holonomy and golden foliation
+
+“Strange-loop” here names an explicit geometric construction. Quantized ribbon holonomy follows from the equations below.
+
+### Close the reference frame first
+
+A Bishop frame transported around a closed curve generally returns with residual normal rotation. Let
+
+\[
+\delta=
+\operatorname{atan2}
+\left(
+\mathbf t_0\cdot(\mathbf n_0\times\mathbf n_1),
+\mathbf n_0\cdot\mathbf n_1
+\right),
+\]
+
+where subscripts \(0,1\) denote the two endpoints of the full traversal.
+
+Correct the transported frame by
+
+\[
+\overline{\mathbf n}(u)
+=\operatorname{Rot}_{\mathbf t(u)}(-u\delta)\mathbf n(u).
+\]
+
+Its binormal is \(\overline{\mathbf b}=\mathbf t\times\overline{\mathbf n}\). The corrected reference frame is periodic; the correction deliberately introduces distributed twist.
+
+### Quantized half-twist
+
+Define
+
+\[
+\boxed{
+\Phi_{\rm SL}(u,k,\theta)=
+m\pi u+\alpha_k
++A\sin(\pi u)
+\sin(2\pi u+\theta+\alpha_k)
+}
+\]
+
+with
+
+\[
+m\in\{-3,-2,-1,0,1,2,3\},\qquad
+A\in[0,0.35].
+\]
+
+Then exactly
+
+\[
+\Phi_{\rm SL}(1,k,\theta)-
+\Phi_{\rm SL}(0,k,\theta)=m\pi.
+\]
+
+The ribbon director is
+
+\[
+\mathbf d=
+\cos\Phi_{\rm SL}\,\overline{\mathbf n}
++\sin\Phi_{\rm SL}\,\overline{\mathbf b},
+\]
+
+and the ribbon surface is
+
+\[
+\boxed{
+\mathbf X_k(u,v,\theta)
+=\mathbf c_k(u)+v\,r_k(u)\mathbf d_k(u,\theta),
+\qquad v\in[-1,1].
+}
+\]
+
+For periodic width \(r_k(1)=r_k(0)\),
+
+\[
+\mathbf X_k(1,v,\theta)
+=\mathbf X_k(0,(-1)^m v,\theta).
+\]
+
+Odd \(m\) gives a Möbius identification; even \(m\) gives an orientable ribbon. Use \(m=1\) for the requested single \(\pi\) half-twist.
+
+A Möbius half-twist requires a closed centerline and reversed transverse seam indexing. On an open Lorenz trajectory, this formula creates a half-twisted strip but does not create Möbius topology.
+
+### Drop-in helpers
+
+```js
+function closeFrameHolonomy(frames) {
+  const first = frames[0];
+  const last = frames[frames.length - 1];
+
+  if (dot(first.t, last.t) < 1 - 1e-6) {
+    throw new Error("Closed-frame endpoints must have matching tangents");
+  }
+
+  const delta = Math.atan2(
+    dot(first.t, cross(first.n, last.n)),
+    dot(first.n, last.n)
+  );
+
+  return frames.map((f, i) => {
+    const u = i / (frames.length - 1);
+    const n = rotateAround(f.n, f.t, -u * delta);
+    return { t: f.t, n, b: unit(cross(f.t, n)) };
+  });
+}
+
+function strangeLoopPhi(u, k, phase, geometry = {}) {
+  const m = Math.round(clamp(geometry.halfTwists ?? 1, -3, 3));
+  const amplitude = clamp(geometry.loopAmplitude ?? 0.2, 0, 0.35);
+  const alpha = TAU * fract(
+    fract(geometry.fiberOffset ?? 0) + k / (GOLDEN * GOLDEN)
+  );
+
+  return m * Math.PI * u + alpha +
+    amplitude * Math.sin(Math.PI * u) *
+    Math.sin(TAU * u + phase + alpha);
+}
+
+function ribbonPoint(center, frame, u, v, k, phase, geometry = {}) {
+  const phi = strangeLoopPhi(u, k, phase, geometry);
+  const width = clamp(geometry.ribbonWidth ?? 0.015, 0, 0.05);
+  const director = add(
+    mul(frame.n, Math.cos(phi)),
+    mul(frame.b, Math.sin(phi))
+  );
+
+  return add(center, mul(director, width * clamp(v, -1, 1)));
+}
+```
+
+For each Hopf strand, sample \(u=0,\ldots,1\), including both endpoints, compute analytic tangents with `hopfBasis`, build Bishop frames, and apply `closeFrameHolonomy`. At the duplicate endpoint, copy the first center and tangent to eliminate floating-point seam drift.
+
+Precompute these frames at phase zero. Because Hopf `phase` is only a parameter shift, evaluate the periodic frame at
+
+\[
+\operatorname{frac}\left(u+\frac{\theta}{2\pi}\right)
+\]
+
+while evaluating \(\Phi_{\rm SL}\) using the original \(u\). Reproject and normalize interpolated normals against the analytic tangent.
+
+## 4. Integration into the existing architecture
+
+Keep the existing mechanism names and add versioned submodels:
+
+```js
+// Proposed authored record fields:
+geometry: {
+  version: 2,
+  embedding: "hopf-stereographic",
+  hopfEta: 0.72,
+  hopfScale: 0.7,
+  fiberOffset: 0.0,
+  ribbonWidth: 0.015,
+  halfTwists: 1,
+  loopAmplitude: 0.2
+},
+
+dynamics: {
+  version: 2,
+  system: "lorenz-thomas",
+  sigma: 10,
+  rho: 28,
+  beta: 8 / 3,
+  bT: 0.208186,
+  epsilon: 0.25,
+  L: 32,
+  zCenter: 27,
+  h: 0.003,
+  samples: 4096,
+  stride: 4
+}
+```
+
+- **`WovenBody.author`:** derive these fields deterministically from the seed. Retain legacy behavior when versioned fields are absent.
+- **`WovenBody.compile`:** integrate coupled dynamics once, build tangent/frame tables, and compile Hopf centerlines and closed reference frames.
+- **`LifeformFamilies.computeBasis`:** return the Hopf position, tangent, and transported normal pair for the new `toroidal-weave` embedding.
+- **`LifeformFamilies.point`:** apply the strange-loop ribbon displacement.
+- **`WovenBody.frame`:** sample compiled tables into the existing output buffers. Preserve the current fourth point component, ownership rules, and ridge conventions.
+
+Keep \(u\) as a full-fiber coordinate before applying territory intervals. A territory occupying only part of a fiber does not itself possess a closed-curve linking invariant.
+
+For offspring, interpolate continuous parameters within their bounds, but inherit integer `halfTwists` discretely. Recompile after changing dynamics or embedding. A graph composition seam alone does not certify a geometric seam: endpoint position, tangent, width, and transverse identification must also agree.
+
+## 5. Verification criteria
+
+Before making geometric guarantees in the UI or documentation, verify:
+
+1. **Hopf geometry:** sampled points satisfy their fitted circle equations; selected fibers have positive separation.
+2. **Linking:** an independent polygonal linking calculation returns \(+1\) for every tested distinct pair with consistent orientation.
+3. **Frames:** \(\|\mathbf t\|=\|\mathbf n\|=\|\mathbf b\|=1\), pairwise dot products approach zero, and \(\det[\mathbf t,\mathbf n,\mathbf b]\approx1\).
+4. **Möbius seam:** for odd `halfTwists`, check \(\mathbf X(1,v)=\mathbf X(0,-v)\).
+5. **Numerics:** step refinement agrees over short integration windows. Long chaotic trajectories should be compared statistically, since pointwise agreement eventually diverges.
+6. **Ribbon clearance:** bound width using centerline separation and local curvature, then check surface intersections. A fixed width cap alone cannot guarantee embedded ribbons.
+
+For formalization in `Geometry.lean`, separate the exact stereographic fiber and seam identities from numerical integration claims. Linking number \(1\), ribbon embeddedness, and chaos are distinct obligations; proving a denominator bound or observing a rendered attractor does not establish them.
+tokens used
+10,340

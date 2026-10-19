@@ -1,0 +1,3 @@
+muse: local session messaging disabled: session logging is required
+muse: workspace root: /tmp/quineling_council_clean (explicit)
+muse: workspace trust: trusted source=run-flag

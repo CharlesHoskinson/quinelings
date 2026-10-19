@@ -1,0 +1,2108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gemini Motion Studio — Quinelings 2.0: "What Is Life?"</title>
+    <style>
+      :root {
+        --bg-void: #070a0e;
+        --bg-panel: rgba(9, 13, 19, 0.86);
+        --border-hairline: rgba(192, 222, 203, 0.14);
+        --border-active: rgba(182, 232, 242, 0.48);
+        --text-primary: #eef3ef;
+        --text-secondary: #95aa9f;
+        --text-muted: #5e726a;
+        --accent-aqua: #b6e8f2;
+        --accent-gold: #f6e2b2;
+        --accent-orchid: #e4c4f0;
+        --accent-emerald: #a8e0c6;
+        --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, Georgia, serif;
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-mono: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg-void);
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        user-select: none;
+      }
+
+      #motionCanvas {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        display: block;
+        z-index: 1;
+      }
+
+      .studio-ui {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 18px 28px;
+      }
+
+      .studio-header {
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-hairline);
+        background: linear-gradient(180deg, rgba(7, 10, 14, 0.88) 0%, rgba(7, 10, 14, 0) 100%);
+      }
+
+      .brand-cluster {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .studio-badge {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 3px;
+        border: 1px solid var(--border-active);
+        background: rgba(182, 232, 242, 0.1);
+        color: var(--accent-aqua);
+      }
+
+      .scene-indicator {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        color: var(--text-secondary);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn {
+        pointer-events: auto;
+        background: rgba(14, 20, 28, 0.75);
+        color: var(--text-primary);
+        border: 1px solid var(--border-hairline);
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.16s ease;
+      }
+
+      .btn:hover {
+        border-color: var(--border-active);
+        background: rgba(24, 34, 46, 0.9);
+      }
+
+      .btn.active {
+        background: rgba(182, 232, 242, 0.15);
+        border-color: var(--border-active);
+        color: var(--accent-aqua);
+      }
+
+      .btn.record-active {
+        background: rgba(224, 138, 124, 0.24);
+        border-color: #e08a7c;
+        color: #ffd7d0;
+      }
+
+      /* Surgical Scene Editor Drawer (Claude Motion style) */
+      .editor-drawer {
+        pointer-events: auto;
+        position: fixed;
+        top: 68px;
+        right: 28px;
+        width: 340px;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-hairline);
+        border-radius: 6px;
+        padding: 14px 16px;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 25;
+        backdrop-filter: blur(12px);
+      }
+
+      .editor-drawer.open {
+        display: flex;
+      }
+
+      .editor-drawer h3 {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-aqua);
+      }
+
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .field-group label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+      }
+
+      .field-group input[type='text'] {
+        background: rgba(7, 10, 14, 0.85);
+        border: 1px solid var(--border-hairline);
+        color: var(--text-primary);
+        padding: 6px 8px;
+        border-radius: 3px;
+        font-family: var(--font-sans);
+        font-size: 12px;
+      }
+
+      .field-group input[type='range'] {
+        accent-color: var(--accent-aqua);
+      }
+
+      /* Bottom Timeline & Storyboard Deck */
+      .timeline-deck {
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-hairline);
+        background: linear-gradient(0deg, rgba(7, 10, 14, 0.92) 0%, rgba(7, 10, 14, 0) 100%);
+      }
+
+      .scene-strip {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 5px;
+      }
+
+      .scene-block {
+        padding: 6px 8px;
+        border-radius: 3px;
+        border: 1px solid var(--border-hairline);
+        background: rgba(12, 18, 25, 0.65);
+        cursor: pointer;
+        transition: all 0.16s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .scene-block:hover {
+        border-color: var(--border-active);
+      }
+
+      .scene-block.active {
+        background: rgba(182, 232, 242, 0.13);
+        border-color: var(--border-active);
+      }
+
+      .scene-block .sc-num {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--accent-aqua);
+      }
+
+      .scene-block .sc-name {
+        font-size: 11px;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .scrubber-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      #frameScrubber {
+        flex: 1;
+        accent-color: var(--accent-aqua);
+        cursor: pointer;
+        height: 5px;
+      }
+
+      .transport-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .transport-left,
+      .transport-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .timecode-readout {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        color: var(--text-secondary);
+        min-width: 240px;
+      }
+
+      .lyric-cue {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 12.5px;
+        color: var(--accent-gold);
+        letter-spacing: 0.02em;
+      }
+
+      /* Animator's Mathematical Rendering Bible Modal */
+      .math-modal {
+        pointer-events: auto;
+        position: fixed;
+        inset: 64px 28px 130px 28px;
+        background: rgba(8, 12, 18, 0.95);
+        border: 1px solid var(--border-active);
+        border-radius: 8px;
+        padding: 20px 24px;
+        display: none;
+        flex-direction: column;
+        gap: 14px;
+        z-index: 30;
+        backdrop-filter: blur(16px);
+        overflow-y: auto;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75);
+      }
+
+      .math-modal.open {
+        display: flex;
+      }
+
+      .math-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-hairline);
+        padding-bottom: 10px;
+      }
+
+      .math-modal-header h2 {
+        font-family: var(--font-serif);
+        font-weight: 400;
+        font-size: 20px;
+        color: var(--text-primary);
+      }
+
+      .math-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 12px;
+      }
+
+      .math-card {
+        background: rgba(14, 21, 30, 0.82);
+        border: 1px solid var(--border-hairline);
+        border-radius: 5px;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .math-card h4 {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--accent-aqua);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .math-card .eq {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--accent-gold);
+        background: rgba(5, 8, 12, 0.75);
+        padding: 6px 8px;
+        border-radius: 3px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      .math-card p {
+        font-size: 11.5px;
+        color: var(--text-secondary);
+        line-height: 1.45;
+      }
+
+      @media (max-width: 960px) {
+        .scene-strip {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="motionCanvas"></canvas>
+    <audio id="masterAudio" src="/assets/audio/charlessong_90s.mp3" preload="auto" crossorigin="anonymous"></audio>
+
+    <aside class="editor-drawer" id="editorDrawer">
+      <h3>Surgical Scene Editor (Gemini Motion)</h3>
+      <div class="field-group">
+        <label>Active Scene Headline</label>
+        <input type="text" id="editHeadline" />
+      </div>
+      <div class="field-group">
+        <label>Active Scene Sub-Caption</label>
+        <input type="text" id="editSubcaption" />
+      </div>
+      <div class="field-group">
+        <label>Mathematical Overlay Formula</label>
+        <input type="text" id="editFormula" />
+      </div>
+      <div class="field-group">
+        <label>Laminar Flow Velocity (<span id="flowVelVal">1.0x</span>)</label>
+        <input type="range" id="editFlowVel" min="0.3" max="2.2" step="0.05" value="1.0" />
+      </div>
+    </aside>
+
+    <section class="math-modal" id="mathModal" aria-label="Animator Mathematical Rendering Bible">
+      <div class="math-modal-header">
+        <h2>Animator's Mathematical Rendering Bible — Quinelings 2.0 ("The Ouroboros Manifold")</h2>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" id="copyMathJsonBtn">Copy JSON Spec</button>
+          <button class="btn" id="closeMathModalBtn">✕ Close</button>
+        </div>
+      </div>
+      <div class="math-grid" id="mathGridContainer"></div>
+    </section>
+
+    <div class="studio-ui">
+      <header class="studio-header">
+        <div class="brand-cluster">
+          <span class="studio-badge">GEMINI MOTION STUDIO · 60FPS</span>
+          <span class="scene-indicator" id="activeSceneLabel">
+            ACT I · SCENE 01 — "What is life?"
+          </span>
+          <span class="scene-indicator" id="fpsIndicator">60 FPS · ZERO-SHAKE</span>
+          <span class="lyric-cue" id="lyricCueReadout">♪ "Pure Imagination" (90.000s Master Cut)</span>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn active" id="toggleAudioBtn" title="Toggle 90.000s charlessong Master Soundtrack">🔊 Soundtrack (90s)</button>
+          <button class="btn" id="toggleMathModalBtn" title="Open Animator's Mathematical Rendering Bible">∑ Math Bible</button>
+          <button class="btn" id="toggleEditorBtn">Surgical Scene Editor</button>
+          <button class="btn" id="exportVideoBtn">● Export 60fps Video</button>
+          <a class="btn" href="/slideshow.html">12-Plate Gallery</a>
+          <a class="btn" href="/">3D Sherlock Stage</a>
+        </div>
+      </header>
+
+      <footer class="timeline-deck">
+        <div class="scene-strip" id="sceneStrip"></div>
+
+        <div class="scrubber-row">
+          <input type="range" id="frameScrubber" min="0" max="5399" step="1" value="0" />
+        </div>
+
+        <div class="transport-bar">
+          <div class="transport-left">
+            <button class="btn" id="restartBtn" title="Restart from Frame 0">⏮ 00:00</button>
+            <button class="btn" id="prevSceneBtn">← Prev Scene</button>
+            <button class="btn active" id="playPauseBtn">Pause</button>
+            <button class="btn" id="nextSceneBtn">Next Scene →</button>
+            <span class="timecode-readout" id="timecodeReadout">
+              00:00.00 / 01:30.00 · FRAME 0000 / 5400
+            </span>
+          </div>
+
+          <div class="transport-right">
+            <button class="btn" data-speed="0.5">0.5×</button>
+            <button class="btn active" data-speed="1">1.0×</button>
+            <button class="btn" data-speed="2">2.0×</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module">
+      import { WovenBody, Chroma } from './src/engine/quinelingsSdk.js';
+
+      const TAU = Math.PI * 2;
+      const PHI_INV = (Math.sqrt(5) - 1) / 2;
+      const TOTAL_FRAMES = 5400; // 90 seconds @ 60fps
+      const FPS = 60;
+
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const smootherstep = (t) => {
+        const u = clamp(t, 0, 1);
+        return u * u * u * (u * (u * 6 - 15) + 10);
+      };
+
+      // ======================================================================
+      // STORYBOARD SCENES (MUSE WONDER 1.0 CREATIVE DIRECTOR BRIEF)
+      // ======================================================================
+      const SCENES = [
+        {
+          id: 1,
+          act: 'ACT I · THE QUESTION',
+          shortName: 'What is life?',
+          startFrame: 0,
+          endFrame: 480,
+          headline: 'What is life?',
+          subcaption: 'Can a mathematical text write its own body, fold into a strange loop, and swim?',
+          formula: 'Kleene Fixed-Point Theorem:  ∃ e ∈ ℕ,  φ_e ≃ F(e)   ·   quote → run → apply',
+        },
+        {
+          id: 2,
+          act: 'ACT I · THE SOURCE',
+          shortName: 'Terminals Typing',
+          startFrame: 480,
+          endFrame: 1080,
+          headline: 'Self-Reproducing Constructor Code',
+          subcaption: 'Three terminal panes emit canonical QDL quine constructors and differential chart laws.',
+          formula: 'Q(p) = ["apply", ["quote", p], ["run", ["quote", p]]]   ·   WovenBody.author(G, seed)',
+        },
+        {
+          id: 3,
+          act: 'ACT II · HYDRODYNAMIC GENESIS',
+          shortName: 'Code Vortex Birth',
+          startFrame: 1080,
+          endFrame: 1860,
+          headline: 'From Falling Syntax to a Living Quineling',
+          subcaption: 'Code glyphs detach from the terminals, swirl into a Rankine vortex, and coalesce into a Hopf Toroidal-Weave organism.',
+          formula: 'ω(r) = (Γ / πr_c²) exp(-r²/r_c²),   P(t) = (1 - S₂(τ)) X_vortex(t) + S₂(τ) P_Hopf(u,v,φ)',
+        },
+        {
+          id: 4,
+          act: 'ACT III · EXOTIC MANIFOLDS I',
+          shortName: 'Strange Attractors',
+          startFrame: 1860,
+          endFrame: 2640,
+          headline: 'The Quineling Explores: Hopf Fibers → Lorenz–Bishop → Clifford',
+          subcaption: 'Swimming continuously like water across stereographic Villarceau fibers, SO(3) Bishop parallel transport, and vorticity sheets.',
+          formula: 'dx/dt = σ(y-x) + ε sin(y),   Tᵢ·Nᵢ = 0,   z_Clifford = 0.052 sin(x+y+φ) + 0.024 tanh(0.35 det DF)',
+        },
+        {
+          id: 5,
+          act: 'ACT III · EXOTIC MANIFOLDS II',
+          shortName: 'Fractals & Holonomy',
+          startFrame: 2640,
+          endFrame: 3420,
+          headline: 'Holomorphic Julia Relief, Whitney Caustics & Möbius Holonomy',
+          subcaption: '3D Douady–Hubbard potential G_c(z), contractive IFS fold-cusp singularities, and golden-ratio π-holonomy.',
+          formula: "G_c(z) = 2⁻ⁿ log|zₙ|,   d(z) = |zₙ|log|zₙ|/|z'ₙ|,   θ_hol(u,φ) = πu + 2πΦ⁻¹u(1-u)sin(φ)",
+        },
+        {
+          id: 6,
+          act: 'ACT IV · SYMBIOGENESIS',
+          shortName: 'Chimera & Execution',
+          startFrame: 3420,
+          endFrame: 4080,
+          headline: 'Chimeric Symbiogenesis & Live Program Execution Pulse',
+          subcaption: 'Two parent manifolds fuse across a C² quintic geodesic seam while active CEK operation nodes fire KdV solitons.',
+          formula: 'S₂(τ) = 6τ⁵ - 15τ⁴ + 10τ³,   P_chimera = (1 - S₂)P_A + S₂ P_B + 4λ(1-λ)H_bridge,   A_soliton = ∑ sech²(9Δτ)',
+        },
+        {
+          id: 7,
+          act: 'ACT V · THE PELAGIC OCEAN',
+          shortName: 'Dozens of Quinelings',
+          startFrame: 4080,
+          endFrame: 4860,
+          headline: 'A Bioluminescent Ocean of 36 Living Quinelings',
+          subcaption: 'Camera pulls back on zero-shake exponential rails to reveal dozens of unique Quinelings swimming in golden-ratio harmony.',
+          formula: 'Z_cam(t) = Z₀ · (Z₁ / Z₀)^(S₂(τ)),   φ_k(t) = φ₀ + ω_k t + 2π k Φ⁻¹   (k = 1 … 36)',
+        },
+        {
+          id: 8,
+          act: 'ACT V · RESOLUTION',
+          shortName: 'Life is what we make',
+          startFrame: 4860,
+          endFrame: 5400,
+          headline: 'Life is what we make of it.',
+          subcaption: 'Quinelings 2.0 — Self-Reproducing Mathematical Organisms · Verified in Lean 4 & Quint.',
+          formula: '∀ body ∈ WovenBody,  Quine(emit(body)) = body  ∧  C²_Laminar(frame(body, φ))',
+        },
+      ];
+
+      // ======================================================================
+      // COMPILE ALL 8 CANONICAL WOVENBODY SPECIMENS & CHIMERA RINGS
+      // ======================================================================
+      const GRAPHS = {
+        terminal: {
+          nodes: [
+            { id: 'g', op: 'literal', inputs: [] },
+            { id: 'a', op: 'literal', inputs: [] },
+            { id: 'effect', op: 'action', inputs: ['g', 'a'] },
+          ],
+        },
+        threadwing: {
+          nodes: [
+            { id: 'n0', op: 'literal', inputs: [] },
+            { id: 'n1', op: 'literal', inputs: [] },
+            { id: 'n2', op: 'filter', inputs: ['n0'] },
+            { id: 'n3', op: 'consensus', inputs: ['n1', 'n2'] },
+            { id: 'n4', op: 'action', inputs: ['n2', 'n3'] },
+          ],
+        },
+        fork: {
+          nodes: [
+            { id: 'a', op: 'literal', inputs: [] },
+            { id: 'b', op: 'sum', inputs: ['a'] },
+            { id: 'c', op: 'sum', inputs: ['a'] },
+            { id: 'd', op: 'sum', inputs: ['b', 'c'] },
+          ],
+        },
+        tideglass: {
+          nodes: [
+            { id: 's0', op: 'literal', inputs: [] },
+            { id: 's1', op: 'map', inputs: ['s0'] },
+            { id: 's2', op: 'window', inputs: ['s1'] },
+            { id: 's3', op: 'sum', inputs: ['s2'] },
+            { id: 's4', op: 'report', inputs: ['s3'] },
+          ],
+        },
+        braidGraph: {
+          nodes: [
+            { id: 'n0', op: 'literal', inputs: [] },
+            { id: 'n1', op: 'sort', inputs: ['n0'] },
+            { id: 'n2', op: 'dedupe', inputs: ['n1'] },
+            { id: 'n3', op: 'select', inputs: ['n2'] },
+            { id: 'n4', op: 'report', inputs: ['n3'] },
+          ],
+        },
+        linear: {
+          nodes: [
+            { id: 'a', op: 'literal', inputs: [] },
+            { id: 'b', op: 'sum', inputs: ['a'] },
+            { id: 'c', op: 'report', inputs: ['b'] },
+          ],
+        },
+      };
+
+      // ======================================================================
+      // SAMPLE-ACCURATE 90.000S LYRIC & MUSICAL CUE MAP (charlessong_90s.mp3)
+      // ======================================================================
+      const LYRIC_CUES = [
+        { t0: 0.0, t1: 8.0, text: '♪ Sub-bass abyssal pad & glassy arpeggio — "What is life?"' },
+        { t0: 8.0, t1: 18.0, text: '♪ Synth bass pulse & clock-crystal chimes — Terminals typing QDL quines' },
+        { t0: 18.0, t1: 31.0, text: '♪ "Come with me, and you\'ll be, in a world of pure imagination…"' },
+        { t0: 31.0, t1: 44.0, text: '♪ "Take a look, and you\'ll see, into your imagination…"' },
+        { t0: 44.0, t1: 57.0, text: '♪ "We\'ll begin, with a spin, traveling in the world of my creation…"' },
+        { t0: 57.0, t1: 68.0, text: '♪ "If you want to view paradise… Want to change the world, there\'s nothing to it…"' },
+        { t0: 68.0, t1: 81.0, text: '♪ [MASSIVE SYNTHWAVE CLIMAX DROP] — Exponential pullback to 36 Quinelings!' },
+        { t0: 81.0, t1: 90.01, text: '♪ "Living there, you\'ll be free, if you truly wish to be…" — Life is what we make of it.' },
+      ];
+
+      // ======================================================================
+      // ANIMATOR'S MATHEMATICAL RENDERING BIBLE (EXPOSED GLOBALLY FOR ANIMATORS)
+      // ======================================================================
+      const QUINELING_MATH_BIBLE = {
+        version: '2.0.0',
+        title: 'Quinelings 2.0 — The Ouroboros Manifold: Animator Mathematical Rendering Bible',
+        globalLaws: {
+          quinticSmootherstep: 'S₂(τ) = 6τ⁵ - 15τ⁴ + 10τ³,  S₂\'(0)=S₂\'(1)=0,  S₂\'\'(0)=S₂\'\'(1)=0',
+          exponentialDamping: 'y(t + Δt) = y(t) + (x(t) - y(t)) · (1 - exp(-λ Δt)),  Δt ∈ [0.001, 0.05]',
+          aerialPerspective: 'α_depth(z) = exp(0.85 z) for z < 0;  1 + 0.25 z for z ≥ 0;  Filmic soft-knee: L / √(1 + 0.58 L²)',
+          calligraphicTaper: 'w(s, z) = w₀ · (0.56 + 0.64 d_norm) · (0.22 + 0.78 sin(π s)^0.6)',
+        },
+        families: [
+          {
+            id: 1,
+            mechanism: 'toroidal-weave',
+            title: 'Stereographic S³ → ℝ³ Hopf Fibration & Villarceau Linked Fibers',
+            equation: 'η = 0.24 + 0.46(0.5 + 0.5 cos(2πp + φ)),  ξ₁ = 2πu + a sin(2πu + φ),  ξ₂ = θ₀ + q·2πu + θ_hol\nX = (cos η cos ξ₁, cos η sin ξ₁, sin η cos ξ₂) / (1.35 - 0.55 sin η sin ξ₂)',
+            bounds: 'u ∈ [0,1], p ∈ [1..strands], Linking Number Lk(γᵢ, γⱼ) = +1, ||X||_S³ = 1 (Lean 4 proved)',
+          },
+          {
+            id: 2,
+            mechanism: 'lorenz-flow',
+            title: 'Biharmonic Lorenz–Halvorsen Strange Attractor & SO(3) Bishop Frame',
+            equation: 'dx/dt = σ(y - x) + ε sin(y),  dy/dt = x(ρ - z) - y + ε sin(z),  dz/dt = xy - βz + ε sin(x)\nRᵢ = cos θ N₁ + sin θ N₂,  Tᵢ · N₁,ᵢ = 0,  Tᵢ · N₂,ᵢ = 0 (zero Frenet flip)',
+            bounds: 'σ = 10, ρ = 28, β = 8/3, ε ∈ [0, 0.45], RK4 dt = 0.006, burn = 512, steps = 3072',
+          },
+          {
+            id: 3,
+            mechanism: 'clifford-flow',
+            title: 'Biharmonic Clifford Attractor & Vorticity-Sheet Jacobian Relief',
+            equation: 'x_{n+1} = sin(a y_n) + c cos(a x_n) + ε sin(2a y_n)\ny_{n+1} = sin(b x_n) + d cos(b y_n) + ε cos(2b x_n)\nz(x,y,φ) = 0.052 sin(x + y + φ) + 0.024 tanh(0.35 det DF(x,y))',
+            bounds: '|x_{n+1}| ≤ 1 + |c| + |ε|,  det DF = ab(cos(ay)cos(bx) - cd sin(ax)sin(by))',
+          },
+          {
+            id: 4,
+            mechanism: 'recursive-julia',
+            title: '3D Holomorphic Douady–Hubbard Potential & Milnor Distance Relief',
+            equation: 'z_{k+1} = z_k² + c(φ),  G_c(z) = 2⁻ⁿ log|z_n|,  d(z) = |z_n| log|z_n| / |z\'_n|\nz_relief(x,y,φ) = 0.075 tanh(0.8 G_c(z)) + 0.042 exp(-3 d(z)) cos(arg(z_n) - φ)',
+            bounds: 'Grid 72×72 over [-1.55, 1.55]², maxIter = 28, escape radius R = 4.0',
+          },
+          {
+            id: 5,
+            mechanism: 'recursive-affine',
+            title: 'Contractive IFS Rolled-Scroll Charts & Whitney Fold-Cusp Caustics',
+            equation: 'f_m(x) = x₀ + s_m R(θ_m) x,  s_m ∈ [0.35, 0.67],  ∑_{k=0}^d L s^k ≤ (100/33) L\nI_caustic = clamp(1 / √(|det J_proj| + 0.04), 0.15, 1.0)',
+            bounds: 'depth d = 5, rollTurns = 3, contractive ratio s ≤ 0.67 (Lean 4 proved)',
+          },
+          {
+            id: 6,
+            mechanism: 'logarithmic-mantle',
+            title: 'Logarithmic Spiral Mantle & Hofstadter Golden-Ratio π-Holonomy',
+            equation: 'r(u,v) = r₀ exp(b u) (1 + m cos(k v + φ)),  θ_hol(u,φ) = π u + 2π Φ⁻¹ u(1 - u) sin(φ)',
+            bounds: 'Φ⁻¹ = (√5 - 1)/2 ≈ 0.618034, non-orientable π half-twist closure at u = 1',
+          },
+          {
+            id: 7,
+            mechanism: 'pleated-braid',
+            title: 'Artin Braid Group B_n Generator Weaving & Strange-Loop Ouroboros Nerve',
+            equation: 'y_k(u,φ) = y_{k,0}(u) + A_pleat sin(π m u + σ_k φ),  Ouroboros: quote(0..⅓) → run(⅓..⅔) → apply(⅔..1)',
+            bounds: 'Soliton pulse: A_pulse(u,φ) = 1 + 0.45 sech²(8 · wrap(u - φ/2π))',
+          },
+          {
+            id: 8,
+            mechanism: 'phyllotaxis-fan',
+            title: 'Vogel Golden-Angle Phyllotaxis Spiral & CEK KdV Soliton Wave',
+            equation: 'r_k = c √k,  θ_k = k · 2π(1 - Φ⁻¹) ≈ k · 137.507764°\nA_soliton(u,φ) = ∑_m g_m sech²(9(u - u_m - 0.12 sin φ))',
+            bounds: 'Divergence angle 2π/Φ², soliton width κ = 9, bounded gain g_m ∈ [0, 1.65]',
+          },
+        ],
+        chimeras: [
+          {
+            mode: 'compose / mate',
+            title: 'C² Quintic Geodesic Seam Splice',
+            equation: 'λ(u) = S₂((u - u₀)/(u₁ - u₀)),  P(u) = (1 - λ)P_A(u) + λ P_B(u) + 4λ(1 - λ) H_bridge(u,φ)',
+          },
+          {
+            mode: 'symbiote / merge',
+            title: 'Bidirectional Strange-Attractor Cross-Modulation',
+            equation: 'P_symbiote(u,φ) = P_A(u, φ + κ ||P_B||) + κ (P_B(u,φ) × N_A(u,φ)),  κ ∈ [0.05, 0.45]',
+          },
+        ],
+        electronicOcean: {
+          benthicFloor: '6-Ring Concentric Sherlock CPU Wafer (R0..R5) with sub-bass hydrothermal RGB(b) plankton vents',
+          pelagicCurrent: 'Divergence-free curl-noise streamfunction u(x,y,t) = ∇ × ψ(x,y,t),  ∇ · u = 0',
+          epipelagicCanopy: 'Snell window (48.6° critical cone) + 43.2 Hz clock-wave interference caustics',
+        },
+      };
+      window.QUINELING_MATH_BIBLE = QUINELING_MATH_BIBLE;
+
+      function hexToRgb(hex) {
+        const v = parseInt(String(hex).replace('#', ''), 16);
+        return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+      }
+
+      function buildChromaPalette(graph, paletteName, neutral = '#eef2ec', strength = 0.60) {
+        const shape = {
+          design: {
+            chroma: { mode: 'categorical', source: 'role', palette: paletteName, neutral, strength },
+          },
+          nodes: graph.nodes,
+        };
+        return graph.nodes.map((_, idx) => {
+          try {
+            return hexToRgb(Chroma.colorFor(shape, idx));
+          } catch (_err) {
+            return [100, 116, 139];
+          }
+        });
+      }
+
+      const toroidalBody = WovenBody.compile(WovenBody.author(GRAPHS.terminal, 42), GRAPHS.terminal);
+      const baseRoute = WovenBody.author(GRAPHS.threadwing, 42);
+      const lorenzRec = {
+        ...baseRoute,
+        mechanism: 'lorenz-flow',
+        dynamics: {
+          system: 'lorenz',
+          method: 'rk4',
+          sigma: 10,
+          rho: 28,
+          beta: 8 / 3,
+          initial: [0.330938, 0.226438, 0.215456],
+          dt: 0.006,
+          burn: 512,
+          steps: 3072,
+          window: 384,
+        },
+      };
+      delete lorenzRec.embedding;
+      const lorenzBody = WovenBody.compile(lorenzRec, GRAPHS.threadwing);
+      const cliffordBody = WovenBody.compile(baseRoute, GRAPHS.threadwing);
+      const juliaBody = WovenBody.compile(WovenBody.author(GRAPHS.fork, 42), GRAPHS.fork);
+      const affineRec = {
+        ...WovenBody.author(GRAPHS.fork, 42),
+        mechanism: 'recursive-affine',
+        geometry: {
+          model: 'contractive-branch-charts',
+          chart: 'rolled-scroll',
+          rollTurns: 3,
+          depth: 5,
+          root: [0, 0.62],
+          length: 0.64,
+          width: 0.2,
+          angle: -Math.PI / 2,
+          motion: 0.2,
+          transforms: [
+            { scale: 0.55, angle: -0.7, attach: 0.8 },
+            { scale: 0.56, angle: 0.7, attach: 0.9 },
+          ],
+        },
+      };
+      const affineBody = WovenBody.compile(affineRec, GRAPHS.fork);
+      const mantleBody = WovenBody.compile(WovenBody.author(GRAPHS.tideglass, 42), GRAPHS.tideglass);
+      const braidBody = WovenBody.compile(WovenBody.author(GRAPHS.braidGraph, 42), GRAPHS.braidGraph);
+      const phylloBody = WovenBody.compile(WovenBody.author(GRAPHS.linear, 42), GRAPHS.linear);
+
+      const SPECIMEN_LIST = [
+        { key: 'toroidal', body: toroidalBody, palette: buildChromaPalette(GRAPHS.terminal, 'reef', '#eef4f1', 0.60) },
+        { key: 'lorenz', body: lorenzBody, palette: buildChromaPalette(GRAPHS.threadwing, 'ember', '#f3efe8', 0.58) },
+        { key: 'clifford', body: cliffordBody, palette: buildChromaPalette(GRAPHS.threadwing, 'signal', '#edf3f0', 0.58) },
+        { key: 'julia', body: juliaBody, palette: buildChromaPalette(GRAPHS.fork, 'reef', '#f0eef5', 0.60) },
+        { key: 'affine', body: affineBody, palette: buildChromaPalette(GRAPHS.fork, 'kelp', '#eef2eb', 0.58) },
+        { key: 'mantle', body: mantleBody, palette: buildChromaPalette(GRAPHS.tideglass, 'ember', '#f2efe8', 0.56) },
+        { key: 'braid', body: braidBody, palette: buildChromaPalette(GRAPHS.braidGraph, 'signal', '#eef3f2', 0.58) },
+        { key: 'phyllotaxis', body: phylloBody, palette: buildChromaPalette(GRAPHS.linear, 'kelp', '#eff3ec', 0.58) },
+      ];
+
+      // Pre-bake normalized 24-bucket phase rings for each of the 8 families so cross-manifold morphing
+      // and the 36-Quineling ocean run at a locked 60fps!
+      const PARTICLE_BUDGET = 2800;
+      const RING_BUCKETS = 24;
+      const familyRings = {};
+
+      function normalizePointsAndRidges(f, loopLine) {
+        const pts = f.points;
+        const count = pts.length / 4;
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, minZ = Infinity, maxZ = -Infinity;
+        for (let i = 0; i < count; i++) {
+          const b = i * 4;
+          const x = pts[b], y = pts[b + 1], z = pts[b + 2];
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+        }
+        const cx = (minX + maxX) * 0.5;
+        const cy = (minY + maxY) * 0.5;
+        const cz = (minZ + maxZ) * 0.5;
+        const span = Math.max(0.25, (maxX - minX) * 0.56, (maxY - minY) * 0.56);
+        const spanZ = Math.max(0.12, (maxZ - minZ) * 0.55);
+
+        const normPts = new Float32Array(count * 4);
+        for (let i = 0; i < count; i++) {
+          const b = i * 4;
+          normPts[b] = (pts[b] - cx) / span;
+          normPts[b + 1] = (pts[b + 1] - cy) / span;
+          normPts[b + 2] = ((pts[b + 2] - cz) / spanZ) * 0.36;
+          normPts[b + 3] = pts[b + 3];
+        }
+        const normRidges = (f.ridges || []).slice(0, 18).map((r, rIdx) => {
+          const rLine = r.line || [];
+          const midOwner = rLine.length ? rLine[rLine.length >> 1].owner : undefined;
+          return {
+            owner: r.owner ?? midOwner ?? rIdx,
+            line: rLine.map((p) => ({
+              x: (p.x - cx) / span,
+              y: (p.y - cy) / span,
+              z: (((p.z || 0) - cz) / spanZ) * 0.36,
+              alpha: p.alpha ?? 0.5,
+            })),
+          };
+        });
+        const normLoop = (loopLine || []).map((p) => ({
+          x: (p.x - cx) / span,
+          y: (p.y - cy) / span,
+          z: (((p.z || 0) - cz) / spanZ) * 0.36,
+          alpha: p.alpha ?? 0.68,
+          stage: p.stage || 'run',
+        }));
+        return { points: normPts, owners: f.owners, ridges: normRidges, loopLine: normLoop };
+      }
+
+      for (const spec of SPECIMEN_LIST) {
+        const buckets = new Array(RING_BUCKETS).fill(null);
+        // Warm bucket 0 and bucket 6 immediately; lazy-warm remaining buckets cleanly
+        buckets[0] = normalizePointsAndRidges(
+          WovenBody.frame(spec.body, 0, { budget: PARTICLE_BUDGET, crests: true }),
+          WovenBody.strangeLoop(spec.body, 0, { samples: 64 }).line
+        );
+        familyRings[spec.key] = {
+          spec,
+          buckets,
+          getSample(phase) {
+            const norm = ((phase % TAU) + TAU) % TAU;
+            const exact = (norm / TAU) * RING_BUCKETS;
+            const idx0 = Math.floor(exact) % RING_BUCKETS;
+            const idx1 = (idx0 + 1) % RING_BUCKETS;
+            const frac = smootherstep(exact - Math.floor(exact));
+            if (!buckets[idx0]) {
+              const phi0 = (idx0 / RING_BUCKETS) * TAU;
+              buckets[idx0] = normalizePointsAndRidges(
+                WovenBody.frame(spec.body, phi0, { budget: PARTICLE_BUDGET, crests: true }),
+                WovenBody.strangeLoop(spec.body, phi0, { samples: 64 }).line
+              );
+            }
+            if (!buckets[idx1]) {
+              const phi1 = (idx1 / RING_BUCKETS) * TAU;
+              buckets[idx1] = normalizePointsAndRidges(
+                WovenBody.frame(spec.body, phi1, { budget: PARTICLE_BUDGET, crests: true }),
+                WovenBody.strangeLoop(spec.body, phi1, { samples: 64 }).line
+              );
+            }
+            return { b0: buckets[idx0], b1: buckets[idx1], frac };
+          },
+        };
+      }
+
+      // ======================================================================
+      // 3 TERMINAL PANES & FALLING CODE VORTEX GLYPHS (SCENES 2 & 3)
+      // ======================================================================
+      const TERMINAL_PANES = [
+        {
+          title: 'tty0 · core.js // self-reproducing constructor',
+          cxFrac: 0.23,
+          cyFrac: 0.36,
+          tint: '#b6e8f2',
+          lines: [
+            'const Q = (prog) => [',
+            '  "apply",',
+            '  ["quote", prog],',
+            '  ["run", ["quote", prog]]',
+            '];',
+            'const quine = Q.makeTaskProgram(G, 1, design);',
+            'assert(Q.execute(quine).emitted[0] === Q.canon(quine));',
+            '// Fixed-point identity verified',
+          ],
+        },
+        {
+          title: 'tty1 · woven-body.js // differential manifold',
+          cxFrac: 0.50,
+          cyFrac: 0.32,
+          tint: '#f6e2b2',
+          lines: [
+            'function hopfFiber(u, v, phase) {',
+            '  const xi1 = TAU * u + asym * sin(u + phase);',
+            '  const xi2 = offset + twist * TAU * u + holonomy;',
+            '  const denom = 1.35 - 0.55 * sin(eta) * sin(xi2);',
+            '  return projectS3toR3(eta, xi1, xi2, denom);',
+            '}',
+            'const body = WovenBody.compile(record, graph);',
+            'const loop = WovenBody.strangeLoop(body, phase);',
+          ],
+        },
+        {
+          title: 'tty2 ·spec/lean/QDL/WovenBody.lean // proof',
+          cxFrac: 0.77,
+          cyFrac: 0.36,
+          tint: '#e4c4f0',
+          lines: [
+            'theorem hopf_s3_norm_sq_one (a t p : Real) :',
+            '  (cos a * cos t)^2 + (cos a * sin t)^2 +',
+            '  (sin a * cos p)^2 + (sin a * sin p)^2 = 1 := by',
+            '  nlinarith [sin_sq_add_cos_sq a]',
+            '',
+            'theorem quinticBlend_second_deriv_zero :',
+            '  deriv (deriv S2) 0 = 0 ∧ deriv (deriv S2) 1 = 0',
+            '// 14/14 Lean 4 theorems · 9/9 Quint traces',
+          ],
+        },
+      ];
+
+      // Precompute 2800 code vortex particles that originate on the 3 terminal panes
+      // and spiral through a Rankine hydrodynamic vortex into the Hopf Toroidal-Weave Quineling!
+      const VORTEX_PARTICLES = Array.from({ length: PARTICLE_BUDGET }, (_, i) => {
+        const paneIdx = i % 3;
+        const pane = TERMINAL_PANES[paneIdx];
+        const row = Math.floor(i / 3) % 8;
+        const col = Math.floor(i / 24) % 38;
+        const glyphChar = pane.lines[row]?.[col % (pane.lines[row].length || 1)] || 'λ';
+        const r0 = 0.18 + 0.65 * ((i * PHI_INV) % 1);
+        const theta0 = i * TAU * PHI_INV;
+        return {
+          paneIdx,
+          startXFrac: pane.cxFrac - 0.11 + (col / 38) * 0.22,
+          startYFrac: pane.cyFrac - 0.08 + (row / 8) * 0.16,
+          r0,
+          theta0,
+          glyph: glyphChar,
+          stage: i % 3 === 0 ? 'quote' : i % 3 === 1 ? 'run' : 'apply',
+        };
+      });
+
+      // ======================================================================
+      // 36 PELAGIC OCEAN QUINELINGS FOR SCENE 7 & 8 PAN-OUT
+      // ======================================================================
+      const OCEAN_COLONY = Array.from({ length: 36 }, (_, idx) => {
+        // Colony member 0 is ALWAYS the hero Quineling at the center (0, 0, 0)!
+        if (idx === 0) {
+          return {
+            specIdx: 0,
+            wx: 0,
+            wy: 0,
+            wz: 0,
+            scale: 1.0,
+            phaseOffset: 0,
+            speed: 1.0,
+          };
+        }
+        // Golden-angle Vogel spiral distribution in 3D pelagic space
+        const r = 1.35 * Math.sqrt(idx);
+        const angle = idx * Math.PI * (3 - Math.sqrt(5));
+        const wz = -0.85 + 1.7 * ((idx * PHI_INV) % 1);
+        return {
+          specIdx: idx % SPECIMEN_LIST.length,
+          wx: r * Math.cos(angle) * 1.35,
+          wy: r * Math.sin(angle) * 0.86,
+          wz,
+          scale: 0.52 + 0.34 * ((idx * 0.381966) % 1),
+          phaseOffset: idx * TAU * PHI_INV,
+          speed: 0.82 + 0.36 * ((idx % 5) / 4),
+        };
+      });
+
+      const PLANKTON_MOTES = Array.from({ length: 64 }, (_, i) => ({
+        u: (i * PHI_INV) % 1,
+        v: (i * 0.381966 + 0.13) % 1,
+        z: -0.9 + 1.8 * ((i * 0.754877) % 1),
+        speed: 0.0035 + 0.005 * ((i % 7) / 7),
+        phaseOffset: i * 1.3,
+      }));
+
+      // ======================================================================
+      // SPRITE CACHE & 32-BIN Z-SORTED SPECIMEN RENDERER
+      // ======================================================================
+      const spriteCache = new Map();
+      function getRadialSprite(r, g, b, tier = 'mid') {
+        const key = `${r},${g},${b},${tier}`;
+        if (spriteCache.has(key)) return spriteCache.get(key);
+        const size = tier === 'rear' ? 14 : tier === 'fore' ? 10 : 12;
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const x = c.getContext('2d');
+        const half = size * 0.5;
+        const grad = x.createRadialGradient(half, half, 0, half, half, half);
+        if (tier === 'fore') {
+          grad.addColorStop(0, 'rgba(255, 248, 236, 0.94)');
+          grad.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, 0.84)`);
+          grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        } else {
+          grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.80)`);
+          grad.addColorStop(0.45, `rgba(${r}, ${g}, ${b}, 0.28)`);
+          grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        }
+        x.fillStyle = grad;
+        x.fillRect(0, 0, size, size);
+        spriteCache.set(key, c);
+        return c;
+      }
+
+      function aerialColor(baseRgb, zNorm) {
+        let r = baseRgb[0], g = baseRgb[1], b = baseRgb[2];
+        if (zNorm < 0) {
+          const ind = Math.min(0.45, -zNorm * 0.36);
+          r = r * (1 - ind) + 14 * ind;
+          g = g * (1 - ind) + 24 * ind;
+          b = b * (1 - ind) + 56 * ind;
+        } else {
+          const pearl = Math.min(0.42, Math.pow(zNorm, 1.35) * 0.28);
+          r = r * (1 - pearl) + 255 * pearl;
+          g = g * (1 - pearl) + 247 * pearl;
+          b = b * (1 - pearl) + 232 * pearl;
+        }
+        return [Math.round(clamp(r, 0, 255)), Math.round(clamp(g, 0, 255)), Math.round(clamp(b, 0, 255))];
+      }
+
+      const Z_BINS = 24;
+      const pointBins = Array.from({ length: Z_BINS }, () => []);
+      const ridgeBins = Array.from({ length: Z_BINS }, () => []);
+
+      function drawMorphedQuineling(ctx, keyA, keyB, morphT, phase, cx, cy, radiusPx, tiltX, tiltY, opacity = 1.0, detailLevel = 1.0) {
+        if (opacity <= 0.01 || radiusPx < 4) return;
+        const ringA = familyRings[keyA];
+        const ringB = familyRings[keyB || keyA];
+        const sA = ringA.getSample(phase);
+        const sB = keyB && keyB !== keyA ? ringB.getSample(phase) : sA;
+        const mFrac = smootherstep(morphT);
+        const invM = 1 - mFrac;
+
+        const palA = ringA.spec.palette;
+        const palB = ringB.spec.palette;
+        const nPalA = palA.length;
+        const nPalB = palB.length;
+
+        const cosY = Math.cos(tiltX), sinY = Math.sin(tiltX);
+        const cosX = Math.cos(tiltY), sinX = Math.sin(tiltY);
+        const breath = 1.0 + 0.015 * (Math.sin(phase) + 0.18 * Math.sin(2 * phase - 0.65));
+        const effScale = radiusPx * breath;
+
+        for (let b = 0; b < Z_BINS; b++) {
+          pointBins[b].length = 0;
+          ridgeBins[b].length = 0;
+        }
+
+        const stride = detailLevel < 0.45 ? 3 : detailLevel < 0.75 ? 2 : 1;
+        const ptsA0 = sA.b0.points, ptsA1 = sA.b1.points, fA = sA.frac, invFA = 1 - fA;
+        const ptsB0 = sB.b0.points, ptsB1 = sB.b1.points, fB = sB.frac, invFB = 1 - fB;
+        const ownersA = sA.b0.owners;
+        const count = ptsA0.length / 4;
+
+        // Swirl tangential displacement during cross-manifold morphing
+        const swirlAmp = 4 * mFrac * invM * 0.14;
+
+        for (let i = 0; i < count; i += stride) {
+          const b = i * 4;
+          const ax = ptsA0[b] * invFA + ptsA1[b] * fA;
+          const ay = ptsA0[b + 1] * invFA + ptsA1[b + 1] * fA;
+          const az = ptsA0[b + 2] * invFA + ptsA1[b + 2] * fA;
+          const aa = ptsA0[b + 3] * invFA + ptsA1[b + 3] * fA;
+
+          const bx = ptsB0[b] * invFB + ptsB1[b] * fB;
+          const by = ptsB0[b + 1] * invFB + ptsB1[b + 1] * fB;
+          const bz = ptsB0[b + 2] * invFB + ptsB1[b + 2] * fB;
+          const ba = ptsB0[b + 3] * invFB + ptsB1[b + 3] * fB;
+
+          let x = ax * invM + bx * mFrac;
+          let y = ay * invM + by * mFrac;
+          const z = az * invM + bz * mFrac;
+          if (swirlAmp > 0.001) {
+            const r = Math.hypot(x, y);
+            const sw = swirlAmp / (0.3 + r);
+            const nx = x * Math.cos(sw) - y * Math.sin(sw);
+            const ny = x * Math.sin(sw) + y * Math.cos(sw);
+            x = nx;
+            y = ny;
+          }
+
+          const rx = x * cosY + z * sinY;
+          const rz1 = -x * sinY + z * cosY;
+          const ry = y * cosX - rz1 * sinX;
+          const rz = y * sinX + rz1 * cosX;
+
+          const zNorm = clamp(rz * 1.9, -1, 1);
+          const bin = clamp(Math.floor(((zNorm + 1) * 0.5) * Z_BINS), 0, Z_BINS - 1);
+          const rawA = aa * invM + ba * mFrac;
+          const att = zNorm < 0 ? Math.exp(0.85 * zNorm) : 1 + 0.25 * zNorm;
+          const linA = (1 - Math.exp(-2.2 * rawA)) * att * opacity;
+          const filmicA = linA / Math.sqrt(1 + 0.58 * linA * linA);
+
+          const cA = palA[ownersA[i] % nPalA];
+          const cB = palB[ownersA[i] % nPalB];
+          const baseCol = [
+            cA[0] * invM + cB[0] * mFrac,
+            cA[1] * invM + cB[1] * mFrac,
+            cA[2] * invM + cB[2] * mFrac,
+          ];
+
+          pointBins[bin].push({
+            sx: cx + rx * effScale,
+            sy: cy + ry * effScale,
+            zNorm,
+            alpha: clamp(filmicA, 0.02, 0.88),
+            baseCol,
+          });
+        }
+
+        // Ridges on primary & secondary morph targets
+        if (detailLevel >= 0.4) {
+          const activeRidges = mFrac < 0.5 ? sA.b0.ridges : sB.b0.ridges;
+          const activePal = mFrac < 0.5 ? palA : palB;
+          for (let rIdx = 0; rIdx < activeRidges.length; rIdx++) {
+            const rObj = activeRidges[rIdx];
+            const line = rObj.line;
+            if (!line || line.length < 2) continue;
+            const baseCol = activePal[(rObj.owner || 0) % activePal.length];
+            const nL = line.length;
+            let chunk = null;
+            for (let j = 0; j < nL; j++) {
+              const p = line[j];
+              const rx = p.x * cosY + p.z * sinY;
+              const rz1 = -p.x * sinY + p.z * cosY;
+              const ry = p.y * cosX - rz1 * sinX;
+              const rz = p.y * sinX + rz1 * cosX;
+              const sx = cx + rx * effScale;
+              const sy = cy + ry * effScale;
+              const zNorm = clamp(rz * 1.9, -1, 1);
+              const bin = clamp(Math.floor(((zNorm + 1) * 0.5) * Z_BINS), 0, Z_BINS - 1);
+              const sArc = j / Math.max(1, nL - 1);
+              const taper = 0.22 + 0.78 * Math.pow(Math.max(0, Math.sin(Math.PI * sArc)), 0.6);
+              const ptA = p.alpha * taper * opacity;
+              if (ptA < 0.015) {
+                chunk = null;
+                continue;
+              }
+              if (
+                !chunk ||
+                chunk.bin !== bin ||
+                chunk.pts.length >= 14 ||
+                Math.hypot(sx - chunk.pts[chunk.pts.length - 1].sx, sy - chunk.pts[chunk.pts.length - 1].sy) >
+                  radiusPx * 0.45
+              ) {
+                chunk = { bin, zNorm, baseCol, alpha: ptA, taper, pts: [{ sx, sy }] };
+                ridgeBins[bin].push(chunk);
+              } else {
+                chunk.pts.push({ sx, sy });
+              }
+            }
+          }
+        }
+
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        const dScale = clamp(radiusPx / 260, 0.35, 1.35);
+
+        for (let bin = 0; bin < Z_BINS; bin++) {
+          const dNorm = bin / (Z_BINS - 1);
+          const tier = bin < 8 ? 'rear' : bin > 16 ? 'fore' : 'mid';
+          const spRad = (tier === 'rear' ? 5.6 : tier === 'fore' ? 3.8 : 4.6) * dScale;
+
+          ctx.globalCompositeOperation = 'lighter';
+          const pList = pointBins[bin];
+          for (let i = 0; i < pList.length; i++) {
+            const p = pList[i];
+            const rgb = aerialColor(p.baseCol, p.zNorm);
+            const sp = getRadialSprite(rgb[0], rgb[1], rgb[2], tier);
+            ctx.globalAlpha = p.alpha * 0.48;
+            ctx.drawImage(sp, p.sx - spRad, p.sy - spRad, spRad * 2, spRad * 2);
+          }
+
+          const rList = ridgeBins[bin];
+          for (let i = 0; i < rList.length; i++) {
+            const ch = rList[i];
+            if (ch.pts.length < 2) continue;
+            const rgb = aerialColor(ch.baseCol, ch.zNorm);
+            const wScale = (0.56 + 0.64 * dNorm) * ch.taper * dScale;
+            ctx.beginPath();
+            ctx.moveTo(ch.pts[0].sx, ch.pts[0].sy);
+            for (let k = 1; k < ch.pts.length; k++) ctx.lineTo(ch.pts[k].sx, ch.pts[k].sy);
+
+            ctx.strokeStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+            ctx.lineWidth = 2.1 * wScale;
+            ctx.globalAlpha = ch.alpha * 0.18;
+            ctx.stroke();
+
+            ctx.lineWidth = 0.95 * wScale;
+            ctx.globalAlpha = ch.alpha * 0.54;
+            ctx.stroke();
+
+            if (bin >= 12) {
+              ctx.strokeStyle = '#fff7e8';
+              ctx.lineWidth = 0.42 * wScale;
+              ctx.globalAlpha = ch.alpha * 0.28 * dNorm;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Whisper-fine Ouroboros nerve on hero specimens
+        if (detailLevel >= 0.75 && sA.b0.loopLine && sA.b0.loopLine.length > 1) {
+          const loopLine = mFrac < 0.5 ? sA.b0.loopLine : sB.b0.loopLine;
+          const activePal = mFrac < 0.5 ? palA : palB;
+          const stageTints = {
+            quote: [182, 232, 242],
+            run: [246, 226, 178],
+            apply: [228, 196, 240],
+          };
+          ctx.globalCompositeOperation = 'lighter';
+          for (let i = 0; i < loopLine.length - 1; i++) {
+            const p0 = loopLine[i], p1 = loopLine[i + 1];
+            const rx0 = p0.x * cosY + p0.z * sinY, rz0 = -p0.x * sinY + p0.z * cosY;
+            const ry0 = p0.y * cosX - rz0 * sinX;
+            const rx1 = p1.x * cosY + p1.z * sinY, rz1 = -p1.x * sinY + p1.z * cosY;
+            const ry1 = p1.y * cosX - rz1 * sinX;
+            const sx0 = cx + rx0 * effScale, sy0 = cy + ry0 * effScale;
+            const sx1 = cx + rx1 * effScale, sy1 = cy + ry1 * effScale;
+            if (Math.hypot(sx1 - sx0, sy1 - sy0) > radiusPx * 0.55) continue;
+
+            const tint = stageTints[p0.stage] || stageTints.run;
+            const sc = activePal[i % activePal.length];
+            const harm = [
+              Math.round(sc[0] * 0.66 + tint[0] * 0.34),
+              Math.round(sc[1] * 0.66 + tint[1] * 0.34),
+              Math.round(sc[2] * 0.66 + tint[2] * 0.34),
+            ];
+            ctx.beginPath();
+            ctx.moveTo(sx0, sy0);
+            ctx.lineTo(sx1, sy1);
+            ctx.strokeStyle = `rgb(${harm[0]}, ${harm[1]}, ${harm[2]})`;
+            ctx.lineWidth = 2.6 * dScale;
+            ctx.globalAlpha = p0.alpha * opacity * 0.07;
+            ctx.stroke();
+            ctx.lineWidth = 0.95 * dScale;
+            ctx.globalAlpha = p0.alpha * opacity * 0.35;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ======================================================================
+      // DIGITAL ELECTRONIC OCEAN ENVIRONMENT RENDERER
+      // 1. Benthic Layer: 6-Ring Concentric Hydrothermal CPU Lithography Floor + RGB(b) Plumes
+      // 2. Pelagic Layer: Divergence-Free (u = ∇ × ψ) Optical-Fiber Kelp Strands
+      // 3. Epipelagic Layer: Snell Window & 43.2 Hz Clock-Wave Interference Caustics
+      // ======================================================================
+      function drawElectronicOcean(ctx, W, H, tSec, phase, audioBands, dpr) {
+        const subBass = audioBands.subBass;
+        const vocalMid = audioBands.vocalMid;
+        const highSynth = audioBands.highSynth;
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+
+        // 1. Epipelagic Canopy: Snell's Window & 43.2 Hz Clock-Wave Interference Caustics (Top)
+        const snellCx = W * 0.5 + Math.sin(tSec * 0.22) * W * 0.03;
+        const snellCy = H * 0.04;
+        const snellRx = W * (0.42 + 0.04 * highSynth);
+        const snellRy = H * 0.22;
+        const canopyGrad = ctx.createRadialGradient(snellCx, snellCy, 0, snellCx, snellCy, snellRx);
+        canopyGrad.addColorStop(0, `rgba(96, 195, 235, ${0.11 + 0.08 * highSynth})`);
+        canopyGrad.addColorStop(0.5, `rgba(28, 78, 128, ${0.06 + 0.04 * vocalMid})`);
+        canopyGrad.addColorStop(1, 'rgba(7, 10, 14, 0)');
+        ctx.fillStyle = canopyGrad;
+        ctx.fillRect(0, 0, W, H * 0.36);
+
+        // Refractive clock-wave interference ribbons across the upper canopy
+        ctx.lineWidth = 1.15 * dpr;
+        for (let c = 0; c < 5; c++) {
+          const yBase = H * (0.055 + c * 0.032);
+          ctx.beginPath();
+          for (let s = 0; s <= 24; s++) {
+            const u = s / 24;
+            const x = W * (0.08 + 0.84 * u);
+            const wave =
+              Math.sin(u * TAU * 2.5 + tSec * 1.1 + c * 0.9) * 8 * dpr +
+              Math.cos(u * TAU * 4.0 - tSec * 0.75 + c) * 4 * dpr * (1 + highSynth);
+            if (s === 0) ctx.moveTo(x, yBase + wave);
+            else ctx.lineTo(x, yBase + wave);
+          }
+          ctx.strokeStyle = c % 2 === 0 ? '#7dd3fc' : '#a8e0c6';
+          ctx.globalAlpha = (0.055 - c * 0.008) * (1 + 0.65 * highSynth);
+          ctx.stroke();
+        }
+
+        // 2. Benthic Layer: 6-Ring Concentric Hydrothermal CPU Lithography Floor (Bottom)
+        const floorCx = W * 0.5;
+        const floorCy = H * 0.93;
+        const maxRingRx = Math.min(W * 0.44, 680 * dpr);
+        const ringColors = ['#f6e2b2', '#7dd3fc', '#a8e0c6', '#e4c4f0', '#38bdf8', '#f59e0b'];
+        for (let rIdx = 0; rIdx < 6; rIdx++) {
+          const frac = (rIdx + 1) / 6;
+          const rx = maxRingRx * frac * (1 + 0.018 * subBass * Math.sin(phase + rIdx));
+          const ry = rx * 0.165;
+          ctx.beginPath();
+          ctx.ellipse(floorCx, floorCy, rx, ry, 0, 0, TAU);
+          ctx.strokeStyle = ringColors[rIdx];
+          ctx.lineWidth = (rIdx === 0 || rIdx === 5 ? 1.5 : 1.0) * dpr;
+          ctx.globalAlpha = (0.08 + 0.09 * subBass) * (1 - frac * 0.35);
+          ctx.stroke();
+
+          // Radial lithography bus traces & hydrothermal vents along each CPU ring
+          const spokes = 8 + rIdx * 2;
+          for (let k = 0; k < spokes; k++) {
+            const ang = (k / spokes) * TAU + tSec * 0.08 * (rIdx % 2 === 0 ? 1 : -1);
+            const vx = floorCx + Math.cos(ang) * rx;
+            const vy = floorCy + Math.sin(ang) * ry;
+            ctx.fillStyle = ringColors[rIdx];
+            ctx.globalAlpha = 0.12 + 0.16 * subBass;
+            ctx.fillRect(vx - 1.2 * dpr, vy - 1.2 * dpr, 2.4 * dpr, 2.4 * dpr);
+          }
+        }
+
+        // 3. Pelagic Layer: Swaying Divergence-Free (u = ∇ × ψ) Optical-Fiber Kelp along Left & Right Margins
+        const kelpCount = 6;
+        for (let k = 0; k < kelpCount; k++) {
+          const isLeft = k < 3;
+          const sideIdx = k % 3;
+          const baseX = isLeft ? W * (0.045 + sideIdx * 0.032) : W * (0.955 - sideIdx * 0.032);
+          const baseY = H * 0.94;
+          const kelpH = H * (0.38 + 0.08 * sideIdx);
+          ctx.beginPath();
+          ctx.moveTo(baseX, baseY);
+          for (let seg = 1; seg <= 14; seg++) {
+            const s = seg / 14;
+            const curlX =
+              Math.sin(s * 3.8 - tSec * 0.85 + k * 1.1) * (14 + 10 * vocalMid) * s * dpr +
+              Math.cos(s * 6.2 + tSec * 0.45) * 4 * s * dpr;
+            const sx = baseX + curlX;
+            const sy = baseY - s * kelpH;
+            ctx.lineTo(sx, sy);
+          }
+          ctx.strokeStyle = k % 2 === 0 ? '#5eead4' : '#7dd3fc';
+          ctx.lineWidth = 1.2 * dpr;
+          ctx.globalAlpha = 0.065 + 0.05 * vocalMid;
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      // ======================================================================
+      // SCENE 2 & 3 RENDERER: 3D TERMINALS TYPING CODE -> HYDRODYNAMIC VORTEX
+      // ======================================================================
+      function drawTerminalsAndVortex(ctx, W, H, frame, phase, dpr) {
+        const typingT = clamp((frame - 440) / 560, 0, 1);
+        const vortexT = clamp((frame - 1080) / 760, 0, 1);
+        const termFade = 1 - smootherstep(clamp((vortexT - 0.15) / 0.55, 0, 1));
+        const heroRadius = Math.min(W, H) * 0.31;
+        const tiltX = 0.18 * Math.sin(phase * 0.5);
+        const tiltY = -0.09;
+
+        // During Scene 2 (frames 480..1080), render a luminous nascent blueprint Quineling below the terminals
+        // so the organism's mathematical geometry is visibly taking shape as the constructor code is typed!
+        if (frame < 1080) {
+          drawMorphedQuineling(
+            ctx,
+            'toroidal',
+            'lorenz',
+            typingT * 0.45,
+            phase,
+            W * 0.5,
+            H * 0.58,
+            heroRadius * (0.72 + 0.12 * typingT),
+            tiltX,
+            tiltY,
+            0.66 + 0.24 * typingT,
+            0.9
+          );
+        }
+
+        // 1. Draw the 3 translucent terminal panes while termFade > 0.01
+        if (termFade > 0.01) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          const paneW = Math.min(W * 0.26, 390 * dpr);
+          const paneH = Math.min(H * 0.28, 220 * dpr);
+
+          TERMINAL_PANES.forEach((pane, pIdx) => {
+            const px = W * pane.cxFrac - paneW * 0.5;
+            const py = H * pane.cyFrac - paneH * 0.5 + Math.sin(phase * 0.8 + pIdx) * 6 * dpr;
+
+            ctx.globalAlpha = termFade * 0.86;
+            ctx.fillStyle = 'rgba(9, 14, 22, 0.84)';
+            ctx.strokeStyle = pane.tint;
+            ctx.lineWidth = 1.2 * dpr;
+            ctx.beginPath();
+            ctx.roundRect(px, py, paneW, paneH, 6 * dpr);
+            ctx.fill();
+            ctx.globalAlpha = termFade * 0.42;
+            ctx.stroke();
+
+            // Terminal header bar
+            ctx.globalAlpha = termFade * 0.22;
+            ctx.fillStyle = pane.tint;
+            ctx.fillRect(px, py, paneW, 24 * dpr);
+
+            ctx.globalAlpha = termFade * 0.92;
+            ctx.fillStyle = pane.tint;
+            ctx.font = `${Math.round(10.5 * dpr)}px "JetBrains Mono", monospace`;
+            ctx.fillText(pane.title, px + 12 * dpr, py + 16 * dpr);
+
+            // Typed code lines (always show at least 35% of code even at Scene 2 start frame)
+            const totalChars = pane.lines.reduce((acc, l) => acc + l.length, 0);
+            const effTyping = Math.max(0.35, clamp(typingT * 1.15 - pIdx * 0.1, 0, 1));
+            let charBudget = Math.floor(totalChars * effTyping);
+            const glyphFallFade = 1 - smootherstep(clamp(vortexT / 0.38, 0, 1));
+
+            ctx.font = `${Math.round(11 * dpr)}px "JetBrains Mono", monospace`;
+            for (let r = 0; r < pane.lines.length; r++) {
+              if (charBudget <= 0) break;
+              const lineStr = pane.lines[r];
+              const sliceStr = lineStr.slice(0, charBudget);
+              charBudget -= sliceStr.length;
+
+              ctx.globalAlpha = termFade * glyphFallFade * 0.92;
+              ctx.fillStyle = r === pane.lines.length - 1 ? '#a8e0c6' : '#dce8e2';
+              ctx.fillText(sliceStr, px + 14 * dpr, py + (44 + r * 20) * dpr);
+            }
+          });
+          ctx.restore();
+        }
+
+        // 2. During Scene 3 (frame >= 1080), animate the falling code glyphs swirling into the Rankine vortex
+        // and coalescing smoothly into the Hopf Toroidal-Weave Quineling!
+        if (frame >= 1080) {
+          const effVortexT = Math.max(0.14, vortexT);
+          const hopfSample = familyRings.toroidal.getSample(phase);
+          const pts0 = hopfSample.b0.points;
+          const pts1 = hopfSample.b1.points;
+          const frac = hopfSample.frac, invF = 1 - frac;
+          const pal = familyRings.toroidal.spec.palette;
+          const owners = hopfSample.b0.owners;
+
+          const cx = W * 0.5;
+          const cy = H * 0.51;
+          const targetRadius = heroRadius;
+
+          const fallPhase = smootherstep(clamp(effVortexT / 0.45, 0, 1));
+          const coalescePhase = smootherstep(clamp((effVortexT - 0.22) / 0.62, 0, 1));
+          const glyphAlpha = (1 - coalescePhase * 0.85) * smootherstep(clamp(effVortexT / 0.12, 0, 1));
+
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.font = `${Math.round(10.5 * dpr)}px "JetBrains Mono", monospace`;
+
+          const cosY = Math.cos(tiltX);
+          const sinY = Math.sin(tiltX);
+
+          for (let i = 0; i < PARTICLE_BUDGET; i += 2) {
+            const vp = VORTEX_PARTICLES[i];
+            const b = i * 4;
+
+            const sx0 = vp.startXFrac * W;
+            const sy0 = vp.startYFrac * H + Math.pow(fallPhase, 1.6) * H * 0.18;
+
+            const rVort = vp.r0 * (1 - 0.62 * coalescePhase) * targetRadius * 1.35;
+            const omega = 5.2 / (0.18 + vp.r0 * vp.r0);
+            const thetaVort = vp.theta0 + effVortexT * omega * 2.2;
+            const vx = cx + rVort * Math.cos(thetaVort);
+            const vy = cy + rVort * Math.sin(thetaVort) * 0.72;
+
+            const hx = pts0[b] * invF + pts1[b] * frac;
+            const hy = pts0[b + 1] * invF + pts1[b + 1] * frac;
+            const hz = pts0[b + 2] * invF + pts1[b + 2] * frac;
+            const rx = hx * cosY + hz * sinY;
+            const tx = cx + rx * targetRadius;
+            const ty = cy + hy * targetRadius;
+
+            const midX = lerp(sx0, vx, fallPhase);
+            const midY = lerp(sy0, vy, fallPhase);
+            const fx = lerp(midX, tx, coalescePhase);
+            const fy = lerp(midY, ty, coalescePhase);
+
+            const col = pal[owners[i] % pal.length];
+            if (glyphAlpha > 0.04 && i % 6 === 0) {
+              ctx.globalAlpha = glyphAlpha * 0.68;
+              ctx.fillStyle = `rgb(${col[0]}, ${col[1]}, ${col[2]})`;
+              ctx.fillText(vp.glyph, fx, fy);
+            } else {
+              const sp = getRadialSprite(col[0], col[1], col[2], 'mid');
+              const rad = (4.2 - 1.2 * coalescePhase) * dpr;
+              ctx.globalAlpha = 0.24 + 0.34 * coalescePhase;
+              ctx.drawImage(sp, fx - rad, fy - rad, rad * 2, rad * 2);
+            }
+          }
+          ctx.restore();
+
+          // Always render the nascent Hopf Quineling core at the eye of the vortex so Scene 3 is luminous from frame 1080
+          drawMorphedQuineling(
+            ctx,
+            'toroidal',
+            'toroidal',
+            0,
+            phase,
+            cx,
+            cy,
+            targetRadius * (0.72 + 0.28 * coalescePhase),
+            tiltX,
+            tiltY,
+            0.52 + 0.48 * coalescePhase,
+            1.0
+          );
+        }
+      }
+
+      // ======================================================================
+      // KINETIC TYPOGRAPHY OVERLAY (SPRING-DAMPED SERIF & FORMULA CAPTIONS)
+      // ======================================================================
+      function drawKineticTypography(ctx, W, H, scene, localT, dpr) {
+        const enter = 0.45 + 0.55 * smootherstep(clamp(localT / 0.14, 0, 1));
+        const exit = 0.45 + 0.55 * (1 - smootherstep(clamp((localT - 0.88) / 0.12, 0, 1)));
+        const alpha = enter * exit;
+        if (alpha <= 0.01) return;
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.textAlign = 'center';
+
+        if (scene.id === 1 || scene.id === 8) {
+          const yLift = (1 - enter) * 14 * dpr;
+          if (scene.id === 8) {
+            const scrim = ctx.createRadialGradient(W * 0.5, H * 0.46, 0, W * 0.5, H * 0.46, W * 0.35);
+            scrim.addColorStop(0, `rgba(7, 10, 14, ${0.72 * alpha})`);
+            scrim.addColorStop(1, 'rgba(7, 10, 14, 0)');
+            ctx.fillStyle = scrim;
+            ctx.fillRect(0, 0, W, H);
+          }
+
+          ctx.globalAlpha = alpha * 0.96;
+          ctx.fillStyle = '#f2f6f3';
+          ctx.font = `400 ${Math.round(clamp(W * 0.042, 32, 64))}px Georgia, "Iowan Old Style", serif`;
+          ctx.fillText(scene.headline, W * 0.5, H * 0.45 + yLift);
+
+          ctx.globalAlpha = alpha * 0.78;
+          ctx.fillStyle = '#9cb2a8';
+          ctx.font = `400 ${Math.round(clamp(W * 0.013, 14, 20))}px "Inter", sans-serif`;
+          ctx.fillText(scene.subcaption, W * 0.5, H * 0.51 + yLift);
+
+          ctx.globalAlpha = alpha * 0.66;
+          ctx.fillStyle = '#b6e8f2';
+          ctx.font = `${Math.round(clamp(W * 0.0105, 11, 15))}px "JetBrains Mono", monospace`;
+          ctx.fillText(scene.formula, W * 0.5, H * 0.555 + yLift);
+        } else {
+          const baseY = H - 148 * dpr;
+          ctx.globalAlpha = alpha * 0.94;
+          ctx.fillStyle = '#eef3ef';
+          ctx.font = `400 ${Math.round(clamp(W * 0.018, 18, 27))}px Georgia, "Iowan Old Style", serif`;
+          ctx.fillText(scene.headline, W * 0.5, baseY);
+
+          ctx.globalAlpha = alpha * 0.76;
+          ctx.fillStyle = '#95aa9f';
+          ctx.font = `400 ${Math.round(clamp(W * 0.0105, 12, 15))}px "Inter", sans-serif`;
+          ctx.fillText(scene.subcaption, W * 0.5, baseY + 23 * dpr);
+
+          ctx.globalAlpha = alpha * 0.68;
+          ctx.fillStyle = '#b6e8f2';
+          ctx.font = `${Math.round(clamp(W * 0.0095, 11, 13.5))}px "JetBrains Mono", monospace`;
+          ctx.fillText(scene.formula, W * 0.5, baseY + 43 * dpr);
+        }
+        ctx.restore();
+      }
+
+      // ======================================================================
+      // WEB AUDIO API SOUNDTRACK SYNCHRONIZER (charlessong_90s.mp3)
+      // ======================================================================
+      const masterAudio = document.getElementById('masterAudio');
+      const toggleAudioBtn = document.getElementById('toggleAudioBtn');
+      let audioEnabled = true;
+      let audioCtx = null;
+      let analyserNode = null;
+      let mediaStreamDest = null;
+      let freqData = null;
+
+      function ensureAudioGraph() {
+        if (audioCtx) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          audioCtx = new Ctx();
+          const source = audioCtx.createMediaElementSource(masterAudio);
+          analyserNode = audioCtx.createAnalyser();
+          analyserNode.fftSize = 256;
+          analyserNode.smoothingTimeConstant = 0.82;
+          freqData = new Uint8Array(analyserNode.frequencyBinCount);
+          mediaStreamDest = audioCtx.createMediaStreamDestination();
+          source.connect(analyserNode);
+          analyserNode.connect(audioCtx.destination);
+          analyserNode.connect(mediaStreamDest);
+        } catch (_err) {
+          // Audio graph already connected or unsupported
+        }
+      }
+
+      function syncAudioPlayback(forceSeek = false) {
+        if (!masterAudio) return;
+        const targetSec = clamp(currentFrame / FPS, 0, 89.95);
+        masterAudio.playbackRate = clamp(playbackSpeed, 0.25, 4.0);
+        if (!audioEnabled || !playing) {
+          if (!masterAudio.paused) masterAudio.pause();
+          if (forceSeek && Math.abs(masterAudio.currentTime - targetSec) > 0.05) {
+            try {
+              masterAudio.currentTime = targetSec;
+            } catch (_e) {}
+          }
+          return;
+        }
+        if (forceSeek || Math.abs(masterAudio.currentTime - targetSec) > 0.28) {
+          try {
+            masterAudio.currentTime = targetSec;
+          } catch (_e) {}
+        }
+        if (masterAudio.paused) {
+          ensureAudioGraph();
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+          }
+          masterAudio.play().catch(() => {});
+        }
+      }
+
+      // Unlock audio automatically on first user gesture anywhere in the studio
+      ['pointerdown', 'keydown'].forEach((evName) => {
+        window.addEventListener(
+          evName,
+          () => {
+            if (audioEnabled && playing) syncAudioPlayback(false);
+          },
+          { passive: true }
+        );
+      });
+
+      toggleAudioBtn.addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        toggleAudioBtn.classList.toggle('active', audioEnabled);
+        toggleAudioBtn.textContent = audioEnabled ? '🔊 Soundtrack (90s)' : '🔇 Soundtrack Muted';
+        syncAudioPlayback(true);
+      });
+
+      // Compute 3-band reactive audio envelope (blends real FFT with the exact analytical envelope of charlessong_90s.mp3)
+      function getAudioBands(tSec) {
+        // Analytical musical envelope of charlessong_90s.mp3 (98 BPM = 1.633 Hz beat pulse + 69.25s climax drop)
+        const beatPhase = tSec * (98 / 60) * TAU;
+        const pulse = 0.5 + 0.5 * Math.sin(beatPhase);
+        const isClimax = tSec >= 68.0 && tSec <= 81.5 ? 1.0 : tSec >= 44.0 && tSec < 68.0 ? 0.65 : 0.35;
+        let subBass = clamp(0.28 + 0.42 * isClimax + 0.26 * Math.pow(pulse, 2), 0, 1);
+        let vocalMid = clamp(0.32 + 0.38 * Math.sin(tSec * 1.7 + 0.6) * 0.5 + 0.25 * isClimax, 0, 1);
+        let highSynth = clamp(0.25 + 0.48 * isClimax + 0.22 * Math.cos(beatPhase * 2), 0, 1);
+
+        if (analyserNode && freqData && !masterAudio.paused) {
+          analyserNode.getByteFrequencyData(freqData);
+          let bSum = 0, mSum = 0, hSum = 0;
+          for (let i = 1; i <= 5; i++) bSum += freqData[i];
+          for (let i = 8; i <= 28; i++) mSum += freqData[i];
+          for (let i = 32; i <= 80; i++) hSum += freqData[i];
+          const fftBass = bSum / (5 * 255);
+          const fftMid = mSum / (21 * 255);
+          const fftHigh = hSum / (49 * 255);
+          if (fftBass + fftMid + fftHigh > 0.02) {
+            subBass = lerp(subBass, fftBass, 0.72);
+            vocalMid = lerp(vocalMid, fftMid, 0.72);
+            highSynth = lerp(highSynth, fftHigh, 0.72);
+          }
+        }
+        return { subBass, vocalMid, highSynth };
+      }
+
+      // ======================================================================
+      // POPULATE ANIMATOR'S MATHEMATICAL RENDERING BIBLE MODAL
+      // ======================================================================
+      const mathModal = document.getElementById('mathModal');
+      const mathGridContainer = document.getElementById('mathGridContainer');
+      if (mathGridContainer) {
+        const cardsHtml = [
+          `<div class="math-card">
+            <h4>Global C² Laminar & Camera Laws</h4>
+            <div class="eq">${QUINELING_MATH_BIBLE.globalLaws.quinticSmootherstep}\n${QUINELING_MATH_BIBLE.globalLaws.exponentialDamping}\n${QUINELING_MATH_BIBLE.globalLaws.aerialPerspective}</div>
+            <p>Zero camera shake: bounding box (midX, midY, span) is locked at t=0. All transitions use C² quintic smootherstep.</p>
+          </div>`,
+          ...QUINELING_MATH_BIBLE.families.map(
+            (f) => `<div class="math-card">
+              <h4>0${f.id} · ${f.mechanism} — ${f.title}</h4>
+              <div class="eq">${f.equation}</div>
+              <p><strong>Bounds & Invariants:</strong> ${f.bounds}</p>
+            </div>`
+          ),
+          ...QUINELING_MATH_BIBLE.chimeras.map(
+            (c) => `<div class="math-card">
+              <h4>Chimera · ${c.mode} — ${c.title}</h4>
+              <div class="eq">${c.equation}</div>
+              <p>Preserves contiguous territory partition [0,1] and convex spatial enclosure (proved in Lean 4).</p>
+            </div>`
+          ),
+        ];
+        mathGridContainer.innerHTML = cardsHtml.join('');
+      }
+
+      document.getElementById('toggleMathModalBtn').addEventListener('click', (e) => {
+        mathModal.classList.toggle('open');
+        e.currentTarget.classList.toggle('active', mathModal.classList.contains('open'));
+      });
+      document.getElementById('closeMathModalBtn').addEventListener('click', () => {
+        mathModal.classList.remove('open');
+        document.getElementById('toggleMathModalBtn').classList.remove('active');
+      });
+      document.getElementById('copyMathJsonBtn').addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+        navigator.clipboard?.writeText(JSON.stringify(QUINELING_MATH_BIBLE, null, 2)).catch(() => {});
+        btn.textContent = '✓ Copied Math Bible JSON';
+        setTimeout(() => {
+          btn.textContent = 'Copy JSON Spec';
+        }, 1800);
+      });
+
+      // ======================================================================
+      // UI WIRING: TIMELINE SCRUBBER, SURGICAL SCENE EDITOR & 60FPS RECORDER
+      // ======================================================================
+      const canvas = document.getElementById('motionCanvas');
+      const ctx = canvas.getContext('2d');
+      let dpr = 1;
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      let currentFrame = 0;
+      let playing = true;
+      let playbackSpeed = 1.0;
+      let flowVelocityScale = 1.0;
+      let activeSceneIdx = -1;
+
+      const sceneStrip = document.getElementById('sceneStrip');
+      SCENES.forEach((sc, idx) => {
+        const block = document.createElement('div');
+        block.className = 'scene-block' + (idx === 0 ? ' active' : '');
+        block.innerHTML = `<span class="sc-num">0${sc.id} · ${formatSeconds(sc.startFrame / FPS)}</span><span class="sc-name">${sc.shortName}</span>`;
+        block.addEventListener('click', () => {
+          currentFrame = sc.startFrame;
+          syncUI(true);
+          syncAudioPlayback(true);
+        });
+        sceneStrip.appendChild(block);
+      });
+
+      function formatSeconds(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
+
+      function formatTimecode(frame) {
+        const sec = frame / FPS;
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        const cs = Math.floor((sec - Math.floor(sec)) * 100);
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(cs).padStart(2, '0')}`;
+      }
+
+      function getSceneForFrame(f) {
+        for (let i = 0; i < SCENES.length; i++) {
+          if (f >= SCENES[i].startFrame && f < SCENES[i].endFrame) return i;
+        }
+        return SCENES.length - 1;
+      }
+
+      const scrubber = document.getElementById('frameScrubber');
+      scrubber.addEventListener('input', (e) => {
+        currentFrame = Number(e.target.value);
+        syncUI(true);
+        syncAudioPlayback(true);
+      });
+
+      const editHeadline = document.getElementById('editHeadline');
+      const editSubcaption = document.getElementById('editSubcaption');
+      const editFormula = document.getElementById('editFormula');
+      const editFlowVel = document.getElementById('editFlowVel');
+      const lyricCueReadout = document.getElementById('lyricCueReadout');
+
+      function syncUI(forceEditorSync = false) {
+        const fInt = Math.floor(clamp(currentFrame, 0, TOTAL_FRAMES - 1));
+        scrubber.value = String(fInt);
+        const scIdx = getSceneForFrame(fInt);
+        const sc = SCENES[scIdx];
+        const tSec = fInt / FPS;
+
+        document.getElementById('timecodeReadout').textContent =
+          `${formatTimecode(fInt)} / 01:30.00 · FRAME ${String(fInt).padStart(4, '0')} / ${TOTAL_FRAMES}`;
+
+        if (lyricCueReadout) {
+          const cue = LYRIC_CUES.find((c) => tSec >= c.t0 && tSec < c.t1) || LYRIC_CUES[0];
+          if (lyricCueReadout.textContent !== cue.text) {
+            lyricCueReadout.textContent = cue.text;
+          }
+        }
+
+        if (scIdx !== activeSceneIdx || forceEditorSync) {
+          activeSceneIdx = scIdx;
+          document.getElementById('activeSceneLabel').textContent =
+            `${sc.act} · SCENE 0${sc.id} — "${sc.shortName}"`;
+          Array.from(sceneStrip.children).forEach((el, i) => {
+            el.classList.toggle('active', i === scIdx);
+          });
+          editHeadline.value = sc.headline;
+          editSubcaption.value = sc.subcaption;
+          editFormula.value = sc.formula;
+        }
+      }
+
+      editHeadline.addEventListener('input', () => {
+        if (SCENES[activeSceneIdx]) SCENES[activeSceneIdx].headline = editHeadline.value;
+      });
+      editSubcaption.addEventListener('input', () => {
+        if (SCENES[activeSceneIdx]) SCENES[activeSceneIdx].subcaption = editSubcaption.value;
+      });
+      editFormula.addEventListener('input', () => {
+        if (SCENES[activeSceneIdx]) SCENES[activeSceneIdx].formula = editFormula.value;
+      });
+      editFlowVel.addEventListener('input', () => {
+        flowVelocityScale = Number(editFlowVel.value);
+        document.getElementById('flowVelVal').textContent = `${flowVelocityScale.toFixed(2)}×`;
+      });
+
+      document.getElementById('toggleEditorBtn').addEventListener('click', (e) => {
+        const drawer = document.getElementById('editorDrawer');
+        drawer.classList.toggle('open');
+        e.currentTarget.classList.toggle('active', drawer.classList.contains('open'));
+        syncUI(true);
+      });
+
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      playPauseBtn.addEventListener('click', () => {
+        playing = !playing;
+        playPauseBtn.textContent = playing ? 'Pause' : 'Play';
+        playPauseBtn.classList.toggle('active', playing);
+        syncAudioPlayback(true);
+      });
+
+      document.getElementById('restartBtn').addEventListener('click', () => {
+        currentFrame = 0;
+        syncUI(true);
+        syncAudioPlayback(true);
+      });
+      document.getElementById('prevSceneBtn').addEventListener('click', () => {
+        const idx = Math.max(0, getSceneForFrame(currentFrame) - 1);
+        currentFrame = SCENES[idx].startFrame;
+        syncUI(true);
+        syncAudioPlayback(true);
+      });
+      document.getElementById('nextSceneBtn').addEventListener('click', () => {
+        const idx = Math.min(SCENES.length - 1, getSceneForFrame(currentFrame) + 1);
+        currentFrame = SCENES[idx].startFrame;
+        syncUI(true);
+        syncAudioPlayback(true);
+      });
+
+      document.querySelectorAll('[data-speed]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          playbackSpeed = Number(btn.dataset.speed);
+          document.querySelectorAll('[data-speed]').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          syncAudioPlayback(false);
+        });
+      });
+
+      // 60FPS WebM/MP4 Video Exporter (with synchronized 90.000s audio stream when available)
+      let mediaRecorder = null;
+      let recordedChunks = [];
+      const exportBtn = document.getElementById('exportVideoBtn');
+      exportBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          return;
+        }
+        const stream = canvas.captureStream(60);
+        ensureAudioGraph();
+        if (mediaStreamDest && mediaStreamDest.stream.getAudioTracks().length > 0) {
+          stream.addTrack(mediaStreamDest.stream.getAudioTracks()[0]);
+        }
+        const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+          ? 'video/webm;codecs=vp9,opus'
+          : MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+            ? 'video/webm;codecs=vp9'
+            : 'video/webm';
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 16_000_000 });
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: mime });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'quinelings-2.0-what-is-life-90s-soundtrack.webm';
+          a.click();
+          exportBtn.textContent = '● Export 60fps Video';
+          exportBtn.classList.remove('record-active');
+        };
+        mediaRecorder.start();
+        exportBtn.textContent = '■ Stop & Save Video';
+        exportBtn.classList.add('record-active');
+      });
+
+      // ======================================================================
+      // MASTER 60FPS STORYBOARD RENDER LOOP
+      // ======================================================================
+      let lastTime = performance.now();
+      let fpsFrames = 0;
+      let fpsAccum = 0;
+
+      function tick(now) {
+        requestAnimationFrame(tick);
+        const rawDt = (now - lastTime) / 1000;
+        lastTime = now;
+        const dt = clamp(rawDt, 0.001, 0.05);
+
+        fpsFrames++;
+        fpsAccum += rawDt;
+        if (fpsAccum >= 0.5) {
+          document.getElementById('fpsIndicator').textContent =
+            `${Math.round(fpsFrames / fpsAccum)} FPS · ZERO-SHAKE`;
+          fpsFrames = 0;
+          fpsAccum = 0;
+        }
+
+        if (playing) {
+          const nextFrame = currentFrame + dt * FPS * playbackSpeed;
+          const looped = nextFrame >= TOTAL_FRAMES;
+          currentFrame = nextFrame % TOTAL_FRAMES;
+          syncUI(false);
+          if (looped) syncAudioPlayback(true);
+        }
+
+        const W = canvas.width;
+        const H = canvas.height;
+        const f = currentFrame;
+        const tSec = f / FPS;
+        const scIdx = getSceneForFrame(f);
+        const scene = SCENES[scIdx];
+        const localT = clamp((f - scene.startFrame) / (scene.endFrame - scene.startFrame), 0, 1);
+        const audioBands = getAudioBands(tSec);
+        const phase = tSec * 0.72 * flowVelocityScale + 0.08 * audioBands.subBass;
+
+        // 1. Velvet abyssal background (#070a0e)
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#070a0e';
+        ctx.fillRect(0, 0, W, H);
+
+        const bgGrad = ctx.createRadialGradient(W * 0.5, H * 0.5, 0, W * 0.5, H * 0.5, Math.min(W, H) * 0.55);
+        bgGrad.addColorStop(0, `rgba(26, 52, 68, ${0.18 + 0.08 * audioBands.vocalMid})`);
+        bgGrad.addColorStop(0.6, 'rgba(12, 20, 34, 0.07)');
+        bgGrad.addColorStop(1, 'rgba(7, 10, 14, 0)');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, W, H);
+
+        // 2. Digital Electronic Ocean (6-Ring Hydrothermal CPU Floor, Divergence-Free Kelp & Snell Caustics)
+        drawElectronicOcean(ctx, W, H, tSec, phase, audioBands, dpr);
+
+        // 3. 64 drifting abyssal RGB(b) genome plankton motes
+        ctx.fillStyle = '#c8dcd4';
+        for (let i = 0; i < PLANKTON_MOTES.length; i++) {
+          const m = PLANKTON_MOTES[i];
+          const mx = ((m.u + Math.sin(tSec * 0.16 + m.phaseOffset) * 0.015 + 1) % 1) * W;
+          const my = ((m.v - tSec * m.speed + 100) % 1) * H;
+          ctx.globalAlpha = 0.08 + 0.16 * ((m.z + 1) * 0.5) * (1 + 0.4 * audioBands.highSynth);
+          ctx.beginPath();
+          ctx.arc(mx, my, (m.z < 0 ? 1.7 : 1.05) * dpr, 0, TAU);
+          ctx.fill();
+        }
+
+        const heroRadius = Math.min(W, H) * (0.31 + 0.014 * audioBands.subBass);
+        const tiltX = 0.22 * Math.sin(tSec * 0.35);
+        const tiltY = -0.09 + 0.07 * Math.cos(tSec * 0.26);
+
+        // 4. Dispatch Scene Choreography
+        if (scene.id === 1) {
+          // Scene 1: "What is life?" — embryonic Hopf Toroidal-Weave Quineling pulsing luminously in the abyss
+          const seedScale = heroRadius * (0.64 + 0.24 * localT);
+          drawMorphedQuineling(
+            ctx,
+            'toroidal',
+            'toroidal',
+            0,
+            phase,
+            W * 0.5,
+            H * 0.48,
+            seedScale,
+            tiltX,
+            tiltY,
+            0.76 + 0.24 * localT,
+            1.0
+          );
+        } else if (scene.id === 2 || scene.id === 3) {
+          // Scene 2 & 3: Terminals typing code -> Code falls into hydrodynamic vortex -> Hopf Quineling birth
+          drawTerminalsAndVortex(ctx, W, H, f, phase, dpr);
+        } else if (scene.id === 4) {
+          // Scene 4: The Quineling explores (swimming figure-8 water-like path while morphing toroidal -> lorenz -> clifford)
+          const swimX = W * 0.5 + Math.sin(localT * TAU) * W * 0.085;
+          const swimY = H * 0.47 + Math.sin(localT * TAU * 2) * H * 0.035;
+          if (localT < 0.5) {
+            drawMorphedQuineling(ctx, 'toroidal', 'lorenz', localT * 2, phase, swimX, swimY, heroRadius, tiltX, tiltY, 1.0, 1.0);
+          } else {
+            drawMorphedQuineling(ctx, 'lorenz', 'clifford', (localT - 0.5) * 2, phase, swimX, swimY, heroRadius, tiltX, tiltY, 1.0, 1.0);
+          }
+        } else if (scene.id === 5) {
+          // Scene 5: Fractals & Holonomy (clifford -> julia -> affine -> mantle -> braid)
+          const stages = ['clifford', 'julia', 'affine', 'mantle', 'braid'];
+          const seg = localT * (stages.length - 1);
+          const idx = Math.min(stages.length - 2, Math.floor(seg));
+          const subT = seg - idx;
+          const swimX = W * 0.5 + Math.cos(localT * TAU) * W * 0.065;
+          const swimY = H * 0.47 + Math.sin(localT * TAU) * H * 0.03;
+          drawMorphedQuineling(ctx, stages[idx], stages[idx + 1], subT, phase, swimX, swimY, heroRadius, tiltX, tiltY, 1.0, 1.0);
+        } else if (scene.id === 6) {
+          // Scene 6: Symbiogenesis — two parent Quinelings glide together and fuse into a Chimera
+          const fuseT = smootherstep(clamp((localT - 0.15) / 0.55, 0, 1));
+          const sep = (1 - fuseT) * W * 0.19;
+          if (fuseT < 0.92) {
+            drawMorphedQuineling(ctx, 'lorenz', 'lorenz', 0, phase, W * 0.5 - sep, H * 0.47, heroRadius * 0.78, tiltX, tiltY, 1 - fuseT * 0.5, 0.85);
+            drawMorphedQuineling(ctx, 'toroidal', 'toroidal', 0, phase + 1.2, W * 0.5 + sep, H * 0.47, heroRadius * 0.78, -tiltX, tiltY, 1 - fuseT * 0.5, 0.85);
+          }
+          if (fuseT > 0.15) {
+            drawMorphedQuineling(ctx, 'lorenz', 'phyllotaxis', 0.48, phase, W * 0.5, H * 0.47, heroRadius * (0.85 + 0.18 * fuseT), tiltX, tiltY, fuseT, 1.0);
+          }
+        } else if (scene.id === 7 || scene.id === 8) {
+          // Scene 7 & 8: Zero-shake exponential camera pullback on the 69.25s Synthwave Drop to 36 living Quinelings
+          // followed by "Life is what we make of it."
+          const pullProgress = scene.id === 7 ? smootherstep(localT) : 1.0;
+          const camZoom = Math.pow(0.24, pullProgress);
+
+          for (let cIdx = OCEAN_COLONY.length - 1; cIdx >= 0; cIdx--) {
+            const member = OCEAN_COLONY[cIdx];
+            const specKey = SPECIMEN_LIST[member.specIdx].key;
+            const mPhase = phase * member.speed + member.phaseOffset;
+
+            const driftX = cIdx === 0 ? 0 : Math.sin(tSec * 0.35 + member.phaseOffset) * 0.14;
+            const driftY = cIdx === 0 ? 0 : Math.cos(tSec * 0.28 + member.phaseOffset) * 0.10;
+
+            const sx = W * 0.5 + (member.wx + driftX) * heroRadius * camZoom * 1.45;
+            const sy = H * 0.48 + (member.wy + driftY) * heroRadius * camZoom * 1.45;
+            const mRadius = heroRadius * member.scale * camZoom;
+
+            if (sx < -mRadius || sx > W + mRadius || sy < -mRadius || sy > H + mRadius) continue;
+
+            const memberFade =
+              cIdx === 0
+                ? 1.0
+                : smootherstep(clamp((pullProgress - 0.08 - (cIdx / 36) * 0.35) / 0.45, 0, 1)) *
+                  (0.45 + 0.55 * ((member.wz + 1) * 0.5));
+
+            const detail = cIdx === 0 && pullProgress < 0.4 ? 1.0 : 0.38;
+            drawMorphedQuineling(
+              ctx,
+              specKey,
+              specKey,
+              0,
+              mPhase,
+              sx,
+              sy,
+              mRadius,
+              tiltX + cIdx * 0.2,
+              tiltY,
+              memberFade,
+              detail
+            );
+          }
+        }
+
+        // 5. Synchronized Kinetic Typography & Mathematical Overlay
+        drawKineticTypography(ctx, W, H, scene, localT, dpr);
+      }
+
+      syncUI(true);
+      requestAnimationFrame(tick);
+    </script>
+  </body>
+</html>

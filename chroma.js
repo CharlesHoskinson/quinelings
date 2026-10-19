@@ -11,7 +11,7 @@ const ROLES=Object.freeze(Object.fromEntries(Object.entries({
 }).map(([key,value])=>[key,Object.freeze(value)])));
 const ROLE_MAP=Object.freeze({
  Observe:'input',Box:'quote',Permit:'decision',Apply:'process',Score:'process',Authorize:'decision',Execute:'action',Quote:'quote',Decode:'quote',Report:'report',
- literal:'input',sum:'process',mean:'process',min:'process',max:'process',weightedMean:'process',length:'process',map:'process',sort:'process',dedupe:'process',filter:'process',compare:'decision',choose:'decision',get:'process',clamp:'process',budget:'process',action:'action',report:'report',bfs:'process',allocate:'process',schedule:'process',consensus:'decision',retry:'process',evidence:'decision',input:'input',arithmetic:'process',compareValues:'decision',all:'decision',select:'process',evidenceFresh:'decision',reconcile:'process'
+ literal:'input',sum:'process',mean:'process',min:'process',max:'process',weightedMean:'process',length:'process',map:'process',sort:'process',dedupe:'process',filter:'process',compare:'decision',choose:'decision',get:'process',clamp:'process',budget:'process',action:'action',report:'report',bfs:'process',allocate:'process',schedule:'process',consensus:'decision',retry:'process',evidence:'decision',input:'input',arithmetic:'process',compareValues:'decision',all:'decision',select:'process',evidenceFresh:'decision',reconcile:'process',window:'process'
 });
 const SCALE_STOPS=Object.freeze([
  Object.freeze({at:0,color:'#593b9c'}),Object.freeze({at:.25,color:'#765eb4'}),Object.freeze({at:.5,color:'#a17ac0'}),Object.freeze({at:.75,color:'#dca7b8'}),Object.freeze({at:1,color:'#f7e6ac'})
@@ -86,7 +86,7 @@ function resolveLens(design,taskRecord,status='current'){
 }
 const OPCODE_ACCENTS=Object.freeze({
  Observe:'#22d3ee',Box:'#c084fc',Permit:'#fbbf24',Apply:'#38bdf8',Score:'#818cf8',Authorize:'#f59e0b',Execute:'#fb7185',Quote:'#a855f7',Decode:'#e879f9',Report:'#4ade80',
- literal:'#2dd4bf',sum:'#60a5fa',mean:'#38bdf8',min:'#818cf8',max:'#a78bfa',weightedMean:'#34d399',length:'#93c5fd',map:'#f472b6',sort:'#fb923c',dedupe:'#c084fc',filter:'#22d3ee',compare:'#facc15',choose:'#fbbf24',get:'#67e8f9',clamp:'#a3e635',budget:'#fbbf24',action:'#f43f5e',report:'#4ade80',bfs:'#e879f9',allocate:'#34d399',schedule:'#fb923c',consensus:'#f59e0b',retry:'#f87171',evidence:'#eab308',input:'#14b8a6',arithmetic:'#60a5fa',compareValues:'#f59e0b',all:'#eab308',select:'#a78bfa',evidenceFresh:'#fde047',reconcile:'#fb7185'
+ literal:'#2dd4bf',sum:'#60a5fa',mean:'#38bdf8',min:'#818cf8',max:'#a78bfa',weightedMean:'#34d399',length:'#93c5fd',map:'#f472b6',sort:'#fb923c',dedupe:'#c084fc',filter:'#22d3ee',compare:'#facc15',choose:'#fbbf24',get:'#67e8f9',clamp:'#a3e635',budget:'#fbbf24',action:'#f43f5e',report:'#4ade80',bfs:'#e879f9',allocate:'#34d399',schedule:'#fb923c',consensus:'#f59e0b',retry:'#f87171',evidence:'#eab308',input:'#14b8a6',arithmetic:'#60a5fa',compareValues:'#f59e0b',all:'#eab308',select:'#a78bfa',evidenceFresh:'#fde047',reconcile:'#fb7185',window:'#38bdf8'
 });
 function colorFor(shape,nodeIndex,lensState){
  const neutral=shape.design?.ink?.neutral||shape.design?.light?.neutral||'#d5e2e0',chroma=shape.design?.chroma;

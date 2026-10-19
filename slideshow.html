@@ -1,0 +1,1473 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quinelings 2.0 — Living Mathematical Organisms Gallery</title>
+    <style>
+      :root {
+        --bg-void: #070a0e;
+        --bg-glass: rgba(9, 13, 19, 0.74);
+        --border-hairline: rgba(192, 222, 203, 0.13);
+        --border-active: rgba(182, 232, 242, 0.42);
+        --text-primary: #eef3ef;
+        --text-secondary: #92a69e;
+        --text-muted: #637870;
+        --accent-pearl: #eef5f0;
+        --accent-aqua: #b6e8f2;
+        --accent-gold: #f6e2b2;
+        --accent-orchid: #e4c4f0;
+        --accent-emerald: #a8e0c6;
+        --accent-terracotta: #e08a7c;
+        --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, Georgia, serif;
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-mono: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg-void);
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        user-select: none;
+      }
+
+      #stageCanvas {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        display: block;
+        cursor: grab;
+        z-index: 1;
+      }
+
+      #stageCanvas:active {
+        cursor: grabbing;
+      }
+
+      .hud-shell {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px 32px;
+      }
+
+      .top-bar {
+        pointer-events: auto;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border-hairline);
+        background: linear-gradient(180deg, rgba(7, 10, 14, 0.88) 0%, rgba(7, 10, 14, 0) 100%);
+      }
+
+      .title-block {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        max-width: 780px;
+      }
+
+      .badge-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+
+      .badge-sep {
+        color: var(--text-muted);
+      }
+
+      .slide-title {
+        font-family: var(--font-serif);
+        font-size: clamp(19px, 2.1vw, 26px);
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        color: var(--text-primary);
+      }
+
+      .slide-subtitle {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.45;
+      }
+
+      .top-right-cluster {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .studio-links {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .studio-link {
+        text-decoration: none;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.05em;
+        color: var(--text-primary);
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid var(--border-active);
+        background: rgba(182, 232, 242, 0.08);
+        transition: all 0.2s ease;
+      }
+
+      .studio-link:hover {
+        background: rgba(182, 232, 242, 0.18);
+      }
+
+      .studio-link.secondary {
+        border-color: var(--border-hairline);
+        background: rgba(15, 22, 30, 0.55);
+        color: var(--text-secondary);
+      }
+
+      .legend-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+
+      .legend-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+
+      .triptych-overlay {
+        position: fixed;
+        top: 122px;
+        left: 32px;
+        right: 32px;
+        display: none;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        pointer-events: none;
+        z-index: 8;
+      }
+
+      .triptych-overlay.visible {
+        display: grid;
+      }
+
+      .triptych-card {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border-hairline);
+      }
+
+      .triptych-card h3 {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .triptych-card p {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .bottom-deck {
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-hairline);
+        background: linear-gradient(0deg, rgba(7, 10, 14, 0.9) 0%, rgba(7, 10, 14, 0) 100%);
+      }
+
+      .math-strip {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+
+      .math-col {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .math-label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .math-formula {
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .math-proof {
+        font-size: 12px;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .controls-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .nav-cluster {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn {
+        background: rgba(14, 20, 28, 0.65);
+        color: var(--text-primary);
+        border: 1px solid var(--border-hairline);
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.16s ease;
+      }
+
+      .btn:hover {
+        border-color: var(--border-active);
+        background: rgba(24, 34, 46, 0.85);
+      }
+
+      .btn.active {
+        background: rgba(182, 232, 242, 0.14);
+        border-color: var(--border-active);
+        color: var(--accent-aqua);
+      }
+
+      .slide-dots {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        overflow-x: auto;
+        padding: 2px 0;
+      }
+
+      .slide-dot {
+        padding: 5px 9px;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        background: rgba(14, 20, 28, 0.45);
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        cursor: pointer;
+        transition: all 0.16s ease;
+        white-space: nowrap;
+      }
+
+      .slide-dot:hover {
+        color: var(--text-secondary);
+        border-color: var(--border-hairline);
+      }
+
+      .slide-dot.active {
+        background: rgba(182, 232, 242, 0.12);
+        border-color: var(--border-active);
+        color: var(--text-primary);
+      }
+
+      .exec-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+
+      .exec-controls select,
+      .exec-controls input[type='range'] {
+        accent-color: var(--accent-aqua);
+        cursor: pointer;
+      }
+
+      .exec-controls select {
+        background: rgba(14, 20, 28, 0.85);
+        color: var(--text-primary);
+        border: 1px solid var(--border-hairline);
+        border-radius: 3px;
+        padding: 3px 7px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+      }
+
+      @media (max-width: 960px) {
+        .hud-shell {
+          padding: 12px 16px;
+        }
+        .math-strip {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .top-right-cluster {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="stageCanvas"></canvas>
+
+    <div class="triptych-overlay" id="triptychOverlay">
+      <div class="triptych-card">
+        <h3 style="color: var(--accent-aqua)">I. RUNNING · CEK DEPTH 5</h3>
+        <p>Active territory soliton wave + viscous depth unfurl</p>
+      </div>
+      <div class="triptych-card">
+        <h3 style="color: var(--accent-emerald)">II. DONE · HARMONIC PHASE-LOCK</h3>
+        <p>Crystalline breathing coherence + Ouroboros phase lock</p>
+      </div>
+      <div class="triptych-card">
+        <h3 style="color: var(--accent-terracotta)">III. REJECTED · VISCOUS DISTRESS</h3>
+        <p>Low-frequency phyllotactic wave + mineral terracotta shift</p>
+      </div>
+    </div>
+
+    <div class="hud-shell">
+      <header class="top-bar">
+        <div class="title-block">
+          <div class="badge-row">
+            <span id="slideCounter">PLATE 01 / 12</span>
+            <span class="badge-sep">·</span>
+            <span id="mechanismBadge">TOROIDAL-WEAVE · HOPF FIBRATION</span>
+            <span class="badge-sep">·</span>
+            <span id="fpsBadge">60 FPS · LAMINAR FLOW</span>
+          </div>
+          <h1 class="slide-title" id="slideTitle">
+            Stereographic S³ → ℝ³ Hopf Fibration & Linked Villarceau Circles
+          </h1>
+          <p class="slide-subtitle" id="slideSubtitle">
+            Every pair of Hopf fibers on the Clifford torus in S³ projects to linked Villarceau circles with linking number Lk = ±1.
+          </p>
+        </div>
+
+        <div class="top-right-cluster">
+          <div class="studio-links">
+            <a class="studio-link" href="/motion.html">✦ Open Gemini Motion Studio ("What Is Life?")</a>
+            <a class="studio-link secondary" href="/">3D Sherlock Workbench</a>
+          </div>
+          <div class="legend-row">
+            <span>OUROBOROS NERVE</span>
+            <span><i class="legend-dot" style="background: var(--accent-aqua)"></i>quote</span>
+            <span><i class="legend-dot" style="background: var(--accent-gold)"></i>run</span>
+            <span><i class="legend-dot" style="background: var(--accent-orchid)"></i>apply</span>
+          </div>
+        </div>
+      </header>
+
+      <footer class="bottom-deck">
+        <div class="math-strip">
+          <div class="math-col">
+            <span class="math-label">Manifold Law & Continuous Hydrodynamics</span>
+            <div class="math-formula" id="mathFormula">
+              ψ(α,θ,φ) = (cos α cos θ, cos α sin θ, sin α cos φ, sin α sin φ) ∈ S³, π(x) = (x₁,x₂,x₃)/(1 - x₄)
+            </div>
+          </div>
+          <div class="math-col">
+            <span class="math-label">Formal Verification (Lean 4 & Quint)</span>
+            <div class="math-proof" id="mathProof">
+              Lean 4: hopf_s3_norm_sq_one (∑ xᵢ² = 1) & stereographic_denom_pos · Quint: allMechanismsValidTest
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-bar">
+          <div class="nav-cluster">
+            <button class="btn" id="prevBtn" title="Previous Slide (Left Arrow)">← Prev</button>
+            <button class="btn active" id="playBtn" title="Play / Pause Phase Flow (Space)">Pause</button>
+            <button class="btn" id="nextBtn" title="Next Slide (Right Arrow)">Next →</button>
+            <button class="btn" id="autoAdvanceBtn" title="Auto-cycle slides every 9s">Auto-Tour: Off</button>
+          </div>
+
+          <div class="slide-dots" id="slideDots"></div>
+
+          <div class="exec-controls">
+            <label>
+              Outcome
+              <select id="outcomeSelect">
+                <option value="Running" selected>Running</option>
+                <option value="Done">Done (Phase-Lock)</option>
+                <option value="Rejected">Rejected (Viscous Wave)</option>
+                <option value="Exhausted">Exhausted</option>
+              </select>
+            </label>
+            <label>
+              Depth <span id="depthVal">3</span>
+              <input type="range" id="depthSlider" min="1" max="8" step="1" value="3" style="width: 64px" />
+            </label>
+            <label>
+              Node <span id="ownerVal">1</span>
+              <input type="range" id="ownerSlider" min="0" max="4" step="1" value="1" style="width: 56px" />
+            </label>
+            <button class="btn active" id="toggleLoopBtn">Ouroboros: On</button>
+            <button class="btn active" id="toggleCausticsBtn">Caustics: On</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module">
+      import { WovenBody, Chroma } from './src/engine/quinelingsSdk.js';
+
+      const TAU = Math.PI * 2;
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const smootherstep = (t) => {
+        const u = clamp(t, 0, 1);
+        return u * u * u * (u * (u * 6 - 15) + 10);
+      };
+
+      // Canonical task graphs for all 8 mechanisms
+      const GRAPHS = {
+        terminal: {
+          nodes: [
+            { id: 'g', op: 'literal', inputs: [] },
+            { id: 'a', op: 'literal', inputs: [] },
+            { id: 'effect', op: 'action', inputs: ['g', 'a'] },
+          ],
+        },
+        threadwing: {
+          nodes: [
+            { id: 'n0', op: 'literal', inputs: [] },
+            { id: 'n1', op: 'literal', inputs: [] },
+            { id: 'n2', op: 'filter', inputs: ['n0'] },
+            { id: 'n3', op: 'consensus', inputs: ['n1', 'n2'] },
+            { id: 'n4', op: 'action', inputs: ['n2', 'n3'] },
+          ],
+        },
+        fork: {
+          nodes: [
+            { id: 'a', op: 'literal', inputs: [] },
+            { id: 'b', op: 'sum', inputs: ['a'] },
+            { id: 'c', op: 'sum', inputs: ['a'] },
+            { id: 'd', op: 'sum', inputs: ['b', 'c'] },
+          ],
+        },
+        tideglass: {
+          nodes: [
+            { id: 's0', op: 'literal', inputs: [] },
+            { id: 's1', op: 'literal', inputs: [] },
+            { id: 's2', op: 'map', inputs: ['s0'] },
+            { id: 's3', op: 'mean', inputs: ['s1'] },
+            { id: 's4', op: 'report', inputs: ['s2', 's3'] },
+          ],
+        },
+        braidGraph: {
+          nodes: [
+            { id: 'n0', op: 'literal', inputs: [] },
+            { id: 'n1', op: 'sort', inputs: ['n0'] },
+            { id: 'n2', op: 'dedupe', inputs: ['n1'] },
+            { id: 'n3', op: 'select', inputs: ['n2'] },
+            { id: 'n4', op: 'report', inputs: ['n3'] },
+          ],
+        },
+        linear: {
+          nodes: [
+            { id: 'a', op: 'literal', inputs: [] },
+            { id: 'b', op: 'sum', inputs: ['a'] },
+            { id: 'c', op: 'report', inputs: ['b'] },
+          ],
+        },
+      };
+
+      function hexToRgb(hex) {
+        const v = parseInt(String(hex).replace('#', ''), 16);
+        return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+      }
+
+      const FALLBACK_PALETTE = [
+        [53, 214, 195],
+        [99, 155, 250],
+        [237, 198, 83],
+        [177, 132, 239],
+        [242, 117, 125],
+        [140, 204, 118],
+      ];
+
+      function buildChromaPalette(graph, paletteName, neutral = '#eef2ec', strength = 0.60) {
+        const shape = {
+          design: {
+            chroma: { mode: 'categorical', source: 'role', palette: paletteName, neutral, strength },
+          },
+          nodes: graph.nodes,
+        };
+        return graph.nodes.map((_, idx) => {
+          try {
+            return hexToRgb(Chroma.colorFor(shape, idx));
+          } catch (_) {
+            return FALLBACK_PALETTE[idx % FALLBACK_PALETTE.length];
+          }
+        });
+      }
+
+      // Compile all 8 canonical bodies
+      const toroidalRec = WovenBody.author(GRAPHS.terminal, 42);
+      const toroidalBody = WovenBody.compile(toroidalRec, GRAPHS.terminal);
+
+      const baseRoute = WovenBody.author(GRAPHS.threadwing, 42);
+      const lorenzRec = {
+        ...baseRoute,
+        mechanism: 'lorenz-flow',
+        dynamics: {
+          system: 'lorenz',
+          method: 'rk4',
+          sigma: 10,
+          rho: 28,
+          beta: 8 / 3,
+          initial: [0.330938, 0.226438, 0.215456],
+          dt: 0.006,
+          burn: 512,
+          steps: 3072,
+          window: 384,
+        },
+      };
+      delete lorenzRec.embedding;
+      const lorenzBody = WovenBody.compile(lorenzRec, GRAPHS.threadwing);
+
+      const cliffordBody = WovenBody.compile(baseRoute, GRAPHS.threadwing);
+      const juliaBody = WovenBody.compile(WovenBody.author(GRAPHS.fork, 42), GRAPHS.fork);
+
+      const affineRec = {
+        ...WovenBody.author(GRAPHS.fork, 42),
+        mechanism: 'recursive-affine',
+        geometry: {
+          model: 'contractive-branch-charts',
+          chart: 'rolled-scroll',
+          rollTurns: 3,
+          depth: 5,
+          root: [0, 0.62],
+          length: 0.64,
+          width: 0.2,
+          angle: -Math.PI / 2,
+          motion: 0.2,
+          transforms: [
+            { scale: 0.55, angle: -0.7, attach: 0.8 },
+            { scale: 0.56, angle: 0.7, attach: 0.9 },
+          ],
+        },
+      };
+      const affineBody = WovenBody.compile(affineRec, GRAPHS.fork);
+      const mantleBody = WovenBody.compile(WovenBody.author(GRAPHS.tideglass, 42), GRAPHS.tideglass);
+      const braidBody = WovenBody.compile(WovenBody.author(GRAPHS.braidGraph, 42), GRAPHS.braidGraph);
+      const phylloBody = WovenBody.compile(WovenBody.author(GRAPHS.linear, 42), GRAPHS.linear);
+
+      const BODIES = {
+        toroidal: toroidalBody,
+        lorenz: lorenzBody,
+        clifford: cliffordBody,
+        julia: juliaBody,
+        affine: affineBody,
+        mantle: mantleBody,
+        braid: braidBody,
+        phyllotaxis: phylloBody,
+      };
+
+      const PALETTES = {
+        toroidal: buildChromaPalette(GRAPHS.terminal, 'reef', '#eef4f1', 0.60),
+        lorenz: buildChromaPalette(GRAPHS.threadwing, 'ember', '#f3efe8', 0.58),
+        clifford: buildChromaPalette(GRAPHS.threadwing, 'signal', '#edf3f0', 0.58),
+        julia: buildChromaPalette(GRAPHS.fork, 'reef', '#f0eef5', 0.60),
+        affine: buildChromaPalette(GRAPHS.fork, 'kelp', '#eef2eb', 0.58),
+        mantle: buildChromaPalette(GRAPHS.tideglass, 'ember', '#f2efe8', 0.56),
+        braid: buildChromaPalette(GRAPHS.braidGraph, 'signal', '#eef3f2', 0.58),
+        phyllotaxis: buildChromaPalette(GRAPHS.linear, 'kelp', '#eff3ec', 0.58),
+      };
+
+      const CHIMERA_RECIPES = {
+        compose: WovenBody.authorCombination(lorenzBody, toroidalBody, { mode: 'compose', blend: 0.48, coupling: 0.28 }, 77).chimera,
+        mate: WovenBody.authorCombination(juliaBody, cliffordBody, { mode: 'mate', blend: 0.5, coupling: 0.26 }, 88).chimera,
+        symbiote: WovenBody.authorCombination(affineBody, braidBody, { mode: 'symbiote', blend: 0.46, coupling: 0.30 }, 99).chimera,
+      };
+
+      // ======================================================================
+      // LOCKED PORTRAIT BOUNDS & SUB-BUCKET PHASE RING (ZERO CAMERA SHAKE!)
+      // ======================================================================
+      const RING_BUCKETS = 36;
+      const BUDGET = 6144;
+      const specimenCache = new Map();
+
+      function computeLockedBounds(sampleFrame) {
+        const pts = sampleFrame.points;
+        const count = pts.length / 4;
+        let minX = Infinity, maxX = -Infinity;
+        let minY = Infinity, maxY = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        for (let i = 0; i < count; i++) {
+          const b = i * 4;
+          const x = pts[b], y = pts[b + 1], z = pts[b + 2];
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+        }
+        const cx = (minX + maxX) * 0.5;
+        const cy = (minY + maxY) * 0.5;
+        const cz = (minZ + maxZ) * 0.5;
+        const span = Math.max(0.28, (maxX - minX) * 0.58, (maxY - minY) * 0.58);
+        const spanZ = Math.max(0.12, (maxZ - minZ) * 0.55);
+        return { cx, cy, cz, span, spanZ };
+      }
+
+      function getSpecimenRing(slide) {
+        const key = slide.id;
+        if (specimenCache.has(key)) return specimenCache.get(key);
+
+        let evalFn;
+        if (slide.kind === 'single') {
+          const body = BODIES[slide.bodyKey];
+          evalFn = (phi, exec, crests) => {
+            const f = WovenBody.frame(body, phi, { budget: BUDGET, crests, execution: exec });
+            const loop = WovenBody.strangeLoop(body, phi, { samples: 84, execution: exec });
+            return { f, loopLine: loop.line };
+          };
+        } else if (slide.kind === 'chimera') {
+          const bodyA = BODIES[slide.bodyA];
+          const bodyB = BODIES[slide.bodyB];
+          const recipe = CHIMERA_RECIPES[slide.chimeraMode];
+          evalFn = (phi, exec, crests) => {
+            const f = WovenBody.combine(bodyA, bodyB, recipe, phi, { budget: BUDGET, crests, execution: exec });
+            const bridge = (f.ridges || []).find((r) => r.material === 'chimeric-seam-bridge');
+            const loopLine = bridge
+              ? bridge.line.map((p, idx) => ({ ...p, stage: idx < 16 ? 'quote' : idx < 32 ? 'run' : 'apply' }))
+              : [];
+            return { f, loopLine };
+          };
+        }
+
+        // Compute locked bounds across 4 cardinal phases so camera NEVER shakes!
+        const s0 = evalFn(0, null, true);
+        const s1 = evalFn(TAU * 0.25, null, false);
+        const s2 = evalFn(TAU * 0.5, null, false);
+        const mergedPts = new Float32Array(s0.f.points.length * 3);
+        mergedPts.set(s0.f.points, 0);
+        mergedPts.set(s1.f.points, s0.f.points.length);
+        mergedPts.set(s2.f.points, s0.f.points.length * 2);
+        const lockedBounds = computeLockedBounds({ points: mergedPts });
+
+        const buckets = new Array(RING_BUCKETS).fill(null);
+        buckets[0] = s0;
+
+        const entry = {
+          lockedBounds,
+          buckets,
+          evalFn,
+          getInterpolated(phase) {
+            const norm = ((phase % TAU) + TAU) % TAU;
+            const exact = (norm / TAU) * RING_BUCKETS;
+            const idx0 = Math.floor(exact) % RING_BUCKETS;
+            const idx1 = (idx0 + 1) % RING_BUCKETS;
+            const frac = smootherstep(exact - Math.floor(exact));
+
+            if (!buckets[idx0]) buckets[idx0] = evalFn((idx0 / RING_BUCKETS) * TAU, null, true);
+            if (!buckets[idx1]) buckets[idx1] = evalFn((idx1 / RING_BUCKETS) * TAU, null, true);
+            return { bucketA: buckets[idx0], bucketB: buckets[idx1], frac };
+          },
+        };
+        specimenCache.set(key, entry);
+        return entry;
+      }
+
+      const SLIDES = [
+        {
+          id: '01-toroidal',
+          shortLabel: '01 · Hopf Torus',
+          badge: 'TOROIDAL-WEAVE · HOPF FIBRATION',
+          title: 'Stereographic S³ → ℝ³ Hopf Fibration & Linked Villarceau Circles',
+          subtitle: 'Every pair of Hopf fibers on the Clifford torus in S³ projects to linked Villarceau circles with linking number Lk = ±1.',
+          formula: 'ψ(α,θ,φ) = (cos α cos θ, cos α sin θ, sin α cos φ, sin α sin φ) ∈ S³,  π(x) = (x₁,x₂,x₃)/(1 - x₄)',
+          proof: 'Lean 4: hopf_s3_norm_sq_one (∑ xᵢ² = 1) & stereographic_denom_pos · Quint: allMechanismsValidTest',
+          kind: 'single',
+          bodyKey: 'toroidal',
+          palette: PALETTES.toroidal,
+        },
+        {
+          id: '02-lorenz',
+          shortLabel: '02 · Lorenz–Bishop',
+          badge: 'LORENZ-FLOW · BISHOP SO(3) TORSION',
+          title: 'Synchronized Lorenz–Thomas Labyrinth Attractor & Bishop Parallel Transport',
+          subtitle: 'Replaces fragile Frenet normals with reflection-propagated SO(3) Bishop frames + Thomas cyclic labyrinth coupling.',
+          formula: 'dx/dt = σ(y-x) + ε sin(y),  dy/dt = x(ρ-z) - y + ε sin(z),  dz/dt = xy - βz + ε sin(x),  Tᵢ·Nᵢ = 0',
+          proof: 'Zero Gimbal-flip curvature singularities · Smooth C² geodesic torsion twist along RK4 strange attractor ribbon',
+          kind: 'single',
+          bodyKey: 'lorenz',
+          palette: PALETTES.lorenz,
+        },
+        {
+          id: '03-clifford',
+          shortLabel: '03 · Clifford Flow',
+          badge: 'CLIFFORD-FLOW · JACOBIAN VORTICITY',
+          title: 'Clifford Strange Attractor with Biharmonic Vorticity-Torsion Sheet Lift',
+          subtitle: 'Lifts flat 2D Clifford map steps into 3D via local Jacobian determinant compression det(DF) and rotational curl ω.',
+          formula: 'xₙ₊₁ = sin(a yₙ) + c cos(a xₙ),  yₙ₊₁ = sin(b xₙ) + d cos(b yₙ),  z = 0.052 sin(x+y+φ) + 0.024 tanh(0.35 det DF)',
+          proof: 'Lean 4: clifford_step_bounded (|sin(ay) + c cos(ax)| ≤ 1 + |c|) · Whitney A₂/A₃ caustic contour extraction',
+          kind: 'single',
+          bodyKey: 'clifford',
+          palette: PALETTES.clifford,
+        },
+        {
+          id: '04-julia',
+          shortLabel: '04 · 3D Julia',
+          badge: 'RECURSIVE-JULIA · HOLOMORPHIC RELIEF',
+          title: '3D Quaternion / Bicomplex Douady–Hubbard Potential & Milnor Distance',
+          subtitle: 'Encodes continuous escape potential G_c(z) and Milnor distance estimator d(z) into 3D surface elevation and equipotential crests.',
+          formula: "G_c(z) = 2⁻ⁿ log|zₙ|,  d(z) = |zₙ|·log|zₙ| / |z'ₙ|,  z_relief = 0.036 exp(-3.5 d(z)) cos(arg zₙ + φ)",
+          proof: 'Smooth C¹ holomorphic relief across filled Julia basin & escaping exterior · Marching-squares equipotential caustics',
+          kind: 'single',
+          bodyKey: 'julia',
+          palette: PALETTES.julia,
+        },
+        {
+          id: '05-affine',
+          shortLabel: '05 · Affine IFS',
+          badge: 'RECURSIVE-AFFINE · WHITNEY CAUSTICS',
+          title: 'Contractive Recursive Affine IFS with Whitney A₂ Fold & A₃ Cusp Caustics',
+          subtitle: 'Tracks projected Jacobian determinant det(J) and transverse gradient ∂_v det(J) to illuminate fold and cusp singularities.',
+          formula: 'x_{d+1} = R(θ_d)(s_d x_d) + t_d,  s_d ∈ [0.35, 0.67],  I_caustic = (1 + |det J| / 0.08 + (∂_v det J / 0.18)²)^(-1/2)',
+          proof: 'Lean 4: contractive_scale_strict_decay (s^(d+1) < s^d) & ifs_reach_bounded (∑ L sᵏ ≤ (100/33)L)',
+          kind: 'single',
+          bodyKey: 'affine',
+          palette: PALETTES.affine,
+        },
+        {
+          id: '06-mantle',
+          shortLabel: '06 · Mantle Holonomy',
+          badge: 'LOGARITHMIC-MANTLE · STRANGE-LOOP HOLONOMY',
+          title: 'Bernoulli Golden-Spiral Shell with Hofstadter π-Holonomy Twist',
+          subtitle: 'Couples golden-ratio quasi-periodic phase Φ⁻¹ with a Möbius half-turn holonomy twist along the strand cycle.',
+          formula: 'r(u) = r₀ exp(b u),  θ_holonomy(u, φ) = π u + 2π Φ⁻¹ u(1-u) sin(φ + θ₀),  Φ⁻¹ = (√5 - 1)/2',
+          proof: 'Lean 4: territory_width_pos & territory_width_sum = 1 · Continuous non-orientable Möbius phase transport',
+          kind: 'single',
+          bodyKey: 'mantle',
+          palette: PALETTES.mantle,
+        },
+        {
+          id: '07-braid',
+          shortLabel: '07 · Pleated Braid',
+          badge: 'PLEATED-BRAID · OUROBOROS QUINE FILAMENT',
+          title: 'Artin Braid Group B₃ Interlacing & Strange-Loop Quine Feedback Arc',
+          subtitle: 'Visualizes the self-reproducing constructor quine cycle (quote → run → apply) with 3 traveling KdV sech² solitons.',
+          formula: 'γ_loop(τ) = (1-τ)³ P_out + 3(1-τ)²τ C₁ + 3(1-τ)τ² C₂ + τ³ P_in,  A_soliton(τ,φ) = ∑ sech²(9 wrap(τ - φ/2π - m/3))',
+          proof: 'Lean 4: strange_loop_period_closure & soliton_pulse_bounded · Exact quine emission identity preserved',
+          kind: 'single',
+          bodyKey: 'braid',
+          palette: PALETTES.braid,
+        },
+        {
+          id: '08-phyllotaxis',
+          shortLabel: '08 · Phyllotaxis',
+          badge: 'PHYLLOTAXIS-FAN · VOGEL PARASTICHY',
+          title: 'Golden-Angle Vogel Phyllotaxis Whorls with Active Territory Soliton Flare',
+          subtitle: 'Fibonacci parastichy spirals (13, 21) modulated by a localized Gaussian execution soliton on active operation node.',
+          formula: 'θₙ = 2π Φ⁻² n,  rₙ = c √n,  E_exec(u, t) = 1 + g_active exp(-(u - u_c)² / (2σ_u²)) · (0.5 + 0.5 sin(φ))',
+          proof: 'Zero-allocation typed-array reuse · Deterministic ownerAt(x, y) spatial picking across all parastichy whorls',
+          kind: 'single',
+          bodyKey: 'phyllotaxis',
+          palette: PALETTES.phyllotaxis,
+        },
+        {
+          id: '09-compose',
+          shortLabel: '09 · Chimera Compose',
+          badge: 'CHIMERA · COMPOSE (CAUSAL SEAM GRAFT)',
+          title: 'Causal Seam Graft: Lorenz Strange Attractor × Hopf Toroidal Weave',
+          subtitle: 'Donor territories (u < u_seam) inhabit Lorenz–Thomas flow and transition across a C² quintic geodesic bridge into Hopf torus fibers.',
+          formula: 'S₂(τ) = 6τ⁵ - 15τ⁴ + 10τ³,  P(u,v) = (1 - S₂(τ)) P_Lorenz(u,v) + S₂(τ) P_Hopf(u,v) + 4λ(1-λ) H_bridge(u,v)',
+          proof: 'Lean 4: quinticBlend_deriv_zero/one & quinticBlend_second_deriv_zero/one (C² zero-jerk seam) · Quint: composeTest',
+          kind: 'chimera',
+          chimeraMode: 'compose',
+          bodyA: 'lorenz',
+          bodyB: 'toroidal',
+          palette: [...PALETTES.lorenz, ...PALETTES.toroidal],
+        },
+        {
+          id: '10-mate',
+          shortLabel: '10 · Chimera Mate',
+          badge: 'CHIMERA · MATE (HOMOLOGOUS CROSSOVER)',
+          title: 'Alternating Homologous Territory Crossover: Recursive Julia × Clifford Flow',
+          subtitle: 'Even operation territories inherit Douady–Hubbard holomorphic Julia relief; odd territories inherit Clifford vorticity sheets.',
+          formula: 'λ_mate(u) = S₂((u - u_k)/w_bridge) alternating by homologous node parity k mod 2,  P = (1-λ)P_Julia + λ P_Clifford',
+          proof: 'Lean 4: chimeric_convex_enclosure (P ∈ [-R, R]³) · Quint: mateTest & validChimeraSeam invariant',
+          kind: 'chimera',
+          chimeraMode: 'mate',
+          bodyA: 'julia',
+          bodyB: 'clifford',
+          palette: [...PALETTES.julia, ...PALETTES.clifford],
+        },
+        {
+          id: '11-symbiote',
+          shortLabel: '11 · Chimera Symbiote',
+          badge: 'CHIMERA · SYMBIOTE (ATTRACTOR CROSS-MODULATION)',
+          title: 'Symbiogenetic Co-habitation: Recursive Affine IFS ⇄ Pleated Braid',
+          subtitle: "Parent A's contractive IFS invariant I_A(u,φ) modulates Parent B's braid phase while Parent B's torsion modulates Parent A.",
+          formula: 'φ_A(u) = φ + κ I_B(u, φ),  φ_B(u) = φ - κ I_A(u, φ),  κ = 0.28 (bidirectional strange-loop phase entrainment)',
+          proof: 'Quint: symbioteTest (9/9 tests pass, 250 traces × 40 steps, 0 violations)',
+          kind: 'chimera',
+          chimeraMode: 'symbiote',
+          bodyA: 'affine',
+          bodyB: 'braid',
+          palette: [...PALETTES.affine, ...PALETTES.braid],
+        },
+        {
+          id: '12-execution',
+          shortLabel: '12 · Live Execution',
+          badge: 'PROGRAM EXECUTION RESPONSE',
+          title: 'Live Program Execution Coupling: Running vs. Done vs. Rejected',
+          subtitle: 'WovenBody.stepResponse & WovenBody.frame(body, phase, { execution }) modulate geometry continuously from live CEK / task state.',
+          formula: 'g_i = 1 + (0.48 + 0.22 tanh(d/6)) exp(-(u-u_i)²/2σ²) + δ_Done(0.22) + δ_Fault(0.032 sin(2φ + 2πΦ⁻¹i)),  Δz_i = 0.085 g_i sin(φ + 2πu_i)',
+          proof: 'Quint: executionLifecycleTest, faultLifecycleTest, exhaustedLifecycleTest & strangeLoopResonanceTest',
+          kind: 'triptych',
+          bodyKey: 'lorenz',
+          palette: PALETTES.lorenz,
+        },
+      ];
+
+      // ======================================================================
+      // ANTI-ALIASED RADIAL MICRO-SPLAT SPRITE CACHE & ABYSSAL PLANKTON MOTES
+      // ======================================================================
+      const spriteCache = new Map();
+      function getRadialSprite(r, g, b, tier = 'mid') {
+        const key = `${r},${g},${b},${tier}`;
+        if (spriteCache.has(key)) return spriteCache.get(key);
+        const size = tier === 'rear' ? 14 : tier === 'fore' ? 10 : 12;
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const x = c.getContext('2d');
+        const half = size * 0.5;
+        const grad = x.createRadialGradient(half, half, 0, half, half, half);
+        if (tier === 'fore') {
+          grad.addColorStop(0, `rgba(255, 248, 236, 0.95)`);
+          grad.addColorStop(0.28, `rgba(${r}, ${g}, ${b}, 0.85)`);
+          grad.addColorStop(0.68, `rgba(${r}, ${g}, ${b}, 0.22)`);
+          grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        } else {
+          grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.82)`);
+          grad.addColorStop(0.42, `rgba(${r}, ${g}, ${b}, 0.32)`);
+          grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        }
+        x.fillStyle = grad;
+        x.fillRect(0, 0, size, size);
+        spriteCache.set(key, c);
+        return c;
+      }
+
+      const PLANKTON_MOTES = Array.from({ length: 56 }, (_, i) => ({
+        u: ((i * 0.6180339887) % 1),
+        v: (((i * 0.3819660112) + 0.17) % 1),
+        z: -0.9 + 1.8 * ((i * 0.754877666) % 1),
+        speed: 0.004 + 0.006 * ((i % 7) / 7),
+        phaseOffset: i * 1.13,
+      }));
+
+      // ======================================================================
+      // INTERACTIVE STATE & EXPONENTIALLY DAMPED ZERO-SHAKE CAMERA
+      // ======================================================================
+      let currentSlideIdx = 0;
+      let playing = true;
+      let autoAdvance = false;
+      let autoAdvanceTimer = 0;
+      let phase = 0.85;
+      let showLoop = true;
+      let showCaustics = true;
+      let execOutcome = 'Running';
+      let targetDepth = 3;
+      let smoothDepth = 3;
+      let targetOwner = 1;
+      let smoothOwnerWeights = new Float32Array([0.15, 1.0, 0.15, 0.15, 0.15]);
+
+      let targetTiltX = 0.16;
+      let targetTiltY = -0.10;
+      let smoothTiltX = 0.16;
+      let smoothTiltY = -0.10;
+      let dragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+
+      const canvas = document.getElementById('stageCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function resizeCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      // Build slide navigation dots
+      const dotsContainer = document.getElementById('slideDots');
+      SLIDES.forEach((s, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'slide-dot' + (idx === 0 ? ' active' : '');
+        btn.textContent = s.shortLabel;
+        btn.addEventListener('click', () => selectSlide(idx));
+        dotsContainer.appendChild(btn);
+      });
+
+      function selectSlide(idx) {
+        currentSlideIdx = ((idx % SLIDES.length) + SLIDES.length) % SLIDES.length;
+        autoAdvanceTimer = 0;
+        const s = SLIDES[currentSlideIdx];
+        document.getElementById('slideCounter').textContent =
+          `PLATE ${String(currentSlideIdx + 1).padStart(2, '0')} / ${String(SLIDES.length).padStart(2, '0')}`;
+        document.getElementById('mechanismBadge').textContent = s.badge;
+        document.getElementById('slideTitle').textContent = s.title;
+        document.getElementById('slideSubtitle').textContent = s.subtitle;
+        document.getElementById('mathFormula').textContent = s.formula;
+        document.getElementById('mathProof').textContent = s.proof;
+        document.getElementById('triptychOverlay').classList.toggle('visible', s.kind === 'triptych');
+
+        Array.from(dotsContainer.children).forEach((el, i) => {
+          el.classList.toggle('active', i === currentSlideIdx);
+        });
+      }
+
+      document.getElementById('prevBtn').addEventListener('click', () => selectSlide(currentSlideIdx - 1));
+      document.getElementById('nextBtn').addEventListener('click', () => selectSlide(currentSlideIdx + 1));
+
+      const playBtn = document.getElementById('playBtn');
+      playBtn.addEventListener('click', () => {
+        playing = !playing;
+        playBtn.textContent = playing ? 'Pause' : 'Play';
+        playBtn.classList.toggle('active', playing);
+      });
+
+      const autoAdvanceBtn = document.getElementById('autoAdvanceBtn');
+      autoAdvanceBtn.addEventListener('click', () => {
+        autoAdvance = !autoAdvance;
+        autoAdvanceTimer = 0;
+        autoAdvanceBtn.textContent = `Auto-Tour: ${autoAdvance ? 'On' : 'Off'}`;
+        autoAdvanceBtn.classList.toggle('active', autoAdvance);
+      });
+
+      document.getElementById('outcomeSelect').addEventListener('change', (e) => {
+        execOutcome = e.target.value;
+      });
+      document.getElementById('depthSlider').addEventListener('input', (e) => {
+        targetDepth = Number(e.target.value);
+        document.getElementById('depthVal').textContent = String(targetDepth);
+      });
+      document.getElementById('ownerSlider').addEventListener('input', (e) => {
+        targetOwner = Number(e.target.value);
+        document.getElementById('ownerVal').textContent = String(targetOwner);
+      });
+
+      const toggleLoopBtn = document.getElementById('toggleLoopBtn');
+      toggleLoopBtn.addEventListener('click', () => {
+        showLoop = !showLoop;
+        toggleLoopBtn.textContent = `Ouroboros: ${showLoop ? 'On' : 'Off'}`;
+        toggleLoopBtn.classList.toggle('active', showLoop);
+      });
+
+      const toggleCausticsBtn = document.getElementById('toggleCausticsBtn');
+      toggleCausticsBtn.addEventListener('click', () => {
+        showCaustics = !showCaustics;
+        toggleCausticsBtn.textContent = `Caustics: ${showCaustics ? 'On' : 'Off'}`;
+        toggleCausticsBtn.classList.toggle('active', showCaustics);
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') selectSlide(currentSlideIdx + 1);
+        else if (e.key === 'ArrowLeft') selectSlide(currentSlideIdx - 1);
+        else if (e.key === ' ') {
+          e.preventDefault();
+          playBtn.click();
+        }
+      });
+
+      canvas.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        targetTiltX = clamp(targetTiltX + dx * 0.0045, -0.75, 0.75);
+        targetTiltY = clamp(targetTiltY + dy * 0.0045, -0.65, 0.65);
+      });
+      window.addEventListener('pointerup', () => {
+        dragging = false;
+      });
+
+      // ======================================================================
+      // 32-BIN Z-SORTED CALLIGRAPHIC & AERIAL-PERSPECTIVE RENDERER
+      // ======================================================================
+      const Z_BINS = 32;
+      const pointBins = Array.from({ length: Z_BINS }, () => []);
+      const ridgeBins = Array.from({ length: Z_BINS }, () => []);
+
+      function aerialColor(baseRgb, zNorm, outcome) {
+        let r = baseRgb[0];
+        let g = baseRgb[1];
+        let b = baseRgb[2];
+        if (outcome === 'Done') {
+          r = r * 0.8 + 168 * 0.2;
+          g = g * 0.8 + 230 * 0.2;
+          b = b * 0.8 + 207 * 0.2;
+        } else if (outcome === 'Rejected') {
+          r = r * 0.6 + 226 * 0.4;
+          g = g * 0.6 + 114 * 0.4;
+          b = b * 0.6 + 98 * 0.4;
+        }
+        if (zNorm < 0) {
+          const ind = Math.min(0.45, -zNorm * 0.36);
+          r = r * (1 - ind) + 14 * ind;
+          g = g * (1 - ind) + 24 * ind;
+          b = b * (1 - ind) + 56 * ind;
+        } else {
+          const pearl = Math.min(0.42, Math.pow(zNorm, 1.35) * 0.28);
+          r = r * (1 - pearl) + 255 * pearl;
+          g = g * (1 - pearl) + 247 * pearl;
+          b = b * (1 - pearl) + 232 * pearl;
+        }
+        return [Math.round(clamp(r, 0, 255)), Math.round(clamp(g, 0, 255)), Math.round(clamp(b, 0, 255))];
+      }
+
+      function renderSpecimenAt(ringEntry, palette, centerX, centerY, radiusScale, outcome, timeSec) {
+        const { lockedBounds } = ringEntry;
+        const { bucketA, bucketB, frac } = ringEntry.getInterpolated(phase, showCaustics);
+        const invFrac = 1 - frac;
+
+        const ptsA = bucketA.f.points;
+        const ptsB = bucketB.f.points;
+        const owners = bucketA.f.owners;
+        const count = ptsA.length / 4;
+        const nPal = palette.length;
+
+        const cosY = Math.cos(smoothTiltX);
+        const sinY = Math.sin(smoothTiltX);
+        const cosX = Math.cos(smoothTiltY);
+        const sinX = Math.sin(smoothTiltY);
+
+        // Asymmetric coupled-harmonic organic breathing scale + smoothDepth coupling
+        const depthFactor = 1.0 + 0.032 * (smoothDepth - 3.0);
+        const breath = (1.0 + 0.014 * (Math.sin(phase) + 0.18 * Math.sin(2 * phase - 0.65))) * depthFactor;
+        const effScale = (radiusScale / lockedBounds.span) * breath;
+        const invSpanZ = (1 / lockedBounds.spanZ) * (0.88 + 0.04 * smoothDepth);
+
+        for (let b = 0; b < Z_BINS; b++) {
+          pointBins[b].length = 0;
+          ridgeBins[b].length = 0;
+        }
+
+        const isFault = outcome === 'Rejected';
+        const isDone = outcome === 'Done';
+
+        for (let i = 0; i < count; i++) {
+          const b = i * 4;
+          const x = (ptsA[b] * invFrac + ptsB[b] * frac) - lockedBounds.cx;
+          const y = (ptsA[b + 1] * invFrac + ptsB[b + 1] * frac) - lockedBounds.cy;
+          const z = ((ptsA[b + 2] * invFrac + ptsB[b + 2] * frac) - lockedBounds.cz) * invSpanZ * 0.35;
+          const rawA = ptsA[b + 3] * invFrac + ptsB[b + 3] * frac;
+
+          const own = owners[i] % nPal;
+          const wOwn = smoothOwnerWeights[own % smoothOwnerWeights.length] || 0.2;
+          const distressWave = isFault ? 0.018 * Math.sin(2 * phase + own * 2.4) : 0;
+
+          const rx = x * cosY + (z + distressWave) * sinY;
+          const rz1 = -x * sinY + (z + distressWave) * cosY;
+          const ry = y * cosX - rz1 * sinX;
+          const rz = y * sinX + rz1 * cosX;
+
+          const zNorm = clamp(rz * 1.8, -1, 1);
+          const bin = clamp(Math.floor(((zNorm + 1) * 0.5) * Z_BINS), 0, Z_BINS - 1);
+          const att = zNorm < 0 ? Math.exp(0.85 * zNorm) : 1 + 0.26 * zNorm;
+          const linA = (1 - Math.exp(-2.1 * rawA)) * att * (0.82 + 0.34 * wOwn + (isDone ? 0.12 : 0));
+          const filmicA = linA / Math.sqrt(1 + 0.58 * linA * linA);
+
+          pointBins[bin].push({
+            sx: centerX + rx * effScale,
+            sy: centerY + ry * effScale,
+            zNorm,
+            alpha: clamp(filmicA, 0.025, 0.88),
+            owner: own,
+          });
+        }
+
+        if (showCaustics && bucketA.f.ridges) {
+          const ridgesA = bucketA.f.ridges;
+          const ridgesB = bucketB.f.ridges || ridgesA;
+          for (let rIdx = 0; rIdx < ridgesA.length; rIdx++) {
+            const rA = ridgesA[rIdx];
+            const rB = ridgesB[rIdx] || rA;
+            const lineA = rA.line;
+            const lineB = rB.line || lineA;
+            if (!lineA || lineA.length < 2) continue;
+            const midOwner = lineA[Math.floor(lineA.length / 2)]?.owner;
+            const own = (rA.owner ?? midOwner ?? rIdx) % nPal;
+            const nL = lineA.length;
+            let chunk = null;
+
+            for (let j = 0; j < nL; j++) {
+              const pA = lineA[j];
+              const pB = lineB[Math.min(lineB.length - 1, j)] || pA;
+              const x = (pA.x * invFrac + pB.x * frac) - lockedBounds.cx;
+              const y = (pA.y * invFrac + pB.y * frac) - lockedBounds.cy;
+              const z = (((pA.z || 0) * invFrac + (pB.z || 0) * frac) - lockedBounds.cz) * invSpanZ * 0.35;
+
+              const rx = x * cosY + z * sinY;
+              const rz1 = -x * sinY + z * cosY;
+              const ry = y * cosX - rz1 * sinX;
+              const rz = y * sinX + rz1 * cosX;
+
+              const sx = centerX + rx * effScale;
+              const sy = centerY + ry * effScale;
+              const zNorm = clamp(rz * 1.8, -1, 1);
+              const bin = clamp(Math.floor(((zNorm + 1) * 0.5) * Z_BINS), 0, Z_BINS - 1);
+              const sArc = j / Math.max(1, nL - 1);
+              const taper = 0.22 + 0.78 * Math.pow(Math.max(0, Math.sin(Math.PI * sArc)), 0.6);
+              const comp = pA.compression || 0;
+              const ptAlpha = ((pA.alpha ?? 0.45) * invFrac + (pB.alpha ?? 0.45) * frac) * taper;
+
+              if (ptAlpha < 0.015) {
+                chunk = null;
+                continue;
+              }
+              if (
+                !chunk ||
+                chunk.bin !== bin ||
+                chunk.pts.length >= 14 ||
+                Math.hypot(sx - chunk.pts[chunk.pts.length - 1].sx, sy - chunk.pts[chunk.pts.length - 1].sy) >
+                  radiusScale * 0.42
+              ) {
+                chunk = {
+                  bin,
+                  zNorm,
+                  owner: own,
+                  alpha: ptAlpha,
+                  widthScale: taper * (1 + 0.35 * Math.min(1.5, comp)),
+                  pts: [{ sx, sy }],
+                };
+                ridgeBins[bin].push(chunk);
+              } else {
+                chunk.pts.push({ sx, sy });
+              }
+            }
+          }
+        }
+
+        // Back-to-Front 32-Bin Render Pass
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        for (let bin = 0; bin < Z_BINS; bin++) {
+          const dNorm = bin / (Z_BINS - 1);
+          const tier = bin < 10 ? 'rear' : bin > 21 ? 'fore' : 'mid';
+          const spriteRadius = (tier === 'rear' ? 6.2 : tier === 'fore' ? 4.2 : 5.0) * (canvas.height / 920);
+
+          // 1. Points in this depth bin
+          ctx.globalCompositeOperation = 'lighter';
+          const pList = pointBins[bin];
+          for (let i = 0; i < pList.length; i++) {
+            const p = pList[i];
+            const rgb = aerialColor(palette[p.owner], p.zNorm, outcome);
+            const sp = getRadialSprite(rgb[0], rgb[1], rgb[2], tier);
+            ctx.globalAlpha = p.alpha * 0.46;
+            ctx.drawImage(sp, p.sx - spriteRadius, p.sy - spriteRadius, spriteRadius * 2, spriteRadius * 2);
+          }
+
+          // 2. Calligraphic ridge chunks in this depth bin
+          const rList = ridgeBins[bin];
+          for (let i = 0; i < rList.length; i++) {
+            const ch = rList[i];
+            if (ch.pts.length < 2) continue;
+            const rgb = aerialColor(palette[ch.owner], ch.zNorm, outcome);
+            const wScale = (0.58 + 0.62 * dNorm) * ch.widthScale * (canvas.height / 920);
+            const att = ch.zNorm < 0 ? Math.exp(0.85 * ch.zNorm) : 1 + 0.25 * ch.zNorm;
+            const effA = clamp(ch.alpha * att, 0.02, 0.85);
+
+            ctx.beginPath();
+            ctx.moveTo(ch.pts[0].sx, ch.pts[0].sy);
+            for (let k = 1; k < ch.pts.length; k++) {
+              ctx.lineTo(ch.pts[k].sx, ch.pts[k].sy);
+            }
+
+            // Subtle dark crossing occlusion halo on foreground ridges (bin >= 16)
+            if (bin >= 16 && effA > 0.16) {
+              ctx.globalCompositeOperation = 'source-over';
+              ctx.strokeStyle = '#050811';
+              ctx.lineWidth = 3.2 * wScale;
+              ctx.globalAlpha = effA * 0.26 * dNorm;
+              ctx.stroke();
+            }
+
+            ctx.globalCompositeOperation = 'lighter';
+            // Pass 1: Soft subsurface sheath
+            ctx.strokeStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+            ctx.lineWidth = 2.4 * wScale;
+            ctx.globalAlpha = effA * 0.18;
+            ctx.stroke();
+
+            // Pass 2: Calligraphic filament body
+            ctx.lineWidth = 1.05 * wScale;
+            ctx.globalAlpha = effA * 0.56;
+            ctx.stroke();
+
+            // Pass 3: Foreground pearlescent specular crest
+            if (bin >= 14) {
+              ctx.strokeStyle = '#fff7e8';
+              ctx.lineWidth = 0.45 * wScale;
+              ctx.globalAlpha = effA * 0.32 * dNorm;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // 3. Whisper-Fine 3-Pass Harmonized Bioluminescent Ouroboros Nerve
+        if (showLoop && bucketA.loopLine && bucketA.loopLine.length > 1) {
+          const loopA = bucketA.loopLine;
+          const loopB = bucketB.loopLine || loopA;
+          const stageTints = {
+            quote: [182, 232, 242],
+            run: [246, 226, 178],
+            apply: [228, 196, 240],
+          };
+          const nL = loopA.length;
+          ctx.globalCompositeOperation = 'lighter';
+
+          for (let i = 0; i < nL - 1; i++) {
+            const p0A = loopA[i];
+            const p0B = loopB[Math.min(loopB.length - 1, i)] || p0A;
+            const p1A = loopA[i + 1];
+            const p1B = loopB[Math.min(loopB.length - 1, i + 1)] || p1A;
+
+            const x0 = (p0A.x * invFrac + p0B.x * frac) - lockedBounds.cx;
+            const y0 = (p0A.y * invFrac + p0B.y * frac) - lockedBounds.cy;
+            const z0 = (((p0A.z || 0) * invFrac + (p0B.z || 0) * frac) - lockedBounds.cz) * invSpanZ * 0.35;
+
+            const x1 = (p1A.x * invFrac + p1B.x * frac) - lockedBounds.cx;
+            const y1 = (p1A.y * invFrac + p1B.y * frac) - lockedBounds.cy;
+            const z1 = (((p1A.z || 0) * invFrac + (p1B.z || 0) * frac) - lockedBounds.cz) * invSpanZ * 0.35;
+
+            const rx0 = x0 * cosY + z0 * sinY, rz0 = -x0 * sinY + z0 * cosY;
+            const ry0 = y0 * cosX - rz0 * sinX, fz0 = y0 * sinX + rz0 * cosX;
+            const rx1 = x1 * cosY + z1 * sinY, rz1 = -x1 * sinY + z1 * cosY;
+            const ry1 = y1 * cosX - rz1 * sinX;
+
+            const sx0 = centerX + rx0 * effScale;
+            const sy0 = centerY + ry0 * effScale;
+            const sx1 = centerX + rx1 * effScale;
+            const sy1 = centerY + ry1 * effScale;
+            if (Math.hypot(sx1 - sx0, sy1 - sy0) > radiusScale * 0.55) continue;
+
+            const st = p0A.stage || 'run';
+            const tint = stageTints[st] || stageTints.run;
+            const specCol = palette[i % nPal];
+            const harm = [
+              Math.round(specCol[0] * 0.66 + tint[0] * 0.34),
+              Math.round(specCol[1] * 0.66 + tint[1] * 0.34),
+              Math.round(specCol[2] * 0.66 + tint[2] * 0.34),
+            ];
+            const sArc = (i + 0.5) / Math.max(1, nL - 1);
+            const taper = 0.32 + 0.68 * Math.pow(Math.max(0, Math.sin(Math.PI * sArc)), 0.5);
+            const rawA = ((p0A.alpha ?? 0.68) * invFrac + (p0B.alpha ?? 0.68) * frac) * taper;
+            const zNorm = clamp(fz0 * 1.8, -1, 1);
+            const att = zNorm < 0 ? Math.exp(0.85 * zNorm) : 1 + 0.22 * zNorm;
+            const effA = clamp(rawA * att, 0.04, 0.78);
+            const dScale = canvas.height / 920;
+
+            ctx.beginPath();
+            ctx.moveTo(sx0, sy0);
+            ctx.lineTo(sx1, sy1);
+
+            // Sheath pass
+            ctx.strokeStyle = `rgb(${harm[0]}, ${harm[1]}, ${harm[2]})`;
+            ctx.lineWidth = 3.1 * dScale;
+            ctx.globalAlpha = effA * 0.075;
+            ctx.stroke();
+
+            // Whisper-fine axon
+            ctx.lineWidth = 1.05 * dScale;
+            ctx.globalAlpha = effA * 0.38;
+            ctx.stroke();
+
+            // Warm pearl core
+            ctx.strokeStyle = '#fff8ec';
+            ctx.lineWidth = 0.48 * dScale;
+            ctx.globalAlpha = effA * 0.24;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ======================================================================
+      // MAIN 60FPS LAMINAR ANIMATION LOOP
+      // ======================================================================
+      let lastTime = performance.now();
+      let fpsFrames = 0;
+      let fpsAccum = 0;
+
+      function animate(now) {
+        requestAnimationFrame(animate);
+        const rawDt = (now - lastTime) / 1000;
+        lastTime = now;
+        const dt = clamp(rawDt, 0.001, 0.05);
+
+        fpsFrames++;
+        fpsAccum += rawDt;
+        if (fpsAccum >= 0.5) {
+          const fps = Math.round(fpsFrames / fpsAccum);
+          document.getElementById('fpsBadge').textContent = `${fps} FPS · LAMINAR FLOW`;
+          fpsFrames = 0;
+          fpsAccum = 0;
+        }
+
+        // Frame-rate-independent exponential damping (zero camera shake!)
+        const camDecay = 1 - Math.exp(-dt * 8.5);
+        if (!dragging) {
+          targetTiltX = 0.16 * Math.sin(now * 0.00032);
+          targetTiltY = -0.09 + 0.06 * Math.cos(now * 0.00024);
+        }
+        smoothTiltX = lerp(smoothTiltX, targetTiltX, camDecay);
+        smoothTiltY = lerp(smoothTiltY, targetTiltY, camDecay);
+        smoothDepth = lerp(smoothDepth, targetDepth, 1 - Math.exp(-dt * 6.0));
+
+        const nodeDecay = 1 - Math.exp(-dt * 7.0);
+        for (let i = 0; i < smoothOwnerWeights.length; i++) {
+          const targetW = i === targetOwner ? 1.0 : 0.18;
+          smoothOwnerWeights[i] = lerp(smoothOwnerWeights[i], targetW, nodeDecay);
+        }
+
+        if (playing) {
+          const speed = execOutcome === 'Exhausted' ? 0.22 : 0.58;
+          phase = (phase + dt * speed) % (TAU * 64);
+          if (autoAdvance) {
+            autoAdvanceTimer += dt;
+            if (autoAdvanceTimer >= 9.0) {
+              selectSlide(currentSlideIdx + 1);
+            }
+          }
+        }
+
+        const W = canvas.width;
+        const H = canvas.height;
+        const slide = SLIDES[currentSlideIdx];
+
+        // Velvet abyssal background (#070a0e) with subtle subsurface glow
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#070a0e';
+        ctx.fillRect(0, 0, W, H);
+
+        const accent = slide.palette[0] || [140, 200, 210];
+        const bgGrad = ctx.createRadialGradient(W * 0.5, H * 0.51, 0, W * 0.5, H * 0.51, Math.min(W, H) * 0.48);
+        bgGrad.addColorStop(0, `rgba(${accent[0]}, ${accent[1]}, ${accent[2]}, 0.075)`);
+        bgGrad.addColorStop(0.55, `rgba(14, 24, 42, 0.04)`);
+        bgGrad.addColorStop(1, 'rgba(7, 10, 14, 0)');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, W, H);
+
+        // 56 depth-graded abyssal plankton motes drifting gently
+        const tSec = now * 0.001;
+        ctx.fillStyle = '#c8dcd4';
+        for (let i = 0; i < PLANKTON_MOTES.length; i++) {
+          const m = PLANKTON_MOTES[i];
+          const mx = ((m.u + Math.sin(tSec * 0.18 + m.phaseOffset) * 0.015 + 1) % 1) * W;
+          const my = ((m.v - tSec * m.speed + 100) % 1) * H;
+          const mAlpha = 0.06 + 0.14 * ((m.z + 1) * 0.5);
+          const mSize = (m.z < 0 ? 1.8 : 1.1) * (H / 920);
+          ctx.globalAlpha = mAlpha;
+          ctx.beginPath();
+          ctx.arc(mx, my, mSize, 0, TAU);
+          ctx.fill();
+        }
+
+        if (slide.kind === 'triptych') {
+          const ring = getSpecimenRing(SLIDES[1]); // Lorenz specimen
+          const scale = Math.min(W * 0.145, H * 0.22);
+          // Subtle vertical gallery dividers
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.strokeStyle = 'rgba(192, 222, 203, 0.09)';
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = 1;
+          for (const fracX of [0.335, 0.665]) {
+            ctx.beginPath();
+            ctx.moveTo(W * fracX, H * 0.18);
+            ctx.lineTo(W * fracX, H * 0.84);
+            ctx.stroke();
+          }
+          renderSpecimenAt(ring, slide.palette, W * 0.18, H * 0.54, scale, 'Running', tSec);
+          renderSpecimenAt(ring, slide.palette, W * 0.50, H * 0.54, scale, 'Done', tSec);
+          renderSpecimenAt(ring, slide.palette, W * 0.82, H * 0.54, scale, 'Rejected', tSec);
+        } else {
+          const ring = getSpecimenRing(slide);
+          const scale = Math.min(W, H) * 0.33;
+          renderSpecimenAt(ring, slide.palette, W * 0.5, H * 0.515, scale, execOutcome, tSec);
+        }
+      }
+
+      window.QUINELING_MATH_BIBLE = {
+        version: '2.0.0',
+        slides: SLIDES.map((s, idx) => ({
+          plate: idx + 1,
+          title: s.title,
+          subtitle: s.subtitle,
+          mechanism: s.mech,
+          formula: s.formula,
+          proof: s.proof,
+          record: s.body?.record || null,
+        })),
+      };
+
+      requestAnimationFrame(animate);
+    </script>
+  </body>
+</html>

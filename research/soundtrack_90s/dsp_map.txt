@@ -1,0 +1,119 @@
+Total duration: 118.7468s (need to cut 28.7468s to reach 90.000s)
+  0.0s | RMS=0.101 Sub=0.15 Mid=0.17 High=0.09 Key=F  | ########
+  1.0s | RMS=0.149 Sub=0.32 Mid=0.21 High=0.18 Key=F  | ###########
+  2.0s | RMS=0.164 Sub=0.33 Mid=0.20 High=0.14 Key=F  | #############
+  3.0s | RMS=0.132 Sub=0.28 Mid=0.21 High=0.17 Key=F  | ##########
+  4.0s | RMS=0.155 Sub=0.31 Mid=0.22 High=0.16 Key=C  | ############
+  5.0s | RMS=0.069 Sub=0.02 Mid=0.18 High=0.13 Key=F  | #####
+  6.0s | RMS=0.155 Sub=0.24 Mid=0.24 High=0.18 Key=D  | ############
+  7.0s | RMS=0.205 Sub=0.43 Mid=0.27 High=0.25 Key=F  | ################
+  8.0s | RMS=0.181 Sub=0.29 Mid=0.32 High=0.27 Key=D  | ##############
+  9.0s | RMS=0.227 Sub=0.49 Mid=0.32 High=0.24 Key=D  | ##################
+ 10.0s | RMS=0.184 Sub=0.32 Mid=0.52 High=0.27 Key=G  | ##############
+ 11.0s | RMS=0.194 Sub=0.37 Mid=0.46 High=0.40 Key=G  | ###############
+ 12.0s | RMS=0.199 Sub=0.39 Mid=0.38 High=0.30 Key=G  | ###############
+ 13.0s | RMS=0.179 Sub=0.35 Mid=0.32 High=0.23 Key=D  | ##############
+ 14.0s | RMS=0.176 Sub=0.38 Mid=0.31 High=0.22 Key=A  | ##############
+ 15.0s | RMS=0.162 Sub=0.29 Mid=0.36 High=0.38 Key=A# | ############
+ 16.0s | RMS=0.205 Sub=0.39 Mid=0.30 High=0.25 Key=C  | ################
+ 17.0s | RMS=0.160 Sub=0.25 Mid=0.34 High=0.31 Key=G# | ############
+ 18.0s | RMS=0.204 Sub=0.45 Mid=0.36 High=0.27 Key=G  | ################
+ 19.0s | RMS=0.183 Sub=0.37 Mid=0.31 High=0.31 Key=C  | ##############
+ 20.0s | RMS=0.181 Sub=0.39 Mid=0.32 High=0.29 Key=F  | ##############
+ 21.0s | RMS=0.115 Sub=0.23 Mid=0.35 High=0.31 Key=C  | #########
+ 22.0s | RMS=0.046 Sub=0.05 Mid=0.21 High=0.07 Key=C  | ###
+ 23.0s | RMS=0.070 Sub=0.04 Mid=0.27 High=0.09 Key=C  | #####
+ 24.0s | RMS=0.041 Sub=0.05 Mid=0.17 High=0.05 Key=C  | ###
+ 25.0s | RMS=0.054 Sub=0.04 Mid=0.22 High=0.08 Key=C  | ####
+ 26.0s | RMS=0.045 Sub=0.03 Mid=0.14 High=0.06 Key=C  | ###
+ 27.0s | RMS=0.053 Sub=0.03 Mid=0.13 High=0.05 Key=C  | ####
+ 28.0s | RMS=0.146 Sub=0.26 Mid=0.25 High=0.18 Key=C  | ###########
+ 29.0s | RMS=0.200 Sub=0.44 Mid=0.35 High=0.26 Key=A  | ###############
+ 30.0s | RMS=0.187 Sub=0.40 Mid=0.29 High=0.25 Key=D  | ##############
+ 31.0s | RMS=0.209 Sub=0.36 Mid=0.39 High=0.31 Key=C  | ################
+ 32.0s | RMS=0.180 Sub=0.29 Mid=0.45 High=0.32 Key=G  | ##############
+ 33.0s | RMS=0.199 Sub=0.40 Mid=0.54 High=0.35 Key=G  | ###############
+ 34.0s | RMS=0.209 Sub=0.44 Mid=0.42 High=0.40 Key=G  | ################
+ 35.0s | RMS=0.176 Sub=0.38 Mid=0.46 High=0.29 Key=G  | ##############
+ 36.0s | RMS=0.194 Sub=0.36 Mid=0.38 High=0.29 Key=C  | ###############
+ 37.0s | RMS=0.223 Sub=0.43 Mid=0.46 High=0.41 Key=D  | #################
+ 38.0s | RMS=0.171 Sub=0.24 Mid=0.42 High=0.39 Key=C  | #############
+ 39.0s | RMS=0.209 Sub=0.37 Mid=0.38 High=0.31 Key=D  | ################
+ 40.0s | RMS=0.154 Sub=0.28 Mid=0.32 High=0.30 Key=C  | ############
+ 41.0s | RMS=0.197 Sub=0.39 Mid=0.41 High=0.29 Key=G  | ###############
+ 42.0s | RMS=0.170 Sub=0.31 Mid=0.42 High=0.31 Key=G  | #############
+ 43.0s | RMS=0.141 Sub=0.24 Mid=0.43 High=0.24 Key=A# | ###########
+ 44.0s | RMS=0.167 Sub=0.35 Mid=0.39 High=0.29 Key=A  | #############
+ 45.0s | RMS=0.173 Sub=0.38 Mid=0.37 High=0.29 Key=F  | #############
+ 46.0s | RMS=0.180 Sub=0.36 Mid=0.38 High=0.36 Key=C# | ##############
+ 47.0s | RMS=0.137 Sub=0.30 Mid=0.37 High=0.34 Key=G  | ##########
+ 48.0s | RMS=0.154 Sub=0.33 Mid=0.39 High=0.33 Key=G  | ############
+ 49.0s | RMS=0.136 Sub=0.33 Mid=0.37 High=0.31 Key=G  | ##########
+ 50.0s | RMS=0.182 Sub=0.46 Mid=0.37 High=0.35 Key=G  | ##############
+ 51.0s | RMS=0.149 Sub=0.32 Mid=0.38 High=0.33 Key=G  | ###########
+ 52.0s | RMS=0.161 Sub=0.32 Mid=0.38 High=0.42 Key=G  | ############
+ 53.0s | RMS=0.140 Sub=0.29 Mid=0.32 High=0.35 Key=C  | ###########
+ 54.0s | RMS=0.084 Sub=0.00 Mid=0.31 High=0.16 Key=G# | ######
+ 55.0s | RMS=0.108 Sub=0.01 Mid=0.39 High=0.21 Key=G# | ########
+ 56.0s | RMS=0.099 Sub=0.01 Mid=0.44 High=0.26 Key=G  | #######
+ 57.0s | RMS=0.067 Sub=0.01 Mid=0.34 High=0.31 Key=G  | #####
+ 58.0s | RMS=0.091 Sub=0.01 Mid=0.24 High=0.22 Key=C  | #######
+ 59.0s | RMS=0.122 Sub=0.01 Mid=0.35 High=0.23 Key=C  | #########
+ 60.0s | RMS=0.112 Sub=0.01 Mid=0.39 High=0.23 Key=C  | ########
+ 61.0s | RMS=0.054 Sub=0.02 Mid=0.25 High=0.19 Key=E  | ####
+ 62.0s | RMS=0.091 Sub=0.01 Mid=0.35 High=0.26 Key=G  | #######
+ 63.0s | RMS=0.085 Sub=0.01 Mid=0.35 High=0.27 Key=G  | ######
+ 64.0s | RMS=0.084 Sub=0.02 Mid=0.34 High=0.24 Key=C  | ######
+ 65.0s | RMS=0.062 Sub=0.02 Mid=0.28 High=0.21 Key=C  | ####
+ 66.0s | RMS=0.101 Sub=0.01 Mid=0.39 High=0.29 Key=F  | ########
+ 67.0s | RMS=0.095 Sub=0.02 Mid=0.45 High=0.23 Key=F  | #######
+ 68.0s | RMS=0.062 Sub=0.01 Mid=0.34 High=0.24 Key=F  | ####
+ 69.0s | RMS=0.091 Sub=0.01 Mid=0.39 High=0.23 Key=F  | #######
+ 70.0s | RMS=0.078 Sub=0.00 Mid=0.33 High=0.18 Key=A# | ######
+ 71.0s | RMS=0.065 Sub=0.00 Mid=0.26 High=0.22 Key=A# | #####
+ 72.0s | RMS=0.092 Sub=0.01 Mid=0.27 High=0.29 Key=A  | #######
+ 73.0s | RMS=0.068 Sub=0.02 Mid=0.26 High=0.23 Key=A# | #####
+ 74.0s | RMS=0.054 Sub=0.02 Mid=0.24 High=0.20 Key=F  | ####
+ 75.0s | RMS=0.117 Sub=0.22 Mid=0.32 High=0.30 Key=F  | #########
+ 76.0s | RMS=0.197 Sub=0.43 Mid=0.32 High=0.38 Key=A# | ###############
+ 77.0s | RMS=0.215 Sub=0.45 Mid=0.37 High=0.39 Key=F  | #################
+ 78.0s | RMS=0.212 Sub=0.45 Mid=0.32 High=0.36 Key=D  | ################
+ 79.0s | RMS=0.206 Sub=0.45 Mid=0.27 High=0.35 Key=F  | ################
+ 80.0s | RMS=0.198 Sub=0.42 Mid=0.30 High=0.39 Key=F  | ###############
+ 81.0s | RMS=0.219 Sub=0.48 Mid=0.31 High=0.37 Key=C  | #################
+ 82.0s | RMS=0.195 Sub=0.41 Mid=0.33 High=0.38 Key=C  | ###############
+ 83.0s | RMS=0.211 Sub=0.50 Mid=0.32 High=0.32 Key=A# | ################
+ 84.0s | RMS=0.196 Sub=0.43 Mid=0.36 High=0.38 Key=A# | ###############
+ 85.0s | RMS=0.212 Sub=0.45 Mid=0.39 High=0.43 Key=D  | ################
+ 86.0s | RMS=0.215 Sub=0.48 Mid=0.34 High=0.41 Key=D  | #################
+ 87.0s | RMS=0.189 Sub=0.42 Mid=0.32 High=0.35 Key=F  | ###############
+ 88.0s | RMS=0.214 Sub=0.47 Mid=0.31 High=0.33 Key=F  | #################
+ 89.0s | RMS=0.198 Sub=0.41 Mid=0.30 High=0.29 Key=G  | ###############
+ 90.0s | RMS=0.134 Sub=0.21 Mid=0.31 High=0.28 Key=F  | ##########
+ 91.0s | RMS=0.129 Sub=0.03 Mid=0.44 High=0.33 Key=D# | ##########
+ 92.0s | RMS=0.067 Sub=0.01 Mid=0.27 High=0.20 Key=F  | #####
+ 93.0s | RMS=0.110 Sub=0.03 Mid=0.36 High=0.29 Key=G# | ########
+ 94.0s | RMS=0.095 Sub=0.03 Mid=0.35 High=0.23 Key=D# | #######
+ 95.0s | RMS=0.068 Sub=0.01 Mid=0.26 High=0.23 Key=F  | #####
+ 96.0s | RMS=0.089 Sub=0.03 Mid=0.30 High=0.27 Key=G# | #######
+ 97.0s | RMS=0.126 Sub=0.03 Mid=0.47 High=0.53 Key=G  | ##########
+ 98.0s | RMS=0.118 Sub=0.02 Mid=0.51 High=0.51 Key=G  | #########
+ 99.0s | RMS=0.125 Sub=0.02 Mid=0.55 High=0.48 Key=G  | ##########
+100.0s | RMS=0.093 Sub=0.03 Mid=0.35 High=0.28 Key=G  | #######
+101.0s | RMS=0.068 Sub=0.01 Mid=0.29 High=0.25 Key=F  | #####
+102.0s | RMS=0.089 Sub=0.01 Mid=0.24 High=0.21 Key=A  | #######
+103.0s | RMS=0.098 Sub=0.03 Mid=0.33 High=0.27 Key=C  | #######
+104.0s | RMS=0.071 Sub=0.02 Mid=0.28 High=0.25 Key=C  | #####
+105.0s | RMS=0.114 Sub=0.01 Mid=0.36 High=0.37 Key=C  | #########
+106.0s | RMS=0.097 Sub=0.02 Mid=0.27 High=0.50 Key=C  | #######
+107.0s | RMS=0.059 Sub=0.02 Mid=0.23 High=0.37 Key=C  | ####
+108.0s | RMS=0.050 Sub=0.02 Mid=0.22 High=0.27 Key=G  | ####
+109.0s | RMS=0.072 Sub=0.01 Mid=0.29 High=0.26 Key=G  | #####
+110.0s | RMS=0.096 Sub=0.03 Mid=0.36 High=0.26 Key=G  | #######
+111.0s | RMS=0.092 Sub=0.02 Mid=0.43 High=0.30 Key=G  | #######
+112.0s | RMS=0.108 Sub=0.01 Mid=0.51 High=0.35 Key=G  | ########
+113.0s | RMS=0.160 Sub=0.03 Mid=0.69 High=0.32 Key=A# | ############
+114.0s | RMS=0.148 Sub=0.02 Mid=0.64 High=0.27 Key=A# | ###########
+115.0s | RMS=0.099 Sub=0.01 Mid=0.48 High=0.24 Key=C  | #######
+116.0s | RMS=0.063 Sub=0.00 Mid=0.34 High=0.24 Key=D# | #####
+117.0s | RMS=0.031 Sub=0.00 Mid=0.16 High=0.12 Key=D# | ##

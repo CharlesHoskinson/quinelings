@@ -257,6 +257,7 @@
   "threeRecoveredGenerations": [
     {
       "recovery": "source",
+      "exactVisualSource": true,
       "exactSource": true,
       "emissionExact": true,
       "exactCalculation": true,
@@ -264,6 +265,7 @@
     },
     {
       "recovery": "harmonics",
+      "exactVisualSource": true,
       "exactSource": true,
       "emissionExact": true,
       "exactCalculation": true,
@@ -271,6 +273,7 @@
     },
     {
       "recovery": "colors",
+      "exactVisualSource": true,
       "exactSource": true,
       "emissionExact": true,
       "exactCalculation": true,
@@ -312,17 +315,17 @@
       true
     ],
     "geometry": {
-      "sameTopology": true,
+      "sameTopology": false,
       "correspondingSamples": false,
       "sharedNodeAnchors": 4,
-      "anchorXyzRms": 0.039984231668047515,
+      "anchorXyzRms": 0.8621015063148721,
       "components": [
-        4,
-        4
+        10,
+        10
       ],
       "ownershipBands": [
-        7,
-        8
+        10,
+        10
       ],
       "reason": "Area-weighted sample plans differ; indexed points are not corresponding tissue. Shared operation anchors are compared at phase zero."
     },
@@ -331,20 +334,20 @@
       "samples": 4000,
       "sharedProjection": true,
       "camera": {
+        "focus": 0.38,
+        "lean": 0,
         "occupancy": 0.76,
-        "lean": -0.12,
-        "yaw": 0.3,
-        "pitch": 0.12,
-        "focus": 0.38
+        "pitch": 0,
+        "yaw": 0
       },
       "bounds": {
         "lo": [
-          -0.8216649594164251,
-          -0.44333024489776585
+          -0.7860372042721138,
+          -0.6369190831566229
         ],
         "hi": [
-          0.8905355504753277,
-          0.7487529852549046
+          0.7860372042721138,
+          0.6369190831566229
         ]
       }
     }
@@ -669,14 +672,14 @@
       "sameTopology": true,
       "correspondingSamples": false,
       "sharedNodeAnchors": 4,
-      "anchorXyzRms": 0.021691918663619192,
+      "anchorXyzRms": 0.7099198123318902,
       "components": [
-        4,
-        4
+        10,
+        10
       ],
       "ownershipBands": [
-        7,
-        7
+        10,
+        10
       ],
       "reason": "Area-weighted sample plans differ; indexed points are not corresponding tissue. Shared operation anchors are compared at phase zero."
     },
@@ -696,12 +699,14 @@
   "passiveRecoveries": [
     {
       "encoding": "harmonics",
+      "exactVisualSource": true,
       "exactSource": true,
       "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1",
       "additionalEvaluationRequests": 0
     },
     {
       "encoding": "colors",
+      "exactVisualSource": true,
       "exactSource": true,
       "sourceHash": "ql_e02a5c069ddc078b3086c9b3a07918030bc3c90e1bad9bbbb41f1f351ad572b1",
       "additionalEvaluationRequests": 0

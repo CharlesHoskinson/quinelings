@@ -46,7 +46,7 @@ for(const recipe of recipes){
  const result=T.compile(parsed.intent),graph=structuredClone(result.graph);delete graph.design;
  // Local pipeline inputs have a generated name. Resolve the supplied array by its value.
  if(recipe.id==='emberfold')for(const fixture of recipe.cases){const input=graph.nodes.find(n=>n.op==='literal'&&json(n.params.value)===json(signal));fixture.overrides={[input.id]:fixture.overrides.value};}
- const bodySeed=integer(0,4294967295),design=D.create('filament');design.woven=W.author(graph,bodySeed);Object.assign(design.composition,{yaw:0,pitch:0,lean:0});design.chroma.strength=.35;
+ const bodySeed=integer(0,4294967295),design=D.fromGraph?D.fromGraph(graph,bodySeed):D.create('filament');Object.assign(design.composition,{yaw:0,pitch:0,lean:0});design.woven=W.author(graph,bodySeed);
  if(recipe.domain)design.chroma.lens={kind:'scalar',id:'output',label:'Recorded water reading',unit:'L',domain:recipe.domain,bindings:[{node:graph.outputs[0],path:[]}]};
  const program=Q.makeTaskProgram(graph,1,design),source=Q.canon(program);
  const fixtures=[{label:'generated inputs',overrides:{},expected:recipe.expected},...recipe.cases];

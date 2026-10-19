@@ -27,16 +27,16 @@
                       "chroma": {
                         "model": "material-territories",
                         "palette": "roles-1",
-                        "strength": 0.35
+                        "strength": 0.59
                       },
                       "composition": {
-                        "focus": 0.38,
+                        "focus": 0.531,
                         "lean": 0,
-                        "occupancy": 0.76,
+                        "occupancy": 0.757,
                         "pitch": 0,
                         "yaw": 0
                       },
-                      "family": "filament",
+                      "family": "torus",
                       "filament": {
                         "bend": 0.04,
                         "frequencyGain": 0.07,
@@ -45,7 +45,7 @@
                       },
                       "ink": {
                         "ghostAlpha": 0.09,
-                        "neutral": "#f0f1eb",
+                        "neutral": "#eef2ec",
                         "ridgeAlpha": 0.88,
                         "secondaryAlpha": 0.42
                       },
@@ -57,18 +57,18 @@
                       },
                       "motion": {
                         "clock": "separate",
-                        "phaseRate": 0.038,
+                        "phaseRate": 0.0292,
                         "reducedMotion": "freeze",
                         "rhythm": {
-                          "asymmetry": 0.28,
-                          "breath": 0.06,
-                          "lag": 0.9,
+                          "asymmetry": 0.246,
+                          "breath": 0.089,
+                          "lag": 0.583,
                           "mode": "periodic",
                           "model": "coupled-harmonic",
-                          "overtone": 0.17,
-                          "rate": 1,
-                          "wave": 0.055,
-                          "waveNumber": 1.6
+                          "overtone": 0.182,
+                          "rate": 0.9,
+                          "wave": 0.05,
+                          "waveNumber": 3.039
                         }
                       },
                       "organ": {
@@ -86,26 +86,26 @@
                         "asymmetry": 0.25,
                         "crests": 4,
                         "depth": 0.28,
-                        "folds": 7,
+                        "folds": 6,
                         "model": "folded-ribbon",
                         "phaseLag": 1.4,
-                        "ribbons": 28,
+                        "ribbons": 24,
                         "samples": 24000,
-                        "spread": 0.16,
-                        "taper": 0.65,
-                        "twist": 1.9
+                        "spread": 0.111,
+                        "taper": 0.8,
+                        "twist": 1.695
                       },
                       "woven": {
                         "folds": 5,
                         "geometry": {
-                          "asymmetry": 0.17637760505545885,
-                          "curl": 1.022963497787714,
+                          "asymmetry": 0.24299161773407285,
+                          "curl": 0.7906127060241179,
                           "frequency": 5,
-                          "growth": 0.17383206924423575,
-                          "lobes": 6,
-                          "offset": 2.9985042939338418,
-                          "spread": 0.8334672956494614,
-                          "twist": 2.5,
+                          "growth": 0.1879870604759224,
+                          "lobes": 7,
+                          "offset": 6.2196988911174484,
+                          "spread": 0.6752029075961911,
+                          "twist": 2.119912409687465,
                           "whorls": 3
                         },
                         "mechanism": "toroidal-weave",
@@ -193,12 +193,12 @@
                           "fanout": 1,
                           "guards": 0
                         },
-                        "turns": 1.54
+                        "turns": 1.6885
                       }
                     },
                     "format": "quineling-visual-capsule",
                     "profile": "woven-experimental",
-                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
+                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.59},\"composition\":{\"focus\":0.531,\"lean\":0,\"occupancy\":0.757,\"pitch\":0,\"yaw\":0},\"family\":\"torus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0292,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.246,\"breath\":0.089,\"lag\":0.583,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.182,\"rate\":0.9,\"wave\":0.05,\"waveNumber\":3.039}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":6,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":24,\"samples\":24000,\"spread\":0.111,\"taper\":0.8,\"twist\":1.695}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.59},\"composition\":{\"focus\":0.531,\"lean\":0,\"occupancy\":0.757,\"pitch\":0,\"yaw\":0},\"family\":\"torus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0292,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.246,\"breath\":0.089,\"lag\":0.583,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.182,\"rate\":0.9,\"wave\":0.05,\"waveNumber\":3.039}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":6,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":24,\"samples\":24000,\"spread\":0.111,\"taper\":0.8,\"twist\":1.695}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                   }
                 ]
               ]
@@ -249,16 +249,16 @@
                     "chroma": {
                       "model": "material-territories",
                       "palette": "roles-1",
-                      "strength": 0.35
+                      "strength": 0.59
                     },
                     "composition": {
-                      "focus": 0.38,
+                      "focus": 0.531,
                       "lean": 0,
-                      "occupancy": 0.76,
+                      "occupancy": 0.757,
                       "pitch": 0,
                       "yaw": 0
                     },
-                    "family": "filament",
+                    "family": "torus",
                     "filament": {
                       "bend": 0.04,
                       "frequencyGain": 0.07,
@@ -267,7 +267,7 @@
                     },
                     "ink": {
                       "ghostAlpha": 0.09,
-                      "neutral": "#f0f1eb",
+                      "neutral": "#eef2ec",
                       "ridgeAlpha": 0.88,
                       "secondaryAlpha": 0.42
                     },
@@ -279,18 +279,18 @@
                     },
                     "motion": {
                       "clock": "separate",
-                      "phaseRate": 0.038,
+                      "phaseRate": 0.0292,
                       "reducedMotion": "freeze",
                       "rhythm": {
-                        "asymmetry": 0.28,
-                        "breath": 0.06,
-                        "lag": 0.9,
+                        "asymmetry": 0.246,
+                        "breath": 0.089,
+                        "lag": 0.583,
                         "mode": "periodic",
                         "model": "coupled-harmonic",
-                        "overtone": 0.17,
-                        "rate": 1,
-                        "wave": 0.055,
-                        "waveNumber": 1.6
+                        "overtone": 0.182,
+                        "rate": 0.9,
+                        "wave": 0.05,
+                        "waveNumber": 3.039
                       }
                     },
                     "organ": {
@@ -308,26 +308,26 @@
                       "asymmetry": 0.25,
                       "crests": 4,
                       "depth": 0.28,
-                      "folds": 7,
+                      "folds": 6,
                       "model": "folded-ribbon",
                       "phaseLag": 1.4,
-                      "ribbons": 28,
+                      "ribbons": 24,
                       "samples": 24000,
-                      "spread": 0.16,
-                      "taper": 0.65,
-                      "twist": 1.9
+                      "spread": 0.111,
+                      "taper": 0.8,
+                      "twist": 1.695
                     },
                     "woven": {
                       "folds": 5,
                       "geometry": {
-                        "asymmetry": 0.17637760505545885,
-                        "curl": 1.022963497787714,
+                        "asymmetry": 0.24299161773407285,
+                        "curl": 0.7906127060241179,
                         "frequency": 5,
-                        "growth": 0.17383206924423575,
-                        "lobes": 6,
-                        "offset": 2.9985042939338418,
-                        "spread": 0.8334672956494614,
-                        "twist": 2.5,
+                        "growth": 0.1879870604759224,
+                        "lobes": 7,
+                        "offset": 6.2196988911174484,
+                        "spread": 0.6752029075961911,
+                        "twist": 2.119912409687465,
                         "whorls": 3
                       },
                       "mechanism": "toroidal-weave",
@@ -415,12 +415,12 @@
                         "fanout": 1,
                         "guards": 0
                       },
-                      "turns": 1.54
+                      "turns": 1.6885
                     }
                   },
                   "format": "quineling-visual-capsule",
                   "profile": "woven-experimental",
-                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
+                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.59},\"composition\":{\"focus\":0.531,\"lean\":0,\"occupancy\":0.757,\"pitch\":0,\"yaw\":0},\"family\":\"torus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0292,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.246,\"breath\":0.089,\"lag\":0.583,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.182,\"rate\":0.9,\"wave\":0.05,\"waveNumber\":3.039}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":6,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":24,\"samples\":24000,\"spread\":0.111,\"taper\":0.8,\"twist\":1.695}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.59},\"composition\":{\"focus\":0.531,\"lean\":0,\"occupancy\":0.757,\"pitch\":0,\"yaw\":0},\"family\":\"torus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0292,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.246,\"breath\":0.089,\"lag\":0.583,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.182,\"rate\":0.9,\"wave\":0.05,\"waveNumber\":3.039}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":6,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":24,\"samples\":24000,\"spread\":0.111,\"taper\":0.8,\"twist\":1.695}},\"name\":\"Hourbloom\",\"nodes\":[{\"id\":\"jobs\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[{\"depends\":[],\"duration\":5,\"id\":\"prepare\"},{\"depends\":[\"prepare\"],\"duration\":4,\"id\":\"weave\"},{\"depends\":[],\"duration\":2,\"id\":\"gather\"},{\"depends\":[\"weave\",\"gather\"],\"duration\":3,\"id\":\"finish\"}]}},{\"id\":\"simulationAllowed\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":true}},{\"id\":\"step1\",\"inputs\":[\"jobs\"],\"op\":\"schedule\",\"params\":{}},{\"id\":\"scheduleProposal\",\"inputs\":[\"simulationAllowed\",\"step1\"],\"op\":\"action\",\"params\":{\"action\":\"schedule-proposal\",\"allowed\":true}}],\"outputs\":[\"step1\",\"scheduleProposal\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                 }
               ]
             ]
@@ -452,7 +452,7 @@
       ]
     ]
   ],
-  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.17637760505545885,\"curl\":1.022963497787714,\"frequency\":5,\"growth\":0.17383206924423575,\"lobes\":6,\"offset\":2.9985042939338418,\"spread\":0.8334672956494614,\"twist\":2.5,\"whorls\":3},\"mechanism\":\"toroidal-weave\",\"model\":\"woven-field-experimental\",\"seed\":694900239,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":1,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":4,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":5,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":6,\"node\":\"step1\",\"u\":[0,1]},{\"component\":7,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":8,\"node\":\"jobs\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":3,\"effects\":1,\"fanout\":1,\"guards\":0},\"turns\":1.54}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.17637760505545885,\"curl\":1.022963497787714,\"frequency\":5,\"growth\":0.17383206924423575,\"lobes\":6,\"offset\":2.9985042939338418,\"spread\":0.8334672956494614,\"twist\":2.5,\"whorls\":3},\"mechanism\":\"toroidal-weave\",\"model\":\"woven-field-experimental\",\"seed\":694900239,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":1,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":4,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":5,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":6,\"node\":\"step1\",\"u\":[0,1]},{\"component\":7,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":8,\"node\":\"jobs\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":3,\"effects\":1,\"fanout\":1,\"guards\":0},\"turns\":1.54}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.59},\"composition\":{\"focus\":0.531,\"lean\":0,\"occupancy\":0.757,\"pitch\":0,\"yaw\":0},\"family\":\"torus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0292,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.246,\"breath\":0.089,\"lag\":0.583,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.182,\"rate\":0.9,\"wave\":0.05,\"waveNumber\":3.039}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":6,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":24,\"samples\":24000,\"spread\":0.111,\"taper\":0.8,\"twist\":1.695},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.24299161773407285,\"curl\":0.7906127060241179,\"frequency\":5,\"growth\":0.1879870604759224,\"lobes\":7,\"offset\":6.2196988911174484,\"spread\":0.6752029075961911,\"twist\":2.119912409687465,\"whorls\":3},\"mechanism\":\"toroidal-weave\",\"model\":\"woven-field-experimental\",\"seed\":694900239,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":1,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":4,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":5,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":6,\"node\":\"step1\",\"u\":[0,1]},{\"component\":7,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":8,\"node\":\"jobs\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":3,\"effects\":1,\"fanout\":1,\"guards\":0},\"turns\":1.6885}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.59},\\\"composition\\\":{\\\"focus\\\":0.531,\\\"lean\\\":0,\\\"occupancy\\\":0.757,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"torus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0292,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.246,\\\"breath\\\":0.089,\\\"lag\\\":0.583,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.182,\\\"rate\\\":0.9,\\\"wave\\\":0.05,\\\"waveNumber\\\":3.039}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":6,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":24,\\\"samples\\\":24000,\\\"spread\\\":0.111,\\\"taper\\\":0.8,\\\"twist\\\":1.695}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.59},\\\"composition\\\":{\\\"focus\\\":0.531,\\\"lean\\\":0,\\\"occupancy\\\":0.757,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"torus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0292,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.246,\\\"breath\\\":0.089,\\\"lag\\\":0.583,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.182,\\\"rate\\\":0.9,\\\"wave\\\":0.05,\\\"waveNumber\\\":3.039}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":6,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":24,\\\"samples\\\":24000,\\\"spread\\\":0.111,\\\"taper\\\":0.8,\\\"twist\\\":1.695}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.59},\"composition\":{\"focus\":0.531,\"lean\":0,\"occupancy\":0.757,\"pitch\":0,\"yaw\":0},\"family\":\"torus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0292,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.246,\"breath\":0.089,\"lag\":0.583,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.182,\"rate\":0.9,\"wave\":0.05,\"waveNumber\":3.039}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":6,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":24,\"samples\":24000,\"spread\":0.111,\"taper\":0.8,\"twist\":1.695},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.24299161773407285,\"curl\":0.7906127060241179,\"frequency\":5,\"growth\":0.1879870604759224,\"lobes\":7,\"offset\":6.2196988911174484,\"spread\":0.6752029075961911,\"twist\":2.119912409687465,\"whorls\":3},\"mechanism\":\"toroidal-weave\",\"model\":\"woven-field-experimental\",\"seed\":694900239,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":1,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":4,\"node\":\"jobs\",\"u\":[0,1]},{\"component\":5,\"node\":\"simulationAllowed\",\"u\":[0,1]},{\"component\":6,\"node\":\"step1\",\"u\":[0,1]},{\"component\":7,\"node\":\"scheduleProposal\",\"u\":[0,1]},{\"component\":8,\"node\":\"jobs\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":3,\"effects\":1,\"fanout\":1,\"guards\":0},\"turns\":1.6885}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.59},\\\"composition\\\":{\\\"focus\\\":0.531,\\\"lean\\\":0,\\\"occupancy\\\":0.757,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"torus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0292,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.246,\\\"breath\\\":0.089,\\\"lag\\\":0.583,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.182,\\\"rate\\\":0.9,\\\"wave\\\":0.05,\\\"waveNumber\\\":3.039}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":6,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":24,\\\"samples\\\":24000,\\\"spread\\\":0.111,\\\"taper\\\":0.8,\\\"twist\\\":1.695}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.59},\\\"composition\\\":{\\\"focus\\\":0.531,\\\"lean\\\":0,\\\"occupancy\\\":0.757,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"torus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0292,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.246,\\\"breath\\\":0.089,\\\"lag\\\":0.583,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.182,\\\"rate\\\":0.9,\\\"wave\\\":0.05,\\\"waveNumber\\\":3.039}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":6,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":24,\\\"samples\\\":24000,\\\"spread\\\":0.111,\\\"taper\\\":0.8,\\\"twist\\\":1.695}},\\\"name\\\":\\\"Hourbloom\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"jobs\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[{\\\"depends\\\":[],\\\"duration\\\":5,\\\"id\\\":\\\"prepare\\\"},{\\\"depends\\\":[\\\"prepare\\\"],\\\"duration\\\":4,\\\"id\\\":\\\"weave\\\"},{\\\"depends\\\":[],\\\"duration\\\":2,\\\"id\\\":\\\"gather\\\"},{\\\"depends\\\":[\\\"weave\\\",\\\"gather\\\"],\\\"duration\\\":3,\\\"id\\\":\\\"finish\\\"}]}},{\\\"id\\\":\\\"simulationAllowed\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":true}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"jobs\\\"],\\\"op\\\":\\\"schedule\\\",\\\"params\\\":{}},{\\\"id\\\":\\\"scheduleProposal\\\",\\\"inputs\\\":[\\\"simulationAllowed\\\",\\\"step1\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"schedule-proposal\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step1\\\",\\\"scheduleProposal\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
   "graph": {
     "version": 1,
     "name": "Hourbloom",
@@ -527,7 +527,7 @@
   },
   "design": {
     "qdl": 1,
-    "family": "filament",
+    "family": "torus",
     "organ": {
       "model": "rosette",
       "baseRadius": 0.03,
@@ -546,36 +546,36 @@
     },
     "motion": {
       "clock": "separate",
-      "phaseRate": 0.038,
+      "phaseRate": 0.0292,
       "reducedMotion": "freeze",
       "rhythm": {
         "model": "coupled-harmonic",
         "mode": "periodic",
-        "rate": 1,
-        "breath": 0.06,
-        "wave": 0.055,
-        "waveNumber": 1.6,
-        "lag": 0.9,
-        "asymmetry": 0.28,
-        "overtone": 0.17
+        "rate": 0.9,
+        "breath": 0.089,
+        "wave": 0.05,
+        "waveNumber": 3.039,
+        "lag": 0.583,
+        "asymmetry": 0.246,
+        "overtone": 0.182
       }
     },
     "ink": {
       "ghostAlpha": 0.09,
       "secondaryAlpha": 0.42,
       "ridgeAlpha": 0.88,
-      "neutral": "#f0f1eb"
+      "neutral": "#eef2ec"
     },
     "surface": {
       "model": "folded-ribbon",
-      "ribbons": 28,
+      "ribbons": 24,
       "crests": 4,
-      "spread": 0.16,
-      "folds": 7,
-      "taper": 0.65,
+      "spread": 0.111,
+      "folds": 6,
+      "taper": 0.8,
       "asymmetry": 0.25,
       "depth": 0.28,
-      "twist": 1.9,
+      "twist": 1.695,
       "phaseLag": 1.4,
       "samples": 24000
     },
@@ -586,16 +586,16 @@
       "depthContrast": 0.65
     },
     "composition": {
-      "occupancy": 0.76,
+      "occupancy": 0.757,
       "lean": 0,
       "yaw": 0,
       "pitch": 0,
-      "focus": 0.38
+      "focus": 0.531
     },
     "chroma": {
       "model": "material-territories",
       "palette": "roles-1",
-      "strength": 0.35
+      "strength": 0.59
     },
     "woven": {
       "model": "woven-field-experimental",
@@ -610,7 +610,7 @@
       },
       "strands": 9,
       "folds": 5,
-      "turns": 1.54,
+      "turns": 1.6885,
       "territories": [
         {
           "node": "jobs",
@@ -686,14 +686,14 @@
         }
       ],
       "geometry": {
-        "growth": 0.17383206924423575,
-        "spread": 0.8334672956494614,
-        "curl": 1.022963497787714,
-        "asymmetry": 0.17637760505545885,
-        "offset": 2.9985042939338418,
+        "growth": 0.1879870604759224,
+        "spread": 0.6752029075961911,
+        "curl": 0.7906127060241179,
+        "asymmetry": 0.24299161773407285,
+        "offset": 6.2196988911174484,
         "frequency": 5,
-        "lobes": 6,
-        "twist": 2.5,
+        "lobes": 7,
+        "twist": 2.119912409687465,
         "whorls": 3
       }
     }

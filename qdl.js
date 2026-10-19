@@ -90,8 +90,42 @@ function validateBindings(d,graph){
  for(const b of d.chroma.lens.bindings)check(ids.has(b.node),'unknown scalar binding node '+b.node);
  return true;
 }
-function forProgram(item){const d=create(item.skin.family);if(Object.hasOwn(item.skin,'chroma')){validateChroma(item.skin.chroma);d.chroma=clone(item.skin.chroma);}validate(d);return d;}
+function fromGraph(graph,seed){
+ const ns=Array.isArray(graph)?graph:graph?.nodes||[];let h=2166136261,litSum=0,litCount=0,inMax=0,outMax=0,guards=0,effects=0;const ops=new Set(),outDeg=new Map(),inDeg=new Map(ns.map(n=>[n.id,0]));
+ const addStr=s=>{for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),16777619)>>>0;};
+ const scan=v=>{if(typeof v==='number'&&Number.isFinite(v)){litSum+=Math.log1p(Math.min(1e6,Math.abs(v)));litCount++;addStr(String(v));}else if(Array.isArray(v)){litSum+=Math.log1p(v.length);litCount++;for(let i=0;i<Math.min(16,v.length);i++)scan(v[i]);}else if(v&&typeof v==='object'){for(const k of Object.keys(v).sort()){addStr(k);scan(v[k]);}}};
+ for(const n of ns){ops.add(n.op||'');const deps=(n.args||n.inputs||[]).map(d=>typeof d==='string'?d:d?.node||'').filter(Boolean);inDeg.set(n.id,deps.length);for(const id of deps)outDeg.set(id,(outDeg.get(id)||0)+1);if(/^(guard|filter|if|condition)$/.test(n.op||''))guards++;if(/^(action|effect)$/.test(n.op||''))effects++;addStr((n.id||'')+':'+(n.op||'')+':'+deps.join(','));if(n.params)scan(n.params);}
+ for(const v of inDeg.values())if(v>inMax)inMax=v;for(const v of outDeg.values())if(v>outMax)outMax=v;
+ const mix=((seed===undefined?h:(seed^h))>>>0),r0=(mix&0xffff)/65535,r1=((mix>>>16)&0xffff)/65535,litNorm=litCount?Math.min(1,litSum/(litCount*4.2)):r0,opNorm=Math.min(1,ops.size*.12+r1*.25);
+ const hasTree=ns.some(n=>/^(choose|Apply|Box|retry)$/.test(n.op||'')),hasCoupled=ns.some(n=>/^(consensus|reconcile|evidence|evidenceFresh|compareValues|Score|Quote|Decode)$/.test(n.op||'')),hasPipe=ns.some(n=>/^(dedupe|sort|length|select|clamp)$/.test(n.op||''));
+ const family=guards>0?'jelly':(effects===0&&outMax>=2&&hasTree)?'coral':(effects===0&&hasCoupled)?'moth':(effects===0&&outMax<=1&&ns.length>=4&&hasPipe)?'ribbon':outMax>=2?'comet':effects>0?'torus':inMax>=2?'nautilus':'bloom';
+ const d=create(family);
+ Object.assign(d.composition,{yaw:0,pitch:0,lean:0,focus:Number(Math.max(.18,Math.min(.76,d.composition.focus+(.5-litNorm)*.12)).toFixed(3)),occupancy:Number(Math.max(.64,Math.min(.82,.72+.08*opNorm)).toFixed(3))});
+ d.motion.phaseRate=Number(Math.max(.018,Math.min(.048,d.motion.phaseRate*(.82+.36*litNorm+.14*opNorm))).toFixed(4));
+ Object.assign(d.motion.rhythm,{
+  mode:(hasTree||hasCoupled||inMax>=2&&outMax>=2)?'quasiperiodic':d.motion.rhythm.mode,
+  rate:Number(Math.max(.35,Math.min(1.85,d.motion.rhythm.rate*(.78+.48*litNorm+.22*opNorm))).toFixed(3)),
+  breath:Number(Math.max(.025,Math.min(.17,d.motion.rhythm.breath*(.8+.45*r0))).toFixed(3)),
+  wave:Number(Math.max(.025,Math.min(.16,d.motion.rhythm.wave*(.8+.45*litNorm))).toFixed(3)),
+  waveNumber:Number(Math.max(.8,Math.min(3.8,d.motion.rhythm.waveNumber*(.85+.35*opNorm))).toFixed(3)),
+  lag:Number(Math.max(.25,Math.min(1.85,d.motion.rhythm.lag*(.82+.36*r1))).toFixed(3)),
+  asymmetry:Number(Math.max(.08,Math.min(.75,d.motion.rhythm.asymmetry*(.75+.5*opNorm))).toFixed(3)),
+  overtone:Number(Math.max(.08,Math.min(.33,d.motion.rhythm.overtone*(.8+.45*litNorm))).toFixed(3))
+ });
+ Object.assign(d.surface,{
+  ribbons:Math.max(12,Math.min(34,Math.round(d.surface.ribbons*(.85+.3*opNorm)))),
+  crests:Math.max(3,Math.min(6,3+Math.min(3,Math.floor((inMax+outMax+Math.round(litNorm*2))/2)))),
+  folds:Math.max(3,Math.min(9,Math.round(d.surface.folds+.8*(litNorm-.3)+(inMax>1?1:0)))),
+  spread:Number(Math.max(.06,Math.min(.22,d.surface.spread*(.85+.32*litNorm))).toFixed(3)),
+  twist:Number(Math.max(.8,Math.min(2.8,d.surface.twist*(.82+.38*opNorm))).toFixed(3))
+ });
+ const neutrals=['#f0f1eb','#ebf1f0','#f2eee9','#eceff4','#eef2ec','#f1edf2','#eaf1ee','#f2f0e8'];
+ d.ink.neutral=neutrals[mix%neutrals.length];
+ d.chroma.strength=Number((.48+.30*(.55*opNorm+.45*litNorm)).toFixed(3));
+ validate(d);return d;
+}
+function forProgram(item){if(item?.graph&&!item?.skin)return fromGraph(item.graph,item.seed);const d=create(item.skin.family);if(Object.hasOwn(item.skin,'chroma')){validateChroma(item.skin.chroma);d.chroma=clone(item.skin.chroma);}validate(d);return d;}
 function organRadius(d,n,a,t){const value=n.params?.value,magnitude=typeof value==='number'?Math.min(6,Math.abs(value)):Array.isArray(value)?Math.min(6,value.length):1;const r=Math.min(.16,d.organ.baseRadius+d.organ.degreeGain*(n.indegree+n.outdegree)+d.organ.literalGain*magnitude);return r*(1+d.organ.amplitudes[0]*Math.cos(n.frequency*a)+d.organ.amplitudes[1]*Math.cos((n.outdegree+1)*a+t));}
 function filamentBend(d,frequency,u,t){return d.filament.bend*(1+d.filament.frequencyGain*frequency)*Math.sin(Math.PI*u)*(1+d.filament.ripple*Math.sin(2*Math.PI*frequency*u+t));}
-const api={FAMILIES,DEFAULT,HEREDITY_TRAITS,validateHeredity,validate,validateBindings,create,forProgram,organRadius,filamentBend};if(typeof module!=='undefined')module.exports=api;root.QDL=api;
+const api={FAMILIES,DEFAULT,HEREDITY_TRAITS,validateHeredity,validate,validateBindings,create,fromGraph,forProgram,organRadius,filamentBend};if(typeof module!=='undefined')module.exports=api;root.QDL=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -23,7 +23,7 @@ function hash(text){let value=2166136261;for(const c of new TextEncoder().encode
 function cleanGraph(graph){const result=clone(graph);delete result.design;return result;}
 function sourceMapRows(map){if(Array.isArray(map))return map.flatMap(row=>row.nodeId?[{nodeId:row.nodeId,clause:row.clause||row.text||row.nodeId}]:Array.isArray(row.nodeIds)?row.nodeIds.map(nodeId=>({nodeId,clause:row.text||row.clause||nodeId})):[]);return [];}
 function createArtifact(result,thought,candidate=0){
- const graph=cleanGraph(result.graph),seed=hash(Q.canon(graph)+':candidate:'+candidate),design=QDL.create('filament');Object.assign(design.composition,{yaw:0,pitch:0,lean:0});design.woven=WovenBody.author(graph,seed);design.chroma.strength=.35;
+ const graph=cleanGraph(result.graph),seed=hash(Q.canon(graph)+':candidate:'+candidate),design=QDL.fromGraph?QDL.fromGraph(graph,seed):QDL.create('filament');Object.assign(design.composition,{yaw:0,pitch:0,lean:0});design.woven=WovenBody.author(graph,seed);
  const numericOutput=graph.outputs.find(id=>{const type=result.contract?.types?.[id];return type?.kind==='number'||type==='number';});
  if(numericOutput){const type=result.contract.types[numericOutput];design.chroma.lens={kind:'scalar',id:'output',label:'Recorded output',unit:typeof type.unit==='string'?type.unit:'',domain:[0,100],bindings:[{node:numericOutput,path:[]}]};}
  const program=Q.makeTaskProgram(graph,1,design),source=Q.canon(program);Q.encode(program);

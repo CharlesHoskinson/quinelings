@@ -43,16 +43,16 @@
                         },
                         "model": "material-territories",
                         "palette": "roles-1",
-                        "strength": 0.35
+                        "strength": 0.638
                       },
                       "composition": {
-                        "focus": 0.38,
+                        "focus": 0.44,
                         "lean": 0,
-                        "occupancy": 0.76,
+                        "occupancy": 0.759,
                         "pitch": 0,
                         "yaw": 0
                       },
-                      "family": "filament",
+                      "family": "nautilus",
                       "filament": {
                         "bend": 0.04,
                         "frequencyGain": 0.07,
@@ -61,7 +61,7 @@
                       },
                       "ink": {
                         "ghostAlpha": 0.09,
-                        "neutral": "#f0f1eb",
+                        "neutral": "#eef2ec",
                         "ridgeAlpha": 0.88,
                         "secondaryAlpha": 0.42
                       },
@@ -73,18 +73,18 @@
                       },
                       "motion": {
                         "clock": "separate",
-                        "phaseRate": 0.038,
+                        "phaseRate": 0.0307,
                         "reducedMotion": "freeze",
                         "rhythm": {
-                          "asymmetry": 0.28,
-                          "breath": 0.06,
-                          "lag": 0.9,
+                          "asymmetry": 0.447,
+                          "breath": 0.095,
+                          "lag": 1.291,
                           "mode": "periodic",
                           "model": "coupled-harmonic",
-                          "overtone": 0.17,
-                          "rate": 1,
-                          "wave": 0.055,
-                          "waveNumber": 1.6
+                          "overtone": 0.191,
+                          "rate": 0.757,
+                          "wave": 0.048,
+                          "waveNumber": 1.836
                         }
                       },
                       "organ": {
@@ -100,37 +100,37 @@
                       "qdl": 1,
                       "surface": {
                         "asymmetry": 0.25,
-                        "crests": 4,
-                        "depth": 0.28,
+                        "crests": 5,
+                        "depth": 0.24,
                         "folds": 7,
                         "model": "folded-ribbon",
                         "phaseLag": 1.4,
                         "ribbons": 28,
                         "samples": 24000,
-                        "spread": 0.16,
-                        "taper": 0.65,
-                        "twist": 1.9
+                        "spread": 0.104,
+                        "taper": 0.85,
+                        "twist": 1.507
                       },
                       "woven": {
                         "folds": 5,
                         "geometry": {
-                          "asymmetry": 0.23530340284574774,
-                          "curl": 1.3741172589361668,
-                          "frequency": 4,
-                          "growth": 0.21091063430532814,
-                          "lobes": 5,
+                          "asymmetry": 0.22949519821696585,
+                          "curl": 0.8147047375197429,
+                          "frequency": 5,
+                          "growth": 0.18261539098975232,
+                          "lobes": 6,
                           "material": {
                             "columns": 15,
-                            "focus": 2,
-                            "gain": 0.65,
+                            "focus": 2.234,
+                            "gain": 0.662,
                             "model": "projected-compression",
-                            "quiet": 0.12,
+                            "quiet": 0.094,
                             "rows": 48
                           },
-                          "offset": 2.5291755034544483,
-                          "spread": 0.9297380826203152,
-                          "twist": 2,
-                          "whorls": 2
+                          "offset": 5.918553467726378,
+                          "spread": 0.8231971982616471,
+                          "twist": 2.3286073349635683,
+                          "whorls": 3
                         },
                         "mechanism": "logarithmic-mantle",
                         "model": "woven-field-experimental",
@@ -217,12 +217,12 @@
                           "fanout": 1,
                           "guards": 0
                         },
-                        "turns": 1.41
+                        "turns": 1.6644
                       }
                     },
                     "format": "quineling-visual-capsule",
                     "profile": "woven-experimental",
-                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
+                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.638},\"composition\":{\"focus\":0.44,\"lean\":0,\"occupancy\":0.759,\"pitch\":0,\"yaw\":0},\"family\":\"nautilus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0307,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.447,\"breath\":0.095,\"lag\":1.291,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.191,\"rate\":0.757,\"wave\":0.048,\"waveNumber\":1.836}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.24,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.104,\"taper\":0.85,\"twist\":1.507}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.638},\"composition\":{\"focus\":0.44,\"lean\":0,\"occupancy\":0.759,\"pitch\":0,\"yaw\":0},\"family\":\"nautilus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0307,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.447,\"breath\":0.095,\"lag\":1.291,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.191,\"rate\":0.757,\"wave\":0.048,\"waveNumber\":1.836}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.24,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.104,\"taper\":0.85,\"twist\":1.507}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                   }
                 ]
               ]
@@ -289,16 +289,16 @@
                       },
                       "model": "material-territories",
                       "palette": "roles-1",
-                      "strength": 0.35
+                      "strength": 0.638
                     },
                     "composition": {
-                      "focus": 0.38,
+                      "focus": 0.44,
                       "lean": 0,
-                      "occupancy": 0.76,
+                      "occupancy": 0.759,
                       "pitch": 0,
                       "yaw": 0
                     },
-                    "family": "filament",
+                    "family": "nautilus",
                     "filament": {
                       "bend": 0.04,
                       "frequencyGain": 0.07,
@@ -307,7 +307,7 @@
                     },
                     "ink": {
                       "ghostAlpha": 0.09,
-                      "neutral": "#f0f1eb",
+                      "neutral": "#eef2ec",
                       "ridgeAlpha": 0.88,
                       "secondaryAlpha": 0.42
                     },
@@ -319,18 +319,18 @@
                     },
                     "motion": {
                       "clock": "separate",
-                      "phaseRate": 0.038,
+                      "phaseRate": 0.0307,
                       "reducedMotion": "freeze",
                       "rhythm": {
-                        "asymmetry": 0.28,
-                        "breath": 0.06,
-                        "lag": 0.9,
+                        "asymmetry": 0.447,
+                        "breath": 0.095,
+                        "lag": 1.291,
                         "mode": "periodic",
                         "model": "coupled-harmonic",
-                        "overtone": 0.17,
-                        "rate": 1,
-                        "wave": 0.055,
-                        "waveNumber": 1.6
+                        "overtone": 0.191,
+                        "rate": 0.757,
+                        "wave": 0.048,
+                        "waveNumber": 1.836
                       }
                     },
                     "organ": {
@@ -346,37 +346,37 @@
                     "qdl": 1,
                     "surface": {
                       "asymmetry": 0.25,
-                      "crests": 4,
-                      "depth": 0.28,
+                      "crests": 5,
+                      "depth": 0.24,
                       "folds": 7,
                       "model": "folded-ribbon",
                       "phaseLag": 1.4,
                       "ribbons": 28,
                       "samples": 24000,
-                      "spread": 0.16,
-                      "taper": 0.65,
-                      "twist": 1.9
+                      "spread": 0.104,
+                      "taper": 0.85,
+                      "twist": 1.507
                     },
                     "woven": {
                       "folds": 5,
                       "geometry": {
-                        "asymmetry": 0.23530340284574774,
-                        "curl": 1.3741172589361668,
-                        "frequency": 4,
-                        "growth": 0.21091063430532814,
-                        "lobes": 5,
+                        "asymmetry": 0.22949519821696585,
+                        "curl": 0.8147047375197429,
+                        "frequency": 5,
+                        "growth": 0.18261539098975232,
+                        "lobes": 6,
                         "material": {
                           "columns": 15,
-                          "focus": 2,
-                          "gain": 0.65,
+                          "focus": 2.234,
+                          "gain": 0.662,
                           "model": "projected-compression",
-                          "quiet": 0.12,
+                          "quiet": 0.094,
                           "rows": 48
                         },
-                        "offset": 2.5291755034544483,
-                        "spread": 0.9297380826203152,
-                        "twist": 2,
-                        "whorls": 2
+                        "offset": 5.918553467726378,
+                        "spread": 0.8231971982616471,
+                        "twist": 2.3286073349635683,
+                        "whorls": 3
                       },
                       "mechanism": "logarithmic-mantle",
                       "model": "woven-field-experimental",
@@ -463,12 +463,12 @@
                         "fanout": 1,
                         "guards": 0
                       },
-                      "turns": 1.41
+                      "turns": 1.6644
                     }
                   },
                   "format": "quineling-visual-capsule",
                   "profile": "woven-experimental",
-                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
+                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.638},\"composition\":{\"focus\":0.44,\"lean\":0,\"occupancy\":0.759,\"pitch\":0,\"yaw\":0},\"family\":\"nautilus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0307,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.447,\"breath\":0.095,\"lag\":1.291,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.191,\"rate\":0.757,\"wave\":0.048,\"waveNumber\":1.836}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.24,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.104,\"taper\":0.85,\"twist\":1.507}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.638},\"composition\":{\"focus\":0.44,\"lean\":0,\"occupancy\":0.759,\"pitch\":0,\"yaw\":0},\"family\":\"nautilus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0307,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.447,\"breath\":0.095,\"lag\":1.291,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.191,\"rate\":0.757,\"wave\":0.048,\"waveNumber\":1.836}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.24,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.104,\"taper\":0.85,\"twist\":1.507}},\"name\":\"Tideglass\",\"nodes\":[{\"id\":\"values\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[32,35,41,52,70]}},{\"id\":\"weights\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[3,2,3,4,2]}},{\"id\":\"step1\",\"inputs\":[\"values\",\"weights\"],\"op\":\"weightedMean\",\"params\":{}}],\"outputs\":[\"step1\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                 }
               ]
             ]
@@ -500,7 +500,7 @@
       ]
     ]
   ],
-  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.23530340284574774,\"curl\":1.3741172589361668,\"frequency\":4,\"growth\":0.21091063430532814,\"lobes\":5,\"material\":{\"columns\":15,\"focus\":2,\"gain\":0.65,\"model\":\"projected-compression\",\"quiet\":0.12,\"rows\":48},\"offset\":2.5291755034544483,\"spread\":0.9297380826203152,\"twist\":2,\"whorls\":2},\"mechanism\":\"logarithmic-mantle\",\"model\":\"woven-field-experimental\",\"seed\":4181907800,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"values\",\"u\":[0,1]},{\"component\":1,\"node\":\"weights\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"values\",\"u\":[0,1]},{\"component\":4,\"node\":\"weights\",\"u\":[0,1]},{\"component\":5,\"node\":\"step1\",\"u\":[0,1]},{\"component\":6,\"node\":\"values\",\"u\":[0,1]},{\"component\":7,\"node\":\"weights\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":2,\"effects\":0,\"fanout\":1,\"guards\":0},\"turns\":1.41}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.23530340284574774,\"curl\":1.3741172589361668,\"frequency\":4,\"growth\":0.21091063430532814,\"lobes\":5,\"material\":{\"columns\":15,\"focus\":2,\"gain\":0.65,\"model\":\"projected-compression\",\"quiet\":0.12,\"rows\":48},\"offset\":2.5291755034544483,\"spread\":0.9297380826203152,\"twist\":2,\"whorls\":2},\"mechanism\":\"logarithmic-mantle\",\"model\":\"woven-field-experimental\",\"seed\":4181907800,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"values\",\"u\":[0,1]},{\"component\":1,\"node\":\"weights\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"values\",\"u\":[0,1]},{\"component\":4,\"node\":\"weights\",\"u\":[0,1]},{\"component\":5,\"node\":\"step1\",\"u\":[0,1]},{\"component\":6,\"node\":\"values\",\"u\":[0,1]},{\"component\":7,\"node\":\"weights\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":2,\"effects\":0,\"fanout\":1,\"guards\":0},\"turns\":1.41}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.638},\"composition\":{\"focus\":0.44,\"lean\":0,\"occupancy\":0.759,\"pitch\":0,\"yaw\":0},\"family\":\"nautilus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0307,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.447,\"breath\":0.095,\"lag\":1.291,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.191,\"rate\":0.757,\"wave\":0.048,\"waveNumber\":1.836}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.24,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.104,\"taper\":0.85,\"twist\":1.507},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.22949519821696585,\"curl\":0.8147047375197429,\"frequency\":5,\"growth\":0.18261539098975232,\"lobes\":6,\"material\":{\"columns\":15,\"focus\":2.234,\"gain\":0.662,\"model\":\"projected-compression\",\"quiet\":0.094,\"rows\":48},\"offset\":5.918553467726378,\"spread\":0.8231971982616471,\"twist\":2.3286073349635683,\"whorls\":3},\"mechanism\":\"logarithmic-mantle\",\"model\":\"woven-field-experimental\",\"seed\":4181907800,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"values\",\"u\":[0,1]},{\"component\":1,\"node\":\"weights\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"values\",\"u\":[0,1]},{\"component\":4,\"node\":\"weights\",\"u\":[0,1]},{\"component\":5,\"node\":\"step1\",\"u\":[0,1]},{\"component\":6,\"node\":\"values\",\"u\":[0,1]},{\"component\":7,\"node\":\"weights\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":2,\"effects\":0,\"fanout\":1,\"guards\":0},\"turns\":1.6644}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.638},\\\"composition\\\":{\\\"focus\\\":0.44,\\\"lean\\\":0,\\\"occupancy\\\":0.759,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"nautilus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0307,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.447,\\\"breath\\\":0.095,\\\"lag\\\":1.291,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.191,\\\"rate\\\":0.757,\\\"wave\\\":0.048,\\\"waveNumber\\\":1.836}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.24,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.104,\\\"taper\\\":0.85,\\\"twist\\\":1.507}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.638},\\\"composition\\\":{\\\"focus\\\":0.44,\\\"lean\\\":0,\\\"occupancy\\\":0.759,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"nautilus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0307,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.447,\\\"breath\\\":0.095,\\\"lag\\\":1.291,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.191,\\\"rate\\\":0.757,\\\"wave\\\":0.048,\\\"waveNumber\\\":1.836}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.24,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.104,\\\"taper\\\":0.85,\\\"twist\\\":1.507}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"lens\":{\"bindings\":[{\"node\":\"step1\",\"path\":[]}],\"domain\":[0,100],\"id\":\"output\",\"kind\":\"scalar\",\"label\":\"Recorded water reading\",\"unit\":\"L\"},\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.638},\"composition\":{\"focus\":0.44,\"lean\":0,\"occupancy\":0.759,\"pitch\":0,\"yaw\":0},\"family\":\"nautilus\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#eef2ec\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0307,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.447,\"breath\":0.095,\"lag\":1.291,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.191,\"rate\":0.757,\"wave\":0.048,\"waveNumber\":1.836}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.24,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.104,\"taper\":0.85,\"twist\":1.507},\"woven\":{\"folds\":5,\"geometry\":{\"asymmetry\":0.22949519821696585,\"curl\":0.8147047375197429,\"frequency\":5,\"growth\":0.18261539098975232,\"lobes\":6,\"material\":{\"columns\":15,\"focus\":2.234,\"gain\":0.662,\"model\":\"projected-compression\",\"quiet\":0.094,\"rows\":48},\"offset\":5.918553467726378,\"spread\":0.8231971982616471,\"twist\":2.3286073349635683,\"whorls\":3},\"mechanism\":\"logarithmic-mantle\",\"model\":\"woven-field-experimental\",\"seed\":4181907800,\"strands\":9,\"territories\":[{\"component\":0,\"node\":\"values\",\"u\":[0,1]},{\"component\":1,\"node\":\"weights\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"values\",\"u\":[0,1]},{\"component\":4,\"node\":\"weights\",\"u\":[0,1]},{\"component\":5,\"node\":\"step1\",\"u\":[0,1]},{\"component\":6,\"node\":\"values\",\"u\":[0,1]},{\"component\":7,\"node\":\"weights\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":2,\"effects\":0,\"fanout\":1,\"guards\":0},\"turns\":1.6644}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.638},\\\"composition\\\":{\\\"focus\\\":0.44,\\\"lean\\\":0,\\\"occupancy\\\":0.759,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"nautilus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0307,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.447,\\\"breath\\\":0.095,\\\"lag\\\":1.291,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.191,\\\"rate\\\":0.757,\\\"wave\\\":0.048,\\\"waveNumber\\\":1.836}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.24,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.104,\\\"taper\\\":0.85,\\\"twist\\\":1.507}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"lens\\\":{\\\"bindings\\\":[{\\\"node\\\":\\\"step1\\\",\\\"path\\\":[]}],\\\"domain\\\":[0,100],\\\"id\\\":\\\"output\\\",\\\"kind\\\":\\\"scalar\\\",\\\"label\\\":\\\"Recorded water reading\\\",\\\"unit\\\":\\\"L\\\"},\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.638},\\\"composition\\\":{\\\"focus\\\":0.44,\\\"lean\\\":0,\\\"occupancy\\\":0.759,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"nautilus\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#eef2ec\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0307,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.447,\\\"breath\\\":0.095,\\\"lag\\\":1.291,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.191,\\\"rate\\\":0.757,\\\"wave\\\":0.048,\\\"waveNumber\\\":1.836}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.24,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.104,\\\"taper\\\":0.85,\\\"twist\\\":1.507}},\\\"name\\\":\\\"Tideglass\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"values\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[32,35,41,52,70]}},{\\\"id\\\":\\\"weights\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[3,2,3,4,2]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"values\\\",\\\"weights\\\"],\\\"op\\\":\\\"weightedMean\\\",\\\"params\\\":{}}],\\\"outputs\\\":[\\\"step1\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
   "graph": {
     "version": 1,
     "name": "Tideglass",
@@ -549,7 +549,7 @@
   },
   "design": {
     "qdl": 1,
-    "family": "filament",
+    "family": "nautilus",
     "organ": {
       "model": "rosette",
       "baseRadius": 0.03,
@@ -568,36 +568,36 @@
     },
     "motion": {
       "clock": "separate",
-      "phaseRate": 0.038,
+      "phaseRate": 0.0307,
       "reducedMotion": "freeze",
       "rhythm": {
         "model": "coupled-harmonic",
         "mode": "periodic",
-        "rate": 1,
-        "breath": 0.06,
-        "wave": 0.055,
-        "waveNumber": 1.6,
-        "lag": 0.9,
-        "asymmetry": 0.28,
-        "overtone": 0.17
+        "rate": 0.757,
+        "breath": 0.095,
+        "wave": 0.048,
+        "waveNumber": 1.836,
+        "lag": 1.291,
+        "asymmetry": 0.447,
+        "overtone": 0.191
       }
     },
     "ink": {
       "ghostAlpha": 0.09,
       "secondaryAlpha": 0.42,
       "ridgeAlpha": 0.88,
-      "neutral": "#f0f1eb"
+      "neutral": "#eef2ec"
     },
     "surface": {
       "model": "folded-ribbon",
       "ribbons": 28,
-      "crests": 4,
-      "spread": 0.16,
+      "crests": 5,
+      "spread": 0.104,
       "folds": 7,
-      "taper": 0.65,
+      "taper": 0.85,
       "asymmetry": 0.25,
-      "depth": 0.28,
-      "twist": 1.9,
+      "depth": 0.24,
+      "twist": 1.507,
       "phaseLag": 1.4,
       "samples": 24000
     },
@@ -608,16 +608,16 @@
       "depthContrast": 0.65
     },
     "composition": {
-      "occupancy": 0.76,
+      "occupancy": 0.759,
       "lean": 0,
       "yaw": 0,
       "pitch": 0,
-      "focus": 0.38
+      "focus": 0.44
     },
     "chroma": {
       "model": "material-territories",
       "palette": "roles-1",
-      "strength": 0.35,
+      "strength": 0.638,
       "lens": {
         "kind": "scalar",
         "id": "output",
@@ -648,7 +648,7 @@
       },
       "strands": 9,
       "folds": 5,
-      "turns": 1.41,
+      "turns": 1.6644,
       "territories": [
         {
           "node": "values",
@@ -724,22 +724,22 @@
         }
       ],
       "geometry": {
-        "growth": 0.21091063430532814,
-        "spread": 0.9297380826203152,
-        "curl": 1.3741172589361668,
-        "asymmetry": 0.23530340284574774,
-        "offset": 2.5291755034544483,
-        "frequency": 4,
-        "lobes": 5,
-        "twist": 2,
-        "whorls": 2,
+        "growth": 0.18261539098975232,
+        "spread": 0.8231971982616471,
+        "curl": 0.8147047375197429,
+        "asymmetry": 0.22949519821696585,
+        "offset": 5.918553467726378,
+        "frequency": 5,
+        "lobes": 6,
+        "twist": 2.3286073349635683,
+        "whorls": 3,
         "material": {
           "model": "projected-compression",
           "rows": 48,
           "columns": 15,
-          "focus": 2,
-          "quiet": 0.12,
-          "gain": 0.65
+          "focus": 2.234,
+          "quiet": 0.094,
+          "gain": 0.662
         }
       }
     }

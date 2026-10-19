@@ -84,6 +84,10 @@ function resolveLens(design,taskRecord,status='current'){
  }
  return {status:status==='current'?(Array.isArray(trace)?'current':'not-evaluated'):status,lens,byNode,entries};
 }
+const OPCODE_ACCENTS=Object.freeze({
+ Observe:'#22d3ee',Box:'#c084fc',Permit:'#fbbf24',Apply:'#38bdf8',Score:'#818cf8',Authorize:'#f59e0b',Execute:'#fb7185',Quote:'#a855f7',Decode:'#e879f9',Report:'#4ade80',
+ literal:'#2dd4bf',sum:'#60a5fa',mean:'#38bdf8',min:'#818cf8',max:'#a78bfa',weightedMean:'#34d399',length:'#93c5fd',map:'#f472b6',sort:'#fb923c',dedupe:'#c084fc',filter:'#22d3ee',compare:'#facc15',choose:'#fbbf24',get:'#67e8f9',clamp:'#a3e635',budget:'#fbbf24',action:'#f43f5e',report:'#4ade80',bfs:'#e879f9',allocate:'#34d399',schedule:'#fb923c',consensus:'#f59e0b',retry:'#f87171',evidence:'#eab308',input:'#14b8a6',arithmetic:'#60a5fa',compareValues:'#f59e0b',all:'#eab308',select:'#a78bfa',evidenceFresh:'#fde047',reconcile:'#fb7185'
+});
 function colorFor(shape,nodeIndex,lensState){
  const neutral=shape.design?.ink?.neutral||shape.design?.light?.neutral||'#d5e2e0',chroma=shape.design?.chroma;
  if(!chroma)return neutral;
@@ -91,8 +95,12 @@ function colorFor(shape,nodeIndex,lensState){
  const strength=Number.isFinite(chroma.strength)?clamp(chroma.strength):0;
  const entry=lensState?.byNode?.[node.id];let color=entry?.color||ROLES[role(node.op)].color;
  if(lensState?.lens&&!entry)color=desaturate(color,.48);
+ else if(!entry&&strength>0&&strength<1){
+  const accent=OPCODE_ACCENTS[node.op]||color,val=node.params?.value,litShift=typeof val==='number'&&Number.isFinite(val)?clamp(Math.log1p(Math.abs(val))/8):Array.isArray(val)?clamp(val.length/10):((nodeIndex*37+(node.level||0)*19)%100)/100;
+  color=mix(color,accent,clamp(.38+.34*litShift));
+ }
  return strength===1?color:strength===0?neutral:mix(neutral,color,strength);
 }
-const api={ROLES,ROLE_MAP,SCALE_STOPS,STATUS_COLORS,STATUS_LABELS,role,channels,hex,compile,owner,scalarColor,resolveLens,colorFor};
+const api={ROLES,ROLE_MAP,OPCODE_ACCENTS,SCALE_STOPS,STATUS_COLORS,STATUS_LABELS,role,channels,hex,compile,owner,scalarColor,resolveLens,colorFor};
 if(typeof module!=='undefined')module.exports=api;root.Chroma=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -27,16 +27,16 @@
                       "chroma": {
                         "model": "material-territories",
                         "palette": "roles-1",
-                        "strength": 0.35
+                        "strength": 0.596
                       },
                       "composition": {
-                        "focus": 0.38,
+                        "focus": 0.292,
                         "lean": 0,
-                        "occupancy": 0.76,
+                        "occupancy": 0.766,
                         "pitch": 0,
                         "yaw": 0
                       },
-                      "family": "filament",
+                      "family": "comet",
                       "filament": {
                         "bend": 0.04,
                         "frequencyGain": 0.07,
@@ -45,7 +45,7 @@
                       },
                       "ink": {
                         "ghostAlpha": 0.09,
-                        "neutral": "#f0f1eb",
+                        "neutral": "#f2f0e8",
                         "ridgeAlpha": 0.88,
                         "secondaryAlpha": 0.42
                       },
@@ -57,18 +57,18 @@
                       },
                       "motion": {
                         "clock": "separate",
-                        "phaseRate": 0.038,
+                        "phaseRate": 0.0363,
                         "reducedMotion": "freeze",
                         "rhythm": {
-                          "asymmetry": 0.28,
-                          "breath": 0.06,
-                          "lag": 0.9,
-                          "mode": "periodic",
+                          "asymmetry": 0.499,
+                          "breath": 0.048,
+                          "lag": 1.447,
+                          "mode": "quasiperiodic",
                           "model": "coupled-harmonic",
-                          "overtone": 0.17,
-                          "rate": 1,
-                          "wave": 0.055,
-                          "waveNumber": 1.6
+                          "overtone": 0.174,
+                          "rate": 1.127,
+                          "wave": 0.078,
+                          "waveNumber": 2.949
                         }
                       },
                       "organ": {
@@ -84,16 +84,16 @@
                       "qdl": 1,
                       "surface": {
                         "asymmetry": 0.25,
-                        "crests": 4,
-                        "depth": 0.28,
+                        "crests": 5,
+                        "depth": 0.25,
                         "folds": 7,
                         "model": "folded-ribbon",
                         "phaseLag": 1.4,
-                        "ribbons": 28,
+                        "ribbons": 25,
                         "samples": 24000,
-                        "spread": 0.16,
-                        "taper": 0.65,
-                        "twist": 1.9
+                        "spread": 0.126,
+                        "taper": 1.6,
+                        "twist": 1.665
                       },
                       "woven": {
                         "dynamics": {
@@ -107,10 +107,10 @@
                           "iterations": 36864,
                           "method": "iterate",
                           "parameters": [
-                            -1.4,
-                            1.6,
-                            1,
-                            0.7
+                            -1.4182,
+                            1.6712,
+                            0.9721,
+                            0.7074
                           ],
                           "system": "clifford"
                         },
@@ -228,12 +228,12 @@
                           "fanout": 2,
                           "guards": 1
                         },
-                        "turns": 1.67
+                        "turns": 1.8133
                       }
                     },
                     "format": "quineling-visual-capsule",
                     "profile": "woven-experimental",
-                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
+                    "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.596},\"composition\":{\"focus\":0.292,\"lean\":0,\"occupancy\":0.766,\"pitch\":0,\"yaw\":0},\"family\":\"comet\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f2f0e8\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0363,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.499,\"breath\":0.048,\"lag\":1.447,\"mode\":\"quasiperiodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.174,\"rate\":1.127,\"wave\":0.078,\"waveNumber\":2.949}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.25,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":25,\"samples\":24000,\"spread\":0.126,\"taper\":1.6,\"twist\":1.665}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.596},\"composition\":{\"focus\":0.292,\"lean\":0,\"occupancy\":0.766,\"pitch\":0,\"yaw\":0},\"family\":\"comet\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f2f0e8\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0363,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.499,\"breath\":0.048,\"lag\":1.447,\"mode\":\"quasiperiodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.174,\"rate\":1.127,\"wave\":0.078,\"waveNumber\":2.949}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.25,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":25,\"samples\":24000,\"spread\":0.126,\"taper\":1.6,\"twist\":1.665}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                   }
                 ]
               ]
@@ -284,16 +284,16 @@
                     "chroma": {
                       "model": "material-territories",
                       "palette": "roles-1",
-                      "strength": 0.35
+                      "strength": 0.596
                     },
                     "composition": {
-                      "focus": 0.38,
+                      "focus": 0.292,
                       "lean": 0,
-                      "occupancy": 0.76,
+                      "occupancy": 0.766,
                       "pitch": 0,
                       "yaw": 0
                     },
-                    "family": "filament",
+                    "family": "comet",
                     "filament": {
                       "bend": 0.04,
                       "frequencyGain": 0.07,
@@ -302,7 +302,7 @@
                     },
                     "ink": {
                       "ghostAlpha": 0.09,
-                      "neutral": "#f0f1eb",
+                      "neutral": "#f2f0e8",
                       "ridgeAlpha": 0.88,
                       "secondaryAlpha": 0.42
                     },
@@ -314,18 +314,18 @@
                     },
                     "motion": {
                       "clock": "separate",
-                      "phaseRate": 0.038,
+                      "phaseRate": 0.0363,
                       "reducedMotion": "freeze",
                       "rhythm": {
-                        "asymmetry": 0.28,
-                        "breath": 0.06,
-                        "lag": 0.9,
-                        "mode": "periodic",
+                        "asymmetry": 0.499,
+                        "breath": 0.048,
+                        "lag": 1.447,
+                        "mode": "quasiperiodic",
                         "model": "coupled-harmonic",
-                        "overtone": 0.17,
-                        "rate": 1,
-                        "wave": 0.055,
-                        "waveNumber": 1.6
+                        "overtone": 0.174,
+                        "rate": 1.127,
+                        "wave": 0.078,
+                        "waveNumber": 2.949
                       }
                     },
                     "organ": {
@@ -341,16 +341,16 @@
                     "qdl": 1,
                     "surface": {
                       "asymmetry": 0.25,
-                      "crests": 4,
-                      "depth": 0.28,
+                      "crests": 5,
+                      "depth": 0.25,
                       "folds": 7,
                       "model": "folded-ribbon",
                       "phaseLag": 1.4,
-                      "ribbons": 28,
+                      "ribbons": 25,
                       "samples": 24000,
-                      "spread": 0.16,
-                      "taper": 0.65,
-                      "twist": 1.9
+                      "spread": 0.126,
+                      "taper": 1.6,
+                      "twist": 1.665
                     },
                     "woven": {
                       "dynamics": {
@@ -364,10 +364,10 @@
                         "iterations": 36864,
                         "method": "iterate",
                         "parameters": [
-                          -1.4,
-                          1.6,
-                          1,
-                          0.7
+                          -1.4182,
+                          1.6712,
+                          0.9721,
+                          0.7074
                         ],
                         "system": "clifford"
                       },
@@ -485,12 +485,12 @@
                         "fanout": 2,
                         "guards": 1
                       },
-                      "turns": 1.67
+                      "turns": 1.8133
                     }
                   },
                   "format": "quineling-visual-capsule",
                   "profile": "woven-experimental",
-                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
+                  "taskSource": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.596},\"composition\":{\"focus\":0.292,\"lean\":0,\"occupancy\":0.766,\"pitch\":0,\"yaw\":0},\"family\":\"comet\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f2f0e8\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0363,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.499,\"breath\":0.048,\"lag\":1.447,\"mode\":\"quasiperiodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.174,\"rate\":1.127,\"wave\":0.078,\"waveNumber\":2.949}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.25,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":25,\"samples\":24000,\"spread\":0.126,\"taper\":1.6,\"twist\":1.665}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.596},\"composition\":{\"focus\":0.292,\"lean\":0,\"occupancy\":0.766,\"pitch\":0,\"yaw\":0},\"family\":\"comet\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f2f0e8\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0363,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.499,\"breath\":0.048,\"lag\":1.447,\"mode\":\"quasiperiodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.174,\"rate\":1.127,\"wave\":0.078,\"waveNumber\":2.949}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.25,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":25,\"samples\":24000,\"spread\":0.126,\"taper\":1.6,\"twist\":1.665}},\"name\":\"Threadwing\",\"nodes\":[{\"id\":\"streets\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":{\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[\"D\"],\"D\":[]}}},{\"id\":\"blocked\",\"inputs\":[],\"op\":\"literal\",\"params\":{\"value\":[\"C\"]}},{\"id\":\"step1\",\"inputs\":[\"streets\",\"blocked\"],\"op\":\"bfs\",\"params\":{\"goal\":\"D\",\"start\":\"A\"}},{\"id\":\"step2\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"found\"}},{\"id\":\"step3\",\"inputs\":[\"step1\"],\"op\":\"get\",\"params\":{\"path\":\"path\"}},{\"id\":\"step4\",\"inputs\":[\"step2\",\"step3\"],\"op\":\"action\",\"params\":{\"action\":\"walk-route\",\"allowed\":true}}],\"outputs\":[\"step4\"],\"version\":1}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]"
                 }
               ]
             ]
@@ -522,7 +522,7 @@
       ]
     ]
   ],
-  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"dynamics\":{\"burn\":320,\"criticalImages\":13,\"densityGrid\":160,\"initial\":[0.11675860118120909,0.2578447466250509],\"iterations\":36864,\"method\":\"iterate\",\"parameters\":[-1.4,1.6,1,0.7],\"system\":\"clifford\"},\"embedding\":{\"frequency\":[2.2327346986159684,2.0158545282203706],\"model\":\"bounded-native-warp\",\"overtone\":[0.04782692016800866,0.04755503365653567],\"scale\":[0.4040896574221552,0.3342342073563486],\"shear\":0.06013607745990157,\"warp\":[0.11060671038925649,0.09821747442241759]},\"folds\":3,\"mechanism\":\"clifford-flow\",\"model\":\"woven-field-experimental\",\"seed\":1477331921,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"streets\",\"u\":[0,1]},{\"component\":1,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"step2\",\"u\":[0,1]},{\"component\":4,\"node\":\"step3\",\"u\":[0,1]},{\"component\":5,\"node\":\"step4\",\"u\":[0,1]},{\"component\":6,\"node\":\"streets\",\"u\":[0,1]},{\"component\":7,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]},{\"component\":9,\"node\":\"step2\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":4,\"effects\":1,\"fanout\":2,\"guards\":1},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.35},\"composition\":{\"focus\":0.38,\"lean\":0,\"occupancy\":0.76,\"pitch\":0,\"yaw\":0},\"family\":\"filament\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f0f1eb\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.038,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.28,\"breath\":0.06,\"lag\":0.9,\"mode\":\"periodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.17,\"rate\":1,\"wave\":0.055,\"waveNumber\":1.6}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":4,\"depth\":0.28,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":28,\"samples\":24000,\"spread\":0.16,\"taper\":0.65,\"twist\":1.9},\"woven\":{\"dynamics\":{\"burn\":320,\"criticalImages\":13,\"densityGrid\":160,\"initial\":[0.11675860118120909,0.2578447466250509],\"iterations\":36864,\"method\":\"iterate\",\"parameters\":[-1.4,1.6,1,0.7],\"system\":\"clifford\"},\"embedding\":{\"frequency\":[2.2327346986159684,2.0158545282203706],\"model\":\"bounded-native-warp\",\"overtone\":[0.04782692016800866,0.04755503365653567],\"scale\":[0.4040896574221552,0.3342342073563486],\"shear\":0.06013607745990157,\"warp\":[0.11060671038925649,0.09821747442241759]},\"folds\":3,\"mechanism\":\"clifford-flow\",\"model\":\"woven-field-experimental\",\"seed\":1477331921,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"streets\",\"u\":[0,1]},{\"component\":1,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"step2\",\"u\":[0,1]},{\"component\":4,\"node\":\"step3\",\"u\":[0,1]},{\"component\":5,\"node\":\"step4\",\"u\":[0,1]},{\"component\":6,\"node\":\"streets\",\"u\":[0,1]},{\"component\":7,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]},{\"component\":9,\"node\":\"step2\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":4,\"effects\":1,\"fanout\":2,\"guards\":1},\"turns\":1.67}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.35},\\\"composition\\\":{\\\"focus\\\":0.38,\\\"lean\\\":0,\\\"occupancy\\\":0.76,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"filament\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f0f1eb\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.038,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.28,\\\"breath\\\":0.06,\\\"lag\\\":0.9,\\\"mode\\\":\\\"periodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.17,\\\"rate\\\":1,\\\"wave\\\":0.055,\\\"waveNumber\\\":1.6}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":4,\\\"depth\\\":0.28,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":28,\\\"samples\\\":24000,\\\"spread\\\":0.16,\\\"taper\\\":0.65,\\\"twist\\\":1.9}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
+  "source": "[\"apply\",[\"run\",[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.596},\"composition\":{\"focus\":0.292,\"lean\":0,\"occupancy\":0.766,\"pitch\":0,\"yaw\":0},\"family\":\"comet\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f2f0e8\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0363,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.499,\"breath\":0.048,\"lag\":1.447,\"mode\":\"quasiperiodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.174,\"rate\":1.127,\"wave\":0.078,\"waveNumber\":2.949}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.25,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":25,\"samples\":24000,\"spread\":0.126,\"taper\":1.6,\"twist\":1.665},\"woven\":{\"dynamics\":{\"burn\":320,\"criticalImages\":13,\"densityGrid\":160,\"initial\":[0.11675860118120909,0.2578447466250509],\"iterations\":36864,\"method\":\"iterate\",\"parameters\":[-1.4182,1.6712,0.9721,0.7074],\"system\":\"clifford\"},\"embedding\":{\"frequency\":[2.2327346986159684,2.0158545282203706],\"model\":\"bounded-native-warp\",\"overtone\":[0.04782692016800866,0.04755503365653567],\"scale\":[0.4040896574221552,0.3342342073563486],\"shear\":0.06013607745990157,\"warp\":[0.11060671038925649,0.09821747442241759]},\"folds\":3,\"mechanism\":\"clifford-flow\",\"model\":\"woven-field-experimental\",\"seed\":1477331921,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"streets\",\"u\":[0,1]},{\"component\":1,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"step2\",\"u\":[0,1]},{\"component\":4,\"node\":\"step3\",\"u\":[0,1]},{\"component\":5,\"node\":\"step4\",\"u\":[0,1]},{\"component\":6,\"node\":\"streets\",\"u\":[0,1]},{\"component\":7,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]},{\"component\":9,\"node\":\"step2\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":4,\"effects\":1,\"fanout\":2,\"guards\":1},\"turns\":1.8133}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.596},\\\"composition\\\":{\\\"focus\\\":0.292,\\\"lean\\\":0,\\\"occupancy\\\":0.766,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"comet\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f2f0e8\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0363,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.499,\\\"breath\\\":0.048,\\\"lag\\\":1.447,\\\"mode\\\":\\\"quasiperiodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.174,\\\"rate\\\":1.127,\\\"wave\\\":0.078,\\\"waveNumber\\\":2.949}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.25,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":25,\\\"samples\\\":24000,\\\"spread\\\":0.126,\\\"taper\\\":1.6,\\\"twist\\\":1.665}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.596},\\\"composition\\\":{\\\"focus\\\":0.292,\\\"lean\\\":0,\\\"occupancy\\\":0.766,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"comet\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f2f0e8\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0363,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.499,\\\"breath\\\":0.048,\\\"lag\\\":1.447,\\\"mode\\\":\\\"quasiperiodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.174,\\\"rate\\\":1.127,\\\"wave\\\":0.078,\\\"waveNumber\\\":2.949}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.25,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":25,\\\"samples\\\":24000,\\\"spread\\\":0.126,\\\"taper\\\":1.6,\\\"twist\\\":1.665}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]],[\"quote\",[\"lambda\",\"x\",[\"seq\",[\"repeat\",1,[\"task\",[\"quote\",{\"design\":{\"chroma\":{\"model\":\"material-territories\",\"palette\":\"roles-1\",\"strength\":0.596},\"composition\":{\"focus\":0.292,\"lean\":0,\"occupancy\":0.766,\"pitch\":0,\"yaw\":0},\"family\":\"comet\",\"filament\":{\"bend\":0.04,\"frequencyGain\":0.07,\"model\":\"pinned-sine\",\"ripple\":0.16},\"ink\":{\"ghostAlpha\":0.09,\"neutral\":\"#f2f0e8\",\"ridgeAlpha\":0.88,\"secondaryAlpha\":0.42},\"light\":{\"crestAlpha\":0.58,\"depthContrast\":0.65,\"model\":\"density-crest\",\"recessAlpha\":0.045},\"motion\":{\"clock\":\"separate\",\"phaseRate\":0.0363,\"reducedMotion\":\"freeze\",\"rhythm\":{\"asymmetry\":0.499,\"breath\":0.048,\"lag\":1.447,\"mode\":\"quasiperiodic\",\"model\":\"coupled-harmonic\",\"overtone\":0.174,\"rate\":1.127,\"wave\":0.078,\"waveNumber\":2.949}},\"organ\":{\"amplitudes\":[0.2,0.13],\"baseRadius\":0.03,\"degreeGain\":0.004,\"literalGain\":0.001,\"model\":\"rosette\"},\"qdl\":1,\"surface\":{\"asymmetry\":0.25,\"crests\":5,\"depth\":0.25,\"folds\":7,\"model\":\"folded-ribbon\",\"phaseLag\":1.4,\"ribbons\":25,\"samples\":24000,\"spread\":0.126,\"taper\":1.6,\"twist\":1.665},\"woven\":{\"dynamics\":{\"burn\":320,\"criticalImages\":13,\"densityGrid\":160,\"initial\":[0.11675860118120909,0.2578447466250509],\"iterations\":36864,\"method\":\"iterate\",\"parameters\":[-1.4182,1.6712,0.9721,0.7074],\"system\":\"clifford\"},\"embedding\":{\"frequency\":[2.2327346986159684,2.0158545282203706],\"model\":\"bounded-native-warp\",\"overtone\":[0.04782692016800866,0.04755503365653567],\"scale\":[0.4040896574221552,0.3342342073563486],\"shear\":0.06013607745990157,\"warp\":[0.11060671038925649,0.09821747442241759]},\"folds\":3,\"mechanism\":\"clifford-flow\",\"model\":\"woven-field-experimental\",\"seed\":1477331921,\"strands\":10,\"territories\":[{\"component\":0,\"node\":\"streets\",\"u\":[0,1]},{\"component\":1,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":2,\"node\":\"step1\",\"u\":[0,1]},{\"component\":3,\"node\":\"step2\",\"u\":[0,1]},{\"component\":4,\"node\":\"step3\",\"u\":[0,1]},{\"component\":5,\"node\":\"step4\",\"u\":[0,1]},{\"component\":6,\"node\":\"streets\",\"u\":[0,1]},{\"component\":7,\"node\":\"blocked\",\"u\":[0,1]},{\"component\":8,\"node\":\"step1\",\"u\":[0,1]},{\"component\":9,\"node\":\"step2\",\"u\":[0,1]}],\"topology\":{\"convergence\":2,\"depth\":4,\"effects\":1,\"fanout\":2,\"guards\":1},\"turns\":1.8133}},\"format\":\"quineling-visual-capsule\",\"profile\":\"woven-experimental\",\"taskSource\":\"[\\\"apply\\\",[\\\"run\\\",[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.596},\\\"composition\\\":{\\\"focus\\\":0.292,\\\"lean\\\":0,\\\"occupancy\\\":0.766,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"comet\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f2f0e8\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0363,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.499,\\\"breath\\\":0.048,\\\"lag\\\":1.447,\\\"mode\\\":\\\"quasiperiodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.174,\\\"rate\\\":1.127,\\\"wave\\\":0.078,\\\"waveNumber\\\":2.949}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.25,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":25,\\\"samples\\\":24000,\\\"spread\\\":0.126,\\\"taper\\\":1.6,\\\"twist\\\":1.665}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]],[\\\"quote\\\",[\\\"lambda\\\",\\\"x\\\",[\\\"seq\\\",[\\\"repeat\\\",1,[\\\"task\\\",[\\\"quote\\\",{\\\"design\\\":{\\\"chroma\\\":{\\\"model\\\":\\\"material-territories\\\",\\\"palette\\\":\\\"roles-1\\\",\\\"strength\\\":0.596},\\\"composition\\\":{\\\"focus\\\":0.292,\\\"lean\\\":0,\\\"occupancy\\\":0.766,\\\"pitch\\\":0,\\\"yaw\\\":0},\\\"family\\\":\\\"comet\\\",\\\"filament\\\":{\\\"bend\\\":0.04,\\\"frequencyGain\\\":0.07,\\\"model\\\":\\\"pinned-sine\\\",\\\"ripple\\\":0.16},\\\"ink\\\":{\\\"ghostAlpha\\\":0.09,\\\"neutral\\\":\\\"#f2f0e8\\\",\\\"ridgeAlpha\\\":0.88,\\\"secondaryAlpha\\\":0.42},\\\"light\\\":{\\\"crestAlpha\\\":0.58,\\\"depthContrast\\\":0.65,\\\"model\\\":\\\"density-crest\\\",\\\"recessAlpha\\\":0.045},\\\"motion\\\":{\\\"clock\\\":\\\"separate\\\",\\\"phaseRate\\\":0.0363,\\\"reducedMotion\\\":\\\"freeze\\\",\\\"rhythm\\\":{\\\"asymmetry\\\":0.499,\\\"breath\\\":0.048,\\\"lag\\\":1.447,\\\"mode\\\":\\\"quasiperiodic\\\",\\\"model\\\":\\\"coupled-harmonic\\\",\\\"overtone\\\":0.174,\\\"rate\\\":1.127,\\\"wave\\\":0.078,\\\"waveNumber\\\":2.949}},\\\"organ\\\":{\\\"amplitudes\\\":[0.2,0.13],\\\"baseRadius\\\":0.03,\\\"degreeGain\\\":0.004,\\\"literalGain\\\":0.001,\\\"model\\\":\\\"rosette\\\"},\\\"qdl\\\":1,\\\"surface\\\":{\\\"asymmetry\\\":0.25,\\\"crests\\\":5,\\\"depth\\\":0.25,\\\"folds\\\":7,\\\"model\\\":\\\"folded-ribbon\\\",\\\"phaseLag\\\":1.4,\\\"ribbons\\\":25,\\\"samples\\\":24000,\\\"spread\\\":0.126,\\\"taper\\\":1.6,\\\"twist\\\":1.665}},\\\"name\\\":\\\"Threadwing\\\",\\\"nodes\\\":[{\\\"id\\\":\\\"streets\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":{\\\"A\\\":[\\\"B\\\",\\\"C\\\"],\\\"B\\\":[\\\"D\\\"],\\\"C\\\":[\\\"D\\\"],\\\"D\\\":[]}}},{\\\"id\\\":\\\"blocked\\\",\\\"inputs\\\":[],\\\"op\\\":\\\"literal\\\",\\\"params\\\":{\\\"value\\\":[\\\"C\\\"]}},{\\\"id\\\":\\\"step1\\\",\\\"inputs\\\":[\\\"streets\\\",\\\"blocked\\\"],\\\"op\\\":\\\"bfs\\\",\\\"params\\\":{\\\"goal\\\":\\\"D\\\",\\\"start\\\":\\\"A\\\"}},{\\\"id\\\":\\\"step2\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"found\\\"}},{\\\"id\\\":\\\"step3\\\",\\\"inputs\\\":[\\\"step1\\\"],\\\"op\\\":\\\"get\\\",\\\"params\\\":{\\\"path\\\":\\\"path\\\"}},{\\\"id\\\":\\\"step4\\\",\\\"inputs\\\":[\\\"step2\\\",\\\"step3\\\"],\\\"op\\\":\\\"action\\\",\\\"params\\\":{\\\"action\\\":\\\"walk-route\\\",\\\"allowed\\\":true}}],\\\"outputs\\\":[\\\"step4\\\"],\\\"version\\\":1}]]],[\\\"emit\\\",[\\\"makeApply\\\",[\\\"makeRun\\\",[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]],[\\\"makeQuote\\\",[\\\"var\\\",\\\"x\\\"]]]]]]]]\"}]]],[\"emit\",[\"makeApply\",[\"makeRun\",[\"makeQuote\",[\"var\",\"x\"]]],[\"makeQuote\",[\"var\",\"x\"]]]]]]]]",
   "graph": {
     "version": 1,
     "name": "Threadwing",
@@ -608,7 +608,7 @@
   },
   "design": {
     "qdl": 1,
-    "family": "filament",
+    "family": "comet",
     "organ": {
       "model": "rosette",
       "baseRadius": 0.03,
@@ -627,36 +627,36 @@
     },
     "motion": {
       "clock": "separate",
-      "phaseRate": 0.038,
+      "phaseRate": 0.0363,
       "reducedMotion": "freeze",
       "rhythm": {
         "model": "coupled-harmonic",
-        "mode": "periodic",
-        "rate": 1,
-        "breath": 0.06,
-        "wave": 0.055,
-        "waveNumber": 1.6,
-        "lag": 0.9,
-        "asymmetry": 0.28,
-        "overtone": 0.17
+        "mode": "quasiperiodic",
+        "rate": 1.127,
+        "breath": 0.048,
+        "wave": 0.078,
+        "waveNumber": 2.949,
+        "lag": 1.447,
+        "asymmetry": 0.499,
+        "overtone": 0.174
       }
     },
     "ink": {
       "ghostAlpha": 0.09,
       "secondaryAlpha": 0.42,
       "ridgeAlpha": 0.88,
-      "neutral": "#f0f1eb"
+      "neutral": "#f2f0e8"
     },
     "surface": {
       "model": "folded-ribbon",
-      "ribbons": 28,
-      "crests": 4,
-      "spread": 0.16,
+      "ribbons": 25,
+      "crests": 5,
+      "spread": 0.126,
       "folds": 7,
-      "taper": 0.65,
+      "taper": 1.6,
       "asymmetry": 0.25,
-      "depth": 0.28,
-      "twist": 1.9,
+      "depth": 0.25,
+      "twist": 1.665,
       "phaseLag": 1.4,
       "samples": 24000
     },
@@ -667,16 +667,16 @@
       "depthContrast": 0.65
     },
     "composition": {
-      "occupancy": 0.76,
+      "occupancy": 0.766,
       "lean": 0,
       "yaw": 0,
       "pitch": 0,
-      "focus": 0.38
+      "focus": 0.292
     },
     "chroma": {
       "model": "material-territories",
       "palette": "roles-1",
-      "strength": 0.35
+      "strength": 0.596
     },
     "woven": {
       "model": "woven-field-experimental",
@@ -691,7 +691,7 @@
       },
       "strands": 10,
       "folds": 3,
-      "turns": 1.67,
+      "turns": 1.8133,
       "territories": [
         {
           "node": "streets",
@@ -778,10 +778,10 @@
         "system": "clifford",
         "method": "iterate",
         "parameters": [
-          -1.4,
-          1.6,
-          1,
-          0.7
+          -1.4182,
+          1.6712,
+          0.9721,
+          0.7074
         ],
         "initial": [
           0.11675860118120909,
